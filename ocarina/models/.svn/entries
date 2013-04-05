@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wc-entries
+   xmlns="svn:">
+<entry
+   committed-rev="25"
+   name=""
+   committed-date="2008-05-06T17:30:05.893403Z"
+   url="http://192.168.1.5/svn/EmeRails/trunk/models"
+   last-author="claudio"
+   kind="dir"
+   uuid="c3164a1f-dbe3-fe41-9a21-3509334a0281"
+   repos="http://192.168.1.5/svn/EmeRails"
+   revision="26"/>
+<entry
+   committed-rev="25"
+   name="base.php"
+   text-time="2008-05-09T21:29:56.000000Z"
+   committed-date="2008-05-06T17:30:05.893403Z"
+   checksum="334bf0955c1303893e5f2a31c3b28a5e"
+   last-author="claudio"
+   kind="file"
+   prop-time="2008-05-09T21:29:56.000000Z"/>
+</wc-entries>

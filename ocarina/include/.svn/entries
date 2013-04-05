@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wc-entries
+   xmlns="svn:">
+<entry
+   committed-rev="21"
+   name=""
+   committed-date="2008-04-28T20:46:39.250736Z"
+   url="http://192.168.1.5/svn/EmeRails/trunk/include"
+   last-author="claudio"
+   kind="dir"
+   uuid="c3164a1f-dbe3-fe41-9a21-3509334a0281"
+   repos="http://192.168.1.5/svn/EmeRails"
+   revision="26"/>
+<entry
+   committed-rev="21"
+   name="db.inc.php"
+   text-time="2008-04-28T21:08:02.000000Z"
+   committed-date="2008-04-28T20:46:39.250736Z"
+   checksum="7b3eb0036590926d92e252ea63c58480"
+   last-author="claudio"
+   kind="file"
+   prop-time="2008-04-28T21:08:02.000000Z"/>
+<entry
+   committed-rev="12"
+   name="tag_support.inc.php"
+   text-time="2008-04-28T15:11:23.000000Z"
+   committed-date="2008-04-26T16:12:00.161460Z"
+   checksum="cd558cd8a467455480abed735f33d1c2"
+   last-author="claudio"
+   kind="file"
+   prop-time="2008-04-28T15:11:23.000000Z"/>
+<entry
+   committed-rev="14"
+   name="common.inc.php"
+   text-time="2008-04-28T21:08:02.000000Z"
+   committed-date="2008-04-28T18:29:56.055120Z"
+   checksum="892f441eaed8101ab756fd5caefa2ea3"
+   last-author="claudio"
+   kind="file"
+   prop-time="2008-04-28T21:08:02.000000Z"/>
+</wc-entries>

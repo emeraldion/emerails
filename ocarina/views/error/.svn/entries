@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wc-entries
+   xmlns="svn:">
+<entry
+   committed-rev="1"
+   name=""
+   committed-date="2008-04-11T20:13:26.650769Z"
+   url="http://192.168.1.5/svn/EmeRails/trunk/views/error"
+   last-author="claudio"
+   kind="dir"
+   uuid="c3164a1f-dbe3-fe41-9a21-3509334a0281"
+   repos="http://192.168.1.5/svn/EmeRails"
+   revision="26"/>
+<entry
+   committed-rev="1"
+   name="_500.php"
+   text-time="2008-04-26T13:57:16.000000Z"
+   committed-date="2008-04-11T20:13:26.650769Z"
+   checksum="0d69722a0ac58f7339f1e7d00e741a24"
+   last-author="claudio"
+   kind="file"
+   prop-time="2008-04-26T13:57:16.000000Z"/>
+<entry
+   committed-rev="1"
+   name="_403.php"
+   text-time="2008-04-26T13:57:16.000000Z"
+   committed-date="2008-04-11T20:13:26.650769Z"
+   checksum="b91dd923647a76f8f25534aa68ba3cab"
+   last-author="claudio"
+   kind="file"
+   prop-time="2008-04-26T13:57:16.000000Z"/>
+<entry
+   committed-rev="1"
+   name="_404.php"
+   text-time="2008-04-26T13:57:16.000000Z"
+   committed-date="2008-04-11T20:13:26.650769Z"
+   checksum="11855145e2f9558895e28af4d3b90aba"
+   last-author="claudio"
+   kind="file"
+   prop-time="2008-04-26T13:57:16.000000Z"/>
+</wc-entries>

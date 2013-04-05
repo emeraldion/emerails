@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wc-entries
+   xmlns="svn:">
+<entry
+   committed-rev="14"
+   name=""
+   committed-date="2008-04-28T18:29:56.055120Z"
+   url="http://192.168.1.5/svn/EmeRails/trunk/assets"
+   last-author="claudio"
+   kind="dir"
+   uuid="c3164a1f-dbe3-fe41-9a21-3509334a0281"
+   repos="http://192.168.1.5/svn/EmeRails"
+   revision="26"/>
+<entry
+   name="styles"
+   kind="dir"/>
+<entry
+   name="images"
+   kind="dir"/>
+<entry
+   name="javascript"
+   kind="dir"/>
+</wc-entries>

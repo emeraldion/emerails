@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wc-entries
+   xmlns="svn:">
+<entry
+   committed-rev="12"
+   name=""
+   committed-date="2008-04-26T16:12:00.161460Z"
+   url="http://192.168.1.5/svn/EmeRails/trunk/config"
+   last-author="claudio"
+   kind="dir"
+   uuid="c3164a1f-dbe3-fe41-9a21-3509334a0281"
+   repos="http://192.168.1.5/svn/EmeRails"
+   revision="26"/>
+<entry
+   committed-rev="12"
+   name="db.conf.php"
+   text-time="2008-04-28T15:11:23.000000Z"
+   committed-date="2008-04-26T16:12:00.161460Z"
+   checksum="c32f21485533a4bc0989566c210a8714"
+   last-author="claudio"
+   kind="file"
+   prop-time="2008-04-28T15:11:23.000000Z"/>
+</wc-entries>
