@@ -7,10 +7,10 @@
 	 *
 	 */
 
-	define("DB_USER", "emerails");
-	define("DB_PASS", "choochoo");
-	define("DB_NAME", "emerails");
+	define("DB_USER", "root");
+	define("DB_PASS", "root");
+	define("DB_NAME", "emeraldion.it");
 	define("DB_HOST", "localhost");
 	define("DB_DEBUG", FALSE);
-	
+
 ?>

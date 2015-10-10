@@ -6,8 +6,8 @@
 	 *	http://www.emeraldion.it
 	 *
 	 */
-	 
-	require_once("base_controller.php");
+
+	require_once(dirname(__FILE__) . "/base_controller.php");
 
 	/**
 	 *	@class ErrorController
@@ -25,7 +25,7 @@
 		{
 			$this->error();
 		}
-		
+
 		/**
 		 *	@fn _403
 		 *	@short Handles 403 Forbidden HTTP errors.
@@ -34,7 +34,7 @@
 		{
 			$this->error();
 		}
-		
+
 		/**
 		 *	@fn _405
 		 *	@short Handles 405 Method Not Supported HTTP errors.
@@ -43,7 +43,7 @@
 		{
 			$this->error();
 		}
-		
+
 		/**
 		 *	@fn _500
 		 *	@short Handles 500 Internal Server Error HTTP errors.
@@ -52,7 +52,7 @@
 		{
 			$this->error();
 		}
-		
+
 		/**
 		 *	@fn error
 		 *	@short Private common error handler.
