@@ -24,7 +24,7 @@
 		 *	@short The body of the response to send to the client.
 		 */
 		public $body = "";
-		
+
 		/**
 		 *	@fn flush($only_headers)
 		 *	@short Flushes headers and response body to the client.
@@ -43,7 +43,7 @@
 			}
 			exit();
 		}
-		
+
 		/**
 		 *	@fn add_header($name, $value)
 		 *	@short Sets a header to be sent to the client.
@@ -51,7 +51,7 @@
 		 *	@param value The header value.
 		 */
 		public function add_header($name, $value)
-		{	
+		{
 			$this->headers[] = array($name, $value);
 		}
 	}
