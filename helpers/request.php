@@ -1,4 +1,11 @@
 <?php
+	/**
+	 *	Project EmeRails - Codename Ocarina
+	 *
+	 *	Copyright (c) 2008, 2015 Claudio Procida
+	 *	http://www.emeraldion.it
+	 *
+	 */
 
 	/**
 	 *	@class Request

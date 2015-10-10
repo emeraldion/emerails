@@ -2,7 +2,7 @@
 	/**
 	 *	Project EmeRails - Codename Ocarina
 	 *
-	 *	© 2008 Claudio Procida
+	 *	Copyright (c) 2008, 2015 Claudio Procida
 	 *	http://www.emeraldion.it
 	 *
 	 */

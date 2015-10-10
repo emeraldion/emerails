@@ -1,4 +1,12 @@
 <?php
+	/**
+	 *	Project EmeRails - Codename Ocarina
+	 *
+	 *	Copyright (c) 2008, 2015 Claudio Procida
+	 *	http://www.emeraldion.it
+	 *
+	 */
+	
 	require_once(dirname(__FILE__) . "/../include/tag_support.inc.php");
 
 	define("LOCALIZATION_DEBUG", 0);

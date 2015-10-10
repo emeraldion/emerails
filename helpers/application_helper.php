@@ -1,4 +1,12 @@
 <?php
+	/**
+	 *	Project EmeRails - Codename Ocarina
+	 *
+	 *	Copyright (c) 2008, 2015 Claudio Procida
+	 *	http://www.emeraldion.it
+	 *
+	 */
+	
 	require_once("{$_SERVER['DOCUMENT_ROOT']}/include/db.inc.php");
 	require_once("{$_SERVER['DOCUMENT_ROOT']}/helpers/cookie.php");
 	require_once("{$_SERVER['DOCUMENT_ROOT']}/helpers/time.php");
