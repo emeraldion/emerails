@@ -7,7 +7,7 @@
 	 *
 	 */
 	
-	require_once(dirname(__FILE__) . "/../helpers/time.php");
+	require_once(dirname(__FILE__) . "/time.php");
 	
 	/**
 	 *	@class Cookie
@@ -30,6 +30,20 @@
 		{
 			$_COOKIE[$name] = $value;
 			setcookie($name, $value, $expires, $path, $domain, $secure);
+		}
+		
+		/**
+		 *	@fn get($name)
+		 *	@short Gets the value of a cookie.
+		 *	@param name The name of the cookie.
+		 */
+		public static function get($name)
+		{
+			if (isset($_COOKIE[$name]))
+			{
+				return $_COOKIE[$name];
+			}
+			return NULL;
 		}
 		
 		/**
