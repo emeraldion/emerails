@@ -1,9 +1,8 @@
 <?php
-
 	/**
 	 *	Project EmeRails - Codename Ocarina
 	 *
-	 *	© 2008 Claudio Procida
+	 *	Copyright (c) 2008, 2015 Claudio Procida
 	 *	http://www.emeraldion.it
 	 *
 	 */
@@ -65,7 +64,7 @@ EOT
 		{
 			foreach ($params as $key => $value)
 			{
-				$params_serialized .= " $key=\"$value\"";
+				$params_serialized .= " $key=\"" . htmlentities($value) . "\"";
 			}
 		}
 		$html = <<<EOT
@@ -124,6 +123,11 @@ EOT
 	function div($content, $params)
 	{
 		return block_tag('div', $content, $params);
+	}
+	
+	function em($content, $params)
+	{
+		return inline_tag('em', $content, $params);
 	}
 	
 	function h1($content, $params)

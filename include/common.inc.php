@@ -2,7 +2,7 @@
 	/**
 	 *	Project EmeRails - Codename Ocarina
 	 *
-	 *	© 2008 Claudio Procida
+	 *	Copyright (c) 2008, 2015 Claudio Procida
 	 *	http://www.emeraldion.it
 	 *
 	 */
@@ -103,6 +103,11 @@
 		return joined_lower_to_camel_case(singularize($tablename));
 	}
 	
+	function joined_lower($text)
+	{
+		return preg_replace('/[^a-z0-9]+/i', '_', strtolower($text));
+	}
+	
 	function joined_lower_to_camel_case($text)
 	{
 		return preg_replace('/(^[a-z])|_([a-z])/e', 'strtoupper(\'$1$2\')', $text);
@@ -117,9 +122,7 @@
 	
 	function class_name_to_foreign_key($classname)
 	{
-		$fkey = preg_replace('/([A-Z])/', '_$1', $classname);
-		$fkey = preg_replace('/^_/', '', $fkey);
-		$fkey = strtolower($fkey);
+		$fkey = camel_case_to_joined_lower($classname);
 		$fkey .= "_id";
 		return $fkey;
 	}
@@ -131,6 +134,11 @@
 		return $fkey;
 	}
 	
+	/**
+	 *	@fn l
+	 *	@short Shorthand method for the Localization::localize method.
+	 *	@param str The string to localize
+	 */
 	function l($str)
 	{
 		return localized($str);
