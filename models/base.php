@@ -92,17 +92,17 @@
 		 */
 		function ActiveRecord($_values = NULL)
 		{
-			global $db;
-			
+			$conn = Db::get_connection();
+
 			$classname = get_class($this);
 			$initialized = self::_is_initialized($classname);
 			if (!$initialized)
 			{
-				$db->prepare("DESCRIBE `{1}`",
+				$conn->prepare("DESCRIBE `{1}`",
 					$this->get_table_name());
-				$db->exec();
+				$conn->exec();
 				$columns = array();
-				while ($row = $db->fetch_assoc())
+				while ($row = $conn->fetch_assoc())
 				{
 					$columns[] = $row['Field'];
 				}
@@ -123,6 +123,8 @@
 				}
 			}
 			$this->init($_values);
+
+			Db::close_connection($conn);
 		}
 		
 		/**
@@ -237,7 +239,7 @@
 			$fkey = $this->get_foreign_key_name();
 			if (isset($params['where_clause']))
 			{
-				$params['where_clause'] .= " AND `{$fkey}` = '{$this->values[$this->primary_key]}' ";
+				$params['where_clause'] = "({$params['where_clause']}) AND `{$fkey}` = '{$this->values[$this->primary_key]}' ";
 			}
 			else
 			{
@@ -263,30 +265,30 @@
 		 */
 		public function has_and_belongs_to_many($table_name, $params = array())
 		{
-			global $db;
-			
+			$conn = Db::get_connection();
+
 			$peerclass = table_name_to_class_name($table_name);
 			$peer = eval("return new {$peerclass}();");
 			$fkey = $this->get_foreign_key_name();
 			$peer_fkey = $peer->get_foreign_key_name();
-			
+
 			// By convention, relation table name is the union of
 			// the two member tables' names joined by an underscore
 			// in alphabetical order
 			$table_names = array($table_name, $this->table_name);
 			sort($table_names);
 			$relation_table = implode('_', $table_names);
-			
-			$db->prepare("SELECT * FROM `{1}` WHERE `{2}` = '{3}'",
+
+			$conn->prepare("SELECT * FROM `{1}` WHERE `{2}` = '{3}'",
 				$relation_table,
 				$fkey,
 				$this->values[$this->primary_key]);
-			$result = $db->exec();
-			//print_r($db->query);
-			if ($db->num_rows() > 0)
+			$conn->exec();
+			//print_r($conn->query);
+			if ($conn->num_rows() > 0)
 			{
 				$this->values[$table_name] = array();
-				while ($row = mysql_fetch_assoc($result))
+				while ($row = $conn->fetch_assoc())
 				{
 					$peer = eval("return new {$peerclass}();");
 					$peer->find_by_id($row[$peer_fkey]);
@@ -295,6 +297,9 @@
 					//print_r($peer);
 				}
 			}
+			$conn->free_result();
+
+			Db::close_connection($conn);
 		}
 
 		/**
@@ -331,28 +336,29 @@
 		 */
 		public function find_by_query($query)
 		{
-			global $db;
-			
-			$db->prepare($query);
-			$result = $db->exec();
-			if ($db->num_rows() > 0)
+			$conn = Db::get_connection();
+
+			$ret = NULL;
+
+			$conn->prepare($query);
+			$conn->exec();
+			if ($conn->num_rows() > 0)
 			{
 				$classname = get_class($this);
 				$results = array();
-				// FIXME: 
-				while ($row = mysql_fetch_assoc($result))
+				while ($row = $conn->fetch_assoc())
 				{
 					$obj = eval("return new {$classname}();");
 					$obj->find_by_id($row[$this->primary_key]);
 					$results[] = $obj;
 				}
-				return $results;
+				$ret = $results;
 			}
-			else
-			{
-				// throw new Exception... PHP 5 only
-				return NULL;
-			}
+			$conn->free_result();
+
+			Db::close_connection($conn);
+
+			return $ret;
 		}
 
 		/**
@@ -368,7 +374,7 @@
 		 */
 		function find_all($params = array())
 		{
-			global $db;
+			$conn = Db::get_connection();
 			
 			if (empty($params['where_clause']))
 			{
@@ -387,27 +393,28 @@
 				$params['start'] = 0;
 			}
 			
-			$db->prepare("SELECT * FROM `{1}` WHERE (1 AND ({$params['where_clause']})) ORDER BY {$params['order_by']} LIMIT {$params['start']}, {$params['limit']}",
+			$ret = NULL;
+			
+			$conn->prepare("SELECT * FROM `{1}` WHERE (1 AND ({$params['where_clause']})) ORDER BY {$params['order_by']} LIMIT {$params['start']}, {$params['limit']}",
 				$this->get_table_name());
-			$result = $db->exec();
-			if ($db->num_rows() > 0)
+			$conn->exec();
+			if ($conn->num_rows() > 0)
 			{
 				$classname = get_class($this);
 				$results = array();
-				// FIXME: 
-				while ($row = mysql_fetch_assoc($result))
+				while ($row = $conn->fetch_assoc())
 				{
 					$obj = eval("return new {$classname}();");
 					$obj->find_by_id($row[$this->primary_key]);
 					$results[] = $obj;
 				}
-				return $results;
+				$ret = $results;
 			}
-			else
-			{
-				// throw new Exception... PHP 5 only
-				return NULL;
-			}
+			$conn->free_result();
+
+			Db::close_connection($conn);
+			
+			return $ret;
 		}
 
 		/**
@@ -436,28 +443,31 @@
 		 */
 		public function find_by_id($id)
 		{
-			global $db;
-			
-			$db->prepare("SELECT * FROM `{1}` WHERE `{$this->primary_key}` = '{2}' LIMIT 1",
+			$conn = Db::get_connection();
+
+			$ret = FALSE;
+
+			$conn->prepare("SELECT * FROM `{1}` WHERE `{$this->primary_key}` = '{2}' LIMIT 1",
 				$this->get_table_name(),
 				$id);
-			$db->exec();
-			if ($db->num_rows() > 0)
+			$conn->exec();
+			if ($conn->num_rows() > 0)
 			{
 				$classname = get_class($this);
 				$columns = self::_get_columns($classname);
-				$values = $db->fetch_assoc();
+				$values = $conn->fetch_assoc();
 				foreach ($columns as $column)
 				{
 					$this->values[$column] = $values[$column];
 				}
 				self::_add_to_pool($classname, $id, $this);
+
+				$ret = TRUE;
 			}
-			else
-			{
-				return FALSE;
-			}
-			return TRUE;
+
+			Db::close_connection($conn);
+
+			return $ret;
 		}
 
 		/**
@@ -472,7 +482,7 @@
 		 */
 		public function save()
 		{
-			global $db;
+			$conn = Db::get_connection();
 			
 			$classname = get_class($this);
 			$columns = self::_get_columns($classname);
@@ -491,17 +501,17 @@
 				$query = "UPDATE `{1}` SET ";
 				for ($i = 0; $i < count($nonempty); $i++)
 				{
-					$query .= "`{$nonempty[$i]}` = '{$db->escape($this->values[$nonempty[$i]])}'";
+					$query .= "`{$nonempty[$i]}` = '{$conn->escape($this->values[$nonempty[$i]])}'";
 					if ($i < count($nonempty) - 1)
 					{
 						$query .= ", ";
 					}
 				}
 				$query .= " WHERE `{$this->primary_key}` = '{2}' LIMIT 1";
-				$db->prepare($query,
+				$conn->prepare($query,
 					$this->get_table_name(),
 					$this->values[$this->primary_key]);
-				$db->exec();
+				$conn->exec();
 			}
 			else
 			{
@@ -517,18 +527,21 @@
 				$query .= ") VALUES (";
 				for ($i = 0; $i < count($nonempty); $i++)
 				{
-					$query .= "'{$db->escape($this->values[$nonempty[$i]])}'";
+					$query .= "'{$conn->escape($this->values[$nonempty[$i]])}'";
 					if ($i < count($nonempty) - 1)
 					{
 						$query .= ", ";
 					}
 				}
 				$query .= ")";
-				$db->prepare($query,
+				$conn->prepare($query,
 					$this->get_table_name());
-				$db->exec();
-				$this->values[$this->primary_key] = mysql_insert_id();
+				$conn->exec();
+				$this->values[$this->primary_key] = $conn->insert_id();
 			}
+			
+			Db::close_connection($conn);
+			
 			return TRUE;
 		}
 
@@ -543,23 +556,25 @@
 		 */
 		public function delete($optimize = TRUE)
 		{
-			global $db;
+			$conn = Db::get_connection();
 			
 			if (!empty($this->values[$this->primary_key]))
 			{
-				$db->prepare("DELETE FROM `{1}` WHERE `{$this->primary_key}` = '{2}' LIMIT 1",
+				$conn->prepare("DELETE FROM `{1}` WHERE `{$this->primary_key}` = '{2}' LIMIT 1",
 					$this->get_table_name(),
 					$this->values[$this->primary_key]);
-				$db->exec();
+				$conn->exec();
 				
 				// Clean up
 				if ($optimize)
 				{
-					$db->prepare("OPTIMIZE TABLE `{1}`",
+					$conn->prepare("OPTIMIZE TABLE `{1}`",
 						$this->get_table_name());
-					$db->exec();
+					$conn->exec();
 				}
 			}
+			
+			Db::close_connection($conn);
 		}
 		
 		/**
@@ -644,7 +659,7 @@
 		 */
 		public function __isset($key)
 		{
-			if (empty($this->values))
+			if (!(isset($this->values) && !empty($this->values)))
 			{
 				return FALSE;
 			}
