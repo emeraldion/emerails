@@ -10,6 +10,9 @@ var dir_8c78269fc38159afddbd8320a4dac650 =
       [ "HTTP", "class_h_t_t_p.html", "class_h_t_t_p" ]
     ] ],
     [ "localization.php", "localization_8php.html", "localization_8php" ],
+    [ "reading_time.php", "reading__time_8php.html", [
+      [ "ReadingTime", "class_reading_time.html", "class_reading_time" ]
+    ] ],
     [ "request.php", "request_8php.html", [
       [ "Request", "class_request.html", "class_request" ]
     ] ],

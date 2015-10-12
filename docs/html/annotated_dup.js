@@ -8,6 +8,8 @@ var annotated_dup =
     [ "ErrorController", "class_error_controller.html", "class_error_controller" ],
     [ "HTTP", "class_h_t_t_p.html", "class_h_t_t_p" ],
     [ "Localization", "class_localization.html", "class_localization" ],
+    [ "ReadingTime", "class_reading_time.html", "class_reading_time" ],
+    [ "ReadingTimeTest", "class_reading_time_test.html", "class_reading_time_test" ],
     [ "Request", "class_request.html", "class_request" ],
     [ "Response", "class_response.html", "class_response" ],
     [ "Time", "class_time.html", "class_time" ]

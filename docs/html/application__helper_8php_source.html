@@ -69,11 +69,11 @@ $(document).ready(function(){initNavTree('application__helper_8php_source.html',
 </div><!--header-->
 <div class="contents">
 <a href="application__helper_8php.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;&lt;?php</div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;        require_once(<span class="stringliteral">&quot;{$_SERVER[&#39;DOCUMENT_ROOT&#39;]}/include/db.inc.php&quot;</span>);</div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;        require_once(<span class="stringliteral">&quot;{$_SERVER[&#39;DOCUMENT_ROOT&#39;]}/helpers/cookie.php&quot;</span>);</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;        require_once(<span class="stringliteral">&quot;{$_SERVER[&#39;DOCUMENT_ROOT&#39;]}/helpers/time.php&quot;</span>);</div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;        require_once(<span class="stringliteral">&quot;{$_SERVER[&#39;DOCUMENT_ROOT&#39;]}/helpers/localization.php&quot;</span>);</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;        </div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;        require_once(dirname(__FILE__) . <span class="stringliteral">&quot;/../include/db.inc.php&quot;</span>);</div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;        require_once(dirname(__FILE__) . <span class="stringliteral">&quot;/cookie.php&quot;</span>);</div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;        require_once(dirname(__FILE__) . <span class="stringliteral">&quot;/time.php&quot;</span>);</div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;        require_once(dirname(__FILE__) . <span class="stringliteral">&quot;/localization.php&quot;</span>);</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;</div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;        error_reporting(E_ALL | E_STRICT);</div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;        session_start();</div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;</div>
