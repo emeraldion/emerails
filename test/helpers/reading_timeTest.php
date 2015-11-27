@@ -2,7 +2,7 @@
 
 require_once(dirname(__FILE__) . '/../../helpers/reading_time.php');
 
-class ReadingTimeTest extends PHPUnit_Framework_TestCase
+class ReadingTimeTest extends \PHPUnit_Framework_TestCase
 {
   const LOREM_IPSUM = <<<EOT
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed
