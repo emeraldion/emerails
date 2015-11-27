@@ -13,4 +13,9 @@ php:
 - 5.6
 - nightly
 
-script: printenv && make test
+addons:
+  apt:
+    packages:
+    - doxygen
+
+script: make test
