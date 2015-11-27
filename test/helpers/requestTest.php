@@ -55,7 +55,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
 
   public function test_purge_querystring()
   {
-    define(QS1, 'foo=bar&baz=1');
+    define("QS1", 'foo=bar&baz=1');
 
     $_SERVER['QUERY_STRING'] = QS1;
     $this->assertEquals(QS1, MockRequest::purge_querystring_spy());
