@@ -31,7 +31,7 @@
 		public function Request()
 		{
 			$this->querystring = self::purge_querystring();
-			$this->method = strtoupper($_SERVER['REQUEST_METHOD']);
+			$this->method = strtoupper(@$_SERVER['REQUEST_METHOD']);
 		}
 
 		/**
@@ -86,7 +86,7 @@
 		 */
 		public static function is_method($method)
 		{
-			return !strncmp($_SERVER['REQUEST_METHOD'], $method, strlen($method));
+			return !strncmp(@$_SERVER['REQUEST_METHOD'], $method, strlen($method));
 		}
 
 		/**
@@ -97,7 +97,7 @@
 		 */
 		public function get_parameter($name)
 		{
-			return $_REQUEST[$name];
+			return @$_REQUEST[$name];
 		}
 
 		/**
