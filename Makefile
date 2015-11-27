@@ -1,10 +1,10 @@
 .PHONY: docs test install update
 
 update:
-	php ~/dev/tools/php-composer/composer.phar update
+	composer update
 install:
-	php ~/dev/tools/php-composer/composer.phar install
+	composer install
 test: install
-	vendor/bin/phpunit test/**/*.php
+	phpunit test/**/*.php
 docs:
 	doxygen Doxyfile
