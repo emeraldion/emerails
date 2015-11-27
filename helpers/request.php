@@ -42,7 +42,7 @@
 		{
 			return self::is_method('GET');
 		}
-		
+
 		/**
 		 *	@fn is_post
 		 *	@short Returns <tt>TRUE</tt> if the request method is <tt>POST</tt>.
@@ -107,7 +107,7 @@
 		 */
 		protected static function purge_querystring()
 		{
-			$pairs = explode('&', $_SERVER['QUERY_STRING']);
+			$pairs = explode('&', @$_SERVER['QUERY_STRING']);
 			$newpairs = array();
 			foreach ($pairs as $pair)
 			{
