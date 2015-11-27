@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/emeraldion/emerails.svg?branch=master)](https://travis-ci.org/emeraldion/emerails)
+
 # EmeRails
 
 In the middle of February 2008, I became unsatisfied with the current homebrew framework I was using for the Emeraldion Lodge, EmePavilion. I felt the need for a solid platform that was object-oriented, fully MVC compliant, and had an ORM layer that relieved me from having to hardcode repetitive query patterns.
