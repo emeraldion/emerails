@@ -27,13 +27,13 @@
 		 *	@short Array of columns for the model object.
 		 */
 		static $columns = array();
-		
+
 		/**
 		 *	@attr class_initialized
 		 *	@short Array containing initialization information for subclasses.
 		 */
 		static $class_initialized = array();
-		
+
 		/**
 		 *	@attr belongs_to_classes
 		 *	@short Array containing information on parent tables for subclasses.
@@ -45,26 +45,26 @@
 		 *	@short Array containing information on child tables for subclasses.
 		 */
 		static $has_many_classes = array();
-		
+
 		/**
 		 *	@attr object_pool
 		 *	@short Pool of objects already fetched from database.
 		 */
 		static $object_pool = array();
-		
+
 		/**
 		 *	@attr table_name
 		 *	@short Name of the table bound to this model class.
 		 */
 		protected $table_name;
-		
+
 		/**
 		 *	@attr primary_key
 		 *	@short Name of the primary key column for the bound table.
 		 *	@details Set this attribute only when the primary key of the bound table is not the canonical <tt>id</tt>.
 		 */
 		protected $primary_key = 'id';
-		
+
 		/**
 		 *	@attr foreign_key_name
 		 *	@short Used to create the name of foreign key column in tables that are in a relationship with the bound table.
@@ -72,13 +72,13 @@
 		 *	is not the canonical name (e.g. 'product' for class Product).
 		 */
 		protected $foreign_key_name;
-		
+
 		/**
 		 *	@attr values
 		 *	@short Array of values for the columns of model object.
 		 */
 		private $values;
-		
+
 		/**
 		 *	@fn ActiveRecord($_values)
 		 *	@short Constructs and initializes an ActiveRecord object.
@@ -126,7 +126,7 @@
 
 			Db::close_connection($conn);
 		}
-		
+
 		/**
 		 *	@fn init($values)
 		 *	@short Performs specialized initialization tasks.
@@ -201,7 +201,7 @@
 			$columns = self::_get_columns($classname);
 			return in_array($key, $columns);
 		}
-		
+
 		/**
 		 *	@fn belongs_to($table_name)
 		 *	@short Loads the parent of the receiver in a one-to-many relationship.
@@ -308,7 +308,7 @@
 		 *	@param table_name The name of the child table.
 		 *	@param params An array of conditions. For the semantics, see find_all
 		 *	@see find_all
-		 */	
+		 */
 		public function has_one($table_name)
 		{
 			$childclass = table_name_to_class_name($table_name);
@@ -322,11 +322,11 @@
 				$this->values[singularize($table_name)] = $child;
 			}
 		}
-		
+
 		/**
 		 *	Finder methods
 		 */
-		
+
 		/**
 		 *	@fn find_by_query($query)
 		 *	@short Returns an array of model objects by executing a custom SELECT query.
@@ -375,7 +375,7 @@
 		function find_all($params = array())
 		{
 			$conn = Db::get_connection();
-			
+
 			if (empty($params['where_clause']))
 			{
 				$params['where_clause'] = '1';
@@ -392,9 +392,9 @@
 			{
 				$params['start'] = 0;
 			}
-			
+
 			$ret = NULL;
-			
+
 			$conn->prepare("SELECT * FROM `{1}` WHERE (1 AND ({$params['where_clause']})) ORDER BY {$params['order_by']} LIMIT {$params['start']}, {$params['limit']}",
 				$this->get_table_name());
 			$conn->exec();
@@ -413,7 +413,7 @@
 			$conn->free_result();
 
 			Db::close_connection($conn);
-			
+
 			return $ret;
 		}
 
@@ -432,7 +432,7 @@
 			$obj->find_by_id($id);
 			return $obj;
 		}
-		
+
 		/**
 		 *	@fn find_by_id($id)
 		 *	@short Populates an object with the values of the DB row whose primary key value is <tt>id</tt>.
@@ -471,6 +471,37 @@
 		}
 
 		/**
+		 *	@fn count_all($params)
+		 *	@short Returns the count of model objects that satisfy the requirements expressed in the <tt>params</tt> argument.
+		 *	@details This method lets you count all objects of this class that satisfy a custom set of requirements, which you
+		 *	can express by setting the following keys of the <tt>params</tt> argument:
+		 *	@li <tt>where_clause</tt> You can express a custom SQL WHERE expression here (e.g. `date` < '2008-05-01')
+		 *	@param params An array of parameters for the underlying SQL query.
+		 */
+		function count_all($params = array())
+		{
+			$conn = Db::get_connection();
+
+			$ret = 0;
+
+			if (empty($params['where_clause']))
+			{
+				$params['where_clause'] = '1';
+			}
+			$conn->prepare("SELECT COUNT(*) FROM `{1}` WHERE (1 AND ({$params['where_clause']}))",
+				$this->get_table_name());
+			$result = $conn->exec();
+
+			$ret = $conn->fetch_array()[0];
+
+			$conn->free_result();
+
+			Db::close_connection($conn);
+
+			return $ret;
+		}
+
+		/**
 		 *	@fn save
 		 *	@short Requests the receiver to save its data in the bound table.
 		 *	@details This method has two distinct effects. If called on an object fetched
@@ -483,7 +514,7 @@
 		public function save()
 		{
 			$conn = Db::get_connection();
-			
+
 			$classname = get_class($this);
 			$columns = self::_get_columns($classname);
 
@@ -539,16 +570,16 @@
 				$conn->exec();
 				$this->values[$this->primary_key] = $conn->insert_id();
 			}
-			
+
 			Db::close_connection($conn);
-			
+
 			return TRUE;
 		}
 
 		/**
 		 *	@fn delete($optimize)
 		 *	@short Deletes an object's database counterpart.
-		 *	@details This method performs a <tt>DELETE</tt> SQL statement on the 
+		 *	@details This method performs a <tt>DELETE</tt> SQL statement on the
 		 *	table bound to the receiver's class, requesting the deletion of the object whose
 		 *	primary key is equal to the receiver's primary key value. If the object has been
 		 *	created programmatically and lacks a primary key value, this method has no effect.
@@ -557,14 +588,14 @@
 		public function delete($optimize = TRUE)
 		{
 			$conn = Db::get_connection();
-			
+
 			if (!empty($this->values[$this->primary_key]))
 			{
 				$conn->prepare("DELETE FROM `{1}` WHERE `{$this->primary_key}` = '{2}' LIMIT 1",
 					$this->get_table_name(),
 					$this->values[$this->primary_key]);
 				$conn->exec();
-				
+
 				// Clean up
 				if ($optimize)
 				{
@@ -573,10 +604,10 @@
 					$conn->exec();
 				}
 			}
-			
+
 			Db::close_connection($conn);
 		}
-		
+
 		/**
 		 *	@fn relative_url
 		 *	@short Provides a relative URL that will be used by the <tt>permalink</tt> public method.
@@ -608,14 +639,14 @@
 					APPLICATION_ROOT,
 					$relative_url);
 		}
-		
+
 		/*
 		function __call($method, $args)
 		{
 			echo "Unknown call of $method with arguments " . var_export($args, true);
 		}
 		*/
-		
+
 		/**
 		 *	@fn __set($key, $value)
 		 *	@short Magic method to set the value of a property.
@@ -673,7 +704,7 @@
 			}
 			return FALSE;
 		}
-		
+
 		/**
 		 *	@fn _set_initialized($classname, $initialized)
 		 *	@short Marks the class <tt>classname</tt> as initialized.
@@ -687,7 +718,7 @@
 		{
 			self::$class_initialized[$classname] = $initialized;
 		}
-		
+
 		/**
 		 *	@fn _is_initialized($classname)
 		 *	@short Tells whether the class <tt>classname</tt> has already been initialized.
@@ -702,7 +733,7 @@
 			}
 			return self::$class_initialized[$classname];
 		}
-		
+
 		/**
 		 *	@fn _set_columns($classname, $cols)
 		 *	@short Stores the columns for the desired class.
@@ -727,7 +758,7 @@
 			}
 			return self::$columns[$classname];
 		}
-		
+
 		/**
 		 *	@fn _add_to_pool($classname, $id, $obj)
 		 *	@short Adds an object to the object pool.
@@ -743,7 +774,7 @@
 			}
 			self::$object_pool[$classname][$id] = $obj;
 		}
-		
+
 		/**
 		 *	@fn _get_from_pool($classname, $id)
 		 *	@short Retrieves an object from the object pool.
@@ -760,7 +791,7 @@
 			return self::$object_pool[$classname][$id];
 		}
 	}
-	
+
 	if (version_compare(PHP_VERSION, '5') < 0)
 	{
 		if (function_exists("overload"))
