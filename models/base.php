@@ -478,7 +478,7 @@
 		 *	@li <tt>where_clause</tt> You can express a custom SQL WHERE expression here (e.g. `date` < '2008-05-01')
 		 *	@param params An array of parameters for the underlying SQL query.
 		 */
-		function count_all($params = array())
+		public function count_all($params = array())
 		{
 			$conn = Db::get_connection();
 

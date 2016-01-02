@@ -7,6 +7,8 @@
 	 *
 	 */
 
+	require_once(dirname(__FILE__) . "/../config/db.conf.php");
+	
 	/**
 	 *	@class Db
 	 *	@short Implements an abstraction of a Database connection manager.

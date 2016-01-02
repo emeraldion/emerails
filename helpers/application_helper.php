@@ -8,6 +8,7 @@
 	 */
 
 	require_once(dirname(__FILE__) . "/../include/db.inc.php");
+	require_once(dirname(__FILE__) . "/../include/" . DB_ADAPTER . "_adapter.php");
 	require_once(dirname(__FILE__) . "/cookie.php");
 	require_once(dirname(__FILE__) . "/time.php");
 	require_once(dirname(__FILE__) . "/localization.php");
