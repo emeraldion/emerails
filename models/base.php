@@ -527,7 +527,7 @@
 				}
 			}
 
-			if (!empty($this->values[$this->primary_key]))
+			if (!empty($this->values[$this->primary_key]) && !isset($this->_force_create))
 			{
 				$query = "UPDATE `{1}` SET ";
 				for ($i = 0; $i < count($nonempty); $i++)
