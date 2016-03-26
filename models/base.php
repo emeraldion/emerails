@@ -314,7 +314,7 @@
 			$childclass = table_name_to_class_name($table_name);
 			$obj = eval("return new {$childclass}();");
 			$fkey = $this->get_foreign_key_name();
-			$children = $obj->find_all(array('where_clause' => "`{$fkey}` = {$this->values[$this->primary_key]}", 'limit' => 1));
+			$children = $obj->find_all(array('where_clause' => "`{$fkey}` = '{$this->values[$this->primary_key]}'", 'limit' => 1));
 			if (count($children) > 0)
 			{
 				$child = $children[0];
