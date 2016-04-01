@@ -212,7 +212,7 @@
 			$classname = get_class($this);
 			$columns = self::_get_columns($classname);
 			$ownerclass = table_name_to_class_name($table_name);
-			$owner = eval("return new {$ownerclass}();");
+			$owner = new $ownerclass;
 			if (in_array(table_name_to_foreign_key($table_name), $columns))
 			{
 				$owner->find_by_id($this->values[table_name_to_foreign_key($table_name)]);
@@ -235,7 +235,7 @@
 		public function has_many($table_name, $params = array())
 		{
 			$childclass = table_name_to_class_name($table_name);
-			$obj = eval("return new {$childclass}();");
+			$obj = new $childclass;
 			$fkey = $this->get_foreign_key_name();
 			if (isset($params['where_clause']))
 			{
@@ -268,7 +268,7 @@
 			$conn = Db::get_connection();
 
 			$peerclass = table_name_to_class_name($table_name);
-			$peer = eval("return new {$peerclass}();");
+			$peer = new $peerclass;
 			$fkey = $this->get_foreign_key_name();
 			$peer_fkey = $peer->get_foreign_key_name();
 
@@ -290,7 +290,7 @@
 				$this->values[$table_name] = array();
 				while ($row = $conn->fetch_assoc())
 				{
-					$peer = eval("return new {$peerclass}();");
+					$peer = new $peerclass;
 					$peer->find_by_id($row[$peer_fkey]);
 					$this->values[$table_name][] = $peer;
 					$peer->values[$this->table_name] = array($this);
@@ -312,7 +312,7 @@
 		public function has_one($table_name)
 		{
 			$childclass = table_name_to_class_name($table_name);
-			$obj = eval("return new {$childclass}();");
+			$obj = new $childclass;
 			$fkey = $this->get_foreign_key_name();
 			$children = $obj->find_all(array('where_clause' => "`{$fkey}` = '{$this->values[$this->primary_key]}'", 'limit' => 1));
 			if (count($children) > 0)
@@ -348,7 +348,7 @@
 				$results = array();
 				while ($row = $conn->fetch_assoc())
 				{
-					$obj = eval("return new {$classname}();");
+					$obj = new $classname;
 					$obj->find_by_id($row[$this->primary_key]);
 					$results[] = $obj;
 				}
@@ -404,7 +404,7 @@
 				$results = array();
 				while ($row = $conn->fetch_assoc())
 				{
-					$obj = eval("return new {$classname}();");
+					$obj = new $classname;
 					$obj->find_by_id($row[$this->primary_key]);
 					$results[] = $obj;
 				}
