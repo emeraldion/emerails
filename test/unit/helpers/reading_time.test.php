@@ -1,6 +1,6 @@
 <?php
 
-require_once(dirname(__FILE__) . '/../../helpers/reading_time.php');
+require_once(dirname(__FILE__) . '/../../../helpers/reading_time.php');
 
 class ReadingTimeTest extends \PHPUnit_Framework_TestCase
 {

@@ -5,6 +5,6 @@ update:
 install:
 	composer install
 test: install
-	phpunit test
+	phpunit --test-suffix=.test.php test/unit
 docs:
 	doxygen Doxyfile

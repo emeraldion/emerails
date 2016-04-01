@@ -1,6 +1,6 @@
 <?php
 
-require_once(dirname(__FILE__) . '/../../helpers/request.php');
+require_once(dirname(__FILE__) . '/../../../helpers/request.php');
 
 class MockRequest extends Request
 {
