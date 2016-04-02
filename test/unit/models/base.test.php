@@ -26,13 +26,15 @@ class ActiveRecordTest extends \PHPUnit_Framework_TestCase
   public function test_find_by_id()
   {
     $instance = new TestModel();
-    $instance->find_by_id(1);
     $this->assertNotNull($instance);
+    $ret = $instance->find_by_id(1);
+    $this->assertTrue($ret);
     $this->assertEquals('foo', $instance->name);
 
     $instance = new TestModel();
-    $instance->find_by_id(2);
     $this->assertNotNull($instance);
+    $ret = $instance->find_by_id(2);
+    $this->assertTrue($ret);
     $this->assertEquals('bar', $instance->name);
   }
 
@@ -79,7 +81,8 @@ class ActiveRecordTest extends \PHPUnit_Framework_TestCase
   public function test_has_one()
   {
     $instance = new TestModel();
-    $instance->find_by_id(1);
+    $ret = $instance->find_by_id(1);
+    $this->assertTrue($ret);
     $instance->has_one('test_widgets');
     $this->assertNotNull($instance->test_widget);
     $this->assertEquals('red', $instance->test_widget->color);
@@ -92,7 +95,8 @@ class ActiveRecordTest extends \PHPUnit_Framework_TestCase
     $this->assertEquals('red', $instance->test_widget->color);
 
     $instance = new TestModel();
-    $instance->find_by_id(2);
+    $ret = $instance->find_by_id(2);
+    $this->assertTrue($ret);
     $instance->has_one('test_widgets');
     $this->assertNotNull($instance->test_widget);
     $this->assertEquals('blue', $instance->test_widget->color);
@@ -108,7 +112,8 @@ class ActiveRecordTest extends \PHPUnit_Framework_TestCase
   public function test_belongs_to()
   {
     $instance = new TestWidget();
-    $instance->find_by_id(1);
+    $ret = $instance->find_by_id(1);
+    $this->assertTrue($ret);
     $instance->belongs_to('test_models');
     $this->assertNotNull($instance->test_model);
     $this->assertEquals('foo', $instance->test_model->name);
@@ -121,7 +126,8 @@ class ActiveRecordTest extends \PHPUnit_Framework_TestCase
     $this->assertEquals('foo', $instance->test_model->name);
 
     $instance = new TestWidget();
-    $instance->find_by_id(2);
+    $ret = $instance->find_by_id(2);
+    $this->assertTrue($ret);
     $instance->belongs_to('test_models');
     $this->assertNotNull($instance->test_model);
     $this->assertEquals('bar', $instance->test_model->name);
@@ -137,7 +143,8 @@ class ActiveRecordTest extends \PHPUnit_Framework_TestCase
   public function test_has_and_belongs_to_many()
   {
     $instance = new TestModel();
-    $instance->find_by_id(1);
+    $ret = $instance->find_by_id(1);
+    $this->assertTrue($ret);
     $instance->has_and_belongs_to_many('test_groups');
     $this->assertNotNull($instance->test_groups);
     $this->assertEquals(1, count($instance->test_groups));
@@ -147,7 +154,8 @@ class ActiveRecordTest extends \PHPUnit_Framework_TestCase
     }
 
     $instance = new TestModel();
-    $instance->find_by_id(2);
+    $ret = $instance->find_by_id(2);
+    $this->assertTrue($ret);
     $instance->has_and_belongs_to_many('test_groups');
     $this->assertNotNull($instance->test_groups);
     $this->assertEquals(2, count($instance->test_groups));
