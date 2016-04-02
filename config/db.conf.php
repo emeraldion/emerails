@@ -7,21 +7,33 @@
 	 *
 	 */
 
-if ($_ENV['php_env'] == 'test')
+echo $_SERVER['php_env'];
+echo "\n";
+echo ini_get('variables_order');
+echo "\n";
+switch ($_ENV['php_env'])
 {
-	define("DB_ADAPTER", "mysql");
-	define("DB_USER", "root");
-	define("DB_PASS", "root");
-	define("DB_NAME", "emerails_test");
-	define("DB_HOST", "localhost");
-}
-else
-{
-	define("DB_ADAPTER", "mysql");
-	define("DB_USER", "root");
-	define("DB_PASS", "root");
-	define("DB_NAME", "emeraldion.it");
-	define("DB_HOST", "localhost");
+	case 'test':
+		define("DB_ADAPTER", "mysql");
+		define("DB_USER", "root");
+		define("DB_PASS", "root");
+		define("DB_NAME", "emerails_test");
+		define("DB_HOST", "localhost");
+		break;
+	case 'travisci':
+		define("DB_ADAPTER", "mysql");
+		define("DB_USER", "root");
+		define("DB_PASS", "");
+		define("DB_NAME", "emerails_test");
+		define("DB_HOST", "127.0.0.1");
+		break;
+	case 'prod':
+	default:
+		define("DB_ADAPTER", "mysql");
+		define("DB_USER", "root");
+		define("DB_PASS", "root");
+		define("DB_NAME", "emeraldion.it");
+		define("DB_HOST", "localhost");
 }
 define("DB_DEBUG", FALSE);
 
