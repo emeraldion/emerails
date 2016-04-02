@@ -13,6 +13,7 @@
 	require_once(dirname(__FILE__) . "/../helpers/http.php");
 	require_once(dirname(__FILE__) . "/../helpers/response.php");
 	require_once(dirname(__FILE__) . "/../helpers/request.php");
+	require_once(dirname(__FILE__) . "/../helpers/query_string.php");
 
 	/**
 	 *	@class BaseController
@@ -344,7 +345,7 @@
 		 *	@fn cached_page_filename
 		 *	@short Returns a name for the cached page of current action.
 		 *	@details This method creates a filename that is uniquely associated with the current controller, action,
-		 *	argument identifier and and language.
+		 *	argument identifier and language.
 		 */
 		protected function cached_page_filename()
 		{
@@ -584,7 +585,7 @@
 		public function make_relative_url($params)
 		{
 			$controller = (!isset($params['controller']) || empty($params['controller'])) ?
-				$this->name : $params['controller'];
+				(isset($this->_name) ? $this->_name : $this->name) : $params['controller'];
 			$type = (isset($params['type']) && !empty($params['type'])) ?
 				$params['type'] : $this->type;
 			if (isset($params['action']) && !empty($params['action']))
@@ -912,6 +913,8 @@
 
 			// Instantiate controller
 			$controller = new $classname();
+			$controller->_name = $this->name;
+			$controller->_action = $this->action;
 
 			// Unset controller key from params (why?)
 			unset($params['controller']);
@@ -922,6 +925,14 @@
 				$action = basename($params['action']);
 
 				$controller->action = $action;
+			}
+
+			if (isset($params['props']))
+			{
+				foreach($params['props'] as $key => $val)
+				{
+					$controller->$key = $val;
+				}
 			}
 
 			// Invoke action method

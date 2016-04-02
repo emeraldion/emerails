@@ -63,6 +63,22 @@
 			return $ret;
 		}
 
+		public static function replace($key, $val)
+		{
+			$pos = strpos($_SERVER['REQUEST_URI'], '?');
+			if ($pos != FALSE)
+			{
+				$query_string = substr($_SERVER['REQUEST_URI'], strpos($_SERVER['REQUEST_URI'], '?') + 1);
+				$params = self::to_assoc($query_string);
+			}
+			else
+			{
+				$params = array();
+			}
+			$params[$key] = $val;
+			return self::from_assoc($params);
+		}
+
 	}
 
 ?>
