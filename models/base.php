@@ -546,7 +546,7 @@
 			}
 			else
 			{
-				$query = "INSERT INTO `{1}` (";
+				$query = (isset($this->_ignore) ? 'INSERT IGNORE' : 'INSERT') . " INTO `{1}` (";
 				for ($i = 0; $i < count($nonempty); $i++)
 				{
 					$query .= "`{$nonempty[$i]}`";
