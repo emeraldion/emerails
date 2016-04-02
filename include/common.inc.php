@@ -25,7 +25,7 @@
 	function pluralize($term)
 	{
 		global $irregular_nouns;
-		
+
 		foreach ($irregular_nouns as $singular => $plural)
 		{
 			if (ends_with($term, $singular))
@@ -55,11 +55,11 @@
 		}
 		return $term . 's';
 	}
-	
+
 	function singularize($term)
 	{
 		global $irregular_nouns;
-		
+
 		foreach ($irregular_nouns as $singular => $plural)
 		{
 			if (ends_with($term, $plural))
@@ -87,53 +87,55 @@
 		}
 		return $term;
 	}
-	
+
 	function ends_with($term, $suffix)
 	{
 		return strrpos($term, $suffix) === (strlen($term) - strlen($suffix));
 	}
-	
+
 	function class_name_to_table_name($classname)
 	{
 		return pluralize(camel_case_to_joined_lower($classname));
 	}
-	
+
 	function table_name_to_class_name($tablename)
 	{
 		return joined_lower_to_camel_case(singularize($tablename));
 	}
-	
+
 	function joined_lower($text)
 	{
 		return preg_replace('/[^a-z0-9]+/i', '_', strtolower($text));
 	}
-	
+
 	function joined_lower_to_camel_case($text)
 	{
-		return preg_replace('/(^[a-z])|_([a-z])/e', 'strtoupper(\'$1$2\')', $text);
+		return preg_replace_callback('/(^[a-z])|_([a-z])/', function ($match) {
+			return strtoupper($match[1] . $match[2]);
+		}, $text);
 	}
-	
+
 	function camel_case_to_joined_lower($text)
 	{
 		$text = preg_replace('/([A-Z])/', '_$1', $text);
 		$text = preg_replace('/^_/', '', $text);
 		return strtolower($text);
 	}
-	
+
 	function class_name_to_foreign_key($classname)
 	{
 		$fkey = camel_case_to_joined_lower($classname);
 		$fkey .= "_id";
 		return $fkey;
 	}
-	
+
 	function table_name_to_foreign_key($tablename)
 	{
 		$fkey = singularize($tablename);
 		$fkey .= "_id";
 		return $fkey;
 	}
-	
+
 	/**
 	 *	@fn l
 	 *	@short Shorthand method for the Localization::localize method.
@@ -143,22 +145,22 @@
 	{
 		return localized($str);
 	}
-	
+
 	function localized($str)
 	{
 		return Localization::localize($str);
 	}
-	
+
 	function h($str)
 	{
 		return htmlentities($str);
 	}
-	
+
 	function s($str)
 	{
 		return addslashes($str);
 	}
-	
+
 	function limit_3($val, $a, $b)
 	{
 		$min = min($a, $b);
