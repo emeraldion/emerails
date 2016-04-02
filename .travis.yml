@@ -22,7 +22,7 @@ services:
   - mysql
 
 env:
-  - php_env=test
+  - php_env=travisci
 
 before_script:
   - echo 'variables_order = "EGPCS"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
