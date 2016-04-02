@@ -10,14 +10,14 @@
 switch ($_ENV['php_env'])
 {
 	case 'test':
-		define("DB_ADAPTER", "mysql");
+		define("DB_ADAPTER", "mysqli");
 		define("DB_USER", "root");
 		define("DB_PASS", "root");
 		define("DB_NAME", "emerails_test");
 		define("DB_HOST", "localhost");
 		break;
 	case 'travisci':
-		define("DB_ADAPTER", "mysql");
+		define("DB_ADAPTER", "mysqli");
 		define("DB_USER", "root");
 		define("DB_PASS", "");
 		define("DB_NAME", "emerails_test");
