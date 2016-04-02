@@ -7,10 +7,6 @@
 	 *
 	 */
 
-echo $_SERVER['php_env'];
-echo "\n";
-echo ini_get('variables_order');
-echo "\n";
 switch ($_ENV['php_env'])
 {
 	case 'test':

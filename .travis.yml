@@ -25,6 +25,7 @@ env:
   - php_env=test
 
 before_script:
+  - echo 'variables_order = "EGPCS"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   - mysql < schemas/emerails_test.sql
 
 script: make test
