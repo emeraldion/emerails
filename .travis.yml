@@ -18,4 +18,13 @@ addons:
     packages:
     - doxygen
 
+services:
+  - mysql
+
+env:
+  - php_env=test
+
+before_script:
+  - mysql < schemas/emerails_test.sql
+
 script: make test
