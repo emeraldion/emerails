@@ -111,7 +111,7 @@
 	function joined_lower_to_camel_case($text)
 	{
 		return preg_replace_callback('/(^[a-z])|_([a-z])/', function ($match) {
-			return strtoupper($match[1]);
+			return strtoupper(@$match[1] . @$match[2]);
 		}, $text);
 	}
 
