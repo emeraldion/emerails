@@ -706,6 +706,27 @@
 		}
 
 		/**
+		 *      @fn __unset($key)
+		 *      @short Magic method to unset a property.
+		 *      @param key The key to unset.
+		 */
+		public function __unset($key)
+		{
+			if (!(isset($this->values) && !empty($this->values)))
+			{
+				return;
+			}
+			if (array_key_exists($key, $this->values))
+			{
+				unset($this->values[$key]);
+			}
+			else if (isset($this->$key))
+			{
+				unset($this->key);
+			}
+		}
+
+		/**
 		 *	@fn _set_initialized($classname, $initialized)
 		 *	@short Marks the class <tt>classname</tt> as initialized.
 		 *	@details This method allows ActiveRecord to keep track of what subclasses have already been

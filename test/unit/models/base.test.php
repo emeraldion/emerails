@@ -248,5 +248,24 @@ class ActiveRecordTest extends \PHPUnit_Framework_TestCase
       $this->assertTrue(in_array($instance, $test_group->test_models));
     }
   }
+
+  public function test_unset()
+  {
+    $instance = new TestModel();
+    $this->assertNotNull($instance);
+    $ret = $instance->find_by_id(1);
+    $this->assertTrue($ret);
+    $this->assertEquals('foo', $instance->name);
+    unset($instance->name);
+    $this->assertTrue(!isset($instance->name));
+
+    $instance = new TestModel();
+    $this->assertNotNull($instance);
+    $ret = $instance->find_by_id(2);
+    $this->assertTrue($ret);
+    $this->assertEquals('bar', $instance->name);
+    unset($instance->name);
+    $this->assertTrue(!isset($instance->name));
+  }
 }
 ?>
