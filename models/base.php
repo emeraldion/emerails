@@ -80,7 +80,7 @@
 		private $values;
 
 		/**
-		 *	@fn ActiveRecord($_values)
+		 *	@fn __construct($_values)
 		 *	@short Constructs and initializes an ActiveRecord object.
 		 *	@details Due to the lack of a static class initialization method,
 		 *	the default constructor is in charge of gathering information about
@@ -90,7 +90,7 @@
 		 *	override the <tt>init</tt> method in order to perform custom initialization.
 		 *	@param values Column values to initialize the object.
 		 */
-		function ActiveRecord($_values = NULL)
+		function __construct($_values = NULL)
 		{
 			$conn = Db::get_connection();
 
