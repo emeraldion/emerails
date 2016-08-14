@@ -13,11 +13,11 @@
 	 */
 	class ReadingTime
 	{
-    /**
-     *  @const
-     *  @short Number of words an adult can read in a minute
-     */
-    const WORDS_PER_MIN = 300;
+		/**
+		 *  @const
+		 *  @short Number of words an adult can read in a minute
+		 */
+		const WORDS_PER_MIN = 300;
 
 		/**
 		 *	@fn minutes_for($string)
@@ -26,7 +26,7 @@
 		 */
 		public static function minutes_for($text)
 		{
-      return floor(str_word_count(strip_tags($text)) / self::WORDS_PER_MIN);
+			return floor(str_word_count(strip_tags($text)) / self::WORDS_PER_MIN);
 		}
 	}
 

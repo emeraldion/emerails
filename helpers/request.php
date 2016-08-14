@@ -25,10 +25,10 @@
 		public $method;
 
 		/**
-		 *	@fn Request
+		 *	@fn __construct
 		 *	@short Default constructor.
 		 */
-		public function Request()
+		public function __construct()
 		{
 			$this->querystring = self::purge_querystring();
 			$this->method = strtoupper(@$_SERVER['REQUEST_METHOD']);

@@ -41,9 +41,9 @@
 		 *	@param parts The associative array
 		 */
 		public static function from_assoc($parts) {
-      array_walk($parts, 'QueryString_implode_item');
+			array_walk($parts, 'QueryString_implode_item');
 
-      return implode(QueryString::SEPARATOR, $parts);
+			return implode(QueryString::SEPARATOR, $parts);
 		}
 
 		/**
