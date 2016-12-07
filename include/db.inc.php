@@ -70,11 +70,11 @@
 			}
 			if (count(self::$pool[$name]) > 0)
 			{
-				foreach (self::$pool[$name] as $item)
+				foreach (self::$pool[$name] as &$item)
 				{
-					if (!$item["in_use"])
+					if ($item["in_use"] == 0)
 					{
-						$item["in_use"] = TRUE;
+						$item["in_use"]++;
 						return $item["connection"];
 					}
 				}
@@ -82,7 +82,7 @@
 			// Create a new connection
 			$adapter_class = get_class(self::get_adapter());
 			$conn = eval("return new {$adapter_class}();");
-			$item = array("in_use" => TRUE,
+			$item = array("in_use" => 0,
 				"connection" => $conn);
 			// Add it to the pool
 			self::$pool[$name][] = $item;
@@ -100,14 +100,14 @@
 		 */
 		public static function close_connection($conn, $name = DB_ADAPTER)
 		{
+			// self::show_pool();
 			if (count(self::$pool[$name]) > 0)
 			{
-				foreach (self::$pool[$name] as $item)
+				foreach (self::$pool[$name] as &$item)
 				{
-					if ($item["connection"] == $conn &&
-						$item["in_use"])
+					if ($item["connection"] == $conn)
 					{
-						$item["in_use"] = FALSE;
+						$item["in_use"]--;
 					}
 				}
 			}
