@@ -104,7 +104,7 @@ class ActiveRecordTest extends \PHPUnit_Framework_TestCase
     $other_instances = $other_instance->find_all(array(
       'where_clause' => "`name`= 'blip'"
     ));
-    $this->assertEquals(0, count($other_instances));
+    $this->assertNull($other_instances);
   }
 
   public function test_find_by_id()
