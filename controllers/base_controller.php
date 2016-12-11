@@ -90,12 +90,12 @@
 		private $actions_cached = array();
 
 		/**
-		 *	@fn BaseController
+		 *	@fn __construct
 		 *	@short Default constructor for controller objects.
 		 *	@details Subclassers should not override this method. Do your specialized
 		 *	initialization in the <tt>init</tt> method.
 		 */
-		public function BaseController()
+		public function __construct()
 		{
 			$this->response = new Response();
 			$this->request = new Request();
