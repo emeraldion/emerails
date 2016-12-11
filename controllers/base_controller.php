@@ -531,9 +531,27 @@
 			print button(joined_lower($text), $text, $params);
 		}
 
+		/**
+		 *	@fn unknown_action()
+		 *	@short Fallback handler for unknown action.
+		 *	@details This method implements the default action handler which
+		 *	sends a 404 Not Found error back to the client.
+		 */
 		protected function unknown_action()
 		{
-			HTTP::error(404);
+			$this->send_error(404);
+		}
+
+		/**
+		 *	@fn send_error($status)
+		 *	@short Sends an HTTP error to the client.
+		 *	@details This method sends an HTTP error to the client with the
+		 *	status code of choice.
+		 *	@param status Status code.
+		 */
+		protected function send_error($status)
+		{
+			HTTP::error($status);
 		}
 
 		/**
@@ -834,7 +852,7 @@
 				}
 				else
 				{
-					HTTP::error(500);
+					$this->send_error(500);
 				}
 				// Call render on the controller
 				// This won't have effect if the controller has already rendered
@@ -956,7 +974,7 @@
 		{
 			if (!file_exists($filename))
 			{
-				HTTP::error(500);
+				$this->send_error(500);
 			}
 			$contents = file_get_contents($filename);
 			return $this->strip_external_php_tags($contents);
