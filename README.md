@@ -8,7 +8,7 @@ I then tried to write from scratch a lightweight clone of [Ruby on Rails](http:/
 
 EmeRails supports page caching, action filtering and a lot of useful features that save coding time and server load. I am quite satisfied about the result, and I am looking forward to improving it and smudging the edges that are still rough in the future.
 
-# Development
+## Development
 
 Run tests (limited coverage):
 
@@ -16,7 +16,21 @@ Run tests (limited coverage):
 make test
 ```
 
-# Documentation
+## Docker
+
+If you're familiar with [Docker](https://docs.docker.com/engine/) and [Docker Compose](), you may want to package your app as a Docker image thanks to the included `Dockerfile`:
+
+```
+docker build .
+```
+
+The included `docker-compose.yml` configuration also allows you to spin up the application locally:
+
+```
+docker-compose up --build -d
+```
+
+## Documentation
 
 To generate documentation, you will need [Doxygen](https://github.com/doxygen/doxygen.git). You can build it from sources, download a binary, or install it via [homebrew](http://brew.sh/):
 
@@ -30,9 +44,9 @@ Once you have Doxygen, you can run the `docs` target:
 make docs
 ```
 
-# License
+## License
 
 [MIT](http://opensource.org/licenses/MIT)
 
-Copyright (c) 2008, 2015 Claudio Procida
+Copyright (c) 2008, 2016 Claudio Procida
 http://www.emeraldion.it
