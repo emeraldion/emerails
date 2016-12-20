@@ -1,0 +1,30 @@
+version: '2'
+
+services:
+
+  db:
+    image: mysql:5.5
+    volumes:
+      - db_data:/var/lib/mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: emerails_test
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+
+  php:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - 8080:80
+    depends_on:
+      - db
+    volumes:
+      - .:/var/www/html
+    environment:
+      - php_env=test
+
+volumes:
+  db_data:
