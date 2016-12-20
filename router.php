@@ -24,8 +24,10 @@
 		}
 		require($controller_file);
 		
+		$main_controller_class = ucwords($_REQUEST['controller']) . "Controller";
+
 		// Instantiate main controller
-		$main_controller = eval("return new " . ucwords($_REQUEST['controller']) . "Controller();");
+		$main_controller = new $main_controller_class;
 		
 		// Request rendering of the page
 		// (If action didn't already do it before)
