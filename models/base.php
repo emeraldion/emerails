@@ -517,6 +517,7 @@
 
 			$classname = get_class($this);
 			$columns = self::_get_columns($classname);
+			$ret = FALSE;
 
 			$nonempty = array();
 			for ($i = 0; $i < count($columns); $i++)
@@ -543,6 +544,7 @@
 					$this->get_table_name(),
 					$this->values[$this->primary_key]);
 				$conn->exec();
+				$ret = TRUE;
 			}
 			else
 			{
@@ -568,12 +570,17 @@
 				$conn->prepare($query,
 					$this->get_table_name());
 				$conn->exec();
-				$this->values[$this->primary_key] = $conn->insert_id();
+				$insert_id = $conn->insert_id();
+				if ($insert_id !== 0)
+				{
+					$this->values[$this->primary_key] = $insert_id;
+					$ret = TRUE;
+				}
 			}
 
 			Db::close_connection($conn);
 
-			return TRUE;
+			return $ret;
 		}
 
 		/**
