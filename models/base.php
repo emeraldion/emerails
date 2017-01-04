@@ -574,7 +574,10 @@
 				if ($insert_id !== 0)
 				{
 					$this->values[$this->primary_key] = $insert_id;
-					$ret = TRUE;
+					if ($conn->affected_rows() > 0)
+					{
+						$ret = TRUE;
+					}
 				}
 			}
 
