@@ -157,7 +157,7 @@
 		 */
 		public function affected_rows()
 		{
-			return mysql_affected_rows($this->result);
+			return mysql_affected_rows($this->link);
 		}
 
 		/**
