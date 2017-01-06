@@ -92,13 +92,19 @@ php_env=test make test
 If you're familiar with [Docker](https://docs.docker.com/engine/) and [Docker Compose](), you may want
 to package your app as a Docker image thanks to the included `Dockerfile`:
 
+```sh
+docker build -t emerails_app .
 ```
-docker build .
+
+and then you can run the generated container like:
+
+```sh
+docker run -p 8080:80 -d emerails_app
 ```
 
 The included `docker-compose.yml` configuration also allows you to spin up the application locally:
 
-```
+```sh
 docker-compose up --build -d
 ```
 
