@@ -1,3 +1,4 @@
+#!/usr/bin/php
 <?php
 	/**
 	 *	Project EmeRails - Codename Ocarina
@@ -8,21 +9,45 @@
 	 */
 
 	require_once(dirname(__FILE__) . "/../include/common.inc.php");
-	
+	require_once(dirname(__FILE__) . "/../include/db.inc.php");
+	require_once(dirname(__FILE__) . '/../include/' . DB_ADAPTER. '_adapter.php');
+
 	function usage()
 	{
 		echo <<<EOT
 Usage: generate.php controller controller_name [action1 [action2 ...]]
-	 generate.php model model_name
+       generate.php model model_name [field1 [type1 [field2 [type2 ...]]]]
 
 EOT;
 	}
 
-	if (count($argv) > 2)
+	function create_model($tablename, $fields)
+	{
+		$conn = Db::get_connection();
+
+		$query = "CREATE TABLE `{$conn->escape($tablename)}` (\n";
+
+		$i = 0;
+		foreach ($fields as $name => $type)
+		{
+			$comma = $i > 0 ? ',' : '';
+			$query .= "{$comma}`{$name}` {$type}\n";
+			$i++;
+		}
+
+		$query .= ');';
+
+		$conn->prepare($query);
+		$conn->exec();
+
+		Db::close_connection($conn);
+	}
+
+	if ($argc > 2)
 	{
 		if ($argv[1] == 'controller')
 		{
-			$controller = $argv[2];
+			$controller = strtolower($argv[2]);
 			
 			echo "\tcreating controllers/{$controller}_controller.php\n";
 			
@@ -34,13 +59,13 @@ EOT;
 	
 	/**
 	 *	@class {$controller_class}
-	 *	@short
-	 *	@details
+	 *	@short Edit this controller's short description
+	 *	@details Edit this controller's detailed description
 	 */
 	class {$controller_class} extends BaseController
 	{
 		/**
-		 *	
+		 *	@fn init
 		 *	@short Performs specialized initialization
 		 *	@details You should use this method to do your custom initialization.
 		 */
@@ -48,24 +73,42 @@ EOT;
 		{
 			// TODO: add your initialization code here
 		}
+
+		/**
+		 *	@fn index
+		 *	@short This is the default action
+		 *	@details This is the default action when the controller is invoked without an action
+		 */
+		public function index()
+		{
+			// TODO: add your code here
+		}
+
 EOT;
 
-			for ($i = 3; $i < count($argv); $i++)
+			for ($i = 3; $i < $argc; $i++)
 			{
-				echo "\tcreating views/$controller/{$argv[$i]}.php\n";
-				
-				mkdir(dirname(__FILE__) . "/../views/$controller", 755);
-				file_put_contents(dirname(__FILE__) . "/../views/$controller/{$argv[$i]}.php",
+				$action = strtolower($argv[$i]);
+
+				echo "\tcreating views/$controller/$action.php\n";
+
+				$dir = dirname(__FILE__) . "/../views/$controller";
+				if (!is_dir($dir))
+				{
+					mkdir($dir, 0755);
+				}
+
+				file_put_contents(dirname(__FILE__) . "/../views/$controller/$action.php",
 					"<!-- TODO: add your code here -->");
 				
 				$controller_code .= <<<EOT
 		    
 		/**
-		 *	
-		 *	@short
-		 *	@details
+		 *	@fn {$action}
+		 *	@short Edit this actions's short description
+		 *	@details Edit this actions's detailed description
 		 */
-		public function {$argv[$i]}()
+		public function {$action}()
 		{
 			// TODO: add your code here
 		}
@@ -84,9 +127,9 @@ EOT;
 		}
 		else if ($argv[1] == 'model')
 		{
-			$model_class = $argv[2];
-			
-			$model = singularize(class_name_to_table_name($model_class));
+			$model_class = joined_lower_to_camel_case($argv[2]);
+			$model_table = class_name_to_table_name($model_class);
+			$model = singularize($model_table);
 
 			echo "\tcreating models/$model.php\n";
 			
@@ -108,6 +151,17 @@ EOT;
 		
 			file_put_contents(dirname(__FILE__) . "/../models/$model.php",
 				$model_code);
+
+			$fields = array();
+			if ($argc > 2)
+			{
+				for ($i = 3; $i < $argc; $i += 2)
+				{
+					$fields[$argv[$i]] = $argv[$i + 1];
+				}
+			}
+
+			create_model($model_table, $fields);
 		}
 		else
 		{
