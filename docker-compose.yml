@@ -16,9 +16,9 @@ services:
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: emerails_test
-      MYSQL_USER: root
-      MYSQL_PASSWORD: root
+      MYSQL_DATABASE: emerails
+      MYSQL_USER: emerails
+      MYSQL_PASSWORD: emerails
 
   app:
     build:
@@ -28,10 +28,14 @@ services:
       - 8080:80
     depends_on:
       - db
+    links:
+      - db:mysql
     volumes:
       - .:/var/www/html
     environment:
-      - php_env=test
+      EMERAILS_DB_PASSWORD: emerails
+      EMERAILS_DB_USER: emerails
+      EMERAILS_DB_NAME: emerails
 
 volumes:
   db_data:
