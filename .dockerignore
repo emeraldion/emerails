@@ -1,0 +1,13 @@
+.git
+.gitignore
+.DS_Store
+.travis.yml
+Makefile
+Doxyfile
+Dockerfile
+composer.json
+composer.lock
+docker-compose.yml
+docs
+test
+*.md
