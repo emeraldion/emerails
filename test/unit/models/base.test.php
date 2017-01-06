@@ -276,23 +276,40 @@ class ActiveRecordTest extends \PHPUnit_Framework_TestCase
     $this->assertNotNull($instance);
     $ret = $instance->find_by_id(1);
     $this->assertTrue($ret);
-    $this->assertNull($instance->foo);
+    $this->assertNotNull($instance->name);
   }
 
   public function test_get_initialized_with_values()
   {
     $instance = new TestModel(array(
-      'foo' => 1
+      'name' => 'foo'
     ));
     $this->assertNotNull($instance);
-    $this->assertEquals(1, $instance->foo);
+    $this->assertEquals('foo', $instance->name);
   }
 
   public function test_get_not_initialized()
   {
     $instance = new TestModel();
     $this->assertNotNull($instance);
+    $this->assertNull($instance->name);
+  }
+
+  public function test_get_initialized_not_a_column()
+  {
+    $instance = new TestModel(array(
+      'foo' => 'bar'));
+    $this->assertNotNull($instance);
     $this->assertNull($instance->foo);
+  }
+
+  public function test_get_set_not_a_column()
+  {
+    $instance = new TestModel();
+    $this->assertNotNull($instance);
+    $instance->foo = 'bar';
+    $this->assertNotNull($instance->foo);
+    $this->assertEquals('bar', $instance->foo);
   }
 
   public function test_unset()
