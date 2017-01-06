@@ -13,7 +13,7 @@ services:
       MYSQL_USER: root
       MYSQL_PASSWORD: root
 
-  php:
+  app:
     build:
       context: ./
       dockerfile: Dockerfile
