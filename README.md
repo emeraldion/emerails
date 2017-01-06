@@ -8,12 +8,41 @@ I then tried to write from scratch a lightweight clone of [Ruby on Rails](http:/
 
 EmeRails supports page caching, action filtering and a lot of useful features that save coding time and server load. I am quite satisfied about the result, and I am looking forward to improving it and smudging the edges that are still rough in the future.
 
+## Contributing
+
+Thank you for your interest in EmeRails! Feel free to open issues or submit a PR. See the [Contributing Guidelines](https://github.com/emeraldion/emerails/blob/master/CONTRIBUTING.md) for detailed instructions.
+
+
 ## Development
+
+EmeRails is a PHP web application. If you are unsure what to do, follow these steps:
+
+### Installing a local MySQL server
+
+For development, it's best to use a [local MySQL server](https://dev.mysql.com/doc/mysql-getting-started/). I use [MAMP](https://www.mamp.info/) on Mac OS X, but you can also run MySQL server in [a Docker container](https://hub.docker.com/r/mysql/mysql-server/).
+
+### Install dependencies
+
+```sh
+make install
+```
+
+### Create test DB
+
+This command will create a test MySQL DB: 
+
+```sh
+make create_test_db
+```
+
+Note the script assumes there is a `mysql` command in the `PATH`. It also assumes the database user is `root` and will prompt for the password. If you want to use another user, you have to edit `Makefile`.
+
+### Run tests
 
 Run tests (limited coverage):
 
 ```sh
-make test
+php_env=test make test
 ```
 
 ## Docker
@@ -48,5 +77,5 @@ make docs
 
 [MIT](http://opensource.org/licenses/MIT)
 
-Copyright (c) 2008, 2016 Claudio Procida
+Copyright (c) 2008, 2017 Claudio Procida
 http://www.emeraldion.it
