@@ -145,8 +145,8 @@ EOT;
 
 	/**
 	 *	@class {$model_class}
-	 *	@short
-	 *	@details
+	 *	@short Edit this model's short description
+	 *	@details Edit this actions's detailed description
 	 */
 	class {$model_class} extends ActiveRecord
 	{
