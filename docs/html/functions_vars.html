@@ -26,7 +26,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">EmeRails
-   &#160;<span id="projectnumber">0.0.1pre</span>
+   &#160;<span id="projectnumber">1.1.0</span>
    </div>
   </td>
  </tr>
@@ -59,7 +59,10 @@
   <div id="navrow4" class="tabs3">
     <ul class="tablist">
       <li><a href="#index_$"><span>$</span></a></li>
+      <li><a href="#index_e"><span>e</span></a></li>
       <li><a href="#index_l"><span>l</span></a></li>
+      <li><a href="#index_n"><span>n</span></a></li>
+      <li><a href="#index_s"><span>s</span></a></li>
       <li class="current"><a href="#index_w"><span>w</span></a></li>
     </ul>
   </div>
@@ -88,6 +91,9 @@ $(document).ready(function(){initNavTree('functions_vars.html','');});
 <li>$actions_cached
 : <a class="el" href="class_base_controller.html#a077d10ac536629cd2833972cab7892c6">BaseController</a>
 </li>
+<li>$adapters
+: <a class="el" href="class_db.html#a6d6b8e4afec5650da5daa3bbcb4773c5">Db</a>
+</li>
 <li>$after_filters
 : <a class="el" href="class_base_controller.html#a41fb845953c4c1308abc195ea712bc4e">BaseController</a>
 </li>
@@ -106,6 +112,9 @@ $(document).ready(function(){initNavTree('functions_vars.html','');});
 <li>$columns
 : <a class="el" href="class_active_record.html#a8b9d5757fc8b0dde73cfd9aa745391a7">ActiveRecord</a>
 </li>
+<li>$conn_counter
+: <a class="el" href="class_db.html#af456e4b6ab99195681feef1828ba5030">Db</a>
+</li>
 <li>$foreign_key_name
 : <a class="el" href="class_active_record.html#abf17e3450ea258efc71ceda754241c7f">ActiveRecord</a>
 </li>
@@ -120,7 +129,8 @@ $(document).ready(function(){initNavTree('functions_vars.html','');});
 : <a class="el" href="class_localization.html#a51e091a69c6ebc9c74aaeed0f8e1dbce">Localization</a>
 </li>
 <li>$link
-: <a class="el" href="class_d_b_conn.html#a264fc1cd38d7f09fc7224a1430074252">DBConn</a>
+: <a class="el" href="class_mysql_adapter.html#a97a248045a51019a9771671229410a64">MysqlAdapter</a>
+, <a class="el" href="class_mysqli_adapter.html#aa3f582e1474daffd8b60da201a590e77">MysqliAdapter</a>
 </li>
 <li>$method
 : <a class="el" href="class_request.html#a55df0180bf252b0276f51f023ce8f355">Request</a>
@@ -137,14 +147,19 @@ $(document).ready(function(){initNavTree('functions_vars.html','');});
 <li>$pages_cached
 : <a class="el" href="class_base_controller.html#ade5c87dd4743ded7fa0c7c6818b8897e">BaseController</a>
 </li>
+<li>$pool
+: <a class="el" href="class_db.html#a581af29f4262ed70a8a2c5fe3250850e">Db</a>
+</li>
 <li>$primary_key
 : <a class="el" href="class_active_record.html#adbea5f7b8f303c1cfd505694bb946d9d">ActiveRecord</a>
 </li>
 <li>$queries_count
-: <a class="el" href="class_d_b_conn.html#a381a05b9290dd88ee0c0f77611fbb6f1">DBConn</a>
+: <a class="el" href="class_mysql_adapter.html#a44ea9cdbc3752c5473f4c8f28171b25e">MysqlAdapter</a>
+, <a class="el" href="class_mysqli_adapter.html#a4d84513d687917490017b1a0dbc215ca">MysqliAdapter</a>
 </li>
 <li>$query
-: <a class="el" href="class_d_b_conn.html#a1d2932e0075a06829a9e6264af199165">DBConn</a>
+: <a class="el" href="class_mysql_adapter.html#ad1ed8df58f18835cfb1ee12cde1b1775">MysqlAdapter</a>
+, <a class="el" href="class_mysqli_adapter.html#a2d4f968594d3edb5230fb455fdef1a20">MysqliAdapter</a>
 </li>
 <li>$querystring
 : <a class="el" href="class_request.html#aad0e52deea877703325fdaa893bad999">Request</a>
@@ -153,7 +168,8 @@ $(document).ready(function(){initNavTree('functions_vars.html','');});
 : <a class="el" href="class_base_controller.html#a39f8f7660c2d815204f966d225793734">BaseController</a>
 </li>
 <li>$result
-: <a class="el" href="class_d_b_conn.html#aef26eea42f5558854afb4aede1d12356">DBConn</a>
+: <a class="el" href="class_mysql_adapter.html#a7c2098d04b438c822ce435e1d310becb">MysqlAdapter</a>
+, <a class="el" href="class_mysqli_adapter.html#a715373650e56e0512a663df2af4812b4">MysqliAdapter</a>
 </li>
 <li>$strings_table
 : <a class="el" href="class_localization.html#adcbe6d45ff2379f7bc5bd25302e2edae">Localization</a>
@@ -173,9 +189,33 @@ $(document).ready(function(){initNavTree('functions_vars.html','');});
 </ul>
 
 
+<h3><a class="anchor" id="index_e"></a>- e -</h3><ul>
+<li>EQUALS
+: <a class="el" href="class_query_string.html#a3e9d1c466a09997428b55d406c25b441">QueryString</a>
+</li>
+</ul>
+
+
 <h3><a class="anchor" id="index_l"></a>- l -</h3><ul>
 <li>LOREM_IPSUM
 : <a class="el" href="class_reading_time_test.html#ac25ee1afb125072b709cd110ad8de0e3">ReadingTimeTest</a>
+</li>
+</ul>
+
+
+<h3><a class="anchor" id="index_n"></a>- n -</h3><ul>
+<li>NAME
+: <a class="el" href="class_mysql_adapter.html#a9febd9315a56ef721a44d5561ee062e5">MysqlAdapter</a>
+, <a class="el" href="class_mysqli_adapter.html#ac7ea7ed91ac49e1f27b4f213bc34786f">MysqliAdapter</a>
+, <a class="el" href="class_test_adapter.html#acffc04c56f45c11146bb338769f3b7c3">TestAdapter</a>
+, <a class="el" href="class_test_adapter_other.html#a250b2ecf07bcd7c9065c7ba1a2f6b87f">TestAdapterOther</a>
+</li>
+</ul>
+
+
+<h3><a class="anchor" id="index_s"></a>- s -</h3><ul>
+<li>SEPARATOR
+: <a class="el" href="class_query_string.html#a5e61a3321b77307d0255e4a71d8372e9">QueryString</a>
 </li>
 </ul>
 

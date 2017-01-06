@@ -26,7 +26,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">EmeRails
-   &#160;<span id="projectnumber">0.0.1pre</span>
+   &#160;<span id="projectnumber">1.1.0</span>
    </div>
   </td>
  </tr>
@@ -92,9 +92,9 @@ Inheritance diagram for BaseController:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:abbcb61dc8d32d0389198d36fe181ef33"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_base_controller.html#abbcb61dc8d32d0389198d36fe181ef33">BaseController</a> ()</td></tr>
-<tr class="memdesc:abbcb61dc8d32d0389198d36fe181ef33"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor for controller objects.  <a href="#abbcb61dc8d32d0389198d36fe181ef33">More...</a><br /></td></tr>
-<tr class="separator:abbcb61dc8d32d0389198d36fe181ef33"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a065506622b6e03340aa0df531fb5558a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_base_controller.html#a065506622b6e03340aa0df531fb5558a">__construct</a> ()</td></tr>
+<tr class="memdesc:a065506622b6e03340aa0df531fb5558a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor for controller objects.  <a href="#a065506622b6e03340aa0df531fb5558a">More...</a><br /></td></tr>
+<tr class="separator:a065506622b6e03340aa0df531fb5558a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a38f225d51000d0968cefa73dc4f5476b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_base_controller.html#a38f225d51000d0968cefa73dc4f5476b">link_to</a> ($text, $params=array())</td></tr>
 <tr class="memdesc:a38f225d51000d0968cefa73dc4f5476b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Links to another action.  <a href="#a38f225d51000d0968cefa73dc4f5476b">More...</a><br /></td></tr>
 <tr class="separator:a38f225d51000d0968cefa73dc4f5476b"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -189,7 +189,11 @@ Protected Member Functions</h2></td></tr>
 <tr class="memdesc:a3e00fdb289753dd0d4efe53d08d33423"><td class="mdescLeft">&#160;</td><td class="mdescRight">Redirects the response to the URL which is contained in the <code>HTTP_REFERER</code> server variable (i.e., performs a back redirection). If no <code>HTTP_REFERER</code> is set, and if passed the optional parameter <code>or_else</code>, the latter is used for an explicit redirection.  <a href="#a3e00fdb289753dd0d4efe53d08d33423">More...</a><br /></td></tr>
 <tr class="separator:a3e00fdb289753dd0d4efe53d08d33423"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac8276a3aebe79d55d87576d8a8b12c36"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_base_controller.html#ac8276a3aebe79d55d87576d8a8b12c36">unknown_action</a> ()</td></tr>
+<tr class="memdesc:ac8276a3aebe79d55d87576d8a8b12c36"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fallback handler for unknown action.  <a href="#ac8276a3aebe79d55d87576d8a8b12c36">More...</a><br /></td></tr>
 <tr class="separator:ac8276a3aebe79d55d87576d8a8b12c36"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4ef8c8f9e93f575d10aa2af2c080650b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_base_controller.html#a4ef8c8f9e93f575d10aa2af2c080650b">send_error</a> ($status)</td></tr>
+<tr class="memdesc:a4ef8c8f9e93f575d10aa2af2c080650b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sends an <a class="el" href="class_h_t_t_p.html" title="Helper class to manipulate HTTP error codes. ">HTTP</a> error to the client.  <a href="#a4ef8c8f9e93f575d10aa2af2c080650b">More...</a><br /></td></tr>
+<tr class="separator:a4ef8c8f9e93f575d10aa2af2c080650b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa7c31541f4fb21b70e2e12000c36efae"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_base_controller.html#aa7c31541f4fb21b70e2e12000c36efae">render_layout</a> ($params)</td></tr>
 <tr class="memdesc:aa7c31541f4fb21b70e2e12000c36efae"><td class="mdescLeft">&#160;</td><td class="mdescRight">Renders the layout for the current view.  <a href="#aa7c31541f4fb21b70e2e12000c36efae">More...</a><br /></td></tr>
 <tr class="separator:aa7c31541f4fb21b70e2e12000c36efae"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -245,11 +249,34 @@ Private Attributes</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Abstract base class for action controllers. </p>
 <p>Project EmeRails - Codename Ocarina</p>
-<p>Copyright (c) 2008, 2015 Claudio Procida <a href="http://www.emeraldion.it">http://www.emeraldion.it</a></p>
+<p>Copyright (c) 2008, 2017 Claudio Procida <a href="http://www.emeraldion.it">http://www.emeraldion.it</a></p>
 <p>A subclass of <a class="el" href="class_base_controller.html" title="Abstract base class for action controllers. ">BaseController</a> is in charge of handling a set of actions. It creates the network of model objects that will be rendered by the views, handles and validates postback data, defines and applies before and after filters. </p>
 
-<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00023">23</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
-</div><h2 class="groupheader">Member Function Documentation</h2>
+<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00024">24</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="a065506622b6e03340aa0df531fb5558a"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">BaseController::__construct </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Default constructor for controller objects. </p>
+<p>Subclassers should not override this method. Do your specialized initialization in the <code>init</code> method. </p>
+
+<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00098">98</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
+
+<p>References <a class="el" href="base__controller_8php_source.html#l00143">init()</a>, and <a class="el" href="base__controller_8php_source.html#l00112">initialize()</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
 <a class="anchor" id="adc34c42bbcf42a8270be4ad8c3045e91"></a>
 <div class="memitem">
 <div class="memproto">
@@ -273,7 +300,7 @@ Private Attributes</h2></td></tr>
 
 <p>Interrupts the processing of the request. </p>
 
-<p>Definition at line <a class="el" href="base__controller_8php_source.html#l01001">1001</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
+<p>Definition at line <a class="el" href="base__controller_8php_source.html#l01029">1029</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
 
 </div>
 </div>
@@ -328,29 +355,7 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00225">225</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="abbcb61dc8d32d0389198d36fe181ef33"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">BaseController::BaseController </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Default constructor for controller objects. </p>
-<p>Subclassers should not override this method. Do your specialized initialization in the <code>init</code> method. </p>
-
-<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00097">97</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
-
-<p>References <a class="el" href="base__controller_8php_source.html#l00142">init()</a>, and <a class="el" href="base__controller_8php_source.html#l00111">initialize()</a>.</p>
+<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00226">226</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
 
 </div>
 </div>
@@ -406,7 +411,7 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00182">182</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
+<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00183">183</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
 
 </div>
 </div>
@@ -445,7 +450,7 @@ Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="base__controller_8php_source.html#l00518">518</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
 
-<p>References <a class="el" href="tag__support_8inc_8php_source.html#l00167">button()</a>, <a class="el" href="common_8inc_8php_source.html#l00106">joined_lower()</a>, and <a class="el" href="base__controller_8php_source.html#l00585">make_relative_url()</a>.</p>
+<p>References <a class="el" href="tag__support_8inc_8php_source.html#l00167">button()</a>, <a class="el" href="common_8inc_8php_source.html#l00106">joined_lower()</a>, and <a class="el" href="base__controller_8php_source.html#l00603">make_relative_url()</a>.</p>
 
 </div>
 </div>
@@ -473,11 +478,11 @@ Private Attributes</h2></td></tr>
 <p>Checks if a cached version of the current action exists. </p>
 <p>This method checks the existence of the file whose name is returned by <code>cached_page_filename</code>. </p>
 
-<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00338">338</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
+<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00339">339</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
 
-<p>References <a class="el" href="base__controller_8php_source.html#l00349">cached_page_filename()</a>.</p>
+<p>References <a class="el" href="base__controller_8php_source.html#l00350">cached_page_filename()</a>.</p>
 
-<p>Referenced by <a class="el" href="base__controller_8php_source.html#l00801">render_page()</a>.</p>
+<p>Referenced by <a class="el" href="base__controller_8php_source.html#l00819">render_page()</a>.</p>
 
 </div>
 </div>
@@ -503,11 +508,11 @@ Private Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Returns a name for the cached page of current action. </p>
-<p>This method creates a filename that is uniquely associated with the current controller, action, argument identifier and and language. </p>
+<p>This method creates a filename that is uniquely associated with the current controller, action, argument identifier and language. </p>
 
-<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00349">349</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
+<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00350">350</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
 
-<p>Referenced by <a class="el" href="base__controller_8php_source.html#l00338">cached_page_exists()</a>, and <a class="el" href="base__controller_8php_source.html#l00801">render_page()</a>.</p>
+<p>Referenced by <a class="el" href="base__controller_8php_source.html#l00339">cached_page_exists()</a>, and <a class="el" href="base__controller_8php_source.html#l00819">render_page()</a>.</p>
 
 </div>
 </div>
@@ -541,7 +546,7 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00328">328</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
+<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00329">329</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
 
 </div>
 </div>
@@ -576,9 +581,9 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00293">293</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
+<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00294">294</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
 
-<p>Referenced by <a class="el" href="base__controller_8php_source.html#l00314">conditionally_caches_page()</a>.</p>
+<p>Referenced by <a class="el" href="base__controller_8php_source.html#l00315">conditionally_caches_page()</a>.</p>
 
 </div>
 </div>
@@ -607,7 +612,7 @@ Private Attributes</h2></td></tr>
 <p>Filters</p>
 <p>This after-filter is capable of compressing the response with gzip encoding, in order to save bandwidth. If the client does not support gzip encoding, the response is not altered. </p>
 
-<p>Definition at line <a class="el" href="base__controller_8php_source.html#l01049">1049</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
+<p>Definition at line <a class="el" href="base__controller_8php_source.html#l01077">1077</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
 
 </div>
 </div>
@@ -652,9 +657,9 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00314">314</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
+<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00315">315</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
 
-<p>References <a class="el" href="base__controller_8php_source.html#l00293">caches_page()</a>.</p>
+<p>References <a class="el" href="base__controller_8php_source.html#l00294">caches_page()</a>.</p>
 
 </div>
 </div>
@@ -683,9 +688,9 @@ Private Attributes</h2></td></tr>
 <p>Requests that the page(s) defined by <code>params</code> be removed from the caches. </p>
 <p>This method removes from the caches all pages that match the <code>params</code> argument for every supported language. </p>
 
-<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00363">363</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
+<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00364">364</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
 
-<p>References <a class="el" href="base__controller_8php_source.html#l00035">$action</a>, <a class="el" href="localization_8php_source.html#l00024">Localization\$languages</a>, and <a class="el" href="base__controller_8php_source.html#l00029">$name</a>.</p>
+<p>References <a class="el" href="base__controller_8php_source.html#l00036">$action</a>, <a class="el" href="localization_8php_source.html#l00024">Localization\$languages</a>, and <a class="el" href="base__controller_8php_source.html#l00030">$name</a>.</p>
 
 </div>
 </div>
@@ -719,9 +724,9 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00247">247</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
+<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00248">248</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
 
-<p>Referenced by <a class="el" href="base__controller_8php_source.html#l00801">render_page()</a>.</p>
+<p>Referenced by <a class="el" href="base__controller_8php_source.html#l00819">render_page()</a>.</p>
 
 </div>
 </div>
@@ -759,9 +764,9 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="base__controller_8php_source.html#l01019">1019</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
+<p>Definition at line <a class="el" href="base__controller_8php_source.html#l01047">1047</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
 
-<p>References <a class="el" href="base__controller_8php_source.html#l00047">$type</a>.</p>
+<p>References <a class="el" href="base__controller_8php_source.html#l00048">$type</a>.</p>
 
 </div>
 </div>
@@ -781,9 +786,9 @@ Private Attributes</h2></td></tr>
 <p>This is the default action method. </p>
 <p>Action methods </p>
 
-<p>Definition at line <a class="el" href="base__controller_8php_source.html#l01033">1033</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
+<p>Definition at line <a class="el" href="base__controller_8php_source.html#l01061">1061</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
 
-<p>References <a class="el" href="base__controller_8php_source.html#l00651">render()</a>.</p>
+<p>References <a class="el" href="base__controller_8php_source.html#l00669">render()</a>.</p>
 
 </div>
 </div>
@@ -811,9 +816,9 @@ Private Attributes</h2></td></tr>
 <p>Custom initialization for the controller object. </p>
 <p>Subclassers should override this method to perform specialized initialization. The default implementation does nothing. </p>
 
-<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00142">142</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
+<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00143">143</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
 
-<p>Referenced by <a class="el" href="base__controller_8php_source.html#l00097">BaseController()</a>.</p>
+<p>Referenced by <a class="el" href="base__controller_8php_source.html#l00098">__construct()</a>.</p>
 
 </div>
 </div>
@@ -841,11 +846,11 @@ Private Attributes</h2></td></tr>
 <p>Initializes the controller object. </p>
 <p>Subclassers should not override this method. Do your specialized initialization in the <code>init</code> method. </p>
 
-<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00111">111</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
+<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00112">112</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
 
-<p>References <a class="el" href="base__controller_8php_source.html#l00035">$action</a>, <a class="el" href="common_8inc_8php_source.html#l00116">camel_case_to_joined_lower()</a>, <a class="el" href="default__layout_8php_source.html#l00004">title</a>, and <a class="el" href="base__controller_8php_source.html#l00534">unknown_action()</a>.</p>
+<p>References <a class="el" href="base__controller_8php_source.html#l00036">$action</a>, <a class="el" href="common_8inc_8php_source.html#l00118">camel_case_to_joined_lower()</a>, <a class="el" href="default__layout_8php_source.html#l00004">title</a>, and <a class="el" href="base__controller_8php_source.html#l00540">unknown_action()</a>.</p>
 
-<p>Referenced by <a class="el" href="base__controller_8php_source.html#l00097">BaseController()</a>.</p>
+<p>Referenced by <a class="el" href="base__controller_8php_source.html#l00098">__construct()</a>.</p>
 
 </div>
 </div>
@@ -886,7 +891,7 @@ Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="base__controller_8php_source.html#l00465">465</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
 
-<p>References <a class="el" href="tag__support_8inc_8php_source.html#l00098">a()</a>, and <a class="el" href="base__controller_8php_source.html#l00585">make_relative_url()</a>.</p>
+<p>References <a class="el" href="tag__support_8inc_8php_source.html#l00098">a()</a>, and <a class="el" href="base__controller_8php_source.html#l00603">make_relative_url()</a>.</p>
 
 </div>
 </div>
@@ -926,7 +931,7 @@ Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="base__controller_8php_source.html#l00491">491</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
 
-<p>References <a class="el" href="tag__support_8inc_8php_source.html#l00098">a()</a>, <a class="el" href="common_8inc_8php_source.html#l00142">l()</a>, and <a class="el" href="base__controller_8php_source.html#l00585">make_relative_url()</a>.</p>
+<p>References <a class="el" href="tag__support_8inc_8php_source.html#l00098">a()</a>, <a class="el" href="common_8inc_8php_source.html#l00144">l()</a>, and <a class="el" href="base__controller_8php_source.html#l00603">make_relative_url()</a>.</p>
 
 </div>
 </div>
@@ -960,11 +965,11 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00945">945</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
+<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00973">973</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
 
-<p>References <a class="el" href="http_8php_source.html#l00024">HTTP\error()</a>, and <a class="el" href="base__controller_8php_source.html#l00962">strip_external_php_tags()</a>.</p>
+<p>References <a class="el" href="base__controller_8php_source.html#l00552">send_error()</a>, and <a class="el" href="base__controller_8php_source.html#l00990">strip_external_php_tags()</a>.</p>
 
-<p>Referenced by <a class="el" href="base__controller_8php_source.html#l00651">render()</a>, and <a class="el" href="base__controller_8php_source.html#l00761">render_layout()</a>.</p>
+<p>Referenced by <a class="el" href="base__controller_8php_source.html#l00669">render()</a>, and <a class="el" href="base__controller_8php_source.html#l00779">render_layout()</a>.</p>
 
 </div>
 </div>
@@ -992,11 +997,11 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00585">585</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
+<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00603">603</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
 
-<p>References <a class="el" href="base__controller_8php_source.html#l00047">$type</a>, and <a class="el" href="router_8php_source.html#l00014">APPLICATION_ROOT</a>.</p>
+<p>References <a class="el" href="base__controller_8php_source.html#l00030">$name</a>, <a class="el" href="base__controller_8php_source.html#l00048">$type</a>, and <a class="el" href="router_8php_source.html#l00014">APPLICATION_ROOT</a>.</p>
 
-<p>Referenced by <a class="el" href="base__controller_8php_source.html#l00518">button_to()</a>, <a class="el" href="base__controller_8php_source.html#l00465">link_to()</a>, <a class="el" href="base__controller_8php_source.html#l00491">link_to_remote()</a>, and <a class="el" href="base__controller_8php_source.html#l00547">url_to()</a>.</p>
+<p>Referenced by <a class="el" href="base__controller_8php_source.html#l00518">button_to()</a>, <a class="el" href="base__controller_8php_source.html#l00465">link_to()</a>, <a class="el" href="base__controller_8php_source.html#l00491">link_to_remote()</a>, and <a class="el" href="base__controller_8php_source.html#l00565">url_to()</a>.</p>
 
 </div>
 </div>
@@ -1031,9 +1036,9 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00391">391</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
+<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00392">392</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
 
-<p>References <a class="el" href="base__controller_8php_source.html#l00547">url_to()</a>.</p>
+<p>References <a class="el" href="base__controller_8php_source.html#l00565">url_to()</a>.</p>
 
 <p>Referenced by <a class="el" href="base__controller_8php_source.html#l00437">redirect_to_referrer()</a>, and <a class="el" href="base__controller_8php_source.html#l00422">refresh()</a>.</p>
 
@@ -1071,7 +1076,7 @@ Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="base__controller_8php_source.html#l00437">437</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
 
-<p>References <a class="el" href="base__controller_8php_source.html#l00391">redirect_to()</a>.</p>
+<p>References <a class="el" href="base__controller_8php_source.html#l00392">redirect_to()</a>.</p>
 
 </div>
 </div>
@@ -1107,7 +1112,7 @@ Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="base__controller_8php_source.html#l00422">422</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
 
-<p>References <a class="el" href="base__controller_8php_source.html#l00391">redirect_to()</a>.</p>
+<p>References <a class="el" href="base__controller_8php_source.html#l00392">redirect_to()</a>.</p>
 
 </div>
 </div>
@@ -1143,11 +1148,11 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00651">651</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
+<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00669">669</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
 
-<p>References <a class="el" href="base__controller_8php_source.html#l00035">$action</a>, <a class="el" href="base__controller_8php_source.html#l00065">$rendered</a>, <a class="el" href="default__layout_8php_source.html#l00057">content_for_layout</a>, <a class="el" href="base__controller_8php_source.html#l00945">load_part_contents()</a>, and <a class="el" href="base__controller_8php_source.html#l00761">render_layout()</a>.</p>
+<p>References <a class="el" href="base__controller_8php_source.html#l00036">$action</a>, <a class="el" href="base__controller_8php_source.html#l00066">$rendered</a>, <a class="el" href="default__layout_8php_source.html#l00057">content_for_layout</a>, <a class="el" href="base__controller_8php_source.html#l00973">load_part_contents()</a>, and <a class="el" href="base__controller_8php_source.html#l00779">render_layout()</a>.</p>
 
-<p>Referenced by <a class="el" href="error__controller_8php_source.html#l00060">ErrorController\error()</a>, <a class="el" href="base__controller_8php_source.html#l01033">index()</a>, <a class="el" href="base__controller_8php_source.html#l00745">render_as_string()</a>, and <a class="el" href="base__controller_8php_source.html#l00801">render_page()</a>.</p>
+<p>Referenced by <a class="el" href="error__controller_8php_source.html#l00060">ErrorController\error()</a>, <a class="el" href="base__controller_8php_source.html#l01061">index()</a>, <a class="el" href="base__controller_8php_source.html#l00763">render_as_string()</a>, and <a class="el" href="base__controller_8php_source.html#l00819">render_page()</a>.</p>
 
 </div>
 </div>
@@ -1173,9 +1178,9 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00745">745</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
+<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00763">763</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
 
-<p>References <a class="el" href="base__controller_8php_source.html#l00651">render()</a>.</p>
+<p>References <a class="el" href="base__controller_8php_source.html#l00669">render()</a>.</p>
 
 </div>
 </div>
@@ -1203,9 +1208,9 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00889">889</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
+<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00907">907</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
 
-<p>References <a class="el" href="base__controller_8php_source.html#l00035">$action</a>, <a class="el" href="base__controller_8php_source.html#l00029">$name</a>, <a class="el" href="localization_8php_source.html#l00053">Localization\add_strings_table()</a>, and <a class="el" href="common_8inc_8php_source.html#l00111">joined_lower_to_camel_case()</a>.</p>
+<p>References <a class="el" href="base__controller_8php_source.html#l00036">$action</a>, <a class="el" href="base__controller_8php_source.html#l00030">$name</a>, <a class="el" href="localization_8php_source.html#l00053">Localization\add_strings_table()</a>, and <a class="el" href="common_8inc_8php_source.html#l00111">joined_lower_to_camel_case()</a>.</p>
 
 </div>
 </div>
@@ -1239,11 +1244,11 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00761">761</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
+<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00779">779</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
 
-<p>References <a class="el" href="base__controller_8php_source.html#l00029">$name</a>, <a class="el" href="base__controller_8php_source.html#l00065">$rendered</a>, and <a class="el" href="base__controller_8php_source.html#l00945">load_part_contents()</a>.</p>
+<p>References <a class="el" href="base__controller_8php_source.html#l00030">$name</a>, <a class="el" href="base__controller_8php_source.html#l00066">$rendered</a>, and <a class="el" href="base__controller_8php_source.html#l00973">load_part_contents()</a>.</p>
 
-<p>Referenced by <a class="el" href="base__controller_8php_source.html#l00651">render()</a>.</p>
+<p>Referenced by <a class="el" href="base__controller_8php_source.html#l00669">render()</a>.</p>
 
 </div>
 </div>
@@ -1268,9 +1273,47 @@ Private Attributes</h2></td></tr>
 <li>Finally, the response is flushed to the client. </li>
 </ul>
 
-<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00801">801</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
+<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00819">819</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
 
-<p>References <a class="el" href="base__controller_8php_source.html#l00338">cached_page_exists()</a>, <a class="el" href="base__controller_8php_source.html#l00349">cached_page_filename()</a>, <a class="el" href="http_8php_source.html#l00024">HTTP\error()</a>, <a class="el" href="base__controller_8php_source.html#l00247">filter_applicable()</a>, and <a class="el" href="base__controller_8php_source.html#l00651">render()</a>.</p>
+<p>References <a class="el" href="base__controller_8php_source.html#l00339">cached_page_exists()</a>, <a class="el" href="base__controller_8php_source.html#l00350">cached_page_filename()</a>, <a class="el" href="base__controller_8php_source.html#l00248">filter_applicable()</a>, <a class="el" href="base__controller_8php_source.html#l00669">render()</a>, and <a class="el" href="base__controller_8php_source.html#l00552">send_error()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a4ef8c8f9e93f575d10aa2af2c080650b"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">BaseController::send_error </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>$status</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Sends an <a class="el" href="class_h_t_t_p.html" title="Helper class to manipulate HTTP error codes. ">HTTP</a> error to the client. </p>
+<p>This method sends an <a class="el" href="class_h_t_t_p.html" title="Helper class to manipulate HTTP error codes. ">HTTP</a> error to the client with the status code of choice. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">status</td><td>Status code. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00552">552</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
+
+<p>References <a class="el" href="http_8php_source.html#l00024">HTTP\error()</a>.</p>
+
+<p>Referenced by <a class="el" href="base__controller_8php_source.html#l00973">load_part_contents()</a>, <a class="el" href="base__controller_8php_source.html#l00819">render_page()</a>, and <a class="el" href="base__controller_8php_source.html#l00540">unknown_action()</a>.</p>
 
 </div>
 </div>
@@ -1297,9 +1340,9 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00992">992</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
+<p>Definition at line <a class="el" href="base__controller_8php_source.html#l01020">1020</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
 
-<p>References <a class="el" href="base__controller_8php_source.html#l00041">$title</a>, and <a class="el" href="default__layout_8php_source.html#l00004">title</a>.</p>
+<p>References <a class="el" href="base__controller_8php_source.html#l00042">$title</a>, and <a class="el" href="default__layout_8php_source.html#l00004">title</a>.</p>
 
 </div>
 </div>
@@ -1333,9 +1376,9 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00962">962</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
+<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00990">990</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
 
-<p>Referenced by <a class="el" href="base__controller_8php_source.html#l00945">load_part_contents()</a>.</p>
+<p>Referenced by <a class="el" href="base__controller_8php_source.html#l00973">load_part_contents()</a>.</p>
 
 </div>
 </div>
@@ -1360,11 +1403,14 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00534">534</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
+<p>Fallback handler for unknown action. </p>
+<p>This method implements the default action handler which sends a 404 Not Found error back to the client. </p>
 
-<p>References <a class="el" href="http_8php_source.html#l00024">HTTP\error()</a>.</p>
+<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00540">540</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
 
-<p>Referenced by <a class="el" href="base__controller_8php_source.html#l00111">initialize()</a>.</p>
+<p>References <a class="el" href="base__controller_8php_source.html#l00552">send_error()</a>.</p>
+
+<p>Referenced by <a class="el" href="base__controller_8php_source.html#l00112">initialize()</a>.</p>
 
 </div>
 </div>
@@ -1390,11 +1436,11 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00547">547</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
+<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00565">565</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
 
-<p>References <a class="el" href="base__controller_8php_source.html#l00585">make_relative_url()</a>.</p>
+<p>References <a class="el" href="base__controller_8php_source.html#l00603">make_relative_url()</a>.</p>
 
-<p>Referenced by <a class="el" href="base__controller_8php_source.html#l00391">redirect_to()</a>, and <a class="el" href="base__controller_8php_source.html#l00559">url_to_myself()</a>.</p>
+<p>Referenced by <a class="el" href="base__controller_8php_source.html#l00392">redirect_to()</a>, and <a class="el" href="base__controller_8php_source.html#l00577">url_to_myself()</a>.</p>
 
 </div>
 </div>
@@ -1420,9 +1466,9 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00559">559</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
+<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00577">577</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
 
-<p>References <a class="el" href="base__controller_8php_source.html#l00547">url_to()</a>.</p>
+<p>References <a class="el" href="base__controller_8php_source.html#l00565">url_to()</a>.</p>
 
 </div>
 </div>
@@ -1440,9 +1486,9 @@ Private Attributes</h2></td></tr>
 <p>The name of the action. </p>
 <p>action </p>
 
-<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00035">35</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
+<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00036">36</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
 
-<p>Referenced by <a class="el" href="base__controller_8php_source.html#l00363">expire_cached_page()</a>, <a class="el" href="base__controller_8php_source.html#l00111">initialize()</a>, <a class="el" href="base__controller_8php_source.html#l00651">render()</a>, and <a class="el" href="base__controller_8php_source.html#l00889">render_component()</a>.</p>
+<p>Referenced by <a class="el" href="base__controller_8php_source.html#l00364">expire_cached_page()</a>, <a class="el" href="base__controller_8php_source.html#l00112">initialize()</a>, <a class="el" href="base__controller_8php_source.html#l00669">render()</a>, and <a class="el" href="base__controller_8php_source.html#l00907">render_component()</a>.</p>
 
 </div>
 </div>
@@ -1467,7 +1513,7 @@ Private Attributes</h2></td></tr>
 <p>Array of actions that should be cached. </p>
 <p>actions_cached </p>
 
-<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00089">89</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
+<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00090">90</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
 
 </div>
 </div>
@@ -1492,7 +1538,7 @@ Private Attributes</h2></td></tr>
 <p>Array of filters that should be called after the response has been rendered. </p>
 <p>after_filters </p>
 
-<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00077">77</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
+<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00078">78</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
 
 </div>
 </div>
@@ -1517,7 +1563,7 @@ Private Attributes</h2></td></tr>
 <p>Array of filters that should be called before the response has been rendered. </p>
 <p>before_filters </p>
 
-<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00071">71</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
+<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00072">72</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
 
 </div>
 </div>
@@ -1542,7 +1588,7 @@ Private Attributes</h2></td></tr>
 <p>An array of headers for the response. </p>
 <p>headers </p>
 
-<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00059">59</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
+<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00060">60</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
 
 </div>
 </div>
@@ -1567,7 +1613,7 @@ Private Attributes</h2></td></tr>
 <p>A MIME type for the response. </p>
 <p>mimetype </p>
 
-<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00053">53</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
+<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00054">54</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
 
 </div>
 </div>
@@ -1584,9 +1630,9 @@ Private Attributes</h2></td></tr>
 <p>The name of the controller. </p>
 <p>name </p>
 
-<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00029">29</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
+<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00030">30</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
 
-<p>Referenced by <a class="el" href="base__controller_8php_source.html#l00363">expire_cached_page()</a>, <a class="el" href="base__controller_8php_source.html#l00889">render_component()</a>, and <a class="el" href="base__controller_8php_source.html#l00761">render_layout()</a>.</p>
+<p>Referenced by <a class="el" href="base__controller_8php_source.html#l00364">expire_cached_page()</a>, <a class="el" href="base__controller_8php_source.html#l00603">make_relative_url()</a>, <a class="el" href="base__controller_8php_source.html#l00907">render_component()</a>, and <a class="el" href="base__controller_8php_source.html#l00779">render_layout()</a>.</p>
 
 </div>
 </div>
@@ -1611,7 +1657,7 @@ Private Attributes</h2></td></tr>
 <p>Array of pages that should be cached. </p>
 <p>pages_cached </p>
 
-<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00083">83</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
+<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00084">84</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
 
 </div>
 </div>
@@ -1636,9 +1682,9 @@ Private Attributes</h2></td></tr>
 <p>Flag to tell if the response has been already rendered. </p>
 <p>rendered </p>
 
-<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00065">65</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
+<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00066">66</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
 
-<p>Referenced by <a class="el" href="base__controller_8php_source.html#l00651">render()</a>, and <a class="el" href="base__controller_8php_source.html#l00761">render_layout()</a>.</p>
+<p>Referenced by <a class="el" href="base__controller_8php_source.html#l00669">render()</a>, and <a class="el" href="base__controller_8php_source.html#l00779">render_layout()</a>.</p>
 
 </div>
 </div>
@@ -1655,9 +1701,9 @@ Private Attributes</h2></td></tr>
 <p>A title for the page. </p>
 <p>title </p>
 
-<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00041">41</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
+<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00042">42</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
 
-<p>Referenced by <a class="el" href="base__controller_8php_source.html#l00992">set_title()</a>.</p>
+<p>Referenced by <a class="el" href="base__controller_8php_source.html#l01020">set_title()</a>.</p>
 
 </div>
 </div>
@@ -1682,14 +1728,14 @@ Private Attributes</h2></td></tr>
 <p>An extension for action pages. </p>
 <p>type </p>
 
-<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00047">47</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
+<p>Definition at line <a class="el" href="base__controller_8php_source.html#l00048">48</a> of file <a class="el" href="base__controller_8php_source.html">base_controller.php</a>.</p>
 
-<p>Referenced by <a class="el" href="base__controller_8php_source.html#l01019">flash()</a>, and <a class="el" href="base__controller_8php_source.html#l00585">make_relative_url()</a>.</p>
+<p>Referenced by <a class="el" href="base__controller_8php_source.html#l01047">flash()</a>, and <a class="el" href="base__controller_8php_source.html#l00603">make_relative_url()</a>.</p>
 
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>/Users/delphine/Development/Git/emeraldion/emerails/controllers/<a class="el" href="base__controller_8php_source.html">base_controller.php</a></li>
+<li>controllers/<a class="el" href="base__controller_8php_source.html">base_controller.php</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

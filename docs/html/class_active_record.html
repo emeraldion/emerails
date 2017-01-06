@@ -26,7 +26,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">EmeRails
-   &#160;<span id="projectnumber">0.0.1pre</span>
+   &#160;<span id="projectnumber">1.1.0</span>
    </div>
   </td>
  </tr>
@@ -82,12 +82,23 @@ $(document).ready(function(){initNavTree('class_active_record.html','');});
 
 <p>The abstract base class for DB-backed model objects.  
  <a href="class_active_record.html#details">More...</a></p>
+<div class="dynheader">
+Inheritance diagram for ActiveRecord:</div>
+<div class="dyncontent">
+ <div class="center">
+  <img src="class_active_record.png" usemap="#ActiveRecord_map" alt=""/>
+  <map id="ActiveRecord_map" name="ActiveRecord_map">
+<area href="class_test_group.html" alt="TestGroup" shape="rect" coords="0,56,89,80"/>
+<area href="class_test_model.html" alt="TestModel" shape="rect" coords="99,56,188,80"/>
+<area href="class_test_widget.html" alt="TestWidget" shape="rect" coords="198,56,287,80"/>
+</map>
+ </div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ad43ce99da615474ee2ef96b89b5326e1"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_active_record.html#ad43ce99da615474ee2ef96b89b5326e1">ActiveRecord</a> ($_values=NULL)</td></tr>
-<tr class="memdesc:ad43ce99da615474ee2ef96b89b5326e1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs and initializes an <a class="el" href="class_active_record.html" title="The abstract base class for DB-backed model objects. ">ActiveRecord</a> object.  <a href="#ad43ce99da615474ee2ef96b89b5326e1">More...</a><br /></td></tr>
-<tr class="separator:ad43ce99da615474ee2ef96b89b5326e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a60efc13f15b4284770081d331950d0fb"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_active_record.html#a60efc13f15b4284770081d331950d0fb">__construct</a> ($_values=NULL)</td></tr>
+<tr class="memdesc:a60efc13f15b4284770081d331950d0fb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs and initializes an <a class="el" href="class_active_record.html" title="The abstract base class for DB-backed model objects. ">ActiveRecord</a> object.  <a href="#a60efc13f15b4284770081d331950d0fb">More...</a><br /></td></tr>
+<tr class="separator:a60efc13f15b4284770081d331950d0fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a86d46a9984483efa3c59b4608d363482"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_active_record.html#a86d46a9984483efa3c59b4608d363482">belongs_to</a> ($table_name)</td></tr>
 <tr class="memdesc:a86d46a9984483efa3c59b4608d363482"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads the parent of the receiver in a one-to-many relationship.  <a href="#a86d46a9984483efa3c59b4608d363482">More...</a><br /></td></tr>
 <tr class="separator:a86d46a9984483efa3c59b4608d363482"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -109,6 +120,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:af34d37a074ab7de0b84714a91cf24b9d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_active_record.html#af34d37a074ab7de0b84714a91cf24b9d">find_by_id</a> ($id)</td></tr>
 <tr class="memdesc:af34d37a074ab7de0b84714a91cf24b9d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Populates an object with the values of the DB row whose primary key value is <code>id</code>.  <a href="#af34d37a074ab7de0b84714a91cf24b9d">More...</a><br /></td></tr>
 <tr class="separator:af34d37a074ab7de0b84714a91cf24b9d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5ab3407a40670e32294d5ce64d48995f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_active_record.html#a5ab3407a40670e32294d5ce64d48995f">count_all</a> ($params=array())</td></tr>
+<tr class="memdesc:a5ab3407a40670e32294d5ce64d48995f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the count of model objects that satisfy the requirements expressed in the <code>params</code> argument.  <a href="#a5ab3407a40670e32294d5ce64d48995f">More...</a><br /></td></tr>
+<tr class="separator:a5ab3407a40670e32294d5ce64d48995f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae515d5c791971b1c1a81454113dc58a0"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_active_record.html#ae515d5c791971b1c1a81454113dc58a0">save</a> ()</td></tr>
 <tr class="memdesc:ae515d5c791971b1c1a81454113dc58a0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Requests the receiver to save its data in the bound table.  <a href="#ae515d5c791971b1c1a81454113dc58a0">More...</a><br /></td></tr>
 <tr class="separator:ae515d5c791971b1c1a81454113dc58a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -127,6 +141,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a9c30af37401d5412702e0ac1365d4e73"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_active_record.html#a9c30af37401d5412702e0ac1365d4e73">__isset</a> ($key)</td></tr>
 <tr class="memdesc:a9c30af37401d5412702e0ac1365d4e73"><td class="mdescLeft">&#160;</td><td class="mdescRight">Magic method to determine if a property exists.  <a href="#a9c30af37401d5412702e0ac1365d4e73">More...</a><br /></td></tr>
 <tr class="separator:a9c30af37401d5412702e0ac1365d4e73"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a35e6de7712172beb84f4fe392c57a8a6"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_active_record.html#a35e6de7712172beb84f4fe392c57a8a6">__unset</a> ($key)</td></tr>
+<tr class="memdesc:a35e6de7712172beb84f4fe392c57a8a6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Magic method to unset a property.  <a href="#a35e6de7712172beb84f4fe392c57a8a6">More...</a><br /></td></tr>
+<tr class="separator:a35e6de7712172beb84f4fe392c57a8a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
@@ -218,11 +235,40 @@ Private Attributes</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>The abstract base class for DB-backed model objects. </p>
 <p>Project EmeRails - Codename Ocarina</p>
-<p>Copyright (c) 2008, 2015 Claudio Procida <a href="http://www.emeraldion.it">http://www.emeraldion.it</a></p>
+<p>Copyright (c) 2008, 2017 Claudio Procida <a href="http://www.emeraldion.it">http://www.emeraldion.it</a></p>
 <p>Every object of a subclass of <a class="el" href="class_active_record.html" title="The abstract base class for DB-backed model objects. ">ActiveRecord</a> are mapped 1:1 to records of a table in a relational Database. Naming conventions assume that if the <a class="el" href="class_active_record.html" title="The abstract base class for DB-backed model objects. ">ActiveRecord</a> subclass is called <code>MyProduct</code>, database records are stored in a table called <code>my_products</code>. Conversely, if an object of another class is in a relation with your object, it is assumed that a foreign key called <code>my_product_id</code> exists in the other table. Of course this is overridable by setting explicitly <code>$table_name</code> and <code>$foreign_key</code> to a value of your choice. </p>
 
 <p>Definition at line <a class="el" href="base_8php_source.html#l00023">23</a> of file <a class="el" href="base_8php_source.html">base.php</a>.</p>
-</div><h2 class="groupheader">Member Function Documentation</h2>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="a60efc13f15b4284770081d331950d0fb"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">ActiveRecord::__construct </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>$_values</em> = <code>NULL</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Constructs and initializes an <a class="el" href="class_active_record.html" title="The abstract base class for DB-backed model objects. ">ActiveRecord</a> object. </p>
+<p>Due to the lack of a static class initialization method, the default constructor is in charge of gathering information about the bound table columns the first time an object is created. Subsequent creations will use the values stored in static class variables. Subclassers don't need to override the constructor. They can in turn override the <code>init</code> method in order to perform custom initialization. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">values</td><td>Column values to initialize the object. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Definition at line <a class="el" href="base_8php_source.html#l00093">93</a> of file <a class="el" href="base_8php_source.html">base.php</a>.</p>
+
+<p>References <a class="el" href="base_8php_source.html#l00029">$columns</a>, <a class="el" href="db_8inc_8php_source.html#l00114">Db\close_connection()</a>, <a class="el" href="db_8inc_8php_source.html#l00074">Db\get_connection()</a>, <a class="el" href="base_8php_source.html#l00149">get_table_name()</a>, and <a class="el" href="base_8php_source.html#l00137">init()</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
 <a class="anchor" id="adb80fb4506a8b58c2c34a183fa05820d"></a>
 <div class="memitem">
 <div class="memproto">
@@ -245,7 +291,7 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="base_8php_source.html#l00642">642</a> of file <a class="el" href="base_8php_source.html">base.php</a>.</p>
+<p>Definition at line <a class="el" href="base_8php_source.html#l00683">683</a> of file <a class="el" href="base_8php_source.html">base.php</a>.</p>
 
 </div>
 </div>
@@ -271,7 +317,7 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="base_8php_source.html#l00660">660</a> of file <a class="el" href="base_8php_source.html">base.php</a>.</p>
+<p>Definition at line <a class="el" href="base_8php_source.html#l00702">702</a> of file <a class="el" href="base_8php_source.html">base.php</a>.</p>
 
 </div>
 </div>
@@ -308,9 +354,35 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="base_8php_source.html#l00625">625</a> of file <a class="el" href="base_8php_source.html">base.php</a>.</p>
+<p>Definition at line <a class="el" href="base_8php_source.html#l00666">666</a> of file <a class="el" href="base_8php_source.html">base.php</a>.</p>
 
 <p>References <a class="el" href="base_8php_source.html#l00198">has_column()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a35e6de7712172beb84f4fe392c57a8a6"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">ActiveRecord::__unset </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>$key</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Magic method to unset a property. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">key</td><td>The key to unset. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Definition at line <a class="el" href="base_8php_source.html#l00724">724</a> of file <a class="el" href="base_8php_source.html">base.php</a>.</p>
 
 </div>
 </div>
@@ -362,7 +434,7 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="base_8php_source.html#l00738">738</a> of file <a class="el" href="base_8php_source.html">base.php</a>.</p>
+<p>Definition at line <a class="el" href="base_8php_source.html#l00801">801</a> of file <a class="el" href="base_8php_source.html">base.php</a>.</p>
 
 </div>
 </div>
@@ -396,7 +468,7 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="base_8php_source.html#l00722">722</a> of file <a class="el" href="base_8php_source.html">base.php</a>.</p>
+<p>Definition at line <a class="el" href="base_8php_source.html#l00785">785</a> of file <a class="el" href="base_8php_source.html">base.php</a>.</p>
 
 </div>
 </div>
@@ -441,7 +513,7 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="base_8php_source.html#l00753">753</a> of file <a class="el" href="base_8php_source.html">base.php</a>.</p>
+<p>Definition at line <a class="el" href="base_8php_source.html#l00816">816</a> of file <a class="el" href="base_8php_source.html">base.php</a>.</p>
 
 </div>
 </div>
@@ -476,7 +548,7 @@ Private Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><code>TRUE</code> if the class has been initialized, <code>FALSE</code> otherwise. </dd></dl>
 
-<p>Definition at line <a class="el" href="base_8php_source.html#l00697">697</a> of file <a class="el" href="base_8php_source.html">base.php</a>.</p>
+<p>Definition at line <a class="el" href="base_8php_source.html#l00760">760</a> of file <a class="el" href="base_8php_source.html">base.php</a>.</p>
 
 </div>
 </div>
@@ -521,7 +593,7 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="base_8php_source.html#l00712">712</a> of file <a class="el" href="base_8php_source.html">base.php</a>.</p>
+<p>Definition at line <a class="el" href="base_8php_source.html#l00775">775</a> of file <a class="el" href="base_8php_source.html">base.php</a>.</p>
 
 </div>
 </div>
@@ -566,35 +638,7 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="base_8php_source.html#l00686">686</a> of file <a class="el" href="base_8php_source.html">base.php</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="ad43ce99da615474ee2ef96b89b5326e1"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">ActiveRecord::ActiveRecord </td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>$_values</em> = <code>NULL</code></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Constructs and initializes an <a class="el" href="class_active_record.html" title="The abstract base class for DB-backed model objects. ">ActiveRecord</a> object. </p>
-<p>Due to the lack of a static class initialization method, the default constructor is in charge of gathering information about the bound table columns the first time an object is created. Subsequent creations will use the values stored in static class variables. Subclassers don't need to override the constructor. They can in turn override the <code>init</code> method in order to perform custom initialization. </p><dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">values</td><td>Column values to initialize the object. </td></tr>
-  </table>
-  </dd>
-</dl>
-
-<p>Definition at line <a class="el" href="base_8php_source.html#l00093">93</a> of file <a class="el" href="base_8php_source.html">base.php</a>.</p>
-
-<p>References <a class="el" href="base_8php_source.html#l00029">$columns</a>, <a class="el" href="base_8php_source.html#l00149">get_table_name()</a>, and <a class="el" href="base_8php_source.html#l00137">init()</a>.</p>
+<p>Definition at line <a class="el" href="base_8php_source.html#l00749">749</a> of file <a class="el" href="base_8php_source.html">base.php</a>.</p>
 
 </div>
 </div>
@@ -622,7 +666,38 @@ Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="base_8php_source.html#l00210">210</a> of file <a class="el" href="base_8php_source.html">base.php</a>.</p>
 
-<p>References <a class="el" href="base_8php_source.html#l00029">$columns</a>, <a class="el" href="base_8php_source.html#l00059">$table_name</a>, <a class="el" href="common_8inc_8php_source.html#l00059">singularize()</a>, <a class="el" href="common_8inc_8php_source.html#l00101">table_name_to_class_name()</a>, and <a class="el" href="common_8inc_8php_source.html#l00130">table_name_to_foreign_key()</a>.</p>
+<p>References <a class="el" href="base_8php_source.html#l00029">$columns</a>, <a class="el" href="base_8php_source.html#l00059">$table_name</a>, <a class="el" href="common_8inc_8php_source.html#l00059">singularize()</a>, <a class="el" href="common_8inc_8php_source.html#l00101">table_name_to_class_name()</a>, and <a class="el" href="common_8inc_8php_source.html#l00132">table_name_to_foreign_key()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a5ab3407a40670e32294d5ce64d48995f"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">ActiveRecord::count_all </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>$params</em> = <code>array()</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns the count of model objects that satisfy the requirements expressed in the <code>params</code> argument. </p>
+<p>This method lets you count all objects of this class that satisfy a custom set of requirements, which you can express by setting the following keys of the <code>params</code> argument: </p><ul>
+<li><code>where_clause</code> You can express a custom SQL WHERE expression here (e.g. <code>date</code> &lt; '2008-05-01') <dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">params</td><td>An array of parameters for the underlying SQL query. </td></tr>
+  </table>
+  </dd>
+</dl>
+</li>
+</ul>
+
+<p>Definition at line <a class="el" href="base_8php_source.html#l00481">481</a> of file <a class="el" href="base_8php_source.html">base.php</a>.</p>
+
+<p>References <a class="el" href="db_8inc_8php_source.html#l00114">Db\close_connection()</a>, <a class="el" href="db_8inc_8php_source.html#l00074">Db\get_connection()</a>, and <a class="el" href="base_8php_source.html#l00149">get_table_name()</a>.</p>
 
 </div>
 </div>
@@ -648,9 +723,9 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="base_8php_source.html#l00557">557</a> of file <a class="el" href="base_8php_source.html">base.php</a>.</p>
+<p>Definition at line <a class="el" href="base_8php_source.html#l00598">598</a> of file <a class="el" href="base_8php_source.html">base.php</a>.</p>
 
-<p>References <a class="el" href="base_8php_source.html#l00149">get_table_name()</a>.</p>
+<p>References <a class="el" href="db_8inc_8php_source.html#l00114">Db\close_connection()</a>, <a class="el" href="db_8inc_8php_source.html#l00074">Db\get_connection()</a>, and <a class="el" href="base_8php_source.html#l00149">get_table_name()</a>.</p>
 
 </div>
 </div>
@@ -729,7 +804,7 @@ Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="base_8php_source.html#l00375">375</a> of file <a class="el" href="base_8php_source.html">base.php</a>.</p>
 
-<p>References <a class="el" href="base_8php_source.html#l00149">get_table_name()</a>.</p>
+<p>References <a class="el" href="db_8inc_8php_source.html#l00114">Db\close_connection()</a>, <a class="el" href="db_8inc_8php_source.html#l00074">Db\get_connection()</a>, and <a class="el" href="base_8php_source.html#l00149">get_table_name()</a>.</p>
 
 </div>
 </div>
@@ -758,7 +833,7 @@ Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="base_8php_source.html#l00444">444</a> of file <a class="el" href="base_8php_source.html">base.php</a>.</p>
 
-<p>References <a class="el" href="base_8php_source.html#l00029">$columns</a>, <a class="el" href="base_8php_source.html#l00080">$values</a>, and <a class="el" href="base_8php_source.html#l00149">get_table_name()</a>.</p>
+<p>References <a class="el" href="base_8php_source.html#l00029">$columns</a>, <a class="el" href="base_8php_source.html#l00080">$values</a>, <a class="el" href="db_8inc_8php_source.html#l00114">Db\close_connection()</a>, <a class="el" href="db_8inc_8php_source.html#l00074">Db\get_connection()</a>, and <a class="el" href="base_8php_source.html#l00149">get_table_name()</a>.</p>
 
 </div>
 </div>
@@ -786,6 +861,8 @@ Private Attributes</h2></td></tr>
 </dl>
 
 <p>Definition at line <a class="el" href="base_8php_source.html#l00337">337</a> of file <a class="el" href="base_8php_source.html">base.php</a>.</p>
+
+<p>References <a class="el" href="db_8inc_8php_source.html#l00114">Db\close_connection()</a>, and <a class="el" href="db_8inc_8php_source.html#l00074">Db\get_connection()</a>.</p>
 
 </div>
 </div>
@@ -815,7 +892,7 @@ Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="base_8php_source.html#l00167">167</a> of file <a class="el" href="base_8php_source.html">base.php</a>.</p>
 
-<p>References <a class="el" href="base_8php_source.html#l00074">$foreign_key_name</a>, and <a class="el" href="common_8inc_8php_source.html#l00123">class_name_to_foreign_key()</a>.</p>
+<p>References <a class="el" href="base_8php_source.html#l00074">$foreign_key_name</a>, and <a class="el" href="common_8inc_8php_source.html#l00125">class_name_to_foreign_key()</a>.</p>
 
 <p>Referenced by <a class="el" href="base_8php_source.html#l00266">has_and_belongs_to_many()</a>, <a class="el" href="base_8php_source.html#l00235">has_many()</a>, and <a class="el" href="base_8php_source.html#l00312">has_one()</a>.</p>
 
@@ -879,7 +956,7 @@ Private Attributes</h2></td></tr>
 
 <p>References <a class="el" href="base_8php_source.html#l00059">$table_name</a>, and <a class="el" href="common_8inc_8php_source.html#l00096">class_name_to_table_name()</a>.</p>
 
-<p>Referenced by <a class="el" href="base_8php_source.html#l00093">ActiveRecord()</a>, <a class="el" href="base_8php_source.html#l00557">delete()</a>, <a class="el" href="base_8php_source.html#l00375">find_all()</a>, <a class="el" href="base_8php_source.html#l00444">find_by_id()</a>, and <a class="el" href="base_8php_source.html#l00483">save()</a>.</p>
+<p>Referenced by <a class="el" href="base_8php_source.html#l00093">__construct()</a>, <a class="el" href="base_8php_source.html#l00481">count_all()</a>, <a class="el" href="base_8php_source.html#l00598">delete()</a>, <a class="el" href="base_8php_source.html#l00375">find_all()</a>, <a class="el" href="base_8php_source.html#l00444">find_by_id()</a>, and <a class="el" href="base_8php_source.html#l00514">save()</a>.</p>
 
 </div>
 </div>
@@ -919,7 +996,7 @@ Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="base_8php_source.html#l00266">266</a> of file <a class="el" href="base_8php_source.html">base.php</a>.</p>
 
-<p>References <a class="el" href="base_8php_source.html#l00059">$table_name</a>, <a class="el" href="base_8php_source.html#l00167">get_foreign_key_name()</a>, and <a class="el" href="common_8inc_8php_source.html#l00101">table_name_to_class_name()</a>.</p>
+<p>References <a class="el" href="base_8php_source.html#l00059">$table_name</a>, <a class="el" href="db_8inc_8php_source.html#l00114">Db\close_connection()</a>, <a class="el" href="db_8inc_8php_source.html#l00074">Db\get_connection()</a>, <a class="el" href="base_8php_source.html#l00167">get_foreign_key_name()</a>, and <a class="el" href="common_8inc_8php_source.html#l00101">table_name_to_class_name()</a>.</p>
 
 </div>
 </div>
@@ -957,7 +1034,7 @@ Private Attributes</h2></td></tr>
 
 <p>References <a class="el" href="base_8php_source.html#l00029">$columns</a>.</p>
 
-<p>Referenced by <a class="el" href="base_8php_source.html#l00625">__set()</a>.</p>
+<p>Referenced by <a class="el" href="base_8php_source.html#l00666">__set()</a>.</p>
 
 </div>
 </div>
@@ -1064,7 +1141,7 @@ Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="base_8php_source.html#l00137">137</a> of file <a class="el" href="base_8php_source.html">base.php</a>.</p>
 
-<p>Referenced by <a class="el" href="base_8php_source.html#l00093">ActiveRecord()</a>.</p>
+<p>Referenced by <a class="el" href="base_8php_source.html#l00093">__construct()</a>.</p>
 
 </div>
 </div>
@@ -1090,9 +1167,9 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="base_8php_source.html#l00599">599</a> of file <a class="el" href="base_8php_source.html">base.php</a>.</p>
+<p>Definition at line <a class="el" href="base_8php_source.html#l00640">640</a> of file <a class="el" href="base_8php_source.html">base.php</a>.</p>
 
-<p>References <a class="el" href="router_8php_source.html#l00014">APPLICATION_ROOT</a>, and <a class="el" href="base_8php_source.html#l00586">relative_url()</a>.</p>
+<p>References <a class="el" href="router_8php_source.html#l00014">APPLICATION_ROOT</a>, and <a class="el" href="base_8php_source.html#l00627">relative_url()</a>.</p>
 
 </div>
 </div>
@@ -1120,9 +1197,9 @@ Private Attributes</h2></td></tr>
 <p>Provides a relative URL that will be used by the <code>permalink</code> public method. </p>
 <p>Subclassers that wish to provide custom permalinks for objects should override this method. You should return the URL portion after the <code>APPLICATION_ROOT</code> part only. </p>
 
-<p>Definition at line <a class="el" href="base_8php_source.html#l00586">586</a> of file <a class="el" href="base_8php_source.html">base.php</a>.</p>
+<p>Definition at line <a class="el" href="base_8php_source.html#l00627">627</a> of file <a class="el" href="base_8php_source.html">base.php</a>.</p>
 
-<p>Referenced by <a class="el" href="base_8php_source.html#l00599">permalink()</a>.</p>
+<p>Referenced by <a class="el" href="base_8php_source.html#l00640">permalink()</a>.</p>
 
 </div>
 </div>
@@ -1142,9 +1219,9 @@ Private Attributes</h2></td></tr>
 <p>Requests the receiver to save its data in the bound table. </p>
 <p>This method has two distinct effects. If called on an object fetched from the table, it performs an <code>UPDATE</code> SQL statement to update the table data to the new values. If called on an object created programmatically, it performs an <code>INSERT</code> SQL statement, and sets the object's primary key value to the value resulting by the insert. </p><dl class="section return"><dt>Returns</dt><dd>This method returns TRUE if the object has been saved successfully. </dd></dl>
 
-<p>Definition at line <a class="el" href="base_8php_source.html#l00483">483</a> of file <a class="el" href="base_8php_source.html">base.php</a>.</p>
+<p>Definition at line <a class="el" href="base_8php_source.html#l00514">514</a> of file <a class="el" href="base_8php_source.html">base.php</a>.</p>
 
-<p>References <a class="el" href="base_8php_source.html#l00029">$columns</a>, <a class="el" href="base_8php_source.html#l00066">$primary_key</a>, and <a class="el" href="base_8php_source.html#l00149">get_table_name()</a>.</p>
+<p>References <a class="el" href="base_8php_source.html#l00029">$columns</a>, <a class="el" href="base_8php_source.html#l00066">$primary_key</a>, <a class="el" href="db_8inc_8php_source.html#l00114">Db\close_connection()</a>, <a class="el" href="db_8inc_8php_source.html#l00074">Db\get_connection()</a>, and <a class="el" href="base_8php_source.html#l00149">get_table_name()</a>.</p>
 
 </div>
 </div>
@@ -1222,7 +1299,7 @@ Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="base_8php_source.html#l00029">29</a> of file <a class="el" href="base_8php_source.html">base.php</a>.</p>
 
-<p>Referenced by <a class="el" href="base_8php_source.html#l00093">ActiveRecord()</a>, <a class="el" href="base_8php_source.html#l00210">belongs_to()</a>, <a class="el" href="base_8php_source.html#l00444">find_by_id()</a>, <a class="el" href="base_8php_source.html#l00198">has_column()</a>, and <a class="el" href="base_8php_source.html#l00483">save()</a>.</p>
+<p>Referenced by <a class="el" href="base_8php_source.html#l00093">__construct()</a>, <a class="el" href="base_8php_source.html#l00210">belongs_to()</a>, <a class="el" href="base_8php_source.html#l00444">find_by_id()</a>, <a class="el" href="base_8php_source.html#l00198">has_column()</a>, and <a class="el" href="base_8php_source.html#l00514">save()</a>.</p>
 
 </div>
 </div>
@@ -1328,7 +1405,7 @@ Private Attributes</h2></td></tr>
 
 <p>Definition at line <a class="el" href="base_8php_source.html#l00066">66</a> of file <a class="el" href="base_8php_source.html">base.php</a>.</p>
 
-<p>Referenced by <a class="el" href="base_8php_source.html#l00184">get_primary_key()</a>, and <a class="el" href="base_8php_source.html#l00483">save()</a>.</p>
+<p>Referenced by <a class="el" href="base_8php_source.html#l00184">get_primary_key()</a>, and <a class="el" href="base_8php_source.html#l00514">save()</a>.</p>
 
 </div>
 </div>
@@ -1387,7 +1464,7 @@ Private Attributes</h2></td></tr>
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>/Users/delphine/Development/Git/emeraldion/emerails/models/<a class="el" href="base_8php_source.html">base.php</a></li>
+<li>models/<a class="el" href="base_8php_source.html">base.php</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

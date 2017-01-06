@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.10"/>
-<title>EmeRails: /Users/delphine/Development/Git/emeraldion/emerails/helpers/request.php Source File</title>
+<title>EmeRails: helpers/request.php Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -26,7 +26,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">EmeRails
-   &#160;<span id="projectnumber">0.0.1pre</span>
+   &#160;<span id="projectnumber">1.1.0</span>
    </div>
   </td>
  </tr>
@@ -75,17 +75,17 @@ $(document).ready(function(){initNavTree('request_8php_source.html','');});
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;</div>
 <div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="class_request.html#a55df0180bf252b0276f51f023ce8f355">   25</a></span>&#160;                <span class="keyword">public</span> <a class="code" href="class_request.html#a55df0180bf252b0276f51f023ce8f355">$method</a>;</div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;</div>
-<div class="line"><a name="l00031"></a><span class="lineno"><a class="line" href="class_request.html#afaf8d8928de7ffff8a3767589489bd33">   31</a></span>&#160;                <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_request.html#afaf8d8928de7ffff8a3767589489bd33">Request</a>()</div>
+<div class="line"><a name="l00031"></a><span class="lineno"><a class="line" href="class_request.html#a384a81873068495b6ebb552764136611">   31</a></span>&#160;                <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_request.html#a384a81873068495b6ebb552764136611">__construct</a>()</div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;                {</div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;                        $this-&gt;querystring = self::purge_querystring();</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;                        $this-&gt;method = strtoupper($_SERVER[<span class="stringliteral">&#39;REQUEST_METHOD&#39;</span>]);</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;                        $this-&gt;method = strtoupper(@$_SERVER[<span class="stringliteral">&#39;REQUEST_METHOD&#39;</span>]);</div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;                }</div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;</div>
 <div class="line"><a name="l00041"></a><span class="lineno"><a class="line" href="class_request.html#a524d9adb3ac421853b4e2888d08d31eb">   41</a></span>&#160;                <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_request.html#a524d9adb3ac421853b4e2888d08d31eb">is_get</a>()</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;                {</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;                        <span class="keywordflow">return</span> self::is_method(<span class="stringliteral">&#39;GET&#39;</span>);</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;                }</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;                </div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;</div>
 <div class="line"><a name="l00050"></a><span class="lineno"><a class="line" href="class_request.html#a602e9965ec52f8b5a83e15b0163387f5">   50</a></span>&#160;                <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_request.html#a602e9965ec52f8b5a83e15b0163387f5">is_post</a>()</div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;                {</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;                        <span class="keywordflow">return</span> self::is_method(<span class="stringliteral">&#39;POST&#39;</span>);</div>
@@ -108,17 +108,17 @@ $(document).ready(function(){initNavTree('request_8php_source.html','');});
 <div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;</div>
 <div class="line"><a name="l00087"></a><span class="lineno"><a class="line" href="class_request.html#a13779390c51cb5424dd644e232465880">   87</a></span>&#160;                <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">function</span> <a class="code" href="class_request.html#a13779390c51cb5424dd644e232465880">is_method</a>(<a class="code" href="class_request.html#a55df0180bf252b0276f51f023ce8f355">$method</a>)</div>
 <div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;                {</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;                        <span class="keywordflow">return</span> !strncmp($_SERVER[<span class="stringliteral">&#39;REQUEST_METHOD&#39;</span>], <a class="code" href="class_request.html#a55df0180bf252b0276f51f023ce8f355">$method</a>, strlen(<a class="code" href="class_request.html#a55df0180bf252b0276f51f023ce8f355">$method</a>));</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;                        <span class="keywordflow">return</span> !strncmp(@$_SERVER[<span class="stringliteral">&#39;REQUEST_METHOD&#39;</span>], <a class="code" href="class_request.html#a55df0180bf252b0276f51f023ce8f355">$method</a>, strlen(<a class="code" href="class_request.html#a55df0180bf252b0276f51f023ce8f355">$method</a>));</div>
 <div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;                }</div>
 <div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;</div>
 <div class="line"><a name="l00098"></a><span class="lineno"><a class="line" href="class_request.html#ad5a777ea4b33aabf582967407d24b4bb">   98</a></span>&#160;                <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_request.html#ad5a777ea4b33aabf582967407d24b4bb">get_parameter</a>($name)</div>
 <div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;                {</div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;                        <span class="keywordflow">return</span> $_REQUEST[$name];</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;                        <span class="keywordflow">return</span> @$_REQUEST[$name];</div>
 <div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;                }</div>
 <div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;</div>
 <div class="line"><a name="l00108"></a><span class="lineno"><a class="line" href="class_request.html#a2c113934b1b746c76efbd3b5d5dc325c">  108</a></span>&#160;                <span class="keyword">protected</span> <span class="keyword">static</span> <span class="keyword">function</span> <a class="code" href="class_request.html#a2c113934b1b746c76efbd3b5d5dc325c">purge_querystring</a>()</div>
 <div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;                {</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;                        $pairs = explode(<span class="charliteral">&#39;&amp;&#39;</span>, $_SERVER[<span class="stringliteral">&#39;QUERY_STRING&#39;</span>]);</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;                        $pairs = explode(<span class="charliteral">&#39;&amp;&#39;</span>, @$_SERVER[<span class="stringliteral">&#39;QUERY_STRING&#39;</span>]);</div>
 <div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;                        $newpairs = array();</div>
 <div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;                        <span class="keywordflow">foreach</span> ($pairs as $pair)</div>
 <div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;                        {</div>
@@ -145,7 +145,7 @@ $(document).ready(function(){initNavTree('request_8php_source.html','');});
 <div class="ttc" id="class_request_html_a13779390c51cb5424dd644e232465880"><div class="ttname"><a href="class_request.html#a13779390c51cb5424dd644e232465880">Request\is_method</a></div><div class="ttdeci">static is_method($method)</div><div class="ttdoc">Returns TRUE if the request method is method. </div><div class="ttdef"><b>Definition:</b> <a href="request_8php_source.html#l00087">request.php:87</a></div></div>
 <div class="ttc" id="class_request_html_aad0e52deea877703325fdaa893bad999"><div class="ttname"><a href="class_request.html#aad0e52deea877703325fdaa893bad999">Request\$querystring</a></div><div class="ttdeci">$querystring</div><div class="ttdoc">The query string used in the HTTP request. </div><div class="ttdef"><b>Definition:</b> <a href="request_8php_source.html#l00020">request.php:20</a></div></div>
 <div class="ttc" id="class_request_html_aaaa1d96a96edbccc28312da65847a15c"><div class="ttname"><a href="class_request.html#aaaa1d96a96edbccc28312da65847a15c">Request\is_head</a></div><div class="ttdeci">is_head()</div><div class="ttdoc">Returns TRUE if the request method is HEAD. </div><div class="ttdef"><b>Definition:</b> <a href="request_8php_source.html#l00077">request.php:77</a></div></div>
-<div class="ttc" id="class_request_html_afaf8d8928de7ffff8a3767589489bd33"><div class="ttname"><a href="class_request.html#afaf8d8928de7ffff8a3767589489bd33">Request\Request</a></div><div class="ttdeci">Request()</div><div class="ttdoc">Default constructor. </div><div class="ttdef"><b>Definition:</b> <a href="request_8php_source.html#l00031">request.php:31</a></div></div>
+<div class="ttc" id="class_request_html_a384a81873068495b6ebb552764136611"><div class="ttname"><a href="class_request.html#a384a81873068495b6ebb552764136611">Request\__construct</a></div><div class="ttdeci">__construct()</div><div class="ttdoc">Default constructor. </div><div class="ttdef"><b>Definition:</b> <a href="request_8php_source.html#l00031">request.php:31</a></div></div>
 <div class="ttc" id="class_request_html_a602e9965ec52f8b5a83e15b0163387f5"><div class="ttname"><a href="class_request.html#a602e9965ec52f8b5a83e15b0163387f5">Request\is_post</a></div><div class="ttdeci">is_post()</div><div class="ttdoc">Returns TRUE if the request method is POST. </div><div class="ttdef"><b>Definition:</b> <a href="request_8php_source.html#l00050">request.php:50</a></div></div>
 <div class="ttc" id="class_request_html_a524d9adb3ac421853b4e2888d08d31eb"><div class="ttname"><a href="class_request.html#a524d9adb3ac421853b4e2888d08d31eb">Request\is_get</a></div><div class="ttdeci">is_get()</div><div class="ttdoc">Returns TRUE if the request method is GET. </div><div class="ttdef"><b>Definition:</b> <a href="request_8php_source.html#l00041">request.php:41</a></div></div>
 <div class="ttc" id="class_request_html_a55df0180bf252b0276f51f023ce8f355"><div class="ttname"><a href="class_request.html#a55df0180bf252b0276f51f023ce8f355">Request\$method</a></div><div class="ttdeci">$method</div><div class="ttdoc">The method used in the HTTP request (e.g. POST). </div><div class="ttdef"><b>Definition:</b> <a href="request_8php_source.html#l00025">request.php:25</a></div></div>
@@ -154,7 +154,7 @@ $(document).ready(function(){initNavTree('request_8php_source.html','');});
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_9e51036813d6151dfecc72d5fa7c02b3.html">Users</a></li><li class="navelem"><a class="el" href="dir_fd5a2e73ede5f4cd5b1ed6088cd39094.html">delphine</a></li><li class="navelem"><a class="el" href="dir_6a1e6d26bf2866f1067fd87a6429c69f.html">Development</a></li><li class="navelem"><a class="el" href="dir_7c7364dd6ec33031d45fd2876755f1e5.html">Git</a></li><li class="navelem"><a class="el" href="dir_3bede1fca4789788fa8e44ef241dbec7.html">emeraldion</a></li><li class="navelem"><a class="el" href="dir_e7a37730208a817f71ee2d4629141389.html">emerails</a></li><li class="navelem"><a class="el" href="dir_8c78269fc38159afddbd8320a4dac650.html">helpers</a></li><li class="navelem"><a class="el" href="request_8php.html">request.php</a></li>
+    <li class="navelem"><a class="el" href="dir_861f50189fda057e6c57d1c1130602b3.html">helpers</a></li><li class="navelem"><a class="el" href="request_8php.html">request.php</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.10 </li>

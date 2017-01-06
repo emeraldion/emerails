@@ -1,8 +1,8 @@
 var class_base_controller =
 [
+    [ "__construct", "class_base_controller.html#a065506622b6e03340aa0df531fb5558a", null ],
     [ "abort_and_flush", "class_base_controller.html#adc34c42bbcf42a8270be4ad8c3045e91", null ],
     [ "after_filter", "class_base_controller.html#a362a1c08f8af5e2e50801482402d2e77", null ],
-    [ "BaseController", "class_base_controller.html#abbcb61dc8d32d0389198d36fe181ef33", null ],
     [ "before_filter", "class_base_controller.html#aa3f4119163246e476fb326124362ea3f", null ],
     [ "button_to", "class_base_controller.html#aadd3ed9268fdaf8ddc6a288e160e24ca", null ],
     [ "cached_page_exists", "class_base_controller.html#a1ed568a34082457675abe39f021bc18f", null ],
@@ -29,6 +29,7 @@ var class_base_controller =
     [ "render_component", "class_base_controller.html#a22c754c08f322920c4ee23b3ee9584ae", null ],
     [ "render_layout", "class_base_controller.html#aa7c31541f4fb21b70e2e12000c36efae", null ],
     [ "render_page", "class_base_controller.html#ada050c9103f756e373ce7a1ca3ce5a84", null ],
+    [ "send_error", "class_base_controller.html#a4ef8c8f9e93f575d10aa2af2c080650b", null ],
     [ "set_title", "class_base_controller.html#a6b34ce2554cc033c1b59820e8e4ef777", null ],
     [ "strip_external_php_tags", "class_base_controller.html#abbbde4bec3ba85b45782e6d20fd544ca", null ],
     [ "unknown_action", "class_base_controller.html#ac8276a3aebe79d55d87576d8a8b12c36", null ],

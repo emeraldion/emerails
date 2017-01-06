@@ -26,7 +26,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">EmeRails
-   &#160;<span id="projectnumber">0.0.1pre</span>
+   &#160;<span id="projectnumber">1.1.0</span>
    </div>
   </td>
  </tr>
@@ -58,27 +58,27 @@
   </div>
   <div id="navrow4" class="tabs3">
     <ul class="tablist">
-      <li><a href="#index_$"><span>$</span></a></li>
-      <li><a href="#index__"><span>_</span></a></li>
-      <li><a href="#index_a"><span>a</span></a></li>
-      <li><a href="#index_b"><span>b</span></a></li>
-      <li><a href="#index_c"><span>c</span></a></li>
-      <li><a href="#index_d"><span>d</span></a></li>
-      <li><a href="#index_e"><span>e</span></a></li>
-      <li><a href="#index_f"><span>f</span></a></li>
-      <li><a href="#index_g"><span>g</span></a></li>
-      <li><a href="#index_h"><span>h</span></a></li>
-      <li><a href="#index_i"><span>i</span></a></li>
-      <li><a href="#index_l"><span>l</span></a></li>
-      <li><a href="#index_m"><span>m</span></a></li>
-      <li><a href="#index_n"><span>n</span></a></li>
-      <li><a href="#index_p"><span>p</span></a></li>
-      <li><a href="#index_r"><span>r</span></a></li>
-      <li><a href="#index_s"><span>s</span></a></li>
-      <li><a href="#index_t"><span>t</span></a></li>
-      <li><a href="#index_u"><span>u</span></a></li>
-      <li><a href="#index_w"><span>w</span></a></li>
-      <li class="current"><a href="#index_y"><span>y</span></a></li>
+      <li class="current"><a href="functions.html#index_$"><span>$</span></a></li>
+      <li><a href="functions__.html#index__"><span>_</span></a></li>
+      <li><a href="functions_a.html#index_a"><span>a</span></a></li>
+      <li><a href="functions_b.html#index_b"><span>b</span></a></li>
+      <li><a href="functions_c.html#index_c"><span>c</span></a></li>
+      <li><a href="functions_d.html#index_d"><span>d</span></a></li>
+      <li><a href="functions_e.html#index_e"><span>e</span></a></li>
+      <li><a href="functions_f.html#index_f"><span>f</span></a></li>
+      <li><a href="functions_g.html#index_g"><span>g</span></a></li>
+      <li><a href="functions_h.html#index_h"><span>h</span></a></li>
+      <li><a href="functions_i.html#index_i"><span>i</span></a></li>
+      <li><a href="functions_l.html#index_l"><span>l</span></a></li>
+      <li><a href="functions_m.html#index_m"><span>m</span></a></li>
+      <li><a href="functions_n.html#index_n"><span>n</span></a></li>
+      <li><a href="functions_p.html#index_p"><span>p</span></a></li>
+      <li><a href="functions_r.html#index_r"><span>r</span></a></li>
+      <li><a href="functions_s.html#index_s"><span>s</span></a></li>
+      <li><a href="functions_t.html#index_t"><span>t</span></a></li>
+      <li><a href="functions_u.html#index_u"><span>u</span></a></li>
+      <li><a href="functions_w.html#index_w"><span>w</span></a></li>
+      <li><a href="functions_y.html#index_y"><span>y</span></a></li>
     </ul>
   </div>
 </div><!-- top -->
@@ -106,6 +106,9 @@ $(document).ready(function(){initNavTree('functions.html','');});
 <li>$actions_cached
 : <a class="el" href="class_base_controller.html#a077d10ac536629cd2833972cab7892c6">BaseController</a>
 </li>
+<li>$adapters
+: <a class="el" href="class_db.html#a6d6b8e4afec5650da5daa3bbcb4773c5">Db</a>
+</li>
 <li>$after_filters
 : <a class="el" href="class_base_controller.html#a41fb845953c4c1308abc195ea712bc4e">BaseController</a>
 </li>
@@ -124,6 +127,9 @@ $(document).ready(function(){initNavTree('functions.html','');});
 <li>$columns
 : <a class="el" href="class_active_record.html#a8b9d5757fc8b0dde73cfd9aa745391a7">ActiveRecord</a>
 </li>
+<li>$conn_counter
+: <a class="el" href="class_db.html#af456e4b6ab99195681feef1828ba5030">Db</a>
+</li>
 <li>$foreign_key_name
 : <a class="el" href="class_active_record.html#abf17e3450ea258efc71ceda754241c7f">ActiveRecord</a>
 </li>
@@ -138,7 +144,8 @@ $(document).ready(function(){initNavTree('functions.html','');});
 : <a class="el" href="class_localization.html#a51e091a69c6ebc9c74aaeed0f8e1dbce">Localization</a>
 </li>
 <li>$link
-: <a class="el" href="class_d_b_conn.html#a264fc1cd38d7f09fc7224a1430074252">DBConn</a>
+: <a class="el" href="class_mysql_adapter.html#a97a248045a51019a9771671229410a64">MysqlAdapter</a>
+, <a class="el" href="class_mysqli_adapter.html#aa3f582e1474daffd8b60da201a590e77">MysqliAdapter</a>
 </li>
 <li>$method
 : <a class="el" href="class_request.html#a55df0180bf252b0276f51f023ce8f355">Request</a>
@@ -155,14 +162,19 @@ $(document).ready(function(){initNavTree('functions.html','');});
 <li>$pages_cached
 : <a class="el" href="class_base_controller.html#ade5c87dd4743ded7fa0c7c6818b8897e">BaseController</a>
 </li>
+<li>$pool
+: <a class="el" href="class_db.html#a581af29f4262ed70a8a2c5fe3250850e">Db</a>
+</li>
 <li>$primary_key
 : <a class="el" href="class_active_record.html#adbea5f7b8f303c1cfd505694bb946d9d">ActiveRecord</a>
 </li>
 <li>$queries_count
-: <a class="el" href="class_d_b_conn.html#a381a05b9290dd88ee0c0f77611fbb6f1">DBConn</a>
+: <a class="el" href="class_mysql_adapter.html#a44ea9cdbc3752c5473f4c8f28171b25e">MysqlAdapter</a>
+, <a class="el" href="class_mysqli_adapter.html#a4d84513d687917490017b1a0dbc215ca">MysqliAdapter</a>
 </li>
 <li>$query
-: <a class="el" href="class_d_b_conn.html#a1d2932e0075a06829a9e6264af199165">DBConn</a>
+: <a class="el" href="class_mysql_adapter.html#ad1ed8df58f18835cfb1ee12cde1b1775">MysqlAdapter</a>
+, <a class="el" href="class_mysqli_adapter.html#a2d4f968594d3edb5230fb455fdef1a20">MysqliAdapter</a>
 </li>
 <li>$querystring
 : <a class="el" href="class_request.html#aad0e52deea877703325fdaa893bad999">Request</a>
@@ -171,7 +183,8 @@ $(document).ready(function(){initNavTree('functions.html','');});
 : <a class="el" href="class_base_controller.html#a39f8f7660c2d815204f966d225793734">BaseController</a>
 </li>
 <li>$result
-: <a class="el" href="class_d_b_conn.html#aef26eea42f5558854afb4aede1d12356">DBConn</a>
+: <a class="el" href="class_mysql_adapter.html#a7c2098d04b438c822ce435e1d310becb">MysqlAdapter</a>
+, <a class="el" href="class_mysqli_adapter.html#a715373650e56e0512a663df2af4812b4">MysqliAdapter</a>
 </li>
 <li>$strings_table
 : <a class="el" href="class_localization.html#adcbe6d45ff2379f7bc5bd25302e2edae">Localization</a>
@@ -187,404 +200,6 @@ $(document).ready(function(){initNavTree('functions.html','');});
 </li>
 <li>$values
 : <a class="el" href="class_active_record.html#ab1f6ed6a8b1e425b96fd3ce18fbb0482">ActiveRecord</a>
-</li>
-</ul>
-
-
-<h3><a class="anchor" id="index__"></a>- _ -</h3><ul>
-<li>_403()
-: <a class="el" href="class_error_controller.html#a9d705788256f81a256651f07ea7061bc">ErrorController</a>
-</li>
-<li>_404()
-: <a class="el" href="class_error_controller.html#aaa9261fa71f8a618407fe931899d2997">ErrorController</a>
-</li>
-<li>_405()
-: <a class="el" href="class_error_controller.html#adbebce0fac79315c76f75a334790f08f">ErrorController</a>
-</li>
-<li>_500()
-: <a class="el" href="class_error_controller.html#a9597069a4c11b98a67e76949b15e760a">ErrorController</a>
-</li>
-<li>__get()
-: <a class="el" href="class_active_record.html#adb80fb4506a8b58c2c34a183fa05820d">ActiveRecord</a>
-</li>
-<li>__isset()
-: <a class="el" href="class_active_record.html#a9c30af37401d5412702e0ac1365d4e73">ActiveRecord</a>
-</li>
-<li>__set()
-: <a class="el" href="class_active_record.html#a3648ca502260cfff84c3ea4a106757a8">ActiveRecord</a>
-</li>
-<li>_add_to_pool()
-: <a class="el" href="class_active_record.html#a713c8a868953a5a8eb1277fa7861687f">ActiveRecord</a>
-</li>
-<li>_get_columns()
-: <a class="el" href="class_active_record.html#aa757cb2c4b843dd6268f53139cd18b50">ActiveRecord</a>
-</li>
-<li>_get_from_pool()
-: <a class="el" href="class_active_record.html#a62b4fbec91dcae96ff0144f2a449dcdd">ActiveRecord</a>
-</li>
-<li>_is_initialized()
-: <a class="el" href="class_active_record.html#a679287b236fa8c90e00833b4fe2a21a0">ActiveRecord</a>
-</li>
-<li>_set_columns()
-: <a class="el" href="class_active_record.html#a07b0fbcdee212c135b947efe71bf3ff6">ActiveRecord</a>
-</li>
-<li>_set_initialized()
-: <a class="el" href="class_active_record.html#ac567a8a4b0d0760ac2696ee0589d0b36">ActiveRecord</a>
-</li>
-</ul>
-
-
-<h3><a class="anchor" id="index_a"></a>- a -</h3><ul>
-<li>abort_and_flush()
-: <a class="el" href="class_base_controller.html#adc34c42bbcf42a8270be4ad8c3045e91">BaseController</a>
-</li>
-<li>ActiveRecord()
-: <a class="el" href="class_active_record.html#ad43ce99da615474ee2ef96b89b5326e1">ActiveRecord</a>
-</li>
-<li>add_header()
-: <a class="el" href="class_response.html#acc01160ed8d682289fa636a6b3902796">Response</a>
-</li>
-<li>add_strings_table()
-: <a class="el" href="class_localization.html#a259032b99197c94b28252babea3dfd82">Localization</a>
-</li>
-<li>affected_rows()
-: <a class="el" href="class_d_b_conn.html#a4ccd6ade6788d4fbe70744a288133b7c">DBConn</a>
-</li>
-<li>after_filter()
-: <a class="el" href="class_base_controller.html#a362a1c08f8af5e2e50801482402d2e77">BaseController</a>
-</li>
-<li>ago()
-: <a class="el" href="class_time.html#aae8579f9dc7199ac91f56498ca52c4d4">Time</a>
-</li>
-</ul>
-
-
-<h3><a class="anchor" id="index_b"></a>- b -</h3><ul>
-<li>BaseController()
-: <a class="el" href="class_base_controller.html#abbcb61dc8d32d0389198d36fe181ef33">BaseController</a>
-</li>
-<li>before_filter()
-: <a class="el" href="class_base_controller.html#aa3f4119163246e476fb326124362ea3f">BaseController</a>
-</li>
-<li>belongs_to()
-: <a class="el" href="class_active_record.html#a86d46a9984483efa3c59b4608d363482">ActiveRecord</a>
-</li>
-<li>button_to()
-: <a class="el" href="class_base_controller.html#aadd3ed9268fdaf8ddc6a288e160e24ca">BaseController</a>
-</li>
-</ul>
-
-
-<h3><a class="anchor" id="index_c"></a>- c -</h3><ul>
-<li>cached_page_exists()
-: <a class="el" href="class_base_controller.html#a1ed568a34082457675abe39f021bc18f">BaseController</a>
-</li>
-<li>cached_page_filename()
-: <a class="el" href="class_base_controller.html#a3859b59d8fc3579dcf8ef1e5b2984c0d">BaseController</a>
-</li>
-<li>caches_action()
-: <a class="el" href="class_base_controller.html#a419310a36c1ab718a59192b321845fcc">BaseController</a>
-</li>
-<li>caches_page()
-: <a class="el" href="class_base_controller.html#a000fcc898ecf9fe3716670e5f37deae2">BaseController</a>
-</li>
-<li>close()
-: <a class="el" href="class_d_b_conn.html#a36a33537e596b70693297dd132118b3d">DBConn</a>
-</li>
-<li>compress()
-: <a class="el" href="class_base_controller.html#ac86b07687b1ec85449f28a8fbb269f89">BaseController</a>
-</li>
-<li>conditionally_caches_page()
-: <a class="el" href="class_base_controller.html#a283d23d9a57fb4be5f664194e6c000e2">BaseController</a>
-</li>
-<li>connect()
-: <a class="el" href="class_d_b_conn.html#a870b4768466166e68a3b7bcc4486d06d">DBConn</a>
-</li>
-</ul>
-
-
-<h3><a class="anchor" id="index_d"></a>- d -</h3><ul>
-<li>delete()
-: <a class="el" href="class_active_record.html#ab7ee5eee4d8343bfca349ec6777cac31">ActiveRecord</a>
-, <a class="el" href="class_cookie.html#a2ba5b9d47de03164dff558a68dff55a0">Cookie</a>
-</li>
-</ul>
-
-
-<h3><a class="anchor" id="index_e"></a>- e -</h3><ul>
-<li>error()
-: <a class="el" href="class_error_controller.html#abca6ec27a0425c18beec1ee7c7b74c6a">ErrorController</a>
-, <a class="el" href="class_h_t_t_p.html#ac8eb95106d7b1d7a7db9fa622612a797">HTTP</a>
-</li>
-<li>escape()
-: <a class="el" href="class_d_b_conn.html#aff0662f416ac4a9fbfc8b9c210e75ada">DBConn</a>
-</li>
-<li>exec()
-: <a class="el" href="class_d_b_conn.html#a22419a5fdbfa400b5112847edbbda503">DBConn</a>
-</li>
-<li>expire_cached_page()
-: <a class="el" href="class_base_controller.html#ad55dade1f8d10b5dab9ecc6b695c8d71">BaseController</a>
-</li>
-</ul>
-
-
-<h3><a class="anchor" id="index_f"></a>- f -</h3><ul>
-<li>fetch_assoc()
-: <a class="el" href="class_d_b_conn.html#ab9d241da01e8c27375036da4f6ee2ae0">DBConn</a>
-</li>
-<li>filter_applicable()
-: <a class="el" href="class_base_controller.html#a5baf8152207e218a383f2abdf7979ce5">BaseController</a>
-</li>
-<li>find()
-: <a class="el" href="class_active_record.html#af04dd2ee4dd6684cb03f545e71c4fe71">ActiveRecord</a>
-</li>
-<li>find_all()
-: <a class="el" href="class_active_record.html#ab67819a88ba2eede306d3473d6e3ca03">ActiveRecord</a>
-</li>
-<li>find_by_id()
-: <a class="el" href="class_active_record.html#af34d37a074ab7de0b84714a91cf24b9d">ActiveRecord</a>
-</li>
-<li>find_by_query()
-: <a class="el" href="class_active_record.html#ae404e49e06ef4d5dbc82291ad5303e5f">ActiveRecord</a>
-</li>
-<li>flash()
-: <a class="el" href="class_base_controller.html#a20db61f9bbfde123fb8afb1b3cf89638">BaseController</a>
-</li>
-<li>flush()
-: <a class="el" href="class_response.html#a838d73ab4d210bddab71596c051cec62">Response</a>
-</li>
-<li>free_result()
-: <a class="el" href="class_d_b_conn.html#a6c093585dccfa4ee315fe0d145749168">DBConn</a>
-</li>
-</ul>
-
-
-<h3><a class="anchor" id="index_g"></a>- g -</h3><ul>
-<li>get()
-: <a class="el" href="class_cookie.html#a213b3bc8b0ed8f53c4a94978e0406814">Cookie</a>
-</li>
-<li>get_foreign_key_name()
-: <a class="el" href="class_active_record.html#ae4503d72f8c440431e0c5e79a54212d4">ActiveRecord</a>
-</li>
-<li>get_parameter()
-: <a class="el" href="class_request.html#ad5a777ea4b33aabf582967407d24b4bb">Request</a>
-</li>
-<li>get_primary_key()
-: <a class="el" href="class_active_record.html#af702861fa1805e962f2ff1f294bbd595">ActiveRecord</a>
-</li>
-<li>get_table_name()
-: <a class="el" href="class_active_record.html#a606cba458f1567e0e4650b6da4b87fa6">ActiveRecord</a>
-</li>
-</ul>
-
-
-<h3><a class="anchor" id="index_h"></a>- h -</h3><ul>
-<li>has_and_belongs_to_many()
-: <a class="el" href="class_active_record.html#ad8f93f4f5ed5fa9b5965f5892822ca49">ActiveRecord</a>
-</li>
-<li>has_column()
-: <a class="el" href="class_active_record.html#a0568b161af882e9a32db98ff73f12c94">ActiveRecord</a>
-</li>
-<li>has_many()
-: <a class="el" href="class_active_record.html#a34e3b60ec0753f78806a21450aacc5b0">ActiveRecord</a>
-</li>
-<li>has_one()
-: <a class="el" href="class_active_record.html#a7fbcd567a9a6cd077c5dd2e258add8c5">ActiveRecord</a>
-</li>
-</ul>
-
-
-<h3><a class="anchor" id="index_i"></a>- i -</h3><ul>
-<li>index()
-: <a class="el" href="class_base_controller.html#a3cbc30d2c45a5b0373feafbfde892ffa">BaseController</a>
-</li>
-<li>init()
-: <a class="el" href="class_active_record.html#aca81d20ceeb3a013c29d08edd796c307">ActiveRecord</a>
-, <a class="el" href="class_base_controller.html#ae05e7bae45cbed0ba4d0d0b009c7e123">BaseController</a>
-</li>
-<li>initialize()
-: <a class="el" href="class_base_controller.html#a5338faec7e0edb6d95fc50efd37eae9c">BaseController</a>
-</li>
-<li>insert_id()
-: <a class="el" href="class_d_b_conn.html#a00796014e3a64cd80878d4f907774c11">DBConn</a>
-</li>
-<li>is_delete()
-: <a class="el" href="class_request.html#a3d63552f4ef46adc84d08e09c3875e53">Request</a>
-</li>
-<li>is_get()
-: <a class="el" href="class_request.html#a524d9adb3ac421853b4e2888d08d31eb">Request</a>
-</li>
-<li>is_head()
-: <a class="el" href="class_request.html#aaaa1d96a96edbccc28312da65847a15c">Request</a>
-</li>
-<li>is_method()
-: <a class="el" href="class_request.html#a13779390c51cb5424dd644e232465880">Request</a>
-</li>
-<li>is_post()
-: <a class="el" href="class_request.html#a602e9965ec52f8b5a83e15b0163387f5">Request</a>
-</li>
-<li>is_put()
-: <a class="el" href="class_request.html#af124732a067fe40bc0d62d996218a509">Request</a>
-</li>
-</ul>
-
-
-<h3><a class="anchor" id="index_l"></a>- l -</h3><ul>
-<li>link_to()
-: <a class="el" href="class_base_controller.html#a38f225d51000d0968cefa73dc4f5476b">BaseController</a>
-</li>
-<li>link_to_remote()
-: <a class="el" href="class_base_controller.html#a0b41b4ea6b07263bd8a5dd919b2632e2">BaseController</a>
-</li>
-<li>load_part_contents()
-: <a class="el" href="class_base_controller.html#a1c896acfa639da0610dbf59b639e31c7">BaseController</a>
-</li>
-<li>load_strings_file()
-: <a class="el" href="class_localization.html#a2a9baba0b072c58b8ccf26bbb5ca3b6e">Localization</a>
-</li>
-<li>load_strings_table()
-: <a class="el" href="class_localization.html#af6951731ac9079265b1219901c2fd912">Localization</a>
-</li>
-<li>localize()
-: <a class="el" href="class_localization.html#a7ff503c7163534167a69c4b8377f2402">Localization</a>
-</li>
-<li>LOREM_IPSUM
-: <a class="el" href="class_reading_time_test.html#ac25ee1afb125072b709cd110ad8de0e3">ReadingTimeTest</a>
-</li>
-</ul>
-
-
-<h3><a class="anchor" id="index_m"></a>- m -</h3><ul>
-<li>make_relative_url()
-: <a class="el" href="class_base_controller.html#a9f201790320a7470a68dfe1d3d1dc642">BaseController</a>
-</li>
-<li>minutes_for()
-: <a class="el" href="class_reading_time.html#aaef52a49683594b6264ff299715a0868">ReadingTime</a>
-</li>
-</ul>
-
-
-<h3><a class="anchor" id="index_n"></a>- n -</h3><ul>
-<li>next_month()
-: <a class="el" href="class_time.html#a57e70f3cf42c63fcf062943f9271d3b8">Time</a>
-</li>
-<li>next_year()
-: <a class="el" href="class_time.html#a8b92468712308b65881202435f6abb6a">Time</a>
-</li>
-<li>num_rows()
-: <a class="el" href="class_d_b_conn.html#ac3d73f44f86216911d65703e9961d50f">DBConn</a>
-</li>
-</ul>
-
-
-<h3><a class="anchor" id="index_p"></a>- p -</h3><ul>
-<li>permalink()
-: <a class="el" href="class_active_record.html#a5b903558b1565ccf3f7c088990af2ffe">ActiveRecord</a>
-</li>
-<li>prepare()
-: <a class="el" href="class_d_b_conn.html#a443de629a5131fd193da3148e6d66a7a">DBConn</a>
-</li>
-<li>print_query()
-: <a class="el" href="class_d_b_conn.html#ad535c7adee08cc6f73362a9f2733379a">DBConn</a>
-</li>
-<li>purge_querystring()
-: <a class="el" href="class_request.html#a2c113934b1b746c76efbd3b5d5dc325c">Request</a>
-</li>
-</ul>
-
-
-<h3><a class="anchor" id="index_r"></a>- r -</h3><ul>
-<li>redirect_to()
-: <a class="el" href="class_base_controller.html#a90bf91f8b82c01c9b51d7b7b4e962045">BaseController</a>
-</li>
-<li>redirect_to_referrer()
-: <a class="el" href="class_base_controller.html#a3e00fdb289753dd0d4efe53d08d33423">BaseController</a>
-</li>
-<li>refresh()
-: <a class="el" href="class_base_controller.html#a338796ebb6aa24a216746b597adbe539">BaseController</a>
-</li>
-<li>relative_url()
-: <a class="el" href="class_active_record.html#ae646ac42982bddeedcba8be29c786fff">ActiveRecord</a>
-</li>
-<li>render()
-: <a class="el" href="class_base_controller.html#a280c6120560a7ed49f58de6151802c97">BaseController</a>
-</li>
-<li>render_as_string()
-: <a class="el" href="class_base_controller.html#a9141cb9f8b25bb233944df8b45c46ab8">BaseController</a>
-</li>
-<li>render_component()
-: <a class="el" href="class_base_controller.html#a22c754c08f322920c4ee23b3ee9584ae">BaseController</a>
-</li>
-<li>render_layout()
-: <a class="el" href="class_base_controller.html#aa7c31541f4fb21b70e2e12000c36efae">BaseController</a>
-</li>
-<li>render_page()
-: <a class="el" href="class_base_controller.html#ada050c9103f756e373ce7a1ca3ce5a84">BaseController</a>
-</li>
-<li>Request()
-: <a class="el" href="class_request.html#afaf8d8928de7ffff8a3767589489bd33">Request</a>
-</li>
-<li>result()
-: <a class="el" href="class_d_b_conn.html#ade88e8d44022359b5d0aa96cfc73a5e6">DBConn</a>
-</li>
-</ul>
-
-
-<h3><a class="anchor" id="index_s"></a>- s -</h3><ul>
-<li>save()
-: <a class="el" href="class_active_record.html#ae515d5c791971b1c1a81454113dc58a0">ActiveRecord</a>
-</li>
-<li>select_db()
-: <a class="el" href="class_d_b_conn.html#a7cdf23953db4215146b1b9a5c8db347d">DBConn</a>
-</li>
-<li>set()
-: <a class="el" href="class_cookie.html#a060bbcfa1f4099cf989637daee5f0f0a">Cookie</a>
-</li>
-<li>set_title()
-: <a class="el" href="class_base_controller.html#a6b34ce2554cc033c1b59820e8e4ef777">BaseController</a>
-</li>
-<li>strip_external_php_tags()
-: <a class="el" href="class_base_controller.html#abbbde4bec3ba85b45782e6d20fd544ca">BaseController</a>
-</li>
-</ul>
-
-
-<h3><a class="anchor" id="index_t"></a>- t -</h3><ul>
-<li>test()
-: <a class="el" href="class_reading_time_test.html#a15a45047cae7912280c292e56f281e5e">ReadingTimeTest</a>
-</li>
-<li>tomorrow()
-: <a class="el" href="class_time.html#ada3c580896b45a436626adc66f710d55">Time</a>
-</li>
-</ul>
-
-
-<h3><a class="anchor" id="index_u"></a>- u -</h3><ul>
-<li>unknown_action()
-: <a class="el" href="class_base_controller.html#ac8276a3aebe79d55d87576d8a8b12c36">BaseController</a>
-</li>
-<li>url_to()
-: <a class="el" href="class_base_controller.html#a0129a762c1ddb413774105b884572cd8">BaseController</a>
-</li>
-<li>url_to_myself()
-: <a class="el" href="class_base_controller.html#a607373e511f6d99fea5dd92635c30f9e">BaseController</a>
-</li>
-</ul>
-
-
-<h3><a class="anchor" id="index_w"></a>- w -</h3><ul>
-<li>WORDS_PER_MIN
-: <a class="el" href="class_reading_time.html#a8136be1d6313b55935ed027a5a5c6408">ReadingTime</a>
-</li>
-<li>wrap()
-: <a class="el" href="class_localization.html#aded27e3d8ba522355b511fb68fce4812">Localization</a>
-</li>
-</ul>
-
-
-<h3><a class="anchor" id="index_y"></a>- y -</h3><ul>
-<li>yesterday()
-: <a class="el" href="class_time.html#a5bf7bd748beadd2a3b7561776125a89a">Time</a>
 </li>
 </ul>
 </div><!-- contents -->

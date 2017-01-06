@@ -26,7 +26,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">EmeRails
-   &#160;<span id="projectnumber">0.0.1pre</span>
+   &#160;<span id="projectnumber">1.1.0</span>
    </div>
   </td>
  </tr>
@@ -78,12 +78,21 @@ $(document).ready(function(){initNavTree('class_request.html','');});
 
 <p><a class="el" href="class_request.html" title="Request object with parameter accessors. ">Request</a> object with parameter accessors.  
  <a href="class_request.html#details">More...</a></p>
+<div class="dynheader">
+Inheritance diagram for Request:</div>
+<div class="dyncontent">
+ <div class="center">
+  <img src="class_request.png" usemap="#Request_map" alt=""/>
+  <map id="Request_map" name="Request_map">
+<area href="class_mock_request.html" alt="MockRequest" shape="rect" coords="0,56,87,80"/>
+</map>
+ </div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:afaf8d8928de7ffff8a3767589489bd33"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_request.html#afaf8d8928de7ffff8a3767589489bd33">Request</a> ()</td></tr>
-<tr class="memdesc:afaf8d8928de7ffff8a3767589489bd33"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor.  <a href="#afaf8d8928de7ffff8a3767589489bd33">More...</a><br /></td></tr>
-<tr class="separator:afaf8d8928de7ffff8a3767589489bd33"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a384a81873068495b6ebb552764136611"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_request.html#a384a81873068495b6ebb552764136611">__construct</a> ()</td></tr>
+<tr class="memdesc:a384a81873068495b6ebb552764136611"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor.  <a href="#a384a81873068495b6ebb552764136611">More...</a><br /></td></tr>
+<tr class="separator:a384a81873068495b6ebb552764136611"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a524d9adb3ac421853b4e2888d08d31eb"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_request.html#a524d9adb3ac421853b4e2888d08d31eb">is_get</a> ()</td></tr>
 <tr class="memdesc:a524d9adb3ac421853b4e2888d08d31eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns <code>TRUE</code> if the request method is <code>GET</code>.  <a href="#a524d9adb3ac421853b4e2888d08d31eb">More...</a><br /></td></tr>
 <tr class="separator:a524d9adb3ac421853b4e2888d08d31eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -127,11 +136,31 @@ Static Protected Member Functions</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p><a class="el" href="class_request.html" title="Request object with parameter accessors. ">Request</a> object with parameter accessors. </p>
 <p>Project EmeRails - Codename Ocarina</p>
-<p>Copyright (c) 2008, 2015 Claudio Procida <a href="http://www.emeraldion.it">http://www.emeraldion.it</a></p>
+<p>Copyright (c) 2008, 2017 Claudio Procida <a href="http://www.emeraldion.it">http://www.emeraldion.it</a></p>
 <p>This class is a convenience wrapper around the superglobal arrays already provided by PHP, like <code>_REQUEST</code>. </p>
 
 <p>Definition at line <a class="el" href="request_8php_source.html#l00015">15</a> of file <a class="el" href="request_8php_source.html">request.php</a>.</p>
-</div><h2 class="groupheader">Member Function Documentation</h2>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="a384a81873068495b6ebb552764136611"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Request::__construct </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Default constructor. </p>
+
+<p>Definition at line <a class="el" href="request_8php_source.html#l00031">31</a> of file <a class="el" href="request_8php_source.html">request.php</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
 <a class="anchor" id="ad5a777ea4b33aabf582967407d24b4bb"></a>
 <div class="memitem">
 <div class="memproto">
@@ -318,25 +347,6 @@ Static Protected Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="afaf8d8928de7ffff8a3767589489bd33"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">Request::Request </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Default constructor. </p>
-
-<p>Definition at line <a class="el" href="request_8php_source.html#l00031">31</a> of file <a class="el" href="request_8php_source.html">request.php</a>.</p>
-
-</div>
-</div>
 <h2 class="groupheader">Member Data Documentation</h2>
 <a class="anchor" id="a55df0180bf252b0276f51f023ce8f355"></a>
 <div class="memitem">
@@ -373,7 +383,7 @@ Static Protected Member Functions</h2></td></tr>
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>/Users/delphine/Development/Git/emeraldion/emerails/helpers/<a class="el" href="request_8php_source.html">request.php</a></li>
+<li>helpers/<a class="el" href="request_8php_source.html">request.php</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

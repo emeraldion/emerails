@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.10"/>
-<title>EmeRails: /Users/delphine/Development/Git/emeraldion/emerails/helpers/localization.php Source File</title>
+<title>EmeRails: helpers/localization.php Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -26,7 +26,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">EmeRails
-   &#160;<span id="projectnumber">0.0.1pre</span>
+   &#160;<span id="projectnumber">1.1.0</span>
    </div>
   </td>
  </tr>
@@ -78,7 +78,7 @@ $(document).ready(function(){initNavTree('localization_8php_source.html','');});
 <div class="line"><a name="l00024"></a><span class="lineno"><a class="line" href="class_localization.html#a51e091a69c6ebc9c74aaeed0f8e1dbce">   24</a></span>&#160;                <span class="keyword">public</span> <span class="keyword">static</span> <a class="code" href="class_localization.html#a51e091a69c6ebc9c74aaeed0f8e1dbce">$languages</a> = array(<span class="stringliteral">&#39;it&#39;</span>, <span class="stringliteral">&#39;en&#39;</span>, <span class="stringliteral">&#39;es&#39;</span>);</div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;</div>
 <div class="line"><a name="l00030"></a><span class="lineno"><a class="line" href="class_localization.html#adcbe6d45ff2379f7bc5bd25302e2edae">   30</a></span>&#160;                <span class="keyword">private</span> <span class="keyword">static</span> <a class="code" href="class_localization.html#adcbe6d45ff2379f7bc5bd25302e2edae">$strings_table</a>;</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        </div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;</div>
 <div class="line"><a name="l00037"></a><span class="lineno"><a class="line" href="class_localization.html#a7ff503c7163534167a69c4b8377f2402">   37</a></span>&#160;                <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">function</span> <a class="code" href="class_localization.html#a7ff503c7163534167a69c4b8377f2402">localize</a>($term)</div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;                {</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;                        <span class="keywordflow">if</span> (!self::$strings_table)</div>
@@ -92,27 +92,27 @@ $(document).ready(function(){initNavTree('localization_8php_source.html','');});
 <div class="line"><a name="l00053"></a><span class="lineno"><a class="line" href="class_localization.html#a259032b99197c94b28252babea3dfd82">   53</a></span>&#160;                <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">function</span> <a class="code" href="class_localization.html#a259032b99197c94b28252babea3dfd82">add_strings_table</a>($controller)</div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;                {</div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;                        $table = self::$strings_table;</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;                </div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;</div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;                        $local_strings = self::load_strings_file(@$_COOKIE[<span class="stringliteral">&#39;hl&#39;</span>], $controller);</div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;                        $table = array_merge(self::$strings_table, eval(<span class="stringliteral">&quot;return {$local_strings};&quot;</span>));</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;                </div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;</div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;                        self::$strings_table = $table;</div>
 <div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;                }</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;                </div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;</div>
 <div class="line"><a name="l00068"></a><span class="lineno"><a class="line" href="class_localization.html#aded27e3d8ba522355b511fb68fce4812">   68</a></span>&#160;                <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">function</span> <a class="code" href="class_localization.html#aded27e3d8ba522355b511fb68fce4812">wrap</a>($term)</div>
 <div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;                {</div>
 <div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;                        <span class="keywordflow">if</span> (!<a class="code" href="localization_8php.html#ae68fa469f2c0f0dda8f41426f0fbb2bd">LOCALIZATION_DEBUG</a>) <span class="keywordflow">return</span> $term;</div>
 <div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;                        <span class="keywordflow">return</span> <a class="code" href="tag__support_8inc_8php.html#abc2e9a58131435eef2a11ab8068adf6a">span</a>($term, array(<span class="stringliteral">&#39;class&#39;</span> =&gt; <span class="stringliteral">&#39;localization-debug&#39;</span>));</div>
 <div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;                }</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        </div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;</div>
 <div class="line"><a name="l00080"></a><span class="lineno"><a class="line" href="class_localization.html#a2a9baba0b072c58b8ccf26bbb5ca3b6e">   80</a></span>&#160;                <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">function</span> <a class="code" href="class_localization.html#a2a9baba0b072c58b8ccf26bbb5ca3b6e">load_strings_file</a>($lang = <span class="stringliteral">&#39;en&#39;</span>, $controller = NULL)</div>
 <div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;                {</div>
 <div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;                        $strings_file = $controller ?</div>
 <div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;                                dirname(__FILE__) . <span class="stringliteral">&quot;/../assets/strings/$controller/localizable-$lang.strings&quot;</span> :</div>
 <div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;                                dirname(__FILE__) . <span class="stringliteral">&quot;/../assets/strings/localizable-$lang.strings&quot;</span>;</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;                        </div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;</div>
 <div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;                        <span class="comment">//print_r($strings_file);</span></div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;                </div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;</div>
 <div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;                        <span class="keywordflow">if</span> (file_exists($strings_file))</div>
 <div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;                        {</div>
 <div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;                                <span class="keywordflow">return</span> file_get_contents($strings_file);</div>
@@ -127,14 +127,14 @@ $(document).ready(function(){initNavTree('localization_8php_source.html','');});
 <div class="line"><a name="l00104"></a><span class="lineno"><a class="line" href="class_localization.html#af6951731ac9079265b1219901c2fd912">  104</a></span>&#160;                <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">function</span> <a class="code" href="class_localization.html#af6951731ac9079265b1219901c2fd912">load_strings_table</a>()</div>
 <div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;                {</div>
 <div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;                        $table = array();</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;                </div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;</div>
 <div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;                        $controller = $_REQUEST[<span class="stringliteral">&#39;controller&#39;</span>];</div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;                </div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;</div>
 <div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;                        $global_strings = self::load_strings_file(@$_COOKIE[<span class="stringliteral">&#39;hl&#39;</span>] <span class="comment">/* GLOBAL */</span>);</div>
 <div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;                        $table = array_merge($table, eval(<span class="stringliteral">&quot;return {$global_strings}&quot;</span>));</div>
 <div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;                        $local_strings = self::load_strings_file(@$_COOKIE[<span class="stringliteral">&#39;hl&#39;</span>], $controller);</div>
 <div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;                        $table = array_merge($table, eval(<span class="stringliteral">&quot;return {$local_strings}&quot;</span>));</div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;                </div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;</div>
 <div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;                        self::$strings_table = $table;</div>
 <div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;                }</div>
 <div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;        }</div>
@@ -155,7 +155,7 @@ $(document).ready(function(){initNavTree('localization_8php_source.html','');});
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_9e51036813d6151dfecc72d5fa7c02b3.html">Users</a></li><li class="navelem"><a class="el" href="dir_fd5a2e73ede5f4cd5b1ed6088cd39094.html">delphine</a></li><li class="navelem"><a class="el" href="dir_6a1e6d26bf2866f1067fd87a6429c69f.html">Development</a></li><li class="navelem"><a class="el" href="dir_7c7364dd6ec33031d45fd2876755f1e5.html">Git</a></li><li class="navelem"><a class="el" href="dir_3bede1fca4789788fa8e44ef241dbec7.html">emeraldion</a></li><li class="navelem"><a class="el" href="dir_e7a37730208a817f71ee2d4629141389.html">emerails</a></li><li class="navelem"><a class="el" href="dir_8c78269fc38159afddbd8320a4dac650.html">helpers</a></li><li class="navelem"><a class="el" href="localization_8php.html">localization.php</a></li>
+    <li class="navelem"><a class="el" href="dir_861f50189fda057e6c57d1c1130602b3.html">helpers</a></li><li class="navelem"><a class="el" href="localization_8php.html">localization.php</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.10 </li>
