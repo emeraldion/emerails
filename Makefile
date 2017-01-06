@@ -1,3 +1,10 @@
+#
+#	Project EmeRails - Codename Ocarina
+#
+#	Copyright (c) 2008, 2017 Claudio Procida
+#	http://www.emeraldion.it
+#
+#
 .PHONY: docs test install update
 
 update:
@@ -10,3 +17,14 @@ test: install
 	phpunit --test-suffix=.test.php test/unit
 docs:
 	doxygen Doxyfile
+docker-run: install
+	docker build -t emerails-app .
+	docker run --name emerails-mysql -e MYSQL_ROOT_PASSWORD=root -d mysql:5.5
+	docker run --name emerails --link emerails-mysql:mysql -p 8080:80 -d emerails-app
+docker-stop:
+	docker stop emerails
+	docker stop emerails-mysql
+docker-clean:
+	docker rm emerails
+	docker rm emerails-mysql
+	docker rmi emerails-app

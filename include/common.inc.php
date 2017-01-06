@@ -14,6 +14,11 @@
 		'woman' => 'women',
 		);
 
+	function default_to($value, $default)
+	{
+		return empty($value) ? $default : $value;
+	}
+
 	function http_error($code)
 	{
 		header(sprintf("Location: http://%s/error/%s.html",
