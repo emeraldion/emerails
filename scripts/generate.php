@@ -43,6 +43,20 @@ EOT;
 		Db::close_connection($conn);
 	}
 
+	function create_view($controller, $action)
+	{
+		echo "\tcreating views/$controller/$action.php\n";
+
+		$dir = dirname(__FILE__) . "/../views/$controller";
+		if (!is_dir($dir))
+		{
+			mkdir($dir, 0755);
+		}
+
+		file_put_contents(dirname(__FILE__) . "/../views/$controller/$action.php",
+			"<!-- TODO: add your code here -->");
+	}
+
 	if ($argc > 2)
 	{
 		if ($argv[1] == 'controller')
@@ -85,21 +99,13 @@ EOT;
 		}
 
 EOT;
+			create_view($controller, 'index');
 
 			for ($i = 3; $i < $argc; $i++)
 			{
 				$action = strtolower($argv[$i]);
 
-				echo "\tcreating views/$controller/$action.php\n";
-
-				$dir = dirname(__FILE__) . "/../views/$controller";
-				if (!is_dir($dir))
-				{
-					mkdir($dir, 0755);
-				}
-
-				file_put_contents(dirname(__FILE__) . "/../views/$controller/$action.php",
-					"<!-- TODO: add your code here -->");
+				create_view($controller, $action);
 				
 				$controller_code .= <<<EOT
 		    

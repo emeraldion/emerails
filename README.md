@@ -2,11 +2,45 @@
 
 # EmeRails
 
-In the middle of February 2008, I became unsatisfied with the current homebrew framework I was using for the Emeraldion Lodge, EmePavilion. I felt the need for a solid platform that was object-oriented, fully MVC compliant, and had an ORM layer that relieved me from having to hardcode repetitive query patterns.
+EmeRails is a PHP web application framework loosely inspired to [Ruby on Rails](http://www.rubyonrails.org).
+It has a <acronym title="Model View Controller">MVC</acronym> architecture, an
+<acronym title="Object Relational Mapping">ORM</acronym> layer that mimics ActiveRecord, and separates
+presentation from business logic quite nicely, prioritizing conventions over configuration.
 
-I then tried to write from scratch a lightweight clone of [Ruby on Rails](http://www.rubyonrails.org/), by replicating much of their ActiveRecord model class, and a convention-based development model. I struggled against the syntactical and practical limitations of the language I am bound to with my hosting, [PHP](http://www.php.net/), but at the end I had a working framework in less than a month.
+It supports templating, page caching, action filtering, and a lot of useful features out of the box that save coding time and
+server load. Similarly to Rails, EmeRails has a `generate.php` script that can quickly get you up and running, creating
+your controllers, models, and views in no time.
 
-EmeRails supports page caching, action filtering and a lot of useful features that save coding time and server load. I am quite satisfied about the result, and I am looking forward to improving it and smudging the edges that are still rough in the future.
+EmeRails comes with default support for MySQL via `mysql` (deprecated) and `mysqli` extensions, is
+[continuously tested](https://travis-ci.org/emeraldion/emerails) on PHP `5.6`, `7.1`, and `nightly`.
+
+## Generator
+
+EmeRails comes with a generator script that creates controllers, views, and models with no code:
+
+```sh
+scripts/generate.php
+Usage: generate.php controller controller_name [action1 [action2 ...]]
+       generate.php model model_name [field1 [type1 [field2 [type2 ...]]]]
+```
+
+In order to generate a controller and its views, run the generator script as follows:
+
+```sh
+scripts/generate.php controller foo bar baz
+```
+
+This will create a controller class `FooController` with the default `FooController::index` action, and two actions,
+`FooController::bar` and `FooController::baz`. It will also generate the views `index`, `bar`, and `baz`.
+
+In order to generate a model with a list of fields and types, run the generator script as follows:
+
+```sh
+scripts/generate.php model foo bar int baz float
+```
+
+This will create a model class `Foo` with two fields, `bar` of type `int`, and baz of type `float`.
+It will also create the backing table in the DB.
 
 ## Contributing
 
