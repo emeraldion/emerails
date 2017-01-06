@@ -93,13 +93,27 @@ If you're familiar with [Docker](https://docs.docker.com/engine/) and [Docker Co
 to package your app as a Docker image thanks to the included `Dockerfile`:
 
 ```sh
-docker build -t emerails_app .
+make docker-build
 ```
 
-and then you can run the generated container like:
+This goal builds the app as the `emerails-app` image; to easily run the image in a container:
 
 ```sh
-docker run -p 8080:80 -d emerails_app
+make docker-run
+```
+
+This goal runs a `mysql` DB container, spins up an app container, links them, and forwards the app container's port `80` to local port `8080`. You can then hit the app opening your browser on `http://localhost:8080`.
+
+To stop the app and `mysql` containers, run the goal:
+
+```sh
+make docker-stop
+```
+
+There's also a handy goal to cleanup when you're done with Docker images:
+
+```sh
+make docker-clean
 ```
 
 The included `docker-compose.yml` configuration also allows you to spin up the application locally:
