@@ -62,15 +62,15 @@ EOT;
 		if ($argv[1] == 'controller')
 		{
 			$controller = strtolower($argv[2]);
-			
+
 			echo "\tcreating controllers/{$controller}_controller.php\n";
-			
+
 			$controller_class = table_name_to_class_name("{$controller}_controller");
-			
+
 			$controller_code = <<<EOT
 <?php
 	require_once(dirname(__FILE__) . "/base_controller.php");
-	
+
 	/**
 	 *	@class {$controller_class}
 	 *	@short Edit this controller's short description
@@ -106,9 +106,9 @@ EOT;
 				$action = strtolower($argv[$i]);
 
 				create_view($controller, $action);
-				
+
 				$controller_code .= <<<EOT
-		    
+
 		/**
 		 *	@fn {$action}
 		 *	@short Edit this actions's short description
@@ -120,14 +120,14 @@ EOT;
 		}
 
 EOT;
-			
+
 			}
 			$controller_code .= <<<EOT
 
 	}
 ?>
 EOT;
-		
+
 			file_put_contents(dirname(__FILE__) . "/../controllers/{$controller}_controller.php",
 				$controller_code);
 		}
@@ -138,7 +138,7 @@ EOT;
 			$model = singularize($model_table);
 
 			echo "\tcreating models/$model.php\n";
-			
+
 			$model_code = <<<EOT
 <?php
 	require_once(dirname(__FILE__) . "/base.php");
@@ -154,7 +154,7 @@ EOT;
 	}
 ?>
 EOT;
-		
+
 			file_put_contents(dirname(__FILE__) . "/../models/$model.php",
 				$model_code);
 
