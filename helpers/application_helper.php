@@ -7,6 +7,7 @@
 	 *
 	 */
 
+	require_once(dirname(__FILE__) . "/../config/emerails.conf.php");
 	require_once(dirname(__FILE__) . "/../include/db.inc.php");
 	require_once(dirname(__FILE__) . "/../include/" . DB_ADAPTER . "_adapter.php");
 	require_once(dirname(__FILE__) . "/cookie.php");
