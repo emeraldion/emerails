@@ -103,7 +103,8 @@
 		public function exec()
 		{
 			$this->connect();
-			$this->result = mysql_query($this->query, $this->link) or die("DB unavailable");//die("Error ({$this->query}): " . mysql_error());
+			$this->result = mysql_query($this->query, $this->link) or die(DB_DEBUG ?
+				("Error ({$this->query}): " . mysql_error()) : "DB unavailable");
 
 			self::$queries_count++;
 

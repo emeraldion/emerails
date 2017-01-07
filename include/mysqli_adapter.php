@@ -105,7 +105,8 @@
 		public function exec()
 		{
 			$this->connect();
-			$this->result = $this->link->query($this->query) or die("DB unavailable");//die("Error ({$this->query}): " . $this->link->error;
+			$this->result = $this->link->query($this->query) or die(DB_DEBUG ?
+				"Error ({$this->query}): {$this->link->error}" : "DB unavailable");
 
 			self::$queries_count++;
 
