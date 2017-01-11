@@ -158,7 +158,7 @@ EOT;
 			file_put_contents(dirname(__FILE__) . "/../models/$model.php",
 				$model_code);
 
-			$fields = array();
+			$fields = array('id' => 'int(11)');
 			if ($argc > 2)
 			{
 				for ($i = 3; $i < $argc; $i += 2)
