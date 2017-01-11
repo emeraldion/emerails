@@ -50,7 +50,7 @@
 		}
 		if (ends_with($term, 's') ||
 			ends_with($term, 'x') ||
-			(ends_with($term, 'o') && !ends_with($term, 'oo')))
+			(ends_with($term, 'o') && !ends_with($term, 'oo') && !ends_with($term, 'eo')))
 		{
 			return $term . 'es';
 		}

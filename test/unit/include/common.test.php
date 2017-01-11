@@ -20,6 +20,8 @@ class CommonTest extends \PHPUnit_Framework_TestCase
     $this->assertEquals('babies', pluralize('baby'));
     $this->assertEquals('children', pluralize('child'));
     $this->assertEquals('grandchildren', pluralize('grandchild'));
+    $this->assertEquals('zoos', pluralize('zoo'));
+    $this->assertEquals('videos', pluralize('video'));
   }
 
   public function test_singularize()
@@ -38,6 +40,8 @@ class CommonTest extends \PHPUnit_Framework_TestCase
     $this->assertEquals('baby', singularize('babies'));
     $this->assertEquals('child', singularize('children'));
     $this->assertEquals('grandchild', singularize('grandchildren'));
+    $this->assertEquals('zoo', singularize('zoos'));
+    $this->assertEquals('video', singularize('videos'));
   }
 
   public function test_ends_with()
