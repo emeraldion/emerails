@@ -151,9 +151,9 @@
 					return FALSE;
 				}
 				$resrow = (is_numeric($colname)) ? $this->result->fetch_row() : $this->result->fetch_assoc();
-				if (isset($resrow[$col]))
+				if (isset($resrow[$colname]))
 				{
-					return $resrow[$col];
+					return $resrow[$colname];
 				}
 			}
 			return FALSE;
