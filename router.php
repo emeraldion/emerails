@@ -24,7 +24,7 @@
 		}
 		require($controller_file);
 		
-		$main_controller_class = ucwords($_REQUEST['controller']) . "Controller";
+		$main_controller_class = joined_lower_to_camel_case($_REQUEST['controller']) . "Controller";
 
 		// Instantiate main controller
 		$main_controller = new $main_controller_class;

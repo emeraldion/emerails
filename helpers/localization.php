@@ -21,7 +21,7 @@
 		 *	@attr languages
 		 *	@short Array of supported languages.
 		 */
-		public static $languages = array('it', 'en', 'es');
+		public static $languages = array('it', 'en', 'es', 'fr', 'de', 'ja', 'da', 'ru', 'pt', 'pl', 'cs', 'nl', 'fi', 'sv', 'el', 'ro', 'nb', 'hu', 'hr', 'ko');
 
 		/**
 		 *	@attr strings_table

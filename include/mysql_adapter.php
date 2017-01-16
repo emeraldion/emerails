@@ -108,7 +108,7 @@
 
 			self::$queries_count++;
 
-			return  $this->result;
+			return $this->result;
 		}
 
 		/**
