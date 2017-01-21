@@ -25,6 +25,13 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     $this->assertEquals('bar', $request->get_parameter('foo'));
   }
 
+  public function test_is_head()
+  {
+    $request = new Request();
+    $_SERVER['REQUEST_METHOD'] = 'HEAD';
+    $this->assertTrue($request->is_head());
+  }
+
   public function test_is_get()
   {
     $request = new Request();
