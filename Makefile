@@ -14,7 +14,7 @@ install:
 create_test_db:
 	mysql -u root -p < schemas/emerails_test.sql
 test: install
-	phpunit --test-suffix=.test.php test/unit
+	phpunit --test-suffix=.test.php test/unit --coverage-html coverage
 docs:
 	doxygen Doxyfile
 
@@ -31,3 +31,6 @@ docker-stop:
 	docker rm emerails-mysql
 docker-clean:
 	docker rmi emerails-app
+# docker-publish:
+# 	docker build -t emeraldion/emerails:1.1 .
+# 	docker push emeraldion/emerails:1.1
