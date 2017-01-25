@@ -107,6 +107,7 @@
 			$this->connect();
 			$this->result = $this->link->query($this->query) or die(DB_DEBUG ?
 				"Error ({$this->query}): {$this->link->error}" : "DB unavailable");
+			$this->insert_id = $this->link->insert_id;
 
 			self::$queries_count++;
 
@@ -119,7 +120,7 @@
 		 */
 		public function insert_id()
 		{
-			return $this->link->insert_id;
+			return $this->insert_id;
 		}
 
 		/**

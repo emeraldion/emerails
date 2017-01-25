@@ -85,6 +85,29 @@ class ActiveRecordTest extends \PHPUnit_Framework_TestCase
     $this->assertEquals('baz', $other_instance->name);
   }
 
+  public function test_save_sets_id()
+  {
+    $instance = new TestModel(array(
+      'name' => 'test_save_sets_id',
+    ));
+    $this->assertNotNull($instance);
+    $ret = $instance->save();
+    $this->assertTrue($ret);
+    $this->assertNotNull($instance->id);
+
+    $conn = Db::get_connection();
+
+    $conn->prepare("SELECT * FROM `test_models` WHERE `name` = 'test_save_sets_id'");
+    $conn->exec();
+
+    $result = $conn->fetch_assoc();
+
+    $this->assertEquals('test_save_sets_id', $result['name']);
+    $this->assertEquals($instance->id, $result['id']);
+
+    $instance->delete();
+  }
+
   public function test_save_dupe()
   {
     $instance = new TestModel(array(
