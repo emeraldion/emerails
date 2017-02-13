@@ -247,6 +247,7 @@ class ActiveRecordTest extends \PHPUnit_Framework_TestCase
     $ret = $instance->has_one('test_widgets');
     $this->assertFalse($ret);
     $this->assertNull($instance->test_widget);
+    $instance->delete();
   }
 
   public function test_belongs_to()
