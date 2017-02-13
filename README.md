@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/emeraldion/emerails.svg?branch=master)](https://travis-ci.org/emeraldion/emerails)
+[![Coverage Status](https://coveralls.io/repos/github/emeraldion/emerails/badge.svg?branch=master)](https://coveralls.io/github/emeraldion/emerails?branch=master)
 [![Latest Unstable Version](https://poser.pugx.org/emeraldion/emerails/v/unstable)](https://packagist.org/packages/emeraldion/emerails)
 [![composer.lock](https://poser.pugx.org/emeraldion/emerails/composerlock)](https://packagist.org/packages/emeraldion/emerails)
 [![Total Downloads](https://poser.pugx.org/emeraldion/emerails/downloads)](https://packagist.org/packages/emeraldion/emerails)
