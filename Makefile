@@ -15,6 +15,8 @@ create_test_db:
 	mysql -u root -p < schemas/emerails_test.sql
 test: install
 	phpunit --test-suffix=.test.php test/unit --coverage-html coverage
+test-ci: install
+	vendor/bin/phpunit --test-suffix=.test.php test/unit --coverage-html coverage
 docs:
 	doxygen Doxyfile
 
