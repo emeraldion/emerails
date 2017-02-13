@@ -307,6 +307,7 @@
 		 *	@short Loads the child the receiver in a one-to-one relationship.
 		 *	@param table_name The name of the child table.
 		 *	@param params An array of conditions. For the semantics, see find_all
+		 *	@return true if the relationship is fulfilled, false otherwise
 		 *	@see find_all
 		 */
 		public function has_one($table_name)
@@ -315,12 +316,15 @@
 			$obj = new $childclass;
 			$fkey = $this->get_foreign_key_name();
 			$children = $obj->find_all(array('where_clause' => "`{$fkey}` = '{$this->values[$this->primary_key]}'", 'limit' => 1));
-			if (count($children) > 0)
+			if (is_array($children) && count($children) > 0)
 			{
 				$child = $children[0];
 				$child->values[singularize($this->table_name)] = $this;
 				$this->values[singularize($table_name)] = $child;
+
+				return TRUE;
 			}
+			return FALSE;
 		}
 
 		/**

@@ -211,21 +211,24 @@ class ActiveRecordTest extends \PHPUnit_Framework_TestCase
     $instance = new TestModel();
     $ret = $instance->find_by_id(1);
     $this->assertTrue($ret);
-    $instance->has_one('test_widgets');
+    $ret = $instance->has_one('test_widgets');
+    $this->assertTrue($ret);
     $this->assertNotNull($instance->test_widget);
     $this->assertEquals('red', $instance->test_widget->color);
 
     $instance = $instance->find_all(array(
       'where_clause' => "`name` = 'foo'"
     ))[0];
-    $instance->has_one('test_widgets');
+    $ret = $instance->has_one('test_widgets');
+    $this->assertTrue($ret);
     $this->assertNotNull($instance->test_widget);
     $this->assertEquals('red', $instance->test_widget->color);
 
     $instance = new TestModel();
     $ret = $instance->find_by_id(2);
     $this->assertTrue($ret);
-    $instance->has_one('test_widgets');
+    $ret = $instance->has_one('test_widgets');
+    $this->assertTrue($ret);
     $this->assertNotNull($instance->test_widget);
     $this->assertEquals('blue', $instance->test_widget->color);
 
@@ -235,6 +238,15 @@ class ActiveRecordTest extends \PHPUnit_Framework_TestCase
     $instance->has_one('test_widgets');
     $this->assertNotNull($instance->test_widget);
     $this->assertEquals('blue', $instance->test_widget->color);
+  }
+
+  public function test_has_one_no_matches()
+  {
+    $instance = new TestModel();
+    $instance->save();
+    $ret = $instance->has_one('test_widgets');
+    $this->assertFalse($ret);
+    $this->assertNull($instance->test_widget);
   }
 
   public function test_belongs_to()
