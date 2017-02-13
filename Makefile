@@ -16,7 +16,7 @@ create_test_db:
 test: install
 	phpunit --test-suffix=.test.php test/unit --coverage-html coverage
 test-ci: install
-	vendor/bin/phpunit --test-suffix=.test.php test/unit --coverage-html coverage
+	vendor/bin/phpunit --test-suffix=.test.php test/unit --coverage-clover build/logs/clover.xml
 docs:
 	doxygen Doxyfile
 
