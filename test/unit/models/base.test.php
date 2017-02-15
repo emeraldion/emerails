@@ -339,6 +339,15 @@ class ActiveRecordTest extends \PHPUnit_Framework_TestCase
     $this->assertNull($instance->foo);
   }
 
+  public function test_get_set_column()
+  {
+    $instance = new TestModel();
+    $this->assertNotNull($instance);
+    $instance->name = 'foo';
+    $this->assertNotNull($instance->name);
+    $this->assertEquals('foo', $instance->name);
+  }
+
   public function test_get_set_not_a_column()
   {
     $instance = new TestModel();
