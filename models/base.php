@@ -433,8 +433,11 @@
 		static function find($id, $classname = 'ActiveRecord')
 		{
 			$obj = new $classname();
-			$obj->find_by_id($id);
-			return $obj;
+			if ($obj->find_by_id($id))
+			{
+				return $obj;
+			}
+			return NULL;
 		}
 
 		/**
