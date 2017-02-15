@@ -80,7 +80,7 @@ CREATE TABLE IF NOT EXISTS `test_widgets` (
   `id` int(11) NOT NULL,
   `test_model_id` int(11) NOT NULL,
   `color` varchar(24) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `test_widgets`
@@ -88,7 +88,32 @@ CREATE TABLE IF NOT EXISTS `test_widgets` (
 
 INSERT INTO `test_widgets` (`id`, `test_model_id`, `color`) VALUES
 (1, 1, 'red'),
-(2, 2, 'blue');
+(2, 2, 'blue'),
+(3, 2, 'green');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `test_versions`
+--
+
+DROP TABLE IF EXISTS `test_versions`;
+CREATE TABLE IF NOT EXISTS `test_versions` (
+  `id` int(11) NOT NULL,
+  `test_widget_id` int(11) NOT NULL,
+  `version` varchar(24) NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `test_versions`
+--
+
+INSERT INTO `test_versions` (`id`, `test_widget_id`, `version`) VALUES
+(1, 1, '1.0'),
+(2, 1, '1.1'),
+(3, 1, '1.2'),
+(4, 1, '2.0'),
+(5, 2, '0.1');
 
 --
 -- Indexes for dumped tables
@@ -120,6 +145,13 @@ ALTER TABLE `test_widgets`
   ADD KEY `model_id` (`test_model_id`);
 
 --
+-- Indexes for table `test_widgets`
+--
+ALTER TABLE `test_versions`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `widget_id` (`test_widget_id`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -137,4 +169,9 @@ ALTER TABLE `test_models`
 -- AUTO_INCREMENT for table `test_widgets`
 --
 ALTER TABLE `test_widgets`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=4;
+--
+-- AUTO_INCREMENT for table `test_versions`
+--
+ALTER TABLE `test_versions`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=6;

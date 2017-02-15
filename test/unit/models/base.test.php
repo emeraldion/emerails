@@ -41,6 +41,10 @@ class TestGroup extends ActiveRecord
 {
 }
 
+class TestVersion extends ActiveRecord
+{
+}
+
 class ActiveRecordTest extends \PHPUnit_Framework_TestCase
 {
   /**
@@ -218,6 +222,9 @@ class ActiveRecordTest extends \PHPUnit_Framework_TestCase
       'where_clause' => "`name` = 'bar'",
     ));
 
+    $this->assertNotNull($instances);
+    $this->assertEquals(1, count($instances));
+
     $instance = $instances[0];
     $this->assertNotNull($instance);
     $this->assertEquals('bar', $instance->name);
@@ -245,6 +252,28 @@ class ActiveRecordTest extends \PHPUnit_Framework_TestCase
     ));
 
     $this->assertEquals(1, $count);
+  }
+
+  public function test_find_by_query()
+  {
+    $instance_factory = new TestModel();
+    $instances = $instance_factory->find_by_query("SELECT * FROM `test_models` WHERE `name` = 'foo'");
+
+    $this->assertNotNull($instances);
+    $this->assertEquals(1, count($instances));
+
+    $instance = $instances[0];
+    $this->assertNotNull($instance);
+    $this->assertEquals('foo', $instance->name);
+
+    $instances = $instance_factory->find_by_query("SELECT * FROM `test_models` WHERE `name` = 'bar'");
+
+    $this->assertNotNull($instances);
+    $this->assertEquals(1, count($instances));
+
+    $instance = $instances[0];
+    $this->assertNotNull($instance);
+    $this->assertEquals('bar', $instance->name);
   }
 
   public function test_has_one()
@@ -320,6 +349,35 @@ class ActiveRecordTest extends \PHPUnit_Framework_TestCase
     $instance->belongs_to('test_models');
     $this->assertNotNull($instance->test_model);
     $this->assertEquals('bar', $instance->test_model->name);
+  }
+
+  public function test_has_many()
+  {
+    $instance = new TestWidget();
+    $ret = $instance->find_by_id(1);
+    $this->assertTrue($ret);
+    $ret = $instance->has_many('test_versions');
+    $this->assertTrue($ret);
+    $this->assertNotNull($instance->test_versions);
+    $this->assertEquals(4, count($instance->test_versions));
+
+    $instance = new TestWidget();
+    $ret = $instance->find_by_id(2);
+    $this->assertTrue($ret);
+    $ret = $instance->has_many('test_versions');
+    $this->assertTrue($ret);
+    $this->assertNotNull($instance->test_versions);
+    $this->assertEquals(1, count($instance->test_versions));
+  }
+
+  public function test_has_many_no_matches()
+  {
+    $instance = new TestWidget();
+    $ret = $instance->find_by_id(3);
+    $this->assertTrue($ret);
+    $ret = $instance->has_many('test_versions');
+    $this->assertFalse($ret);
+    $this->assertNull($instance->test_versions);
   }
 
   public function test_has_and_belongs_to_many()

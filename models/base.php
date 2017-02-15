@@ -230,6 +230,7 @@
 		 *	@short Loads the children of the receiver in a one-to-many relationship.
 		 *	@param table_name The name of the child table.
 		 *	@param params An array of conditions. For the semantics, see find_all
+		 *	@return true if the relationship is fulfilled, false otherwise
 		 *	@see find_all
 		 */
 		public function has_many($table_name, $params = array())
@@ -253,7 +254,10 @@
 					$child->values[singularize($this->table_name)] = $this;
 				}
 				$this->values[$table_name] = $children;
+
+				return TRUE;
 			}
+			return FALSE;
 		}
 
 		/**
