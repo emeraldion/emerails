@@ -247,7 +247,7 @@
 				$params['where_clause'] = "`{$fkey}` = '{$this->values[$this->primary_key]}' ";
 			}
 			$children = $obj->find_all($params);
-			if (count($children) > 0)
+			if (is_array($children) && count($children) > 0)
 			{
 				foreach ($children as $child)
 				{
