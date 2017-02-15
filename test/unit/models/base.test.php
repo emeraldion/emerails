@@ -206,6 +206,30 @@ class ActiveRecordTest extends \PHPUnit_Framework_TestCase
     $this->assertEquals('bar', $instance->name);
   }
 
+  public function test_count_all_no_args()
+  {
+    $instance_factory = new TestModel();
+    $count = $instance_factory->count_all();
+
+    $this->assertEquals(2, $count);
+  }
+
+  public function test_count_all_where_clause()
+  {
+    $instance_factory = new TestModel();
+    $count = $instance_factory->count_all(array(
+      'where_clause' => "`name` = 'foo'",
+    ));
+
+    $this->assertEquals(1, $count);
+
+    $count = $instance_factory->count_all(array(
+      'where_clause' => "`name` = 'bar'",
+    ));
+
+    $this->assertEquals(1, $count);
+  }
+
   public function test_has_one()
   {
     $instance = new TestModel();
