@@ -151,10 +151,14 @@
 				{
 					return FALSE;
 				}
-				$resrow = (is_numeric($colname)) ? $this->result->fetch_row() : $this->result->fetch_assoc();
-				if (isset($resrow[$colname]))
+				$resrow = (is_numeric($colname) || is_null($colname)) ? $this->result->fetch_row() : $this->result->fetch_assoc();
+				if (!is_null($colname) && isset($resrow[$colname]))
 				{
 					return $resrow[$colname];
+				}
+				else
+				{
+					return $resrow[0];
 				}
 			}
 			return FALSE;

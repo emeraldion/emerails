@@ -13,6 +13,16 @@
 	 */
 	class Time
 	{
+		const ONE_HOUR = 3600;
+
+		const ONE_DAY = 3600 * 24;
+
+		const ONE_WEEK = 3600 * 24 * 7;
+
+		const ONE_MONTH = 3600 * 24 * 30;
+
+		const ONE_YEAR = 3600 * 24 * 365;
+
 		/**
 		 *	@fn tomorrow
 		 *	@short Returs the number of seconds elapsed from the Unix Epoch to tomorrow.
@@ -71,16 +81,16 @@
 			switch ($time_amount)
 			{
 				case 'hour':
-					$time = time() - 3600;
+					$time = time() - self::ONE_HOUR;
 					break;
 				case 'day':
-					$time = time() - 3600 * 24;
+					$time = time() - self::ONE_DAY;
 					break;
 				case 'week':
-					$time = time() - 3600 * 24 * 7;
+					$time = time() - self::ONE_WEEK;
 					break;
 				case 'month':
-					$time = time() - 3600 * 24 * 30;
+					$time = time() - self::ONE_MONTH;
 					break;
 				default:
 					$time = time();
