@@ -1,6 +1,5 @@
 <?php
-	$this->set_title('Congratulations! &mdash; EmeRails');
-?>
+$this->set_title('Congratulations! &mdash; EmeRails'); ?>
 <h1>Congratulations!</h1>
 <p>
 	Your installation of EmeRails was apparently successful.
