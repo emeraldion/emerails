@@ -19,6 +19,8 @@ test-ci: install
 	vendor/bin/phpunit --test-suffix=.test.php test/unit --coverage-clover build/logs/clover.xml
 docs:
 	doxygen Doxyfile
+format:
+	yarn format
 
 # Docker goals
 docker-build: install
