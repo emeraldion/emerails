@@ -1,4 +1,8 @@
 <?php
+/**
+ * @format
+ */
+
 $this->set_title('404 - Not Found'); ?>
 <h1>404 - Not Found</h1>
 <p>

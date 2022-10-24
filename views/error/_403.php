@@ -1,4 +1,8 @@
 <?php
+/**
+ * @format
+ */
+
 $this->set_title('403 - Forbidden'); ?>
 <h1>403 - Forbidden</h1>
 <p>

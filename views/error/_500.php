@@ -1,4 +1,8 @@
 <?php
+/**
+ * @format
+ */
+
 $this->set_title('500 - Internal Server Error'); ?>
 <h1>500 - Internal Server Error</h1>
 <p>

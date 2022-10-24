@@ -1,4 +1,8 @@
 <?php
+/**
+ * @format
+ */
+
 $this->set_title('Congratulations! &mdash; EmeRails'); ?>
 <h1>Congratulations!</h1>
 <p>
