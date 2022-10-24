@@ -28,6 +28,14 @@ CREATE TABLE IF NOT EXISTS `test_groups` (
   `created_at` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Dumping data for table `test_models`
+--
+
+INSERT INTO `test_groups` (`id`) VALUES
+(1),
+(2);
+
 -- --------------------------------------------------------
 
 --
@@ -37,17 +45,18 @@ CREATE TABLE IF NOT EXISTS `test_groups` (
 DROP TABLE IF EXISTS `test_groups_test_models`;
 CREATE TABLE IF NOT EXISTS `test_groups_test_models` (
   `test_model_id` int(11) NOT NULL,
-  `test_group_id` int(11) NOT NULL
+  `test_group_id` int(11) NOT NULL,
+  `count` int(11) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `test_groups_test_models`
 --
 
-INSERT INTO `test_groups_test_models` (`test_model_id`, `test_group_id`) VALUES
-(2, 1),
-(1, 2),
-(2, 2);
+INSERT INTO `test_groups_test_models` (`test_model_id`, `test_group_id`, `count`) VALUES
+(2, 1, 3),
+(1, 2, 1),
+(2, 2, 0);
 
 -- --------------------------------------------------------
 
