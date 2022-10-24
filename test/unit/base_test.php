@@ -6,7 +6,7 @@
  *	@details Unit testing allows you to run custom tests focused on validating the functionality
  *	of model objects. It is recommended that you create a test case for every method of the object.
  */
-abstract class UnitTest extends \PHPUnit_Framework_TestCase
+abstract class UnitTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @short Asserts that an expression is in the range of two values.

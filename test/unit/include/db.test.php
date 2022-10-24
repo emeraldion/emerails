@@ -44,7 +44,7 @@ class TestAdapterOther extends TestAdapterBase
   const NAME = "test_other";
 }
 
-class DBTest extends \PHPUnit_Framework_TestCase
+class DBTest extends \PHPUnit\Framework\TestCase
 {
   public function test_get_adapter()
   {

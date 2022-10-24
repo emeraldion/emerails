@@ -2,7 +2,7 @@
 
 require_once(dirname(__FILE__) . '/../../../include/common.inc.php');
 
-class CommonTest extends \PHPUnit_Framework_TestCase
+class CommonTest extends \PHPUnit\Framework\TestCase
 {
   public function test_pluralize()
   {

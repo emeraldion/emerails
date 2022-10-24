@@ -45,19 +45,19 @@ class TestVersion extends ActiveRecord
 {
 }
 
-class ActiveRecordTest extends \PHPUnit_Framework_TestCase
+class ActiveRecordTest extends \PHPUnit\Framework\TestCase
 {
   /**
    * @before
    */
-  function setup()
+  function setUp() : void
   {
   }
 
   /**
    * @after
    */
-  function teardown()
+  function teardown(): void
   {
     delete_test_models(array(
         'blip',
