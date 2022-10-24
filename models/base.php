@@ -5,10 +5,11 @@
  *	Copyright (c) 2008, 2017 Claudio Procida
  *	http://www.emeraldion.it
  *
+ * @format
  */
 
-require_once dirname(__FILE__) . "/../include/common.inc.php";
-require_once dirname(__FILE__) . "/../include/db.inc.php";
+require_once dirname(__FILE__) . '/../include/common.inc.php';
+require_once dirname(__FILE__) . '/../include/db.inc.php';
 
 /**
  *	@class ActiveRecord
@@ -97,7 +98,7 @@ abstract class ActiveRecord
         $classname = get_class($this);
         $initialized = self::_is_initialized($classname);
         if (!$initialized) {
-            $conn->prepare("DESCRIBE `{1}`", $this->get_table_name());
+            $conn->prepare('DESCRIBE `{1}`', $this->get_table_name());
             $conn->exec();
             $columns = array();
             while ($row = $conn->fetch_assoc()) {
@@ -289,7 +290,16 @@ abstract class ActiveRecord
                 $peer->find_by_id($row[$peer_fkey]);
                 $this->values[$table_name][] = $peer;
                 $peer->values[$this->table_name] = array($this);
-                //print_r($peer);
+                // print_r($peer);
+
+                /* hack: store relationship data in the peer */
+                unset($row['id']);
+                unset($row[$fkey]);
+                unset($row[$peer_fkey]);
+                foreach ($row as $key => $value) {
+                    $peer->values[$key] = $value;
+                }
+                /* /hack */
             }
         }
         $conn->free_result();
@@ -528,13 +538,13 @@ abstract class ActiveRecord
             !empty($this->values[$this->primary_key]) &&
             !isset($this->_force_create)
         ) {
-            $query = "UPDATE `{1}` SET ";
+            $query = 'UPDATE `{1}` SET ';
             for ($i = 0; $i < count($nonempty); $i++) {
                 $query .= "`{$nonempty[$i]}` = '{$conn->escape(
                     $this->values[$nonempty[$i]]
                 )}'";
                 if ($i < count($nonempty) - 1) {
-                    $query .= ", ";
+                    $query .= ', ';
                 }
             }
             $query .= " WHERE `{$this->primary_key}` = '{2}' LIMIT 1";
@@ -548,21 +558,21 @@ abstract class ActiveRecord
         } else {
             $query =
                 (isset($this->_ignore) ? 'INSERT IGNORE' : 'INSERT') .
-                " INTO `{1}` (";
+                ' INTO `{1}` (';
             for ($i = 0; $i < count($nonempty); $i++) {
                 $query .= "`{$nonempty[$i]}`";
                 if ($i < count($nonempty) - 1) {
-                    $query .= ", ";
+                    $query .= ', ';
                 }
             }
-            $query .= ") VALUES (";
+            $query .= ') VALUES (';
             for ($i = 0; $i < count($nonempty); $i++) {
                 $query .= "'{$conn->escape($this->values[$nonempty[$i]])}'";
                 if ($i < count($nonempty) - 1) {
-                    $query .= ", ";
+                    $query .= ', ';
                 }
             }
-            $query .= ")";
+            $query .= ')';
             $conn->prepare($query, $this->get_table_name());
             $conn->exec();
             $insert_id = $conn->insert_id();
@@ -602,7 +612,7 @@ abstract class ActiveRecord
 
             // Clean up
             if ($optimize) {
-                $conn->prepare("OPTIMIZE TABLE `{1}`", $this->get_table_name());
+                $conn->prepare('OPTIMIZE TABLE `{1}`', $this->get_table_name());
                 $conn->exec();
             }
         }
@@ -801,7 +811,7 @@ abstract class ActiveRecord
 }
 
 if (version_compare(PHP_VERSION, '5') < 0) {
-    if (function_exists("overload")) {
+    if (function_exists('overload')) {
         overload('ActiveRecord');
     }
 }
