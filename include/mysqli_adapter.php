@@ -51,6 +51,7 @@ class MysqliAdapter implements DbAdapter
 			if ($this->link->connect_errno) {
 				die('Cannot connect: ' . $this->link->connect_error);
 			}
+			$this->link->set_charset(DB_CHARSET);
 		}
 	}
 

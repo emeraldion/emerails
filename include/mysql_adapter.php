@@ -48,6 +48,7 @@ class MysqlAdapter implements DbAdapter
 	{
 		if (!is_resource($this->link) || get_resource_type($this->link) != 'mysql link') {
 			$this->link = mysql_connect(DB_HOST, DB_USER, DB_PASS);
+			mysql_set_charset(DB_CHARSET, $this->link);
 			mysql_select_db(DB_NAME) or die('Cannot connect: ' . mysql_error());
 		}
 	}

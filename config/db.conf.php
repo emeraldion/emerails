@@ -33,6 +33,7 @@
 			define('DB_NAME',    default_to(getenv('DB_NAME'),     'emerails'));
 			define('DB_HOST',    default_to(getenv('DB_HOST'),     'localhost'));
 	}
-	define('DB_DEBUG', default_to(getenv('DB_DEBUG'), FALSE));
+	define('DB_CHARSET',     default_to(getenv('DB_CHARSET'),  'utf8mb4'));
+	define('DB_DEBUG',       default_to(getenv('DB_DEBUG'),    FALSE));
 
 ?>
