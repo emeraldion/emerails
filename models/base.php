@@ -113,7 +113,7 @@ abstract class ActiveRecord
 			foreach ($_values as $key => $val) {
 				$keyexists = in_array($key, $columns);
 				if ($keyexists) {
-					$this->values[$key] = get_magic_quotes_gpc() ? stripslashes($val) : $val;
+					$this->values[$key] = stripslashes($val);
 				}
 			}
 		}
@@ -270,30 +270,39 @@ abstract class ActiveRecord
 		$relation_table = implode('_', $table_names);
 
 		$conn->prepare(
-			"SELECT * FROM `{1}` WHERE `{2}` = '{3}'",
+			"SELECT * FROM `{1}` JOIN `{2}` ON `{1}`.`{3}` = `{2}`.`{4}` WHERE (`{1}`.`{5}` = '{6}' AND " .
+				($params['where_clause'] ?? '1') .
+				') ' .
+				'ORDER BY ' .
+				($params['order_by'] ?? '`{5}` ASC') .
+				' LIMIT {7},{8}',
 			$relation_table,
+			$table_name,
+			$peer_fkey,
+			$peer->get_primary_key(),
 			$fkey,
-			$this->values[$this->primary_key]
+			$this->values[$this->primary_key],
+			$params['start'] ?? 0,
+			$params['limit'] ?? 9999
 		);
 		$conn->exec();
-		//print_r($conn->query);
+		// print_r($conn->query);
 		if ($conn->num_rows() > 0) {
 			$this->values[$table_name] = array();
 			while ($row = $conn->fetch_assoc()) {
-				$peer = new $peerclass();
-				$peer->find_by_id($row[$peer_fkey]);
+				$peer = new $peerclass($row);
+				// $peer->find_by_id($row[$peer_fkey]);
 				$this->values[$table_name][] = $peer;
 				$peer->values[$this->table_name] = array($this);
 				// print_r($peer);
 
-				/* hack: store relationship data in the peer */
+				// Store relationship data in the peer
 				unset($row['id']);
 				unset($row[$fkey]);
 				unset($row[$peer_fkey]);
 				foreach ($row as $key => $value) {
 					$peer->values[$key] = $value;
 				}
-				/* /hack */
 			}
 		}
 		$conn->free_result();
