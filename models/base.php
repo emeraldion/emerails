@@ -113,7 +113,7 @@ abstract class ActiveRecord
 			foreach ($_values as $key => $val) {
 				$keyexists = in_array($key, $columns);
 				if ($keyexists) {
-					$this->values[$key] = stripslashes($val);
+					$this->values[$key] = $val;
 				}
 			}
 		}
