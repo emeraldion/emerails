@@ -1,8 +1,12 @@
 {
+	"arrowParens": "avoid",
 	"braceStyle": "psr-2",
 	"endOfLine": "lf",
 	"insertPragma": true,
+	"phpVersion": "5.3",
 	"printWidth": 120,
+	"singleAttributePerLine": true,
 	"singleQuote": true,
-	"useTabs": true
+	"trailingCommaPHP": false,
+	"useTabs": false
 }

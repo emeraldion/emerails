@@ -1,7 +1,7 @@
 <?php
 
-require_once(dirname(__FILE__) . '/../../../include/db.inc.php');
-require_once(dirname(__FILE__) . '/../../../include/db_adapter.php');
+require_once(__DIR__ . '/../../../include/db.inc.php');
+require_once(__DIR__ . '/../../../include/db_adapter.php');
 
 class TestAdapterBase implements DbAdapter
 {

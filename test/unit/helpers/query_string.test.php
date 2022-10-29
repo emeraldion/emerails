@@ -1,6 +1,6 @@
 <?php
-	require_once(dirname(__FILE__) . "/../../../helpers/query_string.php");
-	require_once(dirname(__FILE__) . "/../base_test.php");
+	require_once(__DIR__ . "/../../../helpers/query_string.php");
+	require_once(__DIR__ . "/../base_test.php");
 
 	/**
 	 *	@class QueryStringUnitTest

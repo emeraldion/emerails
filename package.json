@@ -1,7 +1,7 @@
 {
   "devDependencies": {
-    "@prettier/plugin-php": "^0.12.0",
-    "prettier": "^1.19.1"
+    "@prettier/plugin-php": "^0.19.1",
+    "prettier": "^2.6.0"
   },
   "scripts": {
     "format": "prettier --write assets/styles/**/*.css controllers/**/*.php helpers/**/*.php include/**/*.php models/**/*.php scripts/**/*.php test/**/*.php views/**/*.php"
