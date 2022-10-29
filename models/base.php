@@ -265,7 +265,7 @@ abstract class ActiveRecord
 		// By convention, relation table name is the union of
 		// the two member tables' names joined by an underscore
 		// in alphabetical order
-		$table_names = array($table_name, $this->table_name);
+		$table_names = array($table_name, $this->get_table_name());
 		sort($table_names);
 		$relation_table = implode('_', $table_names);
 
@@ -281,7 +281,7 @@ abstract class ActiveRecord
 			$peer_fkey,
 			$peer->get_primary_key(),
 			$fkey,
-			$this->values[$this->primary_key],
+			$this->values[$this->get_primary_key()],
 			$params['start'] ?? 0,
 			$params['limit'] ?? 9999
 		);
@@ -293,7 +293,7 @@ abstract class ActiveRecord
 				$peer = new $peerclass($row);
 				// $peer->find_by_id($row[$peer_fkey]);
 				$this->values[$table_name][] = $peer;
-				$peer->values[$this->table_name] = array($this);
+				$peer->values[$this->get_table_name()] = array($this);
 				// print_r($peer);
 
 				// Store relationship data in the peer
