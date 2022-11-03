@@ -791,7 +791,7 @@ class BaseController
             if (in_array($this->action, $this->pages_cached)) {
                 $caches_dir = dirname($this->cached_page_filename());
                 if (!file_exists($caches_dir)) {
-                    mkdir($caches_dir, 0700);
+                    mkdir($caches_dir, 0700, true);
                 }
                 file_put_contents($this->cached_page_filename(), $this->response->body);
             }
