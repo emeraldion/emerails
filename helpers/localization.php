@@ -75,7 +75,7 @@ class Localization
         $table = self::$strings_table;
 
         $local_strings = self::load_strings_file(@$_COOKIE['hl'], $controller);
-        $table = array_merge(self::$strings_table, eval("return {$local_strings};"));
+        $table = array_merge(self::$strings_table ?? array(), eval("return {$local_strings};"));
 
         self::$strings_table = $table;
     }
