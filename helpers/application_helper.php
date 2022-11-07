@@ -17,7 +17,6 @@ use Emeraldion\EmeRails\Db;
 use Emeraldion\EmeRails\DbAdapters\MysqlAdapter;
 use Emeraldion\EmeRails\DbAdapters\MysqliAdapter;
 
-
 error_reporting(E_ALL | E_STRICT);
 session_start();
 

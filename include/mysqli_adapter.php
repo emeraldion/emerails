@@ -8,12 +8,12 @@ require_once __DIR__ . '/db_adapter.php';
 use Emeraldion\EmeRails\Config;
 use Emeraldion\EmeRails\Db;
 
-define('DB_HOST', Config::get('DB_HOST'));
-define('DB_USER', Config::get('DB_USER'));
-define('DB_PASS', Config::get('DB_PASS'));
-define('DB_NAME', Config::get('DB_NAME'));
-define('DB_CHARSET', Config::get('DB_CHARSET'));
-define('DB_DEBUG', Config::get('DB_DEBUG'));
+define('MYSQLI_ADAPTER_DB_HOST', Config::get('DB_HOST'));
+define('MYSQLI_ADAPTER_DB_USER', Config::get('DB_USER'));
+define('MYSQLI_ADAPTER_DB_PASS', Config::get('DB_PASS'));
+define('MYSQLI_ADAPTER_DB_NAME', Config::get('DB_NAME'));
+define('MYSQLI_ADAPTER_DB_CHARSET', Config::get('DB_CHARSET'));
+define('MYSQLI_ADAPTER_DB_DEBUG', Config::get('DB_DEBUG'));
 
 /**
  * @format
@@ -59,11 +59,16 @@ class MysqliAdapter implements DbAdapter
     public function connect()
     {
         if (!is_object($this->link)) {
-            $this->link = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+            $this->link = new mysqli(
+                MYSQLI_ADAPTER_DB_HOST,
+                MYSQLI_ADAPTER_DB_USER,
+                MYSQLI_ADAPTER_DB_PASS,
+                MYSQLI_ADAPTER_DB_NAME
+            );
             if ($this->link->connect_errno) {
                 die('Cannot connect: ' . $this->link->connect_error);
             }
-            $this->link->set_charset(DB_CHARSET);
+            $this->link->set_charset(MYSQLI_ADAPTER_DB_CHARSET);
         }
     }
 
@@ -105,7 +110,7 @@ class MysqliAdapter implements DbAdapter
         }
         $this->query = $query;
 
-        if (DB_DEBUG) {
+        if (MYSQLI_ADAPTER_DB_DEBUG) {
             $this->print_query();
         }
     }
@@ -118,7 +123,7 @@ class MysqliAdapter implements DbAdapter
     {
         $this->connect();
         ($this->result = $this->link->query($this->query)) or
-            die(DB_DEBUG ? "Error ({$this->query}): {$this->link->error}" : 'DB unavailable');
+            die(MYSQLI_ADAPTER_DB_DEBUG ? "Error ({$this->query}): {$this->link->error}" : 'DB unavailable');
         $this->insert_id = $this->link->insert_id;
 
         self::$queries_count++;
@@ -134,7 +139,7 @@ class MysqliAdapter implements DbAdapter
     {
         $this->connect();
         $this->link->multi_query($this->query) or
-            die(DB_DEBUG ? "Error ({$this->query}): {$this->link->error}" : 'DB unavailable');
+            die(MYSQLI_ADAPTER_DB_DEBUG ? "Error ({$this->query}): {$this->link->error}" : 'DB unavailable');
 
         $this->result = array();
         do {

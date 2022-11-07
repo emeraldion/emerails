@@ -8,12 +8,12 @@ require_once __DIR__ . '/db_adapter.php';
 use Emeraldion\EmeRails\Config;
 use Emeraldion\EmeRails\Db;
 
-define('DB_HOST', Config::get('DB_HOST'));
-define('DB_USER', Config::get('DB_USER'));
-define('DB_PASS', Config::get('DB_PASS'));
-define('DB_NAME', Config::get('DB_NAME'));
-define('DB_CHARSET', Config::get('DB_CHARSET'));
-define('DB_DEBUG', Config::get('DB_DEBUG'));
+define('MYSQL_ADAPTER_DB_HOST', Config::get('DB_HOST'));
+define('MYSQL_ADAPTER_DB_USER', Config::get('DB_USER'));
+define('MYSQL_ADAPTER_DB_PASS', Config::get('DB_PASS'));
+define('MYSQL_ADAPTER_DB_NAME', Config::get('DB_NAME'));
+define('MYSQL_ADAPTER_DB_CHARSET', Config::get('DB_CHARSET'));
+define('MYSQL_ADAPTER_DB_DEBUG', Config::get('DB_DEBUG'));
 
 /**
  * @format
@@ -59,9 +59,9 @@ class MysqlAdapter implements DbAdapter
     public function connect()
     {
         if (!is_resource($this->link) || get_resource_type($this->link) != 'mysql link') {
-            $this->link = mysql_connect(DB_HOST, DB_USER, DB_PASS);
-            mysql_set_charset(DB_CHARSET, $this->link);
-            mysql_select_db(DB_NAME) or die('Cannot connect: ' . mysql_error());
+            $this->link = mysql_connect(MYSQL_ADAPTER_DB_HOST, MYSQL_ADAPTER_DB_USER, MYSQL_ADAPTER_DB_PASS);
+            mysql_set_charset(MYSQL_ADAPTER_DB_CHARSET, $this->link);
+            mysql_select_db(MYSQL_ADAPTER_DB_NAME) or die('Cannot connect: ' . mysql_error());
         }
     }
 
@@ -103,7 +103,7 @@ class MysqlAdapter implements DbAdapter
         }
         $this->query = $query;
 
-        if (DB_DEBUG) {
+        if (MYSQL_ADAPTER_DB_DEBUG) {
             $this->print_query();
         }
     }
@@ -116,7 +116,7 @@ class MysqlAdapter implements DbAdapter
     {
         $this->connect();
         ($this->result = mysql_query($this->query, $this->link)) or
-            die(DB_DEBUG ? "Error ({$this->query}): " . mysql_error() : 'DB unavailable');
+            die(MYSQL_ADAPTER_DB_DEBUG ? "Error ({$this->query}): " . mysql_error() : 'DB unavailable');
 
         self::$queries_count++;
 
