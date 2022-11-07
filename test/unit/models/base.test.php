@@ -3,11 +3,17 @@
  * @format
  */
 
+require_once __DIR__ . '/../../../vendor/autoload.php';
 require_once __DIR__ . '/../../../config/db.conf.php';
-require_once __DIR__ . '/../../../include/' . Config::get('DB_ADAPTER') . '_adapter.php';
 
 use Emeraldion\EmeRails\Config;
+use Emeraldion\EmeRails\Db;
+use Emeraldion\EmeRails\DbAdapters\MysqlAdapter;
+use Emeraldion\EmeRails\DbAdapters\MysqliAdapter;
 use Emeraldion\EmeRails\Models\ActiveRecord;
+
+Db::register_adapter(new MysqlAdapter(), MysqlAdapter::NAME);
+Db::register_adapter(new MysqliAdapter(), MysqliAdapter::NAME);
 
 function create_test_model($names)
 {
