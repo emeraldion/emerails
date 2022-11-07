@@ -8,6 +8,8 @@
  * @format
  */
 
+global $irregular_nouns;
+
 $irregular_nouns = array(
     'person' => 'people',
     'child' => 'children',
