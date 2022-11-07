@@ -3,7 +3,7 @@
 	<head>
 		<title><?php print $this->title; ?></title>
 		<meta name="generator" content="EmeRails" />
-		<link rel="icon" href="<?php print APPLICATION_ROOT; ?>assets/images/favicon.png" type="image/png" />
+		<link rel="icon" href="<?php print Config::get('APPLICATION_ROOT'); ?>assets/images/favicon.png" type="image/png" />
 		<link rel="stylesheet" type="text/css" href="<?php print Config::get('APPLICATION_ROOT'); ?>assets/styles/styles.css" />
 	</head>
 	<body>

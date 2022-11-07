@@ -9,7 +9,8 @@
  */
 
 require_once __DIR__ . '/../include/common.inc.php';
-require_once __DIR__ . '/config.php';
+
+use Emeraldion\EmeRails\Config;
 
 switch (getenv('php_env')) {
     case 'test':

@@ -1,10 +1,13 @@
 <?php
+/**
+ * @format
+ */
 
-require_once(__DIR__ . '/../../../helpers/reading_time.php');
+require_once __DIR__ . '/../../../helpers/reading_time.php';
 
 class ReadingTimeTest extends \PHPUnit\Framework\TestCase
 {
-  const LOREM_IPSUM = <<<EOT
+    const LOREM_IPSUM = <<<EOT
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed
 sit amet ipsum mauris. Maecenas congue ligula ac quam viverra nec consectetur ante
 hendrerit. Donec et mollis dolor. Praesent et diam eget libero egestas mattis sit

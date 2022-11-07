@@ -9,7 +9,8 @@
  */
 
 require_once __DIR__ . '/../include/common.inc.php';
-require_once __DIR__ . '/config.php';
+
+use Emeraldion\EmeRails\Config;
 
 Config::set('ERROR_REPORTING', default_to(getenv('EMERAILS_ERROR_REPORTING'), true));
 Config::set('APPLICATION_ROOT', default_to(getenv('EMERAILS_APPLICATION_ROOT'), '/'));

@@ -3,9 +3,11 @@
  * @format
  */
 
-require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../config/db.conf.php';
 require_once __DIR__ . '/db_adapter.php';
+
+use Emeraldion\EmeRails\Config;
+use Emeraldion\EmeRails\Db;
 
 define('DB_HOST', Config::get('DB_HOST'));
 define('DB_USER', Config::get('DB_USER'));

@@ -4,6 +4,6 @@
     "prettier": "^2.6.0"
   },
   "scripts": {
-    "format": "prettier --write assets/styles/**/*.css controllers/**/*.php helpers/**/*.php include/**/*.php models/**/*.php scripts/**/*.php test/**/*.php views/**/*.php config/**/*.php router.php"
+    "format": "prettier --write assets/styles/**/*.css controllers/**/*.php helpers/**/*.php include/**/*.php models/**/*.php scripts/**/*.php test/**/*.php test/**/**/*.php views/**/*.php config/**/*.php public/**/*.php router.php"
   }
 }

@@ -9,7 +9,8 @@
  */
 
 require_once __DIR__ . '/base_controller.php';
-require_once __DIR__ . '/../config/config.php';
+
+use Emeraldion\EmeRails\Config;
 
 /**
  *	@class AssetController

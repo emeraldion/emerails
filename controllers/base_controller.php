@@ -8,7 +8,6 @@
  * @format
  */
 
-require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../include/common.inc.php';
 require_once __DIR__ . '/../include/tag_support.inc.php';
 require_once __DIR__ . '/../helpers/localization.php';
@@ -16,6 +15,8 @@ require_once __DIR__ . '/../helpers/http.php';
 require_once __DIR__ . '/../helpers/response.php';
 require_once __DIR__ . '/../helpers/request.php';
 require_once __DIR__ . '/../helpers/query_string.php';
+
+use Emeraldion\EmeRails\Config;
 
 /**
  *	@class BaseController
@@ -114,6 +115,8 @@ class BaseController
     protected function initialize()
     {
         $classname = get_class($this);
+        $parts = explode('\\', $classname);
+        $classname = $parts[count($parts) - 1];
         $this->name = camel_case_to_joined_lower(substr($classname, 0, strpos($classname, 'Controller')));
         if (isset($_REQUEST['action']) && !empty($_REQUEST['action'])) {
             $action = basename($_REQUEST['action']);

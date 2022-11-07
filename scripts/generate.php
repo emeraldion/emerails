@@ -9,10 +9,11 @@
  * @format
  */
 
-require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../include/common.inc.php';
 require_once __DIR__ . '/../include/db.inc.php';
 require_once __DIR__ . '/../include/' . Config::get('DB_ADAPTER') . '_adapter.php';
+
+use Emeraldion\EmeRails\Config;
 
 function usage()
 {

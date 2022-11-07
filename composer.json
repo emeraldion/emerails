@@ -25,5 +25,10 @@
 		"phpunit/phpunit": "^9",
 		"php-coveralls/php-coveralls": "^2.1",
 		"guzzlehttp/guzzle": "~6.5.8"
+	},
+	"autoload": {
+		"psr-4": {
+			"Emeraldion\\EmeRails\\": "public/"
+		}
 	}
 }

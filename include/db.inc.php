@@ -8,8 +8,9 @@
  * @format
  */
 
-require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../config/db.conf.php';
+
+use Emeraldion\EmeRails\Config;
 
 define('DB_CONNECTION_KEY', 'connection');
 define('DB_IN_USE_KEY', 'in_use');
