@@ -9,6 +9,7 @@
  */
 
 require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../config/db.conf.php';
 require_once __DIR__ . '/../config/emerails.conf.php';
 require_once __DIR__ . '/../include/db.inc.php';
 require_once __DIR__ . '/../include/' . Config::get('DB_ADAPTER') . '_adapter.php';

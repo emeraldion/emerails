@@ -3,7 +3,6 @@
  * @format
  */
 
-require_once __DIR__ . '/../config/db.conf.php';
 require_once __DIR__ . '/db_adapter.php';
 
 use Emeraldion\EmeRails\Config;

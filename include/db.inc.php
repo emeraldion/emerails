@@ -8,8 +8,6 @@
  * @format
  */
 
-require_once __DIR__ . '/../config/db.conf.php';
-
 use Emeraldion\EmeRails\Config;
 
 define('DB_CONNECTION_KEY', 'connection');
