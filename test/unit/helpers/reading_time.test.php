@@ -3,7 +3,7 @@
  * @format
  */
 
-require_once __DIR__ . '/../../../helpers/reading_time.php';
+use Emeraldion\EmeRails\Helpers\ReadingTime;
 
 class ReadingTimeTest extends \PHPUnit\Framework\TestCase
 {

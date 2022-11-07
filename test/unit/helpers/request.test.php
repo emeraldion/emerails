@@ -3,7 +3,7 @@
  * @format
  */
 
-require_once __DIR__ . '/../../../helpers/request.php';
+use Emeraldion\EmeRails\Helpers\Request;
 
 class MockRequest extends Request
 {

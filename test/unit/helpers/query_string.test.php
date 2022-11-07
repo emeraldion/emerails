@@ -3,8 +3,9 @@
  * @format
  */
 
-require_once __DIR__ . '/../../../helpers/query_string.php';
 require_once __DIR__ . '/../base_test.php';
+
+use Emeraldion\EmeRails\Helpers\QueryString;
 
 /**
  *	@class QueryStringUnitTest
