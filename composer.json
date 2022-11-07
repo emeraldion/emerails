@@ -38,8 +38,5 @@
   },
   "bin": [
     "scripts/generate.php"
-  ],
-  "config": {
-    "bin-dir": "scripts"
-  }
+  ]
 }
