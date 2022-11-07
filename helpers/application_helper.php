@@ -11,13 +11,12 @@
 require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/../config/db.conf.php';
 require_once __DIR__ . '/../config/emerails.conf.php';
-require_once __DIR__ . '/../include/db.inc.php';
-require_once __DIR__ . '/../include/' . Config::get('DB_ADAPTER') . '_adapter.php';
-require_once __DIR__ . '/cookie.php';
-require_once __DIR__ . '/time.php';
-require_once __DIR__ . '/localization.php';
 
 use Emeraldion\EmeRails\Config;
+use Emeraldion\EmeRails\Db;
+use Emeraldion\EmeRails\DbAdapters\MysqlAdapter;
+use Emeraldion\EmeRails\DbAdapters\MysqliAdapter;
+
 
 error_reporting(E_ALL | E_STRICT);
 session_start();

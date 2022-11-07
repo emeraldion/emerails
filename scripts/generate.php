@@ -10,10 +10,11 @@
  */
 
 require_once __DIR__ . '/../include/common.inc.php';
-require_once __DIR__ . '/../include/db.inc.php';
-require_once __DIR__ . '/../include/' . Config::get('DB_ADAPTER') . '_adapter.php';
 
 use Emeraldion\EmeRails\Config;
+use Emeraldion\EmeRails\Db;
+use Emeraldion\EmeRails\DbAdapters\MysqlAdapter;
+use Emeraldion\EmeRails\DbAdapters\MysqliAdapter;
 
 function usage()
 {

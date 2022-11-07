@@ -9,7 +9,8 @@
  */
 
 require_once __DIR__ . '/../include/common.inc.php';
-require_once __DIR__ . '/../include/db.inc.php';
+
+use Emeraldion\EmeRails\Db;
 
 /**
  *	@class ActiveRecord
