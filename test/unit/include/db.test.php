@@ -32,6 +32,10 @@ class TestAdapterBase implements DbAdapter
     {
     }
 
+    public function exec_multiline()
+    {
+    }
+
     public function escape($value)
     {
     }
