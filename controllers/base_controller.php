@@ -1,9 +1,9 @@
 <?php
 /**
- *	Project EmeRails - Codename Ocarina
+ *  Project EmeRails - Codename Ocarina
  *
- *	Copyright (c) 2008, 2017 Claudio Procida
- *	http://www.emeraldion.it
+ *  Copyright (c) 2008, 2017 Claudio Procida
+ *  http://www.emeraldion.it
  *
  * @format
  */
@@ -19,84 +19,90 @@ require_once __DIR__ . '/../helpers/query_string.php';
 use Emeraldion\EmeRails\Config;
 
 /**
- *	@class BaseController
- *	@short Abstract base class for action controllers.
- *	@details A subclass of BaseController is in charge of handling a set of actions. It creates the network of model objects
- *	that will be rendered by the views, handles and validates postback data, defines and applies before and after filters.
+ *  @class BaseController
+ *  @short Abstract base class for action controllers.
+ *  @details A subclass of BaseController is in charge of handling a set of actions. It creates the network of model objects
+ *  that will be rendered by the views, handles and validates postback data, defines and applies before and after filters.
  */
 class BaseController
 {
     /**
-     *	@attr name
-     *	@short The name of the controller.
+     *  @attr name
+     *  @short The name of the controller.
      */
     public $name;
 
     /**
-     *	@attr action
-     *	@short The name of the action.
+     *  @attr action
+     *  @short The name of the action.
      */
     public $action;
 
     /**
-     *	@attr title
-     *	@short A title for the page.
+     *  @attr title
+     *  @short A title for the page.
      */
     public $title;
 
     /**
-     *	@attr type
-     *	@short An extension for action pages.
+     *  @attr type
+     *  @short An extension for action pages.
      */
     protected $type = 'html';
 
     /**
-     *	@attr mimetype
-     *	@short A MIME type for the response.
+     *  @attr mimetype
+     *  @short A MIME type for the response.
      */
     protected $mimetype = 'text/html';
 
     /**
-     *	@attr headers
-     *	@short An array of headers for the response.
+     *  @attr headers
+     *  @short An array of headers for the response.
      */
     private $headers;
 
     /**
-     *	@attr rendered
-     *	@short Flag to tell if the response has been already rendered.
+     *  @attr rendered
+     *  @short Flag to tell if the response has been already rendered.
      */
     private $rendered = false;
 
     /**
-     *	@attr before_filters
-     *	@short Array of filters that should be called before the response has been rendered.
+     *  @attr before_filters
+     *  @short Array of filters that should be called before the response has been rendered.
      */
     private $before_filters = array();
 
     /**
-     *	@attr after_filters
-     *	@short Array of filters that should be called after the response has been rendered.
+     *  @attr after_filters
+     *  @short Array of filters that should be called after the response has been rendered.
      */
     private $after_filters = array();
 
     /**
-     *	@attr pages_cached
-     *	@short Array of pages that should be cached.
+     *  @attr pages_cached
+     *  @short Array of pages that should be cached.
      */
     private $pages_cached = array();
 
     /**
-     *	@attr actions_cached
-     *	@short Array of actions that should be cached.
+     *  @attr actions_cached
+     *  @short Array of actions that should be cached.
      */
     private $actions_cached = array();
 
     /**
-     *	@fn __construct
-     *	@short Default constructor for controller objects.
-     *	@details Subclassers should not override this method. Do your specialized
-     *	initialization in the <tt>init</tt> method.
+     *  @attr base_path
+     *  @short Base path for the application. Override via <code>set_path($path)</code> to run as a composer dependency.
+     */
+    private $base_path = __DIR__ . '/..';
+
+    /**
+     *  @fn __construct
+     *  @short Default constructor for controller objects.
+     *  @details Subclassers should not override this method. Do your specialized
+     *  initialization in the <tt>init</tt> method.
      */
     public function __construct()
     {
@@ -107,10 +113,10 @@ class BaseController
     }
 
     /**
-     *	@fn initialize
-     *	@short Initializes the controller object.
-     *	@details Subclassers should not override this method. Do your specialized
-     *	initialization in the <tt>init</tt> method.
+     *  @fn initialize
+     *  @short Initializes the controller object.
+     *  @details Subclassers should not override this method. Do your specialized
+     *  initialization in the <tt>init</tt> method.
      */
     protected function initialize()
     {
@@ -134,10 +140,10 @@ class BaseController
     }
 
     /**
-     *	@fn init
-     *	@short Custom initialization for the controller object.
-     *	@details Subclassers should override this method to perform specialized
-     *	initialization. The default implementation does nothing.
+     *  @fn init
+     *  @short Custom initialization for the controller object.
+     *  @details Subclassers should override this method to perform specialized
+     *  initialization. The default implementation does nothing.
      */
     protected function init()
     {
@@ -145,39 +151,39 @@ class BaseController
     }
 
     /**
-     *	Action filtering
+     *  Action filtering
      */
 
     /**
-     *	@fn before_filter($filter, $params)
-     *	@short Registers a function as a filter to be executed before the action is invoked.
-     *	@details EmeRails allows the developer to call one or more functions before the action is actually invoked.
+     *  @fn before_filter($filter, $params)
+     *  @short Registers a function as a filter to be executed before the action is invoked.
+     *  @details EmeRails allows the developer to call one or more functions before the action is actually invoked.
      *
-     *	This may be useful to execute common code which is required before different action methods, to perform
-     *	authentication checks, etc.
+     *  This may be useful to execute common code which is required before different action methods, to perform
+     *  authentication checks, etc.
      *
-     *	The controller keeps a list (FIFO) of filters that are invoked before the action method.
-     *	Everywhere in the filters chain, you can redirect the request or simply return silently to resign
-     *	control to the next filter, or the action itself.
-     *	You can customize the way the filter is invoked by passing the optional parameter <tt>params</tt>.
+     *  The controller keeps a list (FIFO) of filters that are invoked before the action method.
+     *  Everywhere in the filters chain, you can redirect the request or simply return silently to resign
+     *  control to the next filter, or the action itself.
+     *  You can customize the way the filter is invoked by passing the optional parameter <tt>params</tt>.
      *
-     *	Examples:
+     *  Examples:
      *
-     *	<tt>$this->before_filter(array('foo', 'bar'));</tt>
+     *  <tt>$this->before_filter(array('foo', 'bar'));</tt>
      *
-     *	Executes the <tt>foo</tt> and <tt>bar</tt> filters (in this order) whatever action is requested.
+     *  Executes the <tt>foo</tt> and <tt>bar</tt> filters (in this order) whatever action is requested.
      *
-     *	<tt>$this->before_filter('foo', array('only' => 'index'));</tt>
+     *  <tt>$this->before_filter('foo', array('only' => 'index'));</tt>
      *
-     *	Executes the <tt>foo</tt> filter only when the <tt>index</tt> action is requested.
+     *  Executes the <tt>foo</tt> filter only when the <tt>index</tt> action is requested.
      *
-     *	<tt>$this->before_filter('foo', array('except' => array('index', 'list')));</tt>
+     *  <tt>$this->before_filter('foo', array('except' => array('index', 'list')));</tt>
      *
-     *	Executes the <tt>foo</tt> filter unless the <tt>index</tt> or <tt>list</tt> actions are requested.
+     *  Executes the <tt>foo</tt> filter unless the <tt>index</tt> or <tt>list</tt> actions are requested.
      *
-     *	@param filter The name (or an array of names) of the method to be executed as filter.
-     *	Currently, it must be a method of the controller.
-     *	@param params Parameters that define when the filter has to be invoked.
+     *  @param filter The name (or an array of names) of the method to be executed as filter.
+     *  Currently, it must be a method of the controller.
+     *  @param params Parameters that define when the filter has to be invoked.
      */
     protected function before_filter($filter, $params = null)
     {
@@ -191,34 +197,34 @@ class BaseController
     }
 
     /**
-     *	@fn after_filter($filter, $params)
-     *	@short Registers a function as a filter to be executed after the action is invoked.
-     *	@details EmeRails allows the developer to call one or more functions after the action has been invoked.
+     *  @fn after_filter($filter, $params)
+     *  @short Registers a function as a filter to be executed after the action is invoked.
+     *  @details EmeRails allows the developer to call one or more functions after the action has been invoked.
      *
-     *	This allows the developer to perform manipulation of the response, to enable markup expansion, etc.
+     *  This allows the developer to perform manipulation of the response, to enable markup expansion, etc.
      *
-     *	The controller keeps a list (FIFO) of filters that are invoked after the action method has returned.
-     *	Everywhere in the filters chain, you can redirect the request or simply return silently to resign
-     *	control to the next filter, or the response be flushed to the client.
-     *	You can customize the way the filter is invoked by passing the optional parameter <tt>params</tt>.
+     *  The controller keeps a list (FIFO) of filters that are invoked after the action method has returned.
+     *  Everywhere in the filters chain, you can redirect the request or simply return silently to resign
+     *  control to the next filter, or the response be flushed to the client.
+     *  You can customize the way the filter is invoked by passing the optional parameter <tt>params</tt>.
      *
-     *	Examples:
+     *  Examples:
      *
-     *	<tt>$this->after_filter(array('foo', 'bar'));</tt>
+     *  <tt>$this->after_filter(array('foo', 'bar'));</tt>
      *
-     *	Executes the <tt>foo</tt> and <tt>bar</tt> filters (in this order) whatever action is requested.
+     *  Executes the <tt>foo</tt> and <tt>bar</tt> filters (in this order) whatever action is requested.
      *
-     *	<tt>$this->after_filter('foo', array('only' => 'index'));</tt>
+     *  <tt>$this->after_filter('foo', array('only' => 'index'));</tt>
      *
-     *	Executes the <tt>foo</tt> filter only when the <tt>index</tt> action is requested.
+     *  Executes the <tt>foo</tt> filter only when the <tt>index</tt> action is requested.
      *
-     *	<tt>$this->after_filter('foo', array('except' => array('index', 'list')));</tt>
+     *  <tt>$this->after_filter('foo', array('except' => array('index', 'list')));</tt>
      *
-     *	Executes the <tt>foo</tt> filter unless the <tt>index</tt> or <tt>list</tt> actions are requested.
+     *  Executes the <tt>foo</tt> filter unless the <tt>index</tt> or <tt>list</tt> actions are requested.
      *
-     *	@param filter The name (or an array of names) of the method to be executed as filter.
-     *	Currently, it must be a method of the controller.
-     *	@param params Parameters that define when the filter has to be invoked.
+     *  @param filter The name (or an array of names) of the method to be executed as filter.
+     *  Currently, it must be a method of the controller.
+     *  @param params Parameters that define when the filter has to be invoked.
      */
     protected function after_filter($filter, $params = null)
     {
@@ -232,13 +238,13 @@ class BaseController
     }
 
     /**
-     *	@fn filter_applicable($conditions)
-     *	@short Determines if a filter is applicable for the current action.
-     *	@details This method checks the <tt>conditions</tt> argument in order to determine if
-     *	the filter (whatever it is) can be applied for the current action.
-     *	@param conditions An array containing directives for the application of filters.
-     *	It has the same format of the second parameter of methods <tt>before_filter</tt> and
-     *	<tt>after_filter</tt>.
+     *  @fn filter_applicable($conditions)
+     *  @short Determines if a filter is applicable for the current action.
+     *  @details This method checks the <tt>conditions</tt> argument in order to determine if
+     *  the filter (whatever it is) can be applied for the current action.
+     *  @param conditions An array containing directives for the application of filters.
+     *  It has the same format of the second parameter of methods <tt>before_filter</tt> and
+     *  <tt>after_filter</tt>.
      */
     private function filter_applicable($conditions)
     {
@@ -267,15 +273,15 @@ class BaseController
     }
 
     /**
-     *	Page caching
+     *  Page caching
      */
 
     /**
-     *	@fn caches_page($page)
-     *	@short Requests that a page be cached.
-     *	@details This method registers the page <tt>page</tt> to be cached after it has been
-     *	executed and rendered.
-     *	@param page The name (or an array of names) of a page that should be cached.
+     *  @fn caches_page($page)
+     *  @short Requests that a page be cached.
+     *  @details This method registers the page <tt>page</tt> to be cached after it has been
+     *  executed and rendered.
+     *  @param page The name (or an array of names) of a page that should be cached.
      */
     protected function caches_page($page)
     {
@@ -289,12 +295,12 @@ class BaseController
     }
 
     /**
-     *	@fn conditionally_caches_page($page, $condition)
-     *	@short Requests that a page be cached when a condition is verified.
-     *	@details Convenience method to cache the requested page only if the
-     *	<tt>condition</tt> argument evaluates as <tt>TRUE</tt>.
-     *	@param page The name (or an array of names) of a page that should be cached.
-     *	@param condition Flag to decide if the page should be cached.
+     *  @fn conditionally_caches_page($page, $condition)
+     *  @short Requests that a page be cached when a condition is verified.
+     *  @details Convenience method to cache the requested page only if the
+     *  <tt>condition</tt> argument evaluates as <tt>TRUE</tt>.
+     *  @param page The name (or an array of names) of a page that should be cached.
+     *  @param condition Flag to decide if the page should be cached.
      */
     protected function conditionally_caches_page($page, $condition = true)
     {
@@ -304,10 +310,10 @@ class BaseController
     }
 
     /**
-     *	@fn caches_action($page)
-     *	@short Requests that an action be cached.
-     *	@details This method is currently unused.
-     *	@param page The name of a page that should be cached.
+     *  @fn caches_action($page)
+     *  @short Requests that an action be cached.
+     *  @details This method is currently unused.
+     *  @param page The name of a page that should be cached.
      */
     protected function caches_action($page)
     {
@@ -315,9 +321,9 @@ class BaseController
     }
 
     /**
-     *	@fn cached_page_exists
-     *	@short Checks if a cached version of the current action exists.
-     *	@details This method checks the existence of the file whose name is returned by <tt>cached_page_filename</tt>.
+     *  @fn cached_page_exists
+     *  @short Checks if a cached version of the current action exists.
+     *  @details This method checks the existence of the file whose name is returned by <tt>cached_page_filename</tt>.
      */
     protected function cached_page_exists()
     {
@@ -325,24 +331,25 @@ class BaseController
     }
 
     /**
-     *	@fn cached_page_filename
-     *	@short Returns a name for the cached page of current action.
-     *	@details This method creates a filename that is uniquely associated with the current controller, action,
-     *	argument identifier and language.
+     *  @fn cached_page_filename
+     *  @short Returns a name for the cached page of current action.
+     *  @details This method creates a filename that is uniquely associated with the current controller, action,
+     *  argument identifier and language.
      */
     protected function cached_page_filename()
     {
         $lang = isset($_COOKIE['hl']) ? $_COOKIE['hl'] : 'en';
         $id = isset($_REQUEST['id']) ? "@{$_REQUEST['id']}" : '';
-        $cachefile = __DIR__ . "/../caches/{$this->name}/{$this->action}{$id}-{$lang}.cached";
+        $cachefile = sprintf('%s/caches/%s/%s%s-%s.cached', $this->base_path, $this->name, $this->action, $id, $lang);
+
         return $cachefile;
     }
 
     /**
-     *	@fn expire_cached_page($params)
-     *	@short Requests that the page(s) defined by <tt>params</tt> be removed from the caches.
-     *	@details This method removes from the caches all pages that match the <tt>params</tt> argument
-     *	for every supported language.
+     *  @fn expire_cached_page($params)
+     *  @short Requests that the page(s) defined by <tt>params</tt> be removed from the caches.
+     *  @details This method removes from the caches all pages that match the <tt>params</tt> argument
+     *  for every supported language.
      */
     protected function expire_cached_page($params)
     {
@@ -359,17 +366,17 @@ class BaseController
     }
 
     /**
-     *	Response manipulation
+     *  Response manipulation
      */
 
     /**
-     *	@fn redirect_to($params)
-     *	@short Redirects the response to another action, or URL.
-     *	@details This method can either redirect the response to
-     *	an URL, or another action, whose parameters are contained in
-     *	the <tt>params</tt> argument.
-     *	@param params An URL, or an array with details of the action
-     *	for response redirection.
+     *  @fn redirect_to($params)
+     *  @short Redirects the response to another action, or URL.
+     *  @details This method can either redirect the response to
+     *  an URL, or another action, whose parameters are contained in
+     *  the <tt>params</tt> argument.
+     *  @param params An URL, or an array with details of the action
+     *  for response redirection.
      */
     protected function redirect_to($params)
     {
@@ -388,10 +395,10 @@ class BaseController
     }
 
     /**
-     *	@fn refresh($after)
-     *	@short Refreshes current page after a given amount of time.
-     *	@details Same as <tt>redirect_to</tt>, except that the destination is the same page.
-     *	@param after Number of seconds after which perform a refresh.
+     *  @fn refresh($after)
+     *  @short Refreshes current page after a given amount of time.
+     *  @details Same as <tt>redirect_to</tt>, except that the destination is the same page.
+     *  @param after Number of seconds after which perform a refresh.
      */
     protected function refresh($amount)
     {
@@ -399,14 +406,14 @@ class BaseController
     }
 
     /**
-     *	@fn redirect_to_referrer($or_else)
-     *	@short Redirects the response to the URL which is contained
-     *	in the <tt>HTTP_REFERER</tt> server variable (i.e., performs a
-     *	back redirection). If no <tt>HTTP_REFERER</tt> is set, and if passed
-     *	the optional parameter <tt>or_else</tt>, the latter is used for an
-     *	explicit redirection.
-     *	@param or_else An URL, or an array with details of the action
-     *	for response redirection if no <tt>HTTP_REFERER</tt> is set.
+     *  @fn redirect_to_referrer($or_else)
+     *  @short Redirects the response to the URL which is contained
+     *  in the <tt>HTTP_REFERER</tt> server variable (i.e., performs a
+     *  back redirection). If no <tt>HTTP_REFERER</tt> is set, and if passed
+     *  the optional parameter <tt>or_else</tt>, the latter is used for an
+     *  explicit redirection.
+     *  @param or_else An URL, or an array with details of the action
+     *  for response redirection if no <tt>HTTP_REFERER</tt> is set.
      */
     protected function redirect_to_referrer($or_else = null)
     {
@@ -417,21 +424,26 @@ class BaseController
         }
     }
 
+    public function set_base_path($path = __DIR__)
+    {
+        $this->base_path = $path;
+    }
+
     /**
-     *	Hyperlinks to actions
+     *  Hyperlinks to actions
      */
 
     /**
-     *	@fn link_to($text, $params)
-     *	@short Links to another action.
-     *	@details This method creates a hyperlink to another action, as
-     *	specified in the <tt>params</tt> argument. This <tt>params</tt> array
-     *	has the same semantics used in the <tt>make_relative_url</tt> method.
-     *	You can also provide an explicit URL for the hyperlink by passing the
-     *	<tt>href</tt> key. This will override other parameters.
-     *	@see link_to_remote($text, $params);
-     *	@param text A text label for the hyperlink.
-     *	@param params Array of key value pairs defining the hyperlink.
+     *  @fn link_to($text, $params)
+     *  @short Links to another action.
+     *  @details This method creates a hyperlink to another action, as
+     *  specified in the <tt>params</tt> argument. This <tt>params</tt> array
+     *  has the same semantics used in the <tt>make_relative_url</tt> method.
+     *  You can also provide an explicit URL for the hyperlink by passing the
+     *  <tt>href</tt> key. This will override other parameters.
+     *  @see link_to_remote($text, $params);
+     *  @param text A text label for the hyperlink.
+     *  @param params Array of key value pairs defining the hyperlink.
      */
     public function link_to($text, $params = array())
     {
@@ -446,17 +458,17 @@ class BaseController
     }
 
     /**
-     *	@fn link_to_remote($text, $params)
-     *	@short Links to another action, with AJAX support.
-     *	@details This method behaves like <tt>link_to</tt>, except that
-     *	it also adds an AJAX handler to replace the contents of the element with id
-     *	<tt>target</tt>.
-     *	You can also provide different URLs for the static and AJAX hyperlink, by
-     *	explicitly setting the keys in <tt>params</tt>: <tt>href</tt>, <tt>remote_url</tt>,
-     *	or both.
-     *	@see link_to($text, $params);
-     *	@param text A text label for the hyperlink.
-     *	@param params Array of key value pairs defining the hyperlink.
+     *  @fn link_to_remote($text, $params)
+     *  @short Links to another action, with AJAX support.
+     *  @details This method behaves like <tt>link_to</tt>, except that
+     *  it also adds an AJAX handler to replace the contents of the element with id
+     *  <tt>target</tt>.
+     *  You can also provide different URLs for the static and AJAX hyperlink, by
+     *  explicitly setting the keys in <tt>params</tt>: <tt>href</tt>, <tt>remote_url</tt>,
+     *  or both.
+     *  @see link_to($text, $params);
+     *  @param text A text label for the hyperlink.
+     *  @param params Array of key value pairs defining the hyperlink.
      */
     public function link_to_remote($text, $params = array())
     {
@@ -480,15 +492,15 @@ class BaseController
     }
 
     /**
-     *	@fn button_to($text, $params)
-     *	@short Creates a button that links to another action.
-     *	@details This method creates a button that links to another action, as
-     *	specified in the <tt>params</tt> argument. This <tt>params</tt> array
-     *	has the same semantics used in the <tt>make_relative_url</tt> method.
-     *	You can also provide an explicit URL for the hyperlink by passing the
-     *	<tt>href</tt> key. This will override other parameters.
-     *	@param text A text label for the button.
-     *	@param params Array of key value pairs defining the hyperlink.
+     *  @fn button_to($text, $params)
+     *  @short Creates a button that links to another action.
+     *  @details This method creates a button that links to another action, as
+     *  specified in the <tt>params</tt> argument. This <tt>params</tt> array
+     *  has the same semantics used in the <tt>make_relative_url</tt> method.
+     *  You can also provide an explicit URL for the hyperlink by passing the
+     *  <tt>href</tt> key. This will override other parameters.
+     *  @param text A text label for the button.
+     *  @param params Array of key value pairs defining the hyperlink.
      */
     public function button_to($text, $params = array())
     {
@@ -506,10 +518,10 @@ class BaseController
     }
 
     /**
-     *	@fn unknown_action()
-     *	@short Fallback handler for unknown action.
-     *	@details This method implements the default action handler which
-     *	sends a 404 Not Found error back to the client.
+     *  @fn unknown_action()
+     *  @short Fallback handler for unknown action.
+     *  @details This method implements the default action handler which
+     *  sends a 404 Not Found error back to the client.
      */
     protected function unknown_action()
     {
@@ -517,11 +529,11 @@ class BaseController
     }
 
     /**
-     *	@fn send_error($status)
-     *	@short Sends an HTTP error to the client.
-     *	@details This method sends an HTTP error to the client with the
-     *	status code of choice.
-     *	@param status Status code.
+     *  @fn send_error($status)
+     *  @short Sends an HTTP error to the client.
+     *  @details This method sends an HTTP error to the client with the
+     *  status code of choice.
+     *  @param status Status code.
      */
     protected function send_error($status)
     {
@@ -529,12 +541,12 @@ class BaseController
     }
 
     /**
-     *	@fn url_to($params)
-     *	@short Creates a URL to an action.
-     *	@details This method builds a URL to an action, as
-     *	specified in the <tt>params</tt> argument. The <tt>params</tt> array
-     *	has the same semantics used in the <tt>make_relative_url</tt> method.
-     *	@param params Array of key value pairs defining the URL.
+     *  @fn url_to($params)
+     *  @short Creates a URL to an action.
+     *  @details This method builds a URL to an action, as
+     *  specified in the <tt>params</tt> argument. The <tt>params</tt> array
+     *  has the same semantics used in the <tt>make_relative_url</tt> method.
+     *  @param params Array of key value pairs defining the URL.
      */
     public function url_to($params)
     {
@@ -542,11 +554,11 @@ class BaseController
     }
 
     /**
-     *	@fn url_to_myself($relative)
-     *	@short Creates a URL to the current action.
-     *	@details This method builds a URL to the current action.
-     *	@param relative Whether the URL should contain only the path,
-     *	or be a qualified URI.
+     *  @fn url_to_myself($relative)
+     *  @short Creates a URL to the current action.
+     *  @details This method builds a URL to the current action.
+     *  @param relative Whether the URL should contain only the path,
+     *  or be a qualified URI.
      */
     function url_to_myself($relative = true)
     {
@@ -559,20 +571,20 @@ class BaseController
     }
 
     /**
-     *	@fn make_relative_url($params)
-     *	@short Creates a URL to an action.
-     *	@details This method builds a URL to an action, as
-     *	specified in the <tt>params</tt> argument. The <tt>params</tt> array
-     *	has the following semantics:
+     *  @fn make_relative_url($params)
+     *  @short Creates a URL to an action.
+     *  @details This method builds a URL to an action, as
+     *  specified in the <tt>params</tt> argument. The <tt>params</tt> array
+     *  has the following semantics:
      *
-     *	<tt>controller</tt>: the name of the desired controller (optional, defaults to self).
-     *	<tt>action</tt>: the name of the desired action (optional, defaults to 'index').
-     *	<tt>id</tt>: the id of the argument of the action (optional).
-     *	<tt>type</tt>: the type (extension) of the resource (optional, defaults to 'html').
-     *	<tt>query_string</tt>: the query string part of the URL (optional).
-     *	<tt>hash</tt>: the target HTML anchor of the URL (optional).
+     *  <tt>controller</tt>: the name of the desired controller (optional, defaults to self).
+     *  <tt>action</tt>: the name of the desired action (optional, defaults to 'index').
+     *  <tt>id</tt>: the id of the argument of the action (optional).
+     *  <tt>type</tt>: the type (extension) of the resource (optional, defaults to 'html').
+     *  <tt>query_string</tt>: the query string part of the URL (optional).
+     *  <tt>hash</tt>: the target HTML anchor of the URL (optional).
      *
-     *	@param params Array of key value pairs defining the URL.
+     *  @param params Array of key value pairs defining the URL.
      */
     public function make_relative_url($params)
     {
@@ -608,27 +620,27 @@ class BaseController
     }
 
     /**
-     *	Response rendering
+     *  Response rendering
      */
 
     /**
-     *	@fn render($params)
-     *	@short Requests the rendering of the response.
-     *	@details This method is responsible of loading the view and layout
-     *	relative to the current controller and action, parsing their content,
-     *	and returning the result to be appended to the response.
+     *  @fn render($params)
+     *  @short Requests the rendering of the response.
+     *  @details This method is responsible of loading the view and layout
+     *  relative to the current controller and action, parsing their content,
+     *  and returning the result to be appended to the response.
      *
-     *	The <tt>params</tt> array has the following semantics:
+     *  The <tt>params</tt> array has the following semantics:
      *
-     *	@li <tt>action</tt>: the name of the action for which render a view (defaults to current action).
-     *	@li <tt>layout</tt>: the layout used to render the view (optional, defaults to current action).
-     *	It can be set to <tt>NULL</tt> to render the view with no layout (the same result can be obtained
-     *	using the <tt>nolayout</tt> request parameter).
-     *	@li <tt>return</tt>: return the rendered view as a string, rather than flushing it to the output buffer.
-     *	@li <tt>partial</tt>: triggers the partial rendering mode (optional).
-     *	@li <tt>object</tt>: passes an argument to be used by the partial view (optional).
+     *  @li <tt>action</tt>: the name of the action for which render a view (defaults to current action).
+     *  @li <tt>layout</tt>: the layout used to render the view (optional, defaults to current action).
+     *  It can be set to <tt>NULL</tt> to render the view with no layout (the same result can be obtained
+     *  using the <tt>nolayout</tt> request parameter).
+     *  @li <tt>return</tt>: return the rendered view as a string, rather than flushing it to the output buffer.
+     *  @li <tt>partial</tt>: triggers the partial rendering mode (optional).
+     *  @li <tt>object</tt>: passes an argument to be used by the partial view (optional).
      *
-     *	@param params Parameters defining how the rendering should be realized.
+     *  @param params Parameters defining how the rendering should be realized.
      */
     public function render($params)
     {
@@ -643,7 +655,7 @@ class BaseController
             $partial = basename($params['partial']);
 
             // Get part file
-            $partfile = __DIR__ . "/../views/{$this->name}/_{$partial}.php";
+            $partfile = sprintf('%s/views/%s/_%s.php', $this->base_path, $this->name, $partial);
 
             // Connect main object
             if (isset($params['object'])) {
@@ -666,7 +678,7 @@ class BaseController
                 isset($params['action']) && !empty($params['action']) ? basename($params['action']) : $this->action;
 
             // Get part file
-            $partfile = __DIR__ . "/../views/{$this->name}/{$action}.php";
+            $partfile = sprintf('%s/views/%s/%s.php', $this->base_path, $this->name, $action);
 
             // Start output buffering
             ob_start();
@@ -700,13 +712,13 @@ class BaseController
     }
 
     /**
-     *	@fn render_as_string($params)
-     *	@short Requests the rendering of the response as a string.
-     *	@details This method calls <tt>render</tt> by passing the <tt>return</tt>
-     *	parameter to <tt>TRUE</tt>, and returns the rendered response as a string.
-     *	The <tt>params</tt> array has the same semantics discussed in the
-     *	<tt>render</tt> method.
-     *	@param params Parameters defining how the rendering should be realized.
+     *  @fn render_as_string($params)
+     *  @short Requests the rendering of the response as a string.
+     *  @details This method calls <tt>render</tt> by passing the <tt>return</tt>
+     *  parameter to <tt>TRUE</tt>, and returns the rendered response as a string.
+     *  The <tt>params</tt> array has the same semantics discussed in the
+     *  <tt>render</tt> method.
+     *  @param params Parameters defining how the rendering should be realized.
      */
     public function render_as_string($params)
     {
@@ -715,14 +727,14 @@ class BaseController
     }
 
     /**
-     *	@fn render_layout($params)
-     *	@short Renders the layout for the current view.
-     *	@details This method is responsible of loading the layout
-     *	as defined in the <tt>params</tt> argument, parsing it and
-     *	returning the result.
-     *	The <tt>params</tt> array has the same semantics of the <tt>render</tt>
-     *	method, although only the <tt>layout</tt> key is relevant.
-     *	@param params Parameters defining how the rendering should be realized.
+     *  @fn render_layout($params)
+     *  @short Renders the layout for the current view.
+     *  @details This method is responsible of loading the layout
+     *  as defined in the <tt>params</tt> argument, parsing it and
+     *  returning the result.
+     *  The <tt>params</tt> array has the same semantics of the <tt>render</tt>
+     *  method, although only the <tt>layout</tt> key is relevant.
+     *  @param params Parameters defining how the rendering should be realized.
      */
     protected function render_layout($params)
     {
@@ -735,10 +747,11 @@ class BaseController
         ob_start();
 
         // Get part file
-        $partfile = __DIR__ . "/../views/layouts/{$layout}_layout.php";
+        $partfile = sprintf('%s/views/layouts/%s_layout.php', $this->base_path, $layout);
+
         if (!file_exists($partfile)) {
             // Fall back to default layout
-            $partfile = __DIR__ . '/../views/layouts/default_layout.php';
+            $partfile = sprintf('%s/views/layouts/default_layout.php', $this->base_path);
         }
 
         // Evaluate and send to buffer
@@ -751,16 +764,16 @@ class BaseController
     }
 
     /**
-     *	@fn render_page
-     *	@short Renders the page as a response for the current request.
-     *	@details This method is responsible for building the response
-     *	for the current request.
-     *	@li All before filters that are registered for the current action are executed.
-     *	@li If the current page is cacheable, and a cached version already exists in
-     *	the caches, it is returned; otherwise it is rendered and eventually stored in
-     *	the cache folder.
-     *	@li All after filters that are registered for the current action are executed.
-     *	@li Finally, the response is flushed to the client.
+     *  @fn render_page
+     *  @short Renders the page as a response for the current request.
+     *  @details This method is responsible for building the response
+     *  for the current request.
+     *  @li All before filters that are registered for the current action are executed.
+     *  @li If the current page is cacheable, and a cached version already exists in
+     *  the caches, it is returned; otherwise it is rendered and eventually stored in
+     *  the cache folder.
+     *  @li All after filters that are registered for the current action are executed.
+     *  @li Finally, the response is flushed to the client.
      */
     public function render_page()
     {
@@ -824,16 +837,16 @@ class BaseController
     }
 
     /**
-     *	@fn render_component($params)
-     *	@short Renders a view from a controller other than self.
-     *	@details This method renders a view from a controller other than self,
-     *	for example when embedding a view into another view.
+     *  @fn render_component($params)
+     *  @short Renders a view from a controller other than self.
+     *  @details This method renders a view from a controller other than self,
+     *  for example when embedding a view into another view.
      *
-     *	The <tt>params</tt> array has the same semantics of the <tt>render</tt> method,
-     *	with the following additions:
+     *  The <tt>params</tt> array has the same semantics of the <tt>render</tt> method,
+     *  with the following additions:
      *
-     *	<tt>controller</tt>: the name of the controller responsible for the view (defaults to self).
-     *	@param params Parameters defining how the rendering should be realized.
+     *  <tt>controller</tt>: the name of the controller responsible for the view (defaults to self).
+     *  @param params Parameters defining how the rendering should be realized.
      */
     public function render_component($params)
     {
@@ -889,11 +902,11 @@ class BaseController
     }
 
     /**
-     *	@fn load_part_contents($filename)
-     *	@short Loads the contents of the desired view file.
-     *	@details This method returns the contents of the requested view file
-     *	without parsing.
-     *	@param filename The name of the view file to load.
+     *  @fn load_part_contents($filename)
+     *  @short Loads the contents of the desired view file.
+     *  @details This method returns the contents of the requested view file
+     *  without parsing.
+     *  @param filename The name of the view file to load.
      */
     protected function load_part_contents($filename)
     {
@@ -905,11 +918,11 @@ class BaseController
     }
 
     /**
-     *	@fn strip_external_php_tags($php_code)
-     *	@short Strips beginning and ending delimiters from the given PHP code.
-     *	@details This method removes the beginning and ending PHP code delimiters
-     *	to enable subsequent parsing with <tt>eval</tt>.
-     *	@param php_code The code to be stripped.
+     *  @fn strip_external_php_tags($php_code)
+     *  @short Strips beginning and ending delimiters from the given PHP code.
+     *  @details This method removes the beginning and ending PHP code delimiters
+     *  to enable subsequent parsing with <tt>eval</tt>.
+     *  @param php_code The code to be stripped.
      */
     protected function strip_external_php_tags($php_code)
     {
@@ -927,13 +940,13 @@ class BaseController
     }
 
     /**
-     *	Miscellaneous
+     *  Miscellaneous
      */
 
     /**
-     *	@fn set_title($title)
-     *	@short Sets the title for the current page.
-     *	@param title A title for the current page.
+     *  @fn set_title($title)
+     *  @short Sets the title for the current page.
+     *  @param title A title for the current page.
      */
     public function set_title($title)
     {
@@ -941,8 +954,8 @@ class BaseController
     }
 
     /**
-     *	@fn abort_and_flush
-     *	@short Interrupts the processing of the request.
+     *  @fn abort_and_flush
+     *  @short Interrupts the processing of the request.
      */
     private function abort_and_flush()
     {
@@ -951,16 +964,16 @@ class BaseController
     }
 
     /**
-     *	Messages handling
+     *  Messages handling
      */
 
     /**
-     *	@fn flash($message, $type)
-     *	@short Shows a message to the user, with an optional type qualifier.
-     *	@details The flash is a facility to store messages that should be visualized
-     *	as a result of some event, or as a response to the user's previous request.
-     *	@param message A message to show to the user.
-     *	@param type The type of the message (e.g. 'warning').
+     *  @fn flash($message, $type)
+     *  @short Shows a message to the user, with an optional type qualifier.
+     *  @details The flash is a facility to store messages that should be visualized
+     *  as a result of some event, or as a response to the user's previous request.
+     *  @param message A message to show to the user.
+     *  @param type The type of the message (e.g. 'warning').
      */
     public function flash($message, $type = 'error')
     {
@@ -968,12 +981,12 @@ class BaseController
     }
 
     /**
-     *	Action methods
+     *  Action methods
      */
 
     /**
-     *	@fn index
-     *	@short This is the default action method.
+     *  @fn index
+     *  @short This is the default action method.
      */
     public function index()
     {
@@ -981,15 +994,15 @@ class BaseController
     }
 
     /**
-     *	Filters
+     *  Filters
      */
 
     /**
-     *	@fn compress
-     *	@short Compresses the response with gzip encoding.
-     *	@details This after-filter is capable of compressing the response with gzip encoding,
-     *	in order to save bandwidth. If the client does not support gzip encoding, the response
-     *	is not altered.
+     *  @fn compress
+     *  @short Compresses the response with gzip encoding.
+     *  @details This after-filter is capable of compressing the response with gzip encoding,
+     *  in order to save bandwidth. If the client does not support gzip encoding, the response
+     *  is not altered.
      */
     protected function compress()
     {
