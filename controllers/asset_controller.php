@@ -9,6 +9,7 @@
  */
 
 require_once __DIR__ . '/base_controller.php';
+require_once __DIR__ . '/../config/config.php';
 
 /**
  *	@class AssetController
@@ -60,8 +61,8 @@ class AssetController extends BaseController
 
     private function rewrite($body)
     {
-        if (APPLICATION_ROOT !== '/') {
-            return preg_replace('/\/assets\//i', APPLICATION_ROOT . 'assets/', $body);
+        if (Config::get('APPLICATION_ROOT') !== '/') {
+            return preg_replace('/\/assets\//i', Config::get('APPLICATION_ROOT') . 'assets/', $body);
         }
         return $body;
     }

@@ -8,6 +8,8 @@
  * @format
  */
 
+require_once __DIR__ . '/../config/config.php';
+
 /**
  *	@class HTTP
  *	@short Helper class to manipulate HTTP error codes.
@@ -28,7 +30,9 @@ class HTTP
             header("$header: $value");
         }
         $_SESSION['error_processed'] = true;
-        header(sprintf('Location: http://%s%serror/%s.html', $_SERVER['HTTP_HOST'], APPLICATION_ROOT, $code));
+        header(
+            sprintf('Location: http://%s%serror/%s.html', $_SERVER['HTTP_HOST'], Config::get('APPLICATION_ROOT'), $code)
+        );
         exit();
     }
 }

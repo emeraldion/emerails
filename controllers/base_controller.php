@@ -8,6 +8,7 @@
  * @format
  */
 
+require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../include/common.inc.php';
 require_once __DIR__ . '/../include/tag_support.inc.php';
 require_once __DIR__ . '/../helpers/localization.php';
@@ -581,12 +582,18 @@ class BaseController
         $type = isset($params['type']) && !empty($params['type']) ? $params['type'] : $this->type;
         if (isset($params['action']) && !empty($params['action'])) {
             if (isset($params['id']) && !empty($params['id'])) {
-                $href = sprintf('%s%s/%s/%s', APPLICATION_ROOT, $controller, $params['action'], $params['id']);
+                $href = sprintf(
+                    '%s%s/%s/%s',
+                    Config::get('APPLICATION_ROOT'),
+                    $controller,
+                    $params['action'],
+                    $params['id']
+                );
             } else {
-                $href = sprintf('%s%s/%s.%s', APPLICATION_ROOT, $controller, $params['action'], $type);
+                $href = sprintf('%s%s/%s.%s', Config::get('APPLICATION_ROOT'), $controller, $params['action'], $type);
             }
         } else {
-            $href = sprintf('%s%s/index.%s', APPLICATION_ROOT, $controller, $type);
+            $href = sprintf('%s%s/index.%s', Config::get('APPLICATION_ROOT'), $controller, $type);
         }
         if (isset($params['query_string'])) {
             $href .= "?{$params['query_string']}";

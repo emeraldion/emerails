@@ -8,11 +8,13 @@
  * @format
  */
 
+require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../config/db.conf.php';
 
 define('DB_CONNECTION_KEY', 'connection');
 define('DB_IN_USE_KEY', 'in_use');
 define('DB_ID_KEY', 'id');
+define('DB_ADAPTER', Config::get('DB_ADAPTER'));
 
 /**
  *	@class Db
@@ -62,7 +64,7 @@ class Db
      */
     public static function get_default_adapter()
     {
-        return self::get_adapter(DB_ADAPTER);
+        return self::get_adapter(Config::get('DB_ADAPTER'));
     }
 
     /**
