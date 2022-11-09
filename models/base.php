@@ -256,12 +256,22 @@ abstract class ActiveRecord
      *  @param params An array of conditions. For the semantics, see find_all
      *  @see find_all
      */
-    public function has_and_belongs_to_many($table_name, $params = array())
+    public function has_and_belongs_to_many($class_or_table_name, $params = array())
     {
         $conn = Db::get_connection();
 
-        $peerclass = table_name_to_class_name($table_name);
-        $peer = new $peerclass();
+        try {
+            // Assume class name and obtain table name
+            $peerclass = $class_or_table_name;
+            $peer = new $peerclass();
+            $table_name = $peer->get_table_name();
+        } catch (Throwable $t) {
+            // Assume table name and infer class name
+            $table_name = $class_or_table_name;
+            $peerclass = table_name_to_class_name($table_name);
+            $peer = new $peerclass();
+        }
+
         $fkey = $this->get_foreign_key_name();
         $peer_fkey = $peer->get_foreign_key_name();
 

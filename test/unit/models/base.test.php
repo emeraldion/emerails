@@ -412,10 +412,59 @@ class ActiveRecordTest extends \PHPUnit\Framework\TestCase
             }
         }
 
+
         $instance = new TestModel();
         $ret = $instance->find_by_id(2);
         $this->assertTrue($ret);
         $instance->has_and_belongs_to_many('test_groups');
+        $this->assertNotNull($instance->test_groups);
+        $this->assertEquals(2, count($instance->test_groups));
+        foreach ($instance->test_groups as $test_group) {
+            $this->assertTrue(in_array($instance, $test_group->test_models));
+            $this->assertTrue(isset($test_group->count));
+            switch ($test_group->id) {
+                case 1:
+                    $this->assertEquals(3, $test_group->count);
+                    break;
+                case 2:
+                    $this->assertEquals(0, $test_group->count);
+                    break;
+            }
+        }
+    }
+
+    public function test_has_and_belongs_to_many_by_class_name()
+    {
+        /*
+         *  +----------+----------+-------+
+         *  | model_id | group_id | count |
+         *  +----------+----------+-------+
+         *  |        2 |        1 |     3 |
+         *  |        1 |        2 |     1 |
+         *  |        2 |        2 |     0 |
+         *  +----------+----------+-------+
+         */
+        $instance = new TestModel();
+        $ret = $instance->find_by_id(1);
+        $this->assertTrue($ret);
+        $instance->has_and_belongs_to_many(TestGroup::class);
+        $this->assertNotNull($instance->test_groups);
+        $this->assertEquals(1, count($instance->test_groups));
+        foreach ($instance->test_groups as $test_group) {
+            $this->assertTrue(in_array($instance, $test_group->test_models));
+            $this->assertTrue(isset($test_group->count));
+            switch ($test_group->id) {
+                case 2:
+                    $this->assertEquals(1, $test_group->count);
+                    break;
+            }
+        }
+
+
+        $instance = new TestModel();
+        $ret = $instance->find_by_id(2);
+        $this->assertTrue($ret);
+        $instance->has_and_belongs_to_many(TestGroup::class);
         $this->assertNotNull($instance->test_groups);
         $this->assertEquals(2, count($instance->test_groups));
         foreach ($instance->test_groups as $test_group) {
@@ -463,6 +512,53 @@ class ActiveRecordTest extends \PHPUnit\Framework\TestCase
         $ret = $instance->find_by_id(2);
         $this->assertTrue($ret);
         $instance->has_and_belongs_to_many('test_models');
+        $this->assertNotNull($instance->test_models);
+        $this->assertEquals(2, count($instance->test_models));
+        foreach ($instance->test_models as $test_model) {
+            $this->assertTrue(in_array($instance, $test_model->test_groups));
+            $this->assertTrue(isset($test_model->count));
+            switch ($test_model->id) {
+                case 1:
+                    $this->assertEquals(1, $test_model->count);
+                    break;
+                case 2:
+                    $this->assertEquals(0, $test_model->count);
+                    break;
+            }
+        }
+    }
+
+    public function test_has_and_belongs_to_many_inverse_by_class_name()
+    {
+        /*
+         *  +----------+----------+-------+
+         *  | model_id | group_id | count |
+         *  +----------+----------+-------+
+         *  |        2 |        1 |     3 |
+         *  |        1 |        2 |     1 |
+         *  |        2 |        2 |     0 |
+         *  +----------+----------+-------+
+         */
+        $instance = new TestGroup();
+        $ret = $instance->find_by_id(1);
+        $this->assertTrue($ret);
+        $instance->has_and_belongs_to_many(TestModel::class);
+        $this->assertNotNull($instance->test_models);
+        $this->assertEquals(1, count($instance->test_models));
+        foreach ($instance->test_models as $test_model) {
+            $this->assertTrue(in_array($instance, $test_model->test_groups));
+            $this->assertTrue(isset($test_model->count));
+            switch ($test_model->id) {
+                case 2:
+                    $this->assertEquals(3, $test_model->count);
+                    break;
+            }
+        }
+
+        $instance = new TestGroup();
+        $ret = $instance->find_by_id(2);
+        $this->assertTrue($ret);
+        $instance->has_and_belongs_to_many(TestModel::class);
         $this->assertNotNull($instance->test_models);
         $this->assertEquals(2, count($instance->test_models));
         foreach ($instance->test_models as $test_model) {
