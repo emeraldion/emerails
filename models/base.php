@@ -146,6 +146,8 @@ abstract class ActiveRecord
     {
         if (!$this->table_name) {
             $classname = get_class($this);
+            $parts = explode('\\', $classname);
+            $classname = $parts[count($parts) - 1];
             $this->table_name = class_name_to_table_name($classname);
         }
         return $this->table_name;
