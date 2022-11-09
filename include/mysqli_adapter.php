@@ -136,9 +136,10 @@ class MysqliAdapter implements DbAdapter
 
         $this->result = array();
         do {
+            $this->link->next_result();
             $this->result[] = $this->link->store_result();
             self::$queries_count++;
-        } while ($this->link->next_result());
+        } while ($this->link->more_results());
 
         return $this->result;
     }
