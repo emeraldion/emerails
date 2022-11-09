@@ -315,6 +315,40 @@ class ActiveRecordTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('blue', $instance->test_widget->color);
     }
 
+    public function test_has_one_by_class_name()
+    {
+        $instance = new TestModel();
+        $ret = $instance->find_by_id(1);
+        $this->assertTrue($ret);
+        $ret = $instance->has_one(TestWidget::class);
+        $this->assertTrue($ret);
+        $this->assertNotNull($instance->test_widget);
+        $this->assertEquals('red', $instance->test_widget->color);
+
+        $instance = $instance->find_all(array(
+            'where_clause' => "`name` = 'foo'"
+        ))[0];
+        $ret = $instance->has_one(TestWidget::class);
+        $this->assertTrue($ret);
+        $this->assertNotNull($instance->test_widget);
+        $this->assertEquals('red', $instance->test_widget->color);
+
+        $instance = new TestModel();
+        $ret = $instance->find_by_id(2);
+        $this->assertTrue($ret);
+        $ret = $instance->has_one(TestWidget::class);
+        $this->assertTrue($ret);
+        $this->assertNotNull($instance->test_widget);
+        $this->assertEquals('blue', $instance->test_widget->color);
+
+        $instance = $instance->find_all(array(
+            'where_clause' => "`name` = 'bar'"
+        ))[0];
+        $instance->has_one(TestWidget::class);
+        $this->assertNotNull($instance->test_widget);
+        $this->assertEquals('blue', $instance->test_widget->color);
+    }
+
     public function test_has_one_no_matches()
     {
         $instance = new TestModel();
@@ -356,6 +390,37 @@ class ActiveRecordTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('bar', $instance->test_model->name);
     }
 
+    public function test_belongs_to_by_class_name()
+    {
+        $instance = new TestWidget();
+        $ret = $instance->find_by_id(1);
+        $this->assertTrue($ret);
+        $instance->belongs_to(TestModel::class);
+        $this->assertNotNull($instance->test_model);
+        $this->assertEquals('foo', $instance->test_model->name);
+
+        $instance = $instance->find_all(array(
+            'where_clause' => "`color` = 'red'"
+        ))[0];
+        $instance->belongs_to(TestModel::class);
+        $this->assertNotNull($instance->test_model);
+        $this->assertEquals('foo', $instance->test_model->name);
+
+        $instance = new TestWidget();
+        $ret = $instance->find_by_id(2);
+        $this->assertTrue($ret);
+        $instance->belongs_to(TestModel::class);
+        $this->assertNotNull($instance->test_model);
+        $this->assertEquals('bar', $instance->test_model->name);
+
+        $instance = $instance->find_all(array(
+            'where_clause' => "`color` = 'blue'"
+        ))[0];
+        $instance->belongs_to(TestModel::class);
+        $this->assertNotNull($instance->test_model);
+        $this->assertEquals('bar', $instance->test_model->name);
+    }
+
     public function test_has_many()
     {
         $instance = new TestWidget();
@@ -370,6 +435,25 @@ class ActiveRecordTest extends \PHPUnit\Framework\TestCase
         $ret = $instance->find_by_id(2);
         $this->assertTrue($ret);
         $ret = $instance->has_many('test_versions');
+        $this->assertTrue($ret);
+        $this->assertNotNull($instance->test_versions);
+        $this->assertEquals(1, count($instance->test_versions));
+    }
+
+    public function test_has_many_by_class_name()
+    {
+        $instance = new TestWidget();
+        $ret = $instance->find_by_id(1);
+        $this->assertTrue($ret);
+        $ret = $instance->has_many(TestVersion::class);
+        $this->assertTrue($ret);
+        $this->assertNotNull($instance->test_versions);
+        $this->assertEquals(4, count($instance->test_versions));
+
+        $instance = new TestWidget();
+        $ret = $instance->find_by_id(2);
+        $this->assertTrue($ret);
+        $ret = $instance->has_many(TestVersion::class);
         $this->assertTrue($ret);
         $this->assertNotNull($instance->test_versions);
         $this->assertEquals(1, count($instance->test_versions));
@@ -411,7 +495,6 @@ class ActiveRecordTest extends \PHPUnit\Framework\TestCase
                     break;
             }
         }
-
 
         $instance = new TestModel();
         $ret = $instance->find_by_id(2);
@@ -459,7 +542,6 @@ class ActiveRecordTest extends \PHPUnit\Framework\TestCase
                     break;
             }
         }
-
 
         $instance = new TestModel();
         $ret = $instance->find_by_id(2);

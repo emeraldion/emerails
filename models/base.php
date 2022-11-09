@@ -198,16 +198,25 @@ abstract class ActiveRecord
     }
 
     /**
-     *  @fn belongs_to($table_name)
+     *  @fn belongs_to($class_or_table_name)
      *  @short Loads the parent of the receiver in a one-to-many relationship.
-     *  @param table_name The name of the parent table.
+     *  @param class_or_table_name The name of the parent class or table.
      */
-    public function belongs_to($table_name)
+    public function belongs_to($class_or_table_name)
     {
         $classname = get_class($this);
         $columns = self::_get_columns($classname);
-        $ownerclass = table_name_to_class_name($table_name);
-        $owner = new $ownerclass();
+        try {
+            // Assume class name and obtain table name
+            $ownerclass = $class_or_table_name;
+            $owner = new $ownerclass();
+            $table_name = $owner->get_table_name();
+        } catch (Throwable $t) {
+            // Assume table name and infer class name
+            $table_name = $class_or_table_name;
+            $ownerclass = table_name_to_class_name($table_name);
+            $owner = new $ownerclass();
+        }
         if (in_array(table_name_to_foreign_key($table_name), $columns)) {
             $owner->find_by_id($this->values[table_name_to_foreign_key($table_name)]);
         } elseif (in_array($owner->foreign_key_name, $columns)) {
@@ -218,17 +227,26 @@ abstract class ActiveRecord
     }
 
     /**
-     *  @fn has_many($table_name, $params)
+     *  @fn has_many($class_or_table_name, $params)
      *  @short Loads the children of the receiver in a one-to-many relationship.
-     *  @param table_name The name of the child table.
+     *  @param class_or_table_name The name of the child class or table.
      *  @param params An array of conditions. For the semantics, see find_all
      *  @return true if the relationship is fulfilled, false otherwise
      *  @see find_all
      */
-    public function has_many($table_name, $params = array())
+    public function has_many($class_or_table_name, $params = array())
     {
-        $childclass = table_name_to_class_name($table_name);
-        $obj = new $childclass();
+        try {
+            // Assume class name and obtain table name
+            $childclass = $class_or_table_name;
+            $child = new $childclass();
+            $table_name = $child->get_table_name();
+        } catch (Throwable $t) {
+            // Assume table name and infer class name
+            $table_name = $class_or_table_name;
+            $childclass = table_name_to_class_name($table_name);
+            $child = new $childclass();
+        }
         $fkey = $this->get_foreign_key_name();
         if (isset($params['where_clause'])) {
             $params[
@@ -237,7 +255,7 @@ abstract class ActiveRecord
         } else {
             $params['where_clause'] = "`{$fkey}` = '{$this->values[$this->primary_key]}' ";
         }
-        $children = $obj->find_all($params);
+        $children = $child->find_all($params);
         if (is_array($children) && count($children) > 0) {
             foreach ($children as $child) {
                 $child->values[singularize($this->table_name)] = $this;
@@ -250,9 +268,9 @@ abstract class ActiveRecord
     }
 
     /**
-     *  @fn has_and_belongs_to_many($table_name, $params)
+     *  @fn has_and_belongs_to_many($class_or_table_name, $params)
      *  @short Loads the object network the receiver belongs to in a many-to-many relationship.
-     *  @param table_name The name of the peer table.
+     *  @param class_or_table_name The name of the peer class or table.
      *  @param params An array of conditions. For the semantics, see find_all
      *  @see find_all
      */
@@ -324,19 +342,29 @@ abstract class ActiveRecord
     }
 
     /**
-     *  @fn has_one($table_name)
-     *  @short Loads the child the receiver in a one-to-one relationship.
-     *  @param table_name The name of the child table.
+     *  @fn has_one($class_or_table_name)
+     *  @short Loads the child of the receiver in a one-to-one relationship.
+     *  @param class_or_table_name The name of the child class or table.
      *  @param params An array of conditions. For the semantics, see find_all
      *  @return true if the relationship is fulfilled, false otherwise
      *  @see find_all
      */
-    public function has_one($table_name)
+    public function has_one($class_or_table_name)
     {
-        $childclass = table_name_to_class_name($table_name);
-        $obj = new $childclass();
+        try {
+            // Assume class name and obtain table name
+            $childclass = $class_or_table_name;
+            $child = new $childclass();
+            $table_name = $child->get_table_name();
+        } catch (Throwable $t) {
+            // Assume table name and infer class name
+            $table_name = $class_or_table_name;
+            $childclass = table_name_to_class_name($table_name);
+            $child = new $childclass();
+        }
+
         $fkey = $this->get_foreign_key_name();
-        $children = $obj->find_all(array(
+        $children = $child->find_all(array(
             'where_clause' => "`{$fkey}` = '{$this->values[$this->primary_key]}'",
             'limit' => 1
         ));
