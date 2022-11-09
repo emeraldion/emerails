@@ -57,6 +57,12 @@ class BaseController
     protected $mimetype = 'text/html';
 
     /**
+     *  @attr base_path
+     *  @short Base path for the application. Override via <code>set_base_path($path)</code> to run as a composer dependency.
+     */
+    protected $base_path = __DIR__ . '/..';
+
+    /**
      *  @attr headers
      *  @short An array of headers for the response.
      */
@@ -91,12 +97,6 @@ class BaseController
      *  @short Array of actions that should be cached.
      */
     private $actions_cached = array();
-
-    /**
-     *  @attr base_path
-     *  @short Base path for the application. Override via <code>set_path($path)</code> to run as a composer dependency.
-     */
-    private $base_path = __DIR__ . '/..';
 
     /**
      *  @fn __construct

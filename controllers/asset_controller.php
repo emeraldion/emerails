@@ -46,7 +46,7 @@ class AssetController extends BaseController
             default:
                 $this->mimetype = 'text/plain';
         }
-        $asset_file = __DIR__ . '/../assets/' . $_GET['dir'] . '/' . $_GET['file'] . '.' . $_GET['ext'];
+        $asset_file = sprintf('%s/assets/%s/%s.%s', $this->base_path, $_GET['dir'], $_GET['file'], $_GET['ext']);
 
         $this->response->body = $this->rewrite(file_get_contents($asset_file));
 
