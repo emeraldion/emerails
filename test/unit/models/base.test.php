@@ -124,20 +124,20 @@ class ActiveRecordTest extends \PHPUnit\Framework\TestCase
         $instance = new TestModel(array(
             'name' => 'baz'
         ));
-        $this->assertNotNull($instance);
+        $this->assertNotNull($instance, 'Model was not instantiated');
         $ret = $instance->save();
-        $this->assertTrue($ret);
-        $this->assertNotNull($instance->id);
+        $this->assertTrue($ret, 'Model was not saved');
+        $this->assertNotNull($instance->id, 'Model id was not set');
 
         $other_instance = new TestModel(array(
             'id' => $instance->id,
             'name' => 'baz'
         ));
-        $this->assertNotNull($other_instance);
+        $this->assertNotNull($other_instance, 'Duplicate model was not instantiated');
         $other_instance->_force_create = true;
         $other_instance->_ignore = true;
         $ret = $other_instance->save();
-        $this->assertFalse($ret);
+        $this->assertFalse($ret, 'Duplicate model was saved and not rejected');
     }
 
     public function test_delete()

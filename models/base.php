@@ -25,6 +25,14 @@ use Emeraldion\EmeRails\Db;
 abstract class ActiveRecord
 {
     /**
+     *  @const READONLY_COLUMNS
+     *  @short Array of read-only columns that must not be written by us.
+     *  @details This is a list of columns that must not be written by models, cause
+     *  they're typically set or updated by DB triggers.
+     */
+    const READONLY_COLUMNS = array('created_at', 'updated_at');
+
+    /**
      *  @attr columns
      *  @short Array of columns for the model object.
      */
@@ -570,12 +578,19 @@ abstract class ActiveRecord
 
         $nonempty = array();
         for ($i = 0; $i < count($columns); $i++) {
-            if (isset($this->values[$columns[$i]])) {
+            if (
+                // Do not set the primary key unless we're creating a new row
+                ($columns[$i] != $this->get_primary_key() || $this->_force_create) &&
+                // Exclude read-only columns
+                !in_array($columns[$i], self::READONLY_COLUMNS) &&
+                // Exclude empty columns
+                isset($this->values[$columns[$i]])
+            ) {
                 $nonempty[] = $columns[$i];
             }
         }
 
-        if (!empty($this->values[$this->primary_key]) && !isset($this->_force_create)) {
+        if (!empty($this->values[$this->get_primary_key()]) && !isset($this->_force_create)) {
             $query = 'UPDATE `{1}` SET ';
             for ($i = 0; $i < count($nonempty); $i++) {
                 $query .= "`{$nonempty[$i]}` = '{$conn->escape($this->values[$nonempty[$i]])}'";
@@ -583,8 +598,8 @@ abstract class ActiveRecord
                     $query .= ', ';
                 }
             }
-            $query .= " WHERE `{$this->primary_key}` = '{2}' LIMIT 1";
-            $conn->prepare($query, $this->get_table_name(), $this->values[$this->primary_key]);
+            $query .= " WHERE `{$this->get_primary_key()}` = '{2}' LIMIT 1";
+            $conn->prepare($query, $this->get_table_name(), $this->values[$this->get_primary_key()]);
             $conn->exec();
             $ret = true;
         } else {
@@ -607,7 +622,7 @@ abstract class ActiveRecord
             $conn->exec();
             $insert_id = $conn->insert_id();
             if ($insert_id !== 0) {
-                $this->values[$this->primary_key] = $insert_id;
+                $this->values[$this->get_primary_key()] = $insert_id;
             }
             if ($conn->affected_rows() > 0) {
                 $ret = true;
