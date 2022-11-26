@@ -14,7 +14,8 @@ $irregular_nouns = array(
     'person' => 'people',
     'child' => 'children',
     'man' => 'men',
-    'woman' => 'women'
+    'woman' => 'women',
+    'portfolio' => 'portfolios'
 );
 
 function default_to($value, $default)

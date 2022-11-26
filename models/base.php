@@ -150,7 +150,7 @@ abstract class ActiveRecord
      *  the table name will be <tt>my_records</tt>. Of course you can override this behavior by
      *  setting explicitly the value of <tt>$table_name</tt> in the declaration of your class.
      */
-    private function get_table_name()
+    public function get_table_name()
     {
         if (!$this->table_name) {
             $classname = get_class($this);
@@ -259,16 +259,19 @@ abstract class ActiveRecord
         if (isset($params['where_clause'])) {
             $params[
                 'where_clause'
-            ] = "({$params['where_clause']}) AND `{$fkey}` = '{$this->values[$this->primary_key]}' ";
+            ] = "({$params['where_clause']}) AND `{$fkey}` = '{$this->values[$this->get_primary_key()]}' ";
         } else {
-            $params['where_clause'] = "`{$fkey}` = '{$this->values[$this->primary_key]}' ";
+            $params['where_clause'] = "`{$fkey}` = '{$this->values[$this->get_primary_key()]}' ";
         }
         $children = $child->find_all($params);
+        $child_pk = $child->get_primary_key();
         if (is_array($children) && count($children) > 0) {
+            $dict = array();
             foreach ($children as $child) {
                 $child->values[singularize($this->table_name)] = $this;
+                $dict[$child->$child_pk] = $child;
             }
-            $this->values[$table_name] = $children;
+            $this->values[$table_name] = $dict;
 
             return true;
         }
@@ -298,7 +301,9 @@ abstract class ActiveRecord
             $peer = new $peerclass();
         }
 
+        $pkey = $this->get_primary_key();
         $fkey = $this->get_foreign_key_name();
+        $peer_pk = $peer->get_primary_key();
         $peer_fkey = $peer->get_foreign_key_name();
 
         // By convention, relation table name is the union of
@@ -318,22 +323,21 @@ abstract class ActiveRecord
             $relation_table,
             $table_name,
             $peer_fkey,
-            $peer->get_primary_key(),
+            $peer_pk,
             $fkey,
-            $this->values[$this->get_primary_key()],
+            $this->values[$pkey],
             $params['start'] ?? 0,
             $params['limit'] ?? 9999
         );
         $conn->exec();
-        // print_r($conn->query);
+
         if ($conn->num_rows() > 0) {
             $this->values[$table_name] = array();
             while ($row = $conn->fetch_assoc()) {
                 $peer = new $peerclass($row);
-                // $peer->find_by_id($row[$peer_fkey]);
-                $this->values[$table_name][] = $peer;
-                $peer->values[$this->get_table_name()] = array($this);
-                // print_r($peer);
+                $this->values[$table_name][$peer->$peer_pk] = $peer;
+                // FIXME: this is not reflecting the real relationship
+                $peer->values[$this->get_table_name()] = array($this->$pkey => $this);
 
                 // Store relationship data in the peer
                 unset($row['id']);
@@ -641,9 +645,9 @@ abstract class ActiveRecord
      *  table bound to the receiver's class, requesting the deletion of the object whose
      *  primary key is equal to the receiver's primary key value. If the object has been
      *  created programmatically and lacks a primary key value, this method has no effect.
-     *  @param bool cleanup Set to <tt>FALSE</tt> if you do not want the table to be optimized after deletion.
+     *  @param bool cleanup Set to <tt>true</tt> if you want the table to be optimized after deletion.
      */
-    public function delete($optimize = true)
+    public function delete($optimize = false)
     {
         $conn = Db::get_connection();
 

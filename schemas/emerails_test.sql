@@ -94,7 +94,7 @@ INSERT INTO `test_models` (`id`, `name`) VALUES
 DROP TABLE IF EXISTS `test_versions`;
 CREATE TABLE IF NOT EXISTS `test_versions` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `test_widget_id` int(11) NOT NULL,
+  `test_widget_id` int(11) DEFAULT NULL,
   `version` varchar(24) NOT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
@@ -121,7 +121,7 @@ INSERT INTO `test_versions` (`id`, `test_widget_id`, `version`) VALUES
 DROP TABLE IF EXISTS `test_widgets`;
 CREATE TABLE IF NOT EXISTS `test_widgets` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `test_model_id` int(11) NOT NULL,
+  `test_model_id` int(11) DEFAULT NULL,
   `color` varchar(24) NOT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),

@@ -23,8 +23,6 @@ class Relationship
 
     const ONE_TO_MANY = 'one_to_many';
 
-    const ONE_TO_ONE_OR_MANY = 'one_to_one_or_many';
-
     const MANY_TO_MANY = 'many_to_many';
 
     public static function one_to_one($classname, $other_classname)
@@ -35,11 +33,6 @@ class Relationship
     public static function one_to_many($classname, $other_classname)
     {
         return new self($classname, $other_classname, self::ONE_TO_MANY);
-    }
-
-    public static function one_to_one_or_many($classname, $other_classname)
-    {
-        return new self($classname, $other_classname, self::ONE_TO_ONE_OR_MANY);
     }
 
     public static function many_to_many($classname, $other_classname)
@@ -141,7 +134,47 @@ class RelationshipInstance
         switch ($this->relationship->cardinality) {
             case Relationship::ONE_TO_ONE:
             case Relationship::ONE_TO_MANY:
+                if ($this->member->has_column($other_member_fk)) {
+                    $child = $this->member;
+                    $child_pk = $member_pk;
+
+                    $parent = $this->other_member;
+                    $parent_pk = $other_member_pk;
+                    $parent_fk = $other_member_fk;
+                } elseif ($this->other_member->has_column($member_fk)) {
+                    $child = $this->other_member;
+                    $child_pk = $other_member_pk;
+
+                    $parent = $this->member;
+                    $parent_pk = $member_pk;
+                    $parent_fk = $member_fk;
+                } else {
+                    throw new Exception(
+                        sprintf(
+                            "Cannot find a column '%s' in table '%s' or a column '%s' in table '%s'.",
+                            $member_fk,
+                            $this->other_member->get_table_name(),
+                            $other_member_fk,
+                            $this->member->get_table_name()
+                        )
+                    );
+                }
+                $conn->prepare(
+                    "UPDATE `{1}` SET `{2}` = '{3}' WHERE `{4}` = '{5}'",
+                    $child->get_table_name(),
+                    $parent_fk,
+                    $parent->$parent_pk,
+                    $child_pk,
+                    $child->$child_pk
+                );
+                $conn->exec();
+
+                // Update the model to avoid a reload from DB
+                $child->$parent_fk = $parent->$parent_pk;
+
+                $ret = true;
                 break;
+
             case Relationship::MANY_TO_MANY:
                 $conn->prepare(
                     "INSERT INTO `{1}` (`{2}`, `{3}`) VALUES ('{4}', '{5}')",
@@ -153,6 +186,33 @@ class RelationshipInstance
                 );
                 $conn->exec();
 
+                // Update models to avoid a reload from DB
+                $member_collection = singularize($this->member->get_table_name());
+                $other_member_collection = singularize($this->other_member->get_table_name());
+                if (is_array($this->member->$other_member_collection)) {
+                    if (
+                        !array_key_exists(
+                            $this->other_member->$other_member_pk,
+                            $this->member->$other_member_collection
+                        )
+                    ) {
+                        $this->member->$other_member_collection[$this->other_member->$other_member_pk] =
+                            $this->other_member;
+                    }
+                } else {
+                    $this->member->$other_member_collection = array(
+                        $this->other_member->$other_member_pk => $this->other_member
+                    );
+                }
+                if (is_array($this->other_member->$member_collection)) {
+                    if (!array_key_exists($this->member->$member_pk, $this->other_member->$member_collection)) {
+                        $this->other_member->$member_collection[$this->member->$member_pk] = $this->member;
+                    }
+                } else {
+                    $this->other_member->$member_collection = array(
+                        $this->member->$member_pk => $this->member
+                    );
+                }
                 $ret = true;
                 break;
         }
@@ -191,11 +251,13 @@ class RelationshipInstance
                     $parent_fk = $member_fk;
                 } else {
                     throw new Exception(
-                        "Cannot find a column '%s' in table '%s' or a column '%s' in table '%s'.",
-                        $member_fk,
-                        $other_member->get_table_name(),
-                        $other_member_fk,
-                        $member->get_table_name()
+                        sprint(
+                            "Cannot find a column '%s' in table '%s' or a column '%s' in table '%s'.",
+                            $member_fk,
+                            $this->other_member->get_table_name(),
+                            $other_member_fk,
+                            $this->member->get_table_name()
+                        )
                     );
                 }
                 $conn->prepare(
@@ -206,8 +268,8 @@ class RelationshipInstance
                     $child->$child_pk
                 );
                 $conn->exec();
-
                 break;
+
             case Relationship::MANY_TO_MANY:
                 $conn->prepare(
                     "DELETE FROM `{1}` WHERE `{2}` = '{3}' AND `{4}` = '{5}'",
