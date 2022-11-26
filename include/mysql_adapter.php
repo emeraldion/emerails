@@ -54,7 +54,9 @@ class MysqlAdapter implements DbAdapter
         if (!is_resource($this->link) || get_resource_type($this->link) != 'mysql link') {
             $this->link = mysql_connect(Config::get('DB_HOST'), Config::get('DB_USER'), Config::get('DB_PASS'));
             mysql_set_charset(Config::get('DB_CHARSET'), $this->link);
-            mysql_select_db(Config::get('DB_NAME')) or die('Cannot connect: ' . mysql_error());
+            if (!mysql_select_db(Config::get('DB_NAME'))) {
+                throw new Exception('Cannot connect: ' . mysql_error());
+            }
         }
     }
 
@@ -108,8 +110,12 @@ class MysqlAdapter implements DbAdapter
     public function exec()
     {
         $this->connect();
-        ($this->result = mysql_query($this->query, $this->link)) or
-            die(Config::get('DB_DEBUG') ? "Error ({$this->query}): " . mysql_error() : 'DB unavailable');
+        $this->result = mysql_query($this->query, $this->link);
+        if (!$this->result) {
+            throw new Exception(
+                Config::get('DB_DEBUG') ? "Error ({$this->query}): " . mysql_error() : 'DB unavailable'
+            );
+        }
 
         self::$queries_count++;
 

@@ -59,7 +59,7 @@ class MysqliAdapter implements DbAdapter
                 Config::get('DB_NAME')
             );
             if ($this->link->connect_errno) {
-                die('Cannot connect: ' . $this->link->connect_error);
+                throw new Exception('Cannot connect: ' . $this->link->connect_error);
             }
             $this->link->set_charset(Config::get('DB_CHARSET'));
         }
@@ -115,8 +115,12 @@ class MysqliAdapter implements DbAdapter
     public function exec()
     {
         $this->connect();
-        ($this->result = $this->link->query($this->query)) or
-            die(Config::get('DB_DEBUG') ? "Error ({$this->query}): {$this->link->error}" : 'DB unavailable');
+        $this->result = $this->link->query($this->query);
+        if (!$this->result) {
+            throw new Exception(
+                Config::get('DB_DEBUG') ? "Error ({$this->query}): {$this->link->error}" : 'DB unavailable'
+            );
+        }
         $this->insert_id = $this->link->insert_id;
 
         self::$queries_count++;
@@ -131,8 +135,11 @@ class MysqliAdapter implements DbAdapter
     public function exec_multiline()
     {
         $this->connect();
-        $this->link->multi_query($this->query) or
-            die(Config::get('DB_DEBUG') ? "Error ({$this->query}): {$this->link->error}" : 'DB unavailable');
+        if (!$this->link->multi_query($this->query)) {
+            throw new Exception(
+                Config::get('DB_DEBUG') ? "Error ({$this->query}): {$this->link->error}" : 'DB unavailable'
+            );
+        }
 
         $this->result = array();
         do {

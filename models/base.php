@@ -169,7 +169,7 @@ abstract class ActiveRecord
      *  the foreign key name will be <tt>my_record_id</tt>. Of course you can override this behavior by
      *  setting explicitly the value of <tt>$foreign_key_name</tt> in the declaration of your class.
      */
-    private function get_foreign_key_name()
+    public function get_foreign_key_name()
     {
         if (empty($this->foreign_key_name)) {
             $classname = get_class($this);
@@ -185,7 +185,7 @@ abstract class ActiveRecord
      *  By default, ActiveRecord considers as primary key a column named <tt>id</tt>. Of course you can override
      *  this behavior by setting explicitly the value of <tt>$primary_key</tt> in the declaration of your class.
      */
-    private function get_primary_key()
+    public function get_primary_key()
     {
         if (!$this->primary_key) {
             $this->primary_key = 'id';
@@ -198,7 +198,7 @@ abstract class ActiveRecord
      *  @short Verifies the existence of a column named <tt>key</tt> in the bound table.
      *  @param key The name of the column to check.
      */
-    private function has_column($key)
+    public function has_column($key)
     {
         $classname = get_class($this);
         $columns = self::_get_columns($classname);
