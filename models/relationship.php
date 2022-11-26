@@ -262,7 +262,7 @@ class RelationshipInstance
                 }
                 $conn->prepare(
                     "UPDATE `{1}` SET `{2}` = NULL WHERE `{3}` = '{4}'",
-                    $this->relationship->get_table_name(),
+                    $child->get_table_name(),
                     $parent_fk,
                     $child_pk,
                     $child->$child_pk
