@@ -173,7 +173,7 @@ class RelationshipTest extends \PHPUnit\Framework\TestCase
         $v1 = new TestVersion(array('version' => '1'));
         $v1->save();
 
-        $v2 = new TestVersion(array('version' => '1'));
+        $v2 = new TestVersion(array('version' => '2'));
         $v2->save();
 
         $widget = new TestWidget(array(
@@ -208,6 +208,30 @@ class RelationshipTest extends \PHPUnit\Framework\TestCase
         $v2->belongs_to(TestWidget::class);
         $this->assertNotNull($v2->test_widget);
         $this->assertEquals($widget->color, $v2->test_widget->color);
+    }
+
+    public function test_save_one_to_many_missing_fk_column()
+    {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage(
+            "Cannot find a column 'test_version_id' in table 'test_models' or a column 'test_model_id' in table 'test_versions'."
+        );
+
+        $r = Relationship::one_to_many(TestVersion::class, TestModel::class);
+
+        $model = new TestModel();
+        $model->save();
+
+        $version = new TestVersion(array('version' => '1.2.3'));
+        $version->save();
+
+        $this->models[] = $model;
+        $this->models[] = $version;
+
+        $instance = $r->between($version, $model);
+
+        // This will throw
+        $instance->save();
     }
 
     public function test_save_many_to_many()
