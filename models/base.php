@@ -830,6 +830,8 @@ abstract class ActiveRecord
      */
     private static function _add_to_pool($classname, $id, $obj)
     {
+        // FIXME: disable for the moment
+        return;
         if (!isset(self::$object_pool[$classname])) {
             self::$object_pool[$classname] = array();
         }
@@ -851,9 +853,4 @@ abstract class ActiveRecord
     }
 }
 
-if (version_compare(PHP_VERSION, '5') < 0) {
-    if (function_exists('overload')) {
-        overload('ActiveRecord');
-    }
-}
 ?>

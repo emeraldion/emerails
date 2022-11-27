@@ -251,10 +251,6 @@ class RelationshipTest extends \PHPUnit\Framework\TestCase
         $instance = $r->between($group, $model);
         // $instance = $r->between($model, $group);
 
-        // But also (TBD):
-        // $model->in_many_to_many_with($group);
-        // $group->in_many_to_many_with($model);
-
         // Save
         $instance->save();
 
