@@ -38,5 +38,16 @@
   },
   "bin": [
     "scripts/generate.php"
-  ]
+  ],
+  "archive": {
+    "exclude": [
+      "/test",
+      "/docs",
+      "/node_modules/",
+      ".prettierrc",
+      ".dockerignore",
+      ".gitignore",
+      ".travis.yml"
+    ]
+  }
 }
