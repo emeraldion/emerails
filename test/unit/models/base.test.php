@@ -122,18 +122,39 @@ class ActiveRecordTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($other_instances);
     }
 
-    public function test_static_find_by_id()
+    public function test_static_find()
+    {
+        $instance = TestModel::find(1);
+        $this->assertNotNull($instance);
+        $this->assertEquals(TestModel::class, get_class($instance));
+        $this->assertEquals('foo', $instance->name);
+
+        $instance = TestModel::find(2);
+        $this->assertNotNull($instance);
+        $this->assertEquals(TestModel::class, get_class($instance));
+        $this->assertEquals('bar', $instance->name);
+    }
+
+    public function test_static_find_with_class_name()
     {
         $instance = TestModel::find(1, 'TestModel');
         $this->assertNotNull($instance);
+        $this->assertEquals(TestModel::class, get_class($instance));
         $this->assertEquals('foo', $instance->name);
 
         $instance = TestModel::find(2, 'TestModel');
         $this->assertNotNull($instance);
+        $this->assertEquals(TestModel::class, get_class($instance));
         $this->assertEquals('bar', $instance->name);
     }
 
-    public function test_static_find_by_id_no_match()
+    public function test_static_find_no_match()
+    {
+        $instance = TestModel::find(3);
+        $this->assertNull($instance);
+    }
+
+    public function test_static_find_no_match_with_class_name()
     {
         $instance = TestModel::find(3, 'TestModel');
         $this->assertNull($instance);

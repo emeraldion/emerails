@@ -76,6 +76,22 @@ abstract class ActiveRecord
     protected $primary_key = 'id';
 
     /**
+     *  @attr primary_key_names
+     *  @short Name of the primary key column for the bound table.
+     *  @details Set this attribute only when the primary key of the bound table is not the canonical <tt>id</tt>.
+     */
+    protected static $primary_key_name = null;
+
+    /**
+     *  @attr actual_primary_key_names
+     *  @short Name of the actual primary key column for the bound table.
+     *  @details This is a dictionary of class name to actual primary key column name.
+     *  The class property is read-only and it is set to the actual primary key of the
+     *  ActiveRecord subclass when introspecting columns of the bound table.
+     */
+    protected static $actual_primary_key_names = array();
+
+    /**
      *  @attr foreign_key_name
      *  @short Used to create the name of foreign key column in tables that are in a relationship with the bound table.
      *  @details Set this attribute only when the foreign key that references objects of this class
@@ -112,6 +128,9 @@ abstract class ActiveRecord
             $columns = array();
             while ($row = $conn->fetch_assoc()) {
                 $columns[] = $row['Field'];
+                if ($row['Key'] == 'PRI') {
+                    self::$actual_primary_key_names[get_called_class()] = $row['Field'];
+                }
             }
             self::_set_columns($classname, $columns);
             self::_set_initialized($classname, true);
@@ -140,6 +159,7 @@ abstract class ActiveRecord
      */
     protected function init($values)
     {
+        $this->primary_key = $this::$primary_key_name ?? $this->primary_key;
     }
 
     /**
@@ -184,13 +204,22 @@ abstract class ActiveRecord
      *  @details This method returns the name of the primary key in the table bound to this class.
      *  By default, ActiveRecord considers as primary key a column named <tt>id</tt>. Of course you can override
      *  this behavior by setting explicitly the value of <tt>$primary_key</tt> in the declaration of your class.
+     *  However, ActiveRecord is capable of overriding the declared column name with the
+     *  value of <tt>$actual_primary_key_names</tt> detected during table introspection.
      */
     public function get_primary_key()
     {
-        if (!$this->primary_key) {
-            $this->primary_key = 'id';
+        // Set to primary_key member for backwards compatibility
+        $ret = $this->primary_key;
+        // Set to static primary_key_name member (new way)
+        if ($this::$primary_key_name) {
+            $ret = $this::$primary_key_name;
         }
-        return $this->primary_key;
+        // Override with actual_primary_key_name if known
+        if (self::$actual_primary_key_names[get_called_class()]) {
+            $ret = self::$actual_primary_key_names[get_called_class()];
+        }
+        return $ret;
     }
 
     /**
@@ -521,6 +550,19 @@ abstract class ActiveRecord
      */
     static function find($id, $classname = 'ActiveRecord')
     {
+        if ($classname != 'ActiveRecord') {
+            trigger_error(
+                sprintf(
+                    "%s::%s was invoked with a second argument '%s'. This is deprecated and will be removed in a future milestone. Please refactor your code to remove the second argument.",
+                    get_called_class(),
+                    __FUNCTION__,
+                    $classname
+                ),
+                E_USER_DEPRECATED
+            );
+        } else {
+            $classname = get_called_class();
+        }
         $obj = new $classname();
         if ($obj->find_by_id($id)) {
             return $obj;

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:8889
--- Generation Time: Nov 28, 2022 at 12:00 AM
+-- Generation Time: Nov 28, 2022 at 01:39 PM
 -- Server version: 5.7.34
 -- PHP Version: 7.4.21
 
@@ -14,7 +14,7 @@ SET time_zone = "+00:00";
 --
 -- Database: `emerails_test`
 --
-CREATE DATABASE IF NOT EXISTS `emerails_test` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
+CREATE DATABASE IF NOT EXISTS `emerails_test` DEFAULT CHARACTER SET latin1 COLLATE latin1_general_cs;
 USE `emerails_test`;
 
 -- --------------------------------------------------------
@@ -68,7 +68,7 @@ CREATE TABLE IF NOT EXISTS `test_groups` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `test_groups`
@@ -115,7 +115,7 @@ CREATE TABLE IF NOT EXISTS `test_models` (
   `name` varchar(24) DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=143 DEFAULT CHARSET=latin1 COMMENT='Test models for Emerails tests';
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1 COMMENT='Test models for Emerails tests';
 
 --
 -- Dumping data for table `test_models`
@@ -139,7 +139,7 @@ CREATE TABLE IF NOT EXISTS `test_versions` (
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `widget_id` (`test_widget_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=62 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `test_versions`
@@ -166,7 +166,7 @@ CREATE TABLE IF NOT EXISTS `test_widgets` (
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `model_id` (`test_model_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `test_widgets`
@@ -176,4 +176,32 @@ INSERT INTO `test_widgets` (`id`, `test_model_id`, `color`) VALUES
 (1, 1, 'red'),
 (2, 2, 'blue'),
 (3, 2, 'green');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `user_accounts`
+--
+
+DROP TABLE IF EXISTS `user_accounts`;
+CREATE TABLE IF NOT EXISTS `user_accounts` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `username` varchar(24) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `username` (`username`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `user_profiles`
+--
+
+DROP TABLE IF EXISTS `user_profiles`;
+CREATE TABLE IF NOT EXISTS `user_profiles` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `username` varchar(24) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `username` (`username`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 COMMIT;
