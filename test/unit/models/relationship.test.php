@@ -192,11 +192,14 @@ class RelationshipTest extends \PHPUnit\Framework\TestCase
         $i1->save();
         $i2->save();
 
+        $versions = array($v1, $v2);
+
         $widget->has_many(TestVersion::class);
         $this->assertNotNull($widget->test_versions);
         $this->assertEquals(2, count($widget->test_versions));
         for ($i = 0; $i < 2; $i++) {
-            $this->assertEquals($version->version, $widget->test_versions[$i]->version);
+            $this->assertTrue(array_key_exists($versions[$i]->id, $widget->test_versions));
+            $this->assertEquals($versions[$i]->version, $widget->test_versions[$versions[$i]->id]->version);
         }
         $this->assertTrue(array_key_exists($v1->id, $widget->test_versions));
         $this->assertTrue(array_key_exists($v2->id, $widget->test_versions));
@@ -259,14 +262,18 @@ class RelationshipTest extends \PHPUnit\Framework\TestCase
         $model->has_and_belongs_to_many(TestGroup::class);
         $this->assertNotNull($model->test_groups);
         $this->assertEquals(1, count($model->test_groups));
-        $this->assertEquals($group->name, $model->test_groups[0]->name);
+
+        list($tg) = array_values($model->test_groups);
+        $this->assertEquals($group->name, $tg->name);
         $this->assertTrue(array_key_exists($group->id, $model->test_groups));
         $this->assertEquals($group->name, $model->test_groups[$group->id]->name);
 
         $group->has_and_belongs_to_many(TestModel::class);
         $this->assertNotNull($group->test_models);
         $this->assertEquals(1, count($group->test_models));
-        $this->assertEquals($model->name, $group->test_models[0]->name);
+
+        list($tm) = array_values($group->test_models);
+        $this->assertEquals($model->name, $tm->name);
         $this->assertTrue(array_key_exists($model->id, $group->test_models));
         $this->assertEquals($model->name, $group->test_models[$model->id]->name);
     }
@@ -304,7 +311,7 @@ class RelationshipTest extends \PHPUnit\Framework\TestCase
             $this->assertNotNull($models[$i]->test_groups);
             $this->assertEquals(3, count($models[$i]->test_groups));
             for ($j = 0; $j < 3; $j++) {
-                $this->assertEquals($groups[$j]->name, $models[$i]->test_groups[$j]->name);
+                $this->assertEquals($groups[$j]->name, array_values($models[$i]->test_groups)[$j]->name);
                 $this->assertTrue(array_key_exists($groups[$j]->id, $models[$i]->test_groups));
                 $this->assertEquals($groups[$j]->name, $models[$i]->test_groups[$groups[$j]->id]->name);
             }
@@ -315,7 +322,7 @@ class RelationshipTest extends \PHPUnit\Framework\TestCase
             $this->assertNotNull($groups[$j]->test_models);
             $this->assertEquals(2, count($groups[$j]->test_models));
             for ($i = 0; $i < 2; $i++) {
-                $this->assertEquals($models[$i]->name, $groups[$j]->test_models[$i]->name);
+                $this->assertEquals($models[$i]->name, array_values($groups[$j]->test_models)[$i]->name);
                 $this->assertTrue(array_key_exists($models[$i]->id, $groups[$j]->test_models));
                 $this->assertEquals($models[$i]->name, $groups[$j]->test_models[$models[$i]->id]->name);
             }

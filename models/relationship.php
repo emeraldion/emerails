@@ -53,7 +53,7 @@ class Relationship
             return null;
         }
 
-        if (!$this->table_name) {
+        if (!isset($this->table_name)) {
             switch ($this->cardinality) {
                 case self::MANY_TO_MANY:
                     $parts = explode('\\', $this->classname);
@@ -69,6 +69,9 @@ class Relationship
                     sort($table_names);
 
                     $this->table_name = implode('_', $table_names);
+                    break;
+                default:
+                    $this->table_name = null;
                     break;
             }
         }

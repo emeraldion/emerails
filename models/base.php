@@ -224,14 +224,22 @@ abstract class ActiveRecord
             $table_name = $class_or_table_name;
             $ownerclass = table_name_to_class_name($table_name);
             $owner = new $ownerclass();
+            trigger_error(
+                sprintf(
+                    '%s::%s was invoked with a table name instead of a class name. This behavior is deprecated and will be removed in a future milestone. Please refactor your code to use class names.',
+                    get_class($this),
+                    __FUNCTION__
+                ),
+                E_USER_DEPRECATED
+            );
         }
         if (in_array(table_name_to_foreign_key($table_name), $columns)) {
             $owner->find_by_id($this->values[table_name_to_foreign_key($table_name)]);
         } elseif (in_array($owner->foreign_key_name, $columns)) {
             $owner->find_by_id($this->values[$owner->foreign_key_name]);
         }
-        $this->values[singularize($table_name)] = $owner;
-        $owner->values[singularize($this->table_name)] = $this;
+        $this->values[camel_case_to_joined_lower($ownerclass)] = $owner;
+        $owner->values[camel_case_to_joined_lower(get_class($this))] = $this;
     }
 
     /**
@@ -254,6 +262,14 @@ abstract class ActiveRecord
             $table_name = $class_or_table_name;
             $childclass = table_name_to_class_name($table_name);
             $child = new $childclass();
+            trigger_error(
+                sprintf(
+                    '%s::%s was invoked with a table name instead of a class name. This behavior is deprecated and will be removed in a future milestone. Please refactor your code to use class names.',
+                    get_class($this),
+                    __FUNCTION__
+                ),
+                E_USER_DEPRECATED
+            );
         }
         $fkey = $this->get_foreign_key_name();
         if (isset($params['where_clause'])) {
@@ -268,10 +284,10 @@ abstract class ActiveRecord
         if (is_array($children) && count($children) > 0) {
             $dict = array();
             foreach ($children as $child) {
-                $child->values[singularize($this->table_name)] = $this;
+                $child->values[camel_case_to_joined_lower(get_class($this))] = $this;
                 $dict[$child->$child_pk] = $child;
             }
-            $this->values[$table_name] = $dict;
+            $this->values[pluralize(camel_case_to_joined_lower($childclass))] = $dict;
 
             return true;
         }
@@ -299,6 +315,14 @@ abstract class ActiveRecord
             $table_name = $class_or_table_name;
             $peerclass = table_name_to_class_name($table_name);
             $peer = new $peerclass();
+            trigger_error(
+                sprintf(
+                    '%s::%s was invoked with a table name instead of a class name. This behavior is deprecated and will be removed in a future milestone. Please refactor your code to use class names.',
+                    get_class($this),
+                    __FUNCTION__
+                ),
+                E_USER_DEPRECATED
+            );
         }
 
         $pkey = $this->get_primary_key();
@@ -335,9 +359,9 @@ abstract class ActiveRecord
             $this->values[$table_name] = array();
             while ($row = $conn->fetch_assoc()) {
                 $peer = new $peerclass($row);
-                $this->values[$table_name][$peer->$peer_pk] = $peer;
+                $this->values[pluralize(camel_case_to_joined_lower($peerclass))][$peer->$peer_pk] = $peer;
                 // FIXME: this is not reflecting the real relationship
-                $peer->values[$this->get_table_name()] = array($this->$pkey => $this);
+                $peer->values[pluralize(camel_case_to_joined_lower(get_class($this)))] = array($this->$pkey => $this);
 
                 // Store relationship data in the peer
                 unset($row['id']);
@@ -373,6 +397,14 @@ abstract class ActiveRecord
             $table_name = $class_or_table_name;
             $childclass = table_name_to_class_name($table_name);
             $child = new $childclass();
+            trigger_error(
+                sprintf(
+                    '%s::%s was invoked with a table name instead of a class name. This behavior is deprecated and will be removed in a future milestone. Please refactor your code to use class names.',
+                    get_class($this),
+                    __FUNCTION__
+                ),
+                E_USER_DEPRECATED
+            );
         }
 
         $fkey = $this->get_foreign_key_name();
@@ -382,8 +414,8 @@ abstract class ActiveRecord
         ));
         if (is_array($children) && count($children) > 0) {
             $child = $children[0];
-            $child->values[singularize($this->table_name)] = $this;
-            $this->values[singularize($table_name)] = $child;
+            $child->values[camel_case_to_joined_lower(get_class($this))] = $this;
+            $this->values[camel_case_to_joined_lower($childclass)] = $child;
 
             return true;
         }
