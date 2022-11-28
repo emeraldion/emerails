@@ -43,8 +43,8 @@ class CocheTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($car->engine, "Expecting Car instance to have an 'engine' field but found null");
         $this->assertNotNull($car->engine->car, "Expecting Engine instance to have a 'car' field but found null");
 
-        $this->assertNotNull($engine->car, "Expecting Car instance to have an 'engine' field but found null");
-        $this->assertNotNull($engine->car->engine, "Expecting Engine instance to have a 'car' field but found null");
+        $this->assertNotNull($engine->car, "Expecting Engine instance to have a 'car' field but found null");
+        $this->assertNotNull($engine->car->engine, "Expecting Car instance to have an 'engine' field but found null");
     }
 
     public function test_correct_member_names_by_table_name()
@@ -63,8 +63,8 @@ class CocheTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($car->engine, "Expecting Car instance to have an 'engine' field but found null");
         $this->assertNotNull($car->engine->car, "Expecting Engine instance to have a 'car' field but found null");
 
-        $this->assertNotNull($engine->car, "Expecting Car instance to have an 'engine' field but found null");
-        $this->assertNotNull($engine->car->engine, "Expecting Engine instance to have a 'car' field but found null");
+        $this->assertNotNull($engine->car, "Expecting Engine instance to have a 'car' field but found null");
+        $this->assertNotNull($engine->car->engine, "Expecting Car instance to have an 'engine' field but found null");
     }
 }
 ?>
