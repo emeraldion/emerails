@@ -118,6 +118,57 @@ class Relationship
 
         return new RelationshipInstance($member, $other_member, $this, $params);
     }
+
+    public function among($members, $other_members, $params = array())
+    {
+        $classes = array($this->classname, $this->other_classname);
+
+        if (
+            array_some($members, function ($member) use ($classes) {
+                return !in_array(get_class($member), $classes);
+            })
+        ) {
+            throw new Exception(
+                sprintf(
+                    "Argument 1 expected of class '%s' or '%s', but got '%s' instead.",
+                    $this->classname,
+                    $this->other_classname,
+                    get_class($member)
+                )
+            );
+        }
+
+        if (
+            array_some($other_members, function ($other_member) use ($classes) {
+                return !in_array(get_class($other_member), $classes);
+            })
+        ) {
+            throw new Exception(
+                sprintf(
+                    "Argument 2 expected of class '%s' or '%s', but got '%s' instead.",
+                    $this->classname,
+                    $this->other_classname,
+                    get_class($other_member)
+                )
+            );
+        }
+
+        $instances = array();
+        $member_pk = first($members)->get_primary_key();
+        $other_member_pk = first($other_members)->get_primary_key();
+        foreach ($members as $member) {
+            $instances[$member->$member_pk] = array();
+            foreach ($other_members as $other_member) {
+                $instances[$member->$member_pk][$other_member->$other_member_pk] = new RelationshipInstance(
+                    $member,
+                    $other_member,
+                    $this,
+                    $params
+                );
+            }
+        }
+        return $instances;
+    }
 }
 
 class RelationshipInstance

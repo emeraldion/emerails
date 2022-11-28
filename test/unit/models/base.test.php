@@ -414,7 +414,7 @@ class ActiveRecordTest extends \PHPUnit\Framework\TestCase
         $ret = $instance->find_by_id(1);
         $this->assertTrue($ret);
         $ret = $instance->has_many('test_versions');
-        $this->assertTrue($ret);
+        $this->assertIsArray($ret);
         $this->assertNotNull($instance->test_versions);
         $this->assertEquals(4, count($instance->test_versions));
 
@@ -422,7 +422,7 @@ class ActiveRecordTest extends \PHPUnit\Framework\TestCase
         $ret = $instance->find_by_id(2);
         $this->assertTrue($ret);
         $ret = $instance->has_many('test_versions');
-        $this->assertTrue($ret);
+        $this->assertIsArray($ret);
         $this->assertNotNull($instance->test_versions);
         $this->assertEquals(1, count($instance->test_versions));
     }
@@ -433,7 +433,7 @@ class ActiveRecordTest extends \PHPUnit\Framework\TestCase
         $ret = $instance->find_by_id(1);
         $this->assertTrue($ret);
         $ret = $instance->has_many(TestVersion::class);
-        $this->assertTrue($ret);
+        $this->assertIsArray($ret);
         $this->assertNotNull($instance->test_versions);
         $this->assertEquals(4, count($instance->test_versions));
 
@@ -441,7 +441,7 @@ class ActiveRecordTest extends \PHPUnit\Framework\TestCase
         $ret = $instance->find_by_id(2);
         $this->assertTrue($ret);
         $ret = $instance->has_many(TestVersion::class);
-        $this->assertTrue($ret);
+        $this->assertIsArray($ret);
         $this->assertNotNull($instance->test_versions);
         $this->assertEquals(1, count($instance->test_versions));
     }
@@ -470,7 +470,8 @@ class ActiveRecordTest extends \PHPUnit\Framework\TestCase
         $instance = new TestModel();
         $ret = $instance->find_by_id(1);
         $this->assertTrue($ret);
-        $instance->has_and_belongs_to_many('test_groups');
+        $ret = $instance->has_and_belongs_to_many('test_groups');
+        $this->assertIsArray($ret);
         $this->assertNotNull($instance->test_groups);
         $this->assertEquals(1, count($instance->test_groups));
         foreach ($instance->test_groups as $test_group) {
@@ -486,7 +487,8 @@ class ActiveRecordTest extends \PHPUnit\Framework\TestCase
         $instance = new TestModel();
         $ret = $instance->find_by_id(2);
         $this->assertTrue($ret);
-        $instance->has_and_belongs_to_many('test_groups');
+        $ret = $instance->has_and_belongs_to_many('test_groups');
+        $this->assertIsArray($ret);
         $this->assertNotNull($instance->test_groups);
         $this->assertEquals(2, count($instance->test_groups));
         foreach ($instance->test_groups as $test_group) {
@@ -517,7 +519,8 @@ class ActiveRecordTest extends \PHPUnit\Framework\TestCase
         $instance = new TestModel();
         $ret = $instance->find_by_id(1);
         $this->assertTrue($ret);
-        $instance->has_and_belongs_to_many(TestGroup::class);
+        $ret = $instance->has_and_belongs_to_many(TestGroup::class);
+        $this->assertIsArray($ret);
         $this->assertNotNull($instance->test_groups);
         $this->assertEquals(1, count($instance->test_groups));
         foreach ($instance->test_groups as $test_group) {
@@ -533,7 +536,8 @@ class ActiveRecordTest extends \PHPUnit\Framework\TestCase
         $instance = new TestModel();
         $ret = $instance->find_by_id(2);
         $this->assertTrue($ret);
-        $instance->has_and_belongs_to_many(TestGroup::class);
+        $ret = $instance->has_and_belongs_to_many(TestGroup::class);
+        $this->assertIsArray($ret);
         $this->assertNotNull($instance->test_groups);
         $this->assertEquals(2, count($instance->test_groups));
         foreach ($instance->test_groups as $test_group) {
@@ -564,7 +568,8 @@ class ActiveRecordTest extends \PHPUnit\Framework\TestCase
         $instance = new TestGroup();
         $ret = $instance->find_by_id(1);
         $this->assertTrue($ret);
-        $instance->has_and_belongs_to_many('test_models');
+        $ret = $instance->has_and_belongs_to_many('test_models');
+        $this->assertIsArray($ret);
         $this->assertNotNull($instance->test_models);
         $this->assertEquals(1, count($instance->test_models));
         foreach ($instance->test_models as $test_model) {
@@ -580,7 +585,8 @@ class ActiveRecordTest extends \PHPUnit\Framework\TestCase
         $instance = new TestGroup();
         $ret = $instance->find_by_id(2);
         $this->assertTrue($ret);
-        $instance->has_and_belongs_to_many('test_models');
+        $ret = $instance->has_and_belongs_to_many('test_models');
+        $this->assertIsArray($ret);
         $this->assertNotNull($instance->test_models);
         $this->assertEquals(2, count($instance->test_models));
         foreach ($instance->test_models as $test_model) {
@@ -611,7 +617,8 @@ class ActiveRecordTest extends \PHPUnit\Framework\TestCase
         $instance = new TestGroup();
         $ret = $instance->find_by_id(1);
         $this->assertTrue($ret);
-        $instance->has_and_belongs_to_many(TestModel::class);
+        $ret = $instance->has_and_belongs_to_many(TestModel::class);
+        $this->assertIsArray($ret);
         $this->assertNotNull($instance->test_models);
         $this->assertEquals(1, count($instance->test_models));
         foreach ($instance->test_models as $test_model) {
@@ -627,7 +634,8 @@ class ActiveRecordTest extends \PHPUnit\Framework\TestCase
         $instance = new TestGroup();
         $ret = $instance->find_by_id(2);
         $this->assertTrue($ret);
-        $instance->has_and_belongs_to_many(TestModel::class);
+        $ret = $instance->has_and_belongs_to_many(TestModel::class);
+        $this->assertIsArray($ret);
         $this->assertNotNull($instance->test_models);
         $this->assertEquals(2, count($instance->test_models));
         foreach ($instance->test_models as $test_model) {

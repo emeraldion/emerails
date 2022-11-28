@@ -319,7 +319,7 @@ abstract class ActiveRecord
             }
             $this->values[pluralize(camel_case_to_joined_lower($childclass))] = $dict;
 
-            return true;
+            return Relationship::one_to_many(get_called_class(), $childclass)->among(array($this), array_values($dict));
         }
         return false;
     }
@@ -385,6 +385,7 @@ abstract class ActiveRecord
         );
         $conn->exec();
 
+        $ret = false;
         if ($conn->num_rows() > 0) {
             $this->values[$table_name] = array();
             while ($row = $conn->fetch_assoc()) {
@@ -401,10 +402,17 @@ abstract class ActiveRecord
                     $peer->values[$key] = $value;
                 }
             }
+
+            $ret = Relationship::many_to_many(get_called_class(), $peerclass)->among(
+                array($this),
+                array_values($this->values[$table_name])
+            );
         }
         $conn->free_result();
 
         Db::close_connection($conn);
+
+        return $ret;
     }
 
     /**

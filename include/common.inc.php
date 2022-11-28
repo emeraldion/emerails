@@ -175,6 +175,11 @@ function limit_3($val, $a, $b)
     return $min;
 }
 
+function first(array $array)
+{
+    return count($array) > 0 ? $array[0] : null;
+}
+
 function array_some(array $array, callable $fn)
 {
     foreach ($array as $value) {
