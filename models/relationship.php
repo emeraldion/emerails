@@ -78,7 +78,7 @@ class Relationship
         return $this->table_name;
     }
 
-    public function between($member, $other_member)
+    public function between($member, $other_member, $params = array())
     {
         $classes = array($this->classname, $this->other_classname);
 
@@ -104,7 +104,7 @@ class Relationship
             );
         }
 
-        return new RelationshipInstance($member, $other_member, $this);
+        return new RelationshipInstance($member, $other_member, $this, $params);
     }
 
     protected function _introspect()
@@ -115,11 +115,12 @@ class Relationship
 
 class RelationshipInstance
 {
-    public function __construct($member, $other_member, $relationship)
+    public function __construct($member, $other_member, $relationship, $params)
     {
         $this->member = $member;
         $this->other_member = $other_member;
         $this->relationship = $relationship;
+        $this->params = $params;
     }
 
     public function save()
@@ -179,8 +180,16 @@ class RelationshipInstance
                 break;
 
             case Relationship::MANY_TO_MANY:
+                $cols = '';
+                $values = '';
+                if (!empty($this->params)) {
+                    foreach ($this->params as $key => $value) {
+                        $cols .= ", `{$key}`";
+                        $values .= ", '{$conn->escape($value)}'";
+                    }
+                }
                 $conn->prepare(
-                    "INSERT INTO `{1}` (`{2}`, `{3}`) VALUES ('{4}', '{5}')",
+                    'INSERT INTO `{1}` (`{2}`, `{3}`' . $cols . ") VALUES ('{4}', '{5}'" . $values . ')',
                     $this->relationship->get_table_name(),
                     $member_fk,
                     $other_member_fk,

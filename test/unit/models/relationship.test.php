@@ -328,5 +328,48 @@ class RelationshipTest extends \PHPUnit\Framework\TestCase
             }
         }
     }
+
+    public function test_save_many_to_many_with_params()
+    {
+        $r = Relationship::many_to_many(TestGroup::class, TestModel::class);
+
+        $model = new TestModel();
+        $model->save();
+
+        $group = new TestGroup();
+        $group->save();
+
+        $this->models[] = $model;
+        $this->models[] = $group;
+
+        // These are both valid
+        $instance = $r->between($group, $model, array('count' => 12));
+        // $instance = $r->between($model, $group);
+
+        // Save
+        $instance->save();
+
+        $this->models[] = $instance;
+
+        $model->has_and_belongs_to_many(TestGroup::class);
+        $this->assertNotNull($model->test_groups);
+        $this->assertEquals(1, count($model->test_groups));
+
+        list($tg) = array_values($model->test_groups);
+        $this->assertEquals($group->name, $tg->name);
+        $this->assertTrue(array_key_exists($group->id, $model->test_groups));
+        $this->assertEquals($group->name, $model->test_groups[$group->id]->name);
+        $this->assertEquals(12, $model->test_groups[$group->id]->count);
+
+        $group->has_and_belongs_to_many(TestModel::class);
+        $this->assertNotNull($group->test_models);
+        $this->assertEquals(1, count($group->test_models));
+
+        list($tm) = array_values($group->test_models);
+        $this->assertEquals($model->name, $tm->name);
+        $this->assertTrue(array_key_exists($model->id, $group->test_models));
+        $this->assertEquals($model->name, $group->test_models[$model->id]->name);
+        $this->assertEquals(12, $group->test_models[$model->id]->count);
+    }
 }
 ?>
