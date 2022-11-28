@@ -204,8 +204,6 @@ abstract class ActiveRecord
      *  @details This method returns the name of the primary key in the table bound to this class.
      *  By default, ActiveRecord considers as primary key a column named <tt>id</tt>. Of course you can override
      *  this behavior by setting explicitly the value of <tt>$primary_key</tt> in the declaration of your class.
-     *  However, ActiveRecord is capable of overriding the declared column name with the
-     *  value of <tt>$actual_primary_key_names</tt> detected during table introspection.
      */
     public function get_primary_key()
     {
@@ -214,10 +212,6 @@ abstract class ActiveRecord
         // Set to static primary_key_name member (new way)
         if ($this::$primary_key_name) {
             $ret = $this::$primary_key_name;
-        }
-        // Override with actual_primary_key_name if known
-        if (self::$actual_primary_key_names[get_called_class()]) {
-            $ret = self::$actual_primary_key_names[get_called_class()];
         }
         return $ret;
     }
@@ -700,7 +694,7 @@ abstract class ActiveRecord
             $conn->exec();
             $insert_id = $conn->insert_id();
             if ($insert_id !== 0) {
-                $this->values[$this->get_primary_key()] = $insert_id;
+                $this->values[self::$actual_primary_key_names[get_called_class()]] = $insert_id;
             }
             if ($conn->affected_rows() > 0) {
                 $ret = true;
