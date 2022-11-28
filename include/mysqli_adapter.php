@@ -248,7 +248,8 @@ class MysqliAdapter implements DbAdapter
     public function print_query()
     {
         echo <<<EOT
-            <pre class="db-debug">{$this->query}</pre>
+
+<pre class="db-debug">{$this->query}</pre>
 EOT;
     }
 }

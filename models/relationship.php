@@ -19,10 +19,22 @@ use Emeraldion\EmeRails\Db;
  */
 class Relationship
 {
+    /**
+     *  @const ONE_TO_ONE
+     *  @short Relationship type one-to-one.
+     */
     const ONE_TO_ONE = 'one_to_one';
 
+    /**
+     *  @const ONE_TO_MANY
+     *  @short Relationship type one-to-many.
+     */
     const ONE_TO_MANY = 'one_to_many';
 
+    /**
+     *  @const MANY_TO_MANY
+     *  @short Relationship type many-to-many.
+     */
     const MANY_TO_MANY = 'many_to_many';
 
     public static function one_to_one($classname, $other_classname)
@@ -105,11 +117,6 @@ class Relationship
         }
 
         return new RelationshipInstance($member, $other_member, $this, $params);
-    }
-
-    protected function _introspect()
-    {
-        // DESCRIBE table_name and introspect extra columns (relationship attributes)
     }
 }
 

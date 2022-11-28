@@ -11,6 +11,7 @@
 require_once __DIR__ . '/../include/common.inc.php';
 
 use Emeraldion\EmeRails\Db;
+use Emeraldion\EmeRails\Models\Relationship;
 
 /**
  *  @class ActiveRecord
@@ -256,13 +257,19 @@ abstract class ActiveRecord
                 E_USER_DEPRECATED
             );
         }
+        $ret = false;
         if (in_array(table_name_to_foreign_key($table_name), $columns)) {
-            $owner->find_by_id($this->values[table_name_to_foreign_key($table_name)]);
-        } elseif (in_array($owner->foreign_key_name, $columns)) {
-            $owner->find_by_id($this->values[$owner->foreign_key_name]);
+            $ret = $owner->find_by_id($this->values[table_name_to_foreign_key($table_name)]);
+        } elseif (in_array($owner->get_foreign_key_name(), $columns)) {
+            $ret = $owner->find_by_id($this->values[$owner->get_foreign_key_name()]);
         }
-        $this->values[camel_case_to_joined_lower($ownerclass)] = $owner;
-        $owner->values[camel_case_to_joined_lower(get_class($this))] = $this;
+        if ($ret) {
+            $this->values[camel_case_to_joined_lower($ownerclass)] = $owner;
+            $owner->values[camel_case_to_joined_lower(get_class($this))] = $this;
+
+            return Relationship::one_to_one(get_called_class(), $ownerclass)->between($this, $owner);
+        }
+        return $ret;
     }
 
     /**
@@ -440,7 +447,7 @@ abstract class ActiveRecord
             $child->values[camel_case_to_joined_lower(get_class($this))] = $this;
             $this->values[camel_case_to_joined_lower($childclass)] = $child;
 
-            return true;
+            return Relationship::one_to_one(get_called_class(), $childclass)->between($this, $child);
         }
         return false;
     }

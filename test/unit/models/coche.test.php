@@ -32,12 +32,16 @@ class CocheTest extends \PHPUnit\Framework\TestCase
     public function test_correct_member_names_by_class()
     {
         $car = new Car();
-        $car->find_by_id(1);
-        $car->has_one(Engine::class);
+        $ret = $car->find_by_id(1);
+        $this->assertTrue($ret);
+        $ret = $car->has_one(Engine::class);
+        $this->assertIsObject($ret);
 
         $engine = new Engine();
-        $engine->find_by_id(1);
-        $engine->belongs_to(Car::class);
+        $ret = $engine->find_by_id(1);
+        $this->assertTrue($ret);
+        $ret = $engine->belongs_to(Car::class);
+        $this->assertIsObject($ret);
 
         // These are what we want
         $this->assertNotNull($car->engine, "Expecting Car instance to have an 'engine' field but found null");
@@ -50,14 +54,18 @@ class CocheTest extends \PHPUnit\Framework\TestCase
     public function test_correct_member_names_by_table_name()
     {
         $car = new Car();
-        $car->find_by_id(1);
+        $ret = $car->find_by_id(1);
+        $this->assertTrue($ret);
         // Note this is logically flawed as the real table name is 'motores'
-        $car->has_one('engines');
+        $ret = $car->has_one('engines');
+        $this->assertIsObject($ret);
 
         $engine = new Engine();
-        $engine->find_by_id(1);
+        $ret = $engine->find_by_id(1);
+        $this->assertTrue($ret);
         // Note this is logically flawed as the real table name is 'coches'
-        $engine->belongs_to('cars');
+        $ret = $engine->belongs_to('cars');
+        $this->assertIsObject($ret);
 
         // These are what we want
         $this->assertNotNull($car->engine, "Expecting Car instance to have an 'engine' field but found null");

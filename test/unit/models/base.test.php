@@ -270,7 +270,7 @@ class ActiveRecordTest extends \PHPUnit\Framework\TestCase
         $ret = $instance->find_by_id(1);
         $this->assertTrue($ret);
         $ret = $instance->has_one('test_widgets');
-        $this->assertTrue($ret);
+        $this->assertIsObject($ret);
         $this->assertNotNull($instance->test_widget);
         $this->assertEquals('red', $instance->test_widget->color);
 
@@ -278,7 +278,7 @@ class ActiveRecordTest extends \PHPUnit\Framework\TestCase
             'where_clause' => "`name` = 'foo'"
         ))[0];
         $ret = $instance->has_one('test_widgets');
-        $this->assertTrue($ret);
+        $this->assertIsObject($ret);
         $this->assertNotNull($instance->test_widget);
         $this->assertEquals('red', $instance->test_widget->color);
 
@@ -286,7 +286,7 @@ class ActiveRecordTest extends \PHPUnit\Framework\TestCase
         $ret = $instance->find_by_id(2);
         $this->assertTrue($ret);
         $ret = $instance->has_one('test_widgets');
-        $this->assertTrue($ret);
+        $this->assertIsObject($ret);
         $this->assertNotNull($instance->test_widget);
         $this->assertEquals('blue', $instance->test_widget->color);
 
@@ -304,7 +304,7 @@ class ActiveRecordTest extends \PHPUnit\Framework\TestCase
         $ret = $instance->find_by_id(1);
         $this->assertTrue($ret);
         $ret = $instance->has_one(TestWidget::class);
-        $this->assertTrue($ret);
+        $this->assertIsObject($ret);
         $this->assertNotNull($instance->test_widget);
         $this->assertEquals('red', $instance->test_widget->color);
 
@@ -312,7 +312,7 @@ class ActiveRecordTest extends \PHPUnit\Framework\TestCase
             'where_clause' => "`name` = 'foo'"
         ))[0];
         $ret = $instance->has_one(TestWidget::class);
-        $this->assertTrue($ret);
+        $this->assertIsObject($ret);
         $this->assertNotNull($instance->test_widget);
         $this->assertEquals('red', $instance->test_widget->color);
 
@@ -320,7 +320,7 @@ class ActiveRecordTest extends \PHPUnit\Framework\TestCase
         $ret = $instance->find_by_id(2);
         $this->assertTrue($ret);
         $ret = $instance->has_one(TestWidget::class);
-        $this->assertTrue($ret);
+        $this->assertIsObject($ret);
         $this->assertNotNull($instance->test_widget);
         $this->assertEquals('blue', $instance->test_widget->color);
 
@@ -347,28 +347,32 @@ class ActiveRecordTest extends \PHPUnit\Framework\TestCase
         $instance = new TestWidget();
         $ret = $instance->find_by_id(1);
         $this->assertTrue($ret);
-        $instance->belongs_to('test_models');
+        $ret = $instance->belongs_to('test_models');
+        $this->assertIsObject($ret);
         $this->assertNotNull($instance->test_model);
         $this->assertEquals('foo', $instance->test_model->name);
 
         $instance = $instance->find_all(array(
             'where_clause' => "`color` = 'red'"
         ))[0];
-        $instance->belongs_to('test_models');
+        $ret = $instance->belongs_to('test_models');
+        $this->assertIsObject($ret);
         $this->assertNotNull($instance->test_model);
         $this->assertEquals('foo', $instance->test_model->name);
 
         $instance = new TestWidget();
         $ret = $instance->find_by_id(2);
         $this->assertTrue($ret);
-        $instance->belongs_to('test_models');
+        $ret = $instance->belongs_to('test_models');
+        $this->assertIsObject($ret);
         $this->assertNotNull($instance->test_model);
         $this->assertEquals('bar', $instance->test_model->name);
 
         $instance = $instance->find_all(array(
             'where_clause' => "`color` = 'blue'"
         ))[0];
-        $instance->belongs_to('test_models');
+        $ret = $instance->belongs_to('test_models');
+        $this->assertIsObject($ret);
         $this->assertNotNull($instance->test_model);
         $this->assertEquals('bar', $instance->test_model->name);
     }
