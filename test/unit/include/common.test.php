@@ -25,6 +25,7 @@ class CommonTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('grandchildren', pluralize('grandchild'));
         $this->assertEquals('zoos', pluralize('zoo'));
         $this->assertEquals('videos', pluralize('video'));
+        $this->assertEquals('portfolios', pluralize('portfolio'));
     }
 
     public function test_singularize()
@@ -45,6 +46,7 @@ class CommonTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('grandchild', singularize('grandchildren'));
         $this->assertEquals('zoo', singularize('zoos'));
         $this->assertEquals('video', singularize('videos'));
+        $this->assertEquals('portfolio', singularize('portfolios'));
     }
 
     public function test_ends_with()
