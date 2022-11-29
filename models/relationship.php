@@ -121,13 +121,16 @@ class Relationship
 
     public function among($members, $other_members, $params = array())
     {
+        if ($this->cardinality == self::ONE_TO_ONE) {
+            throw new Exception('This relationship has cardinality one to one.');
+        }
+
         $classes = array($this->classname, $this->other_classname);
 
-        if (
-            array_some($members, function ($member) use ($classes) {
-                return !in_array(get_class($member), $classes);
-            })
-        ) {
+        $member = array_find($members, function ($member) use ($classes) {
+            return !in_array(get_class($member), $classes);
+        });
+        if ($member) {
             throw new Exception(
                 sprintf(
                     "Argument 1 expected of class '%s' or '%s', but got '%s' instead.",
@@ -138,11 +141,10 @@ class Relationship
             );
         }
 
-        if (
-            array_some($other_members, function ($other_member) use ($classes) {
-                return !in_array(get_class($other_member), $classes);
-            })
-        ) {
+        $other_member = array_find($other_members, function ($other_member) use ($classes) {
+            return !in_array(get_class($other_member), $classes);
+        });
+        if ($other_member) {
             throw new Exception(
                 sprintf(
                     "Argument 2 expected of class '%s' or '%s', but got '%s' instead.",
@@ -179,6 +181,18 @@ class RelationshipInstance
         $this->other_member = $other_member;
         $this->relationship = $relationship;
         $this->params = $params;
+    }
+
+    public function of(string $classname)
+    {
+        if (get_class($this->member) == $classname) {
+            return $this->member;
+        }
+        if (get_class($this->other_member) == $classname) {
+            return $this->other_member;
+        }
+        // Throw?
+        return null;
     }
 
     public function save()
@@ -338,6 +352,8 @@ class RelationshipInstance
                     $child->$child_pk
                 );
                 $conn->exec();
+                // TODO: $child->reload() ?
+                $child->find_by_id($child->$child_pk);
                 break;
 
             case Relationship::MANY_TO_MANY:

@@ -269,6 +269,9 @@ abstract class ActiveRecord
 
             return Relationship::one_to_one(get_called_class(), $ownerclass)->between($this, $owner);
         }
+        // Unset previously set value
+        unset($this->values[camel_case_to_joined_lower($ownerclass)]);
+
         return $ret;
     }
 
@@ -320,6 +323,9 @@ abstract class ActiveRecord
             $this->values[pluralize(camel_case_to_joined_lower($childclass))] = $dict;
 
             return Relationship::one_to_many(get_called_class(), $childclass)->among(array($this), array_values($dict));
+        } else {
+            // Unset previously set value
+            unset($this->values[pluralize(camel_case_to_joined_lower($childclass))]);
         }
         return false;
     }
@@ -407,6 +413,9 @@ abstract class ActiveRecord
                 array($this),
                 array_values($this->values[$table_name])
             );
+        } else {
+            // Unset previously set value
+            unset($this->values[pluralize(camel_case_to_joined_lower($peerclass))]);
         }
         $conn->free_result();
 
@@ -420,10 +429,11 @@ abstract class ActiveRecord
      *  @short Loads the child of the receiver in a one-to-one relationship.
      *  @param class_or_table_name The name of the child class or table.
      *  @param params An array of conditions. For the semantics, see find_all
-     *  @return true if the relationship is fulfilled, false otherwise
+     *  @param strict Set to <tt>true</tt> if should raise when more than one child is found
+     *  @return TBD
      *  @see find_all
      */
-    public function has_one($class_or_table_name)
+    public function has_one($class_or_table_name, $strict = false)
     {
         try {
             // Assume class name and obtain table name
@@ -451,11 +461,17 @@ abstract class ActiveRecord
             'limit' => 1
         ));
         if (is_array($children) && count($children) > 0) {
-            $child = $children[0];
+            if ($strict && count($children) > 1) {
+                throw new Exception('Only one child expected, but found %d', count($children));
+            }
+            $child = first($children);
             $child->values[camel_case_to_joined_lower(get_class($this))] = $this;
             $this->values[camel_case_to_joined_lower($childclass)] = $child;
 
             return Relationship::one_to_one(get_called_class(), $childclass)->between($this, $child);
+        } else {
+            // Unset previously set value
+            unset($this->values[camel_case_to_joined_lower($childclass)]);
         }
         return false;
     }

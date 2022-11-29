@@ -175,11 +175,17 @@ function limit_3($val, $a, $b)
     return $min;
 }
 
+/**
+ * @short Returns the first element of $array
+ */
 function first(array $array)
 {
     return count($array) > 0 ? $array[0] : null;
 }
 
+/**
+ * @short Returns true if at least one element of $array satisfies the predicate $fn
+ */
 function array_some(array $array, callable $fn)
 {
     foreach ($array as $value) {
@@ -190,6 +196,9 @@ function array_some(array $array, callable $fn)
     return false;
 }
 
+/**
+ * @short Returns true if every element of $array satisfies the predicate $fn
+ */
 function array_every(array $array, callable $fn)
 {
     foreach ($array as $value) {
@@ -198,5 +207,18 @@ function array_every(array $array, callable $fn)
         }
     }
     return true;
+}
+
+/**
+ * @short Returns the first element of $array that satisfies the predicate $fn
+ */
+function array_find(array $array, callable $fn)
+{
+    foreach ($array as $value) {
+        if ($fn($value)) {
+            return $value;
+        }
+    }
+    return false;
 }
 ?>

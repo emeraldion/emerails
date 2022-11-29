@@ -113,6 +113,37 @@ class RelationshipTest extends \PHPUnit\Framework\TestCase
         $r->between($model, $group);
     }
 
+    public function test_among_wrong_class()
+    {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage(
+            "Argument 1 expected of class 'TestModel' or 'TestWidget', but got 'TestGroup' instead."
+        );
+        $r = Relationship::one_to_many(TestModel::class, TestWidget::class);
+        $models = array(new TestModel(), new TestModel());
+        $groups = array(new TestGroup(), new TestGroup(), new TestGroup());
+        $r->among($groups, $models);
+    }
+
+    public function test_among_wrong_class_reverse_order()
+    {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage(
+            "Argument 2 expected of class 'TestModel' or 'TestWidget', but got 'TestGroup' instead."
+        );
+        $r = Relationship::one_to_many(TestModel::class, TestWidget::class);
+        $models = array(new TestModel(), new TestModel());
+        $groups = array(new TestGroup(), new TestGroup(), new TestGroup());
+        $r->among($models, $groups);
+    }
+
+    public function test_among_throws_in_one_to_one_relationship()
+    {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('This relationship has cardinality one to one.');
+        Relationship::one_to_one(TestModel::class, TestWidget::class)->among(new TestModel(), new TestGroup());
+    }
+
     public function test_save_one_to_one()
     {
         $r = Relationship::one_to_one(TestWidget::class, TestVersion::class);
@@ -370,6 +401,220 @@ class RelationshipTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(array_key_exists($model->id, $group->test_models));
         $this->assertEquals($model->name, $group->test_models[$model->id]->name);
         $this->assertEquals(12, $group->test_models[$model->id]->count);
+    }
+
+    public function test_has_one_delete()
+    {
+        $r = Relationship::one_to_one(TestModel::class, TestWidget::class);
+
+        $model = new TestModel();
+        $model->save();
+        $this->models[] = $model;
+
+        $widget = new TestWidget(array(
+            'color' => 'pink'
+        ));
+        $widget->save();
+        $this->models[] = $widget;
+
+        $instance = $r->between($model, $widget);
+        $instance->save();
+        $this->models[] = $instance;
+
+        $ret = $model->has_one(TestWidget::class);
+        $this->assertIsObject($ret);
+        $this->assertNotNull($model->test_widget);
+        $this->assertEquals($model->test_widget->id, $widget->id);
+        $this->assertEquals($model->test_widget->color, $widget->color);
+
+        $ret->delete();
+
+        $ret = $model->has_one(TestWidget::class);
+        $this->assertNull($model->test_widget);
+    }
+
+    public function test_belongs_to_delete()
+    {
+        $r = Relationship::one_to_one(TestModel::class, TestWidget::class);
+
+        $model = new TestModel();
+        $model->save();
+        $this->models[] = $model;
+
+        $widget = new TestWidget(array(
+            'color' => 'pink'
+        ));
+        $widget->save();
+        $this->models[] = $widget;
+
+        $instance = $r->between($model, $widget);
+        $instance->save();
+        $this->models[] = $instance;
+
+        $ret = $widget->belongs_to(TestModel::class);
+        $this->assertIsObject($ret);
+        $this->assertNotNull($widget->test_model);
+        $this->assertEquals($widget->test_model->id, $model->id);
+
+        $ret->delete();
+
+        $ret = $widget->belongs_to(TestModel::class);
+        $this->assertFalse($ret);
+        $this->assertNull($widget->test_model);
+    }
+
+    public function test_has_many_delete()
+    {
+        $r = Relationship::one_to_one(TestModel::class, TestWidget::class);
+
+        $model = new TestModel();
+        $model->save();
+        $this->models[] = $model;
+
+        $w1 = new TestWidget(array(
+            'color' => 'pink'
+        ));
+        $w1->save();
+        $this->models[] = $w1;
+
+        $w2 = new TestWidget(array(
+            'color' => 'maroon'
+        ));
+        $w2->save();
+        $this->models[] = $w2;
+
+        $instance = $r->between($model, $w1);
+        $instance->save();
+        $this->models[] = $instance;
+
+        $instance = $r->between($model, $w2);
+        $instance->save();
+        $this->models[] = $instance;
+
+        $ret = $model->has_many(TestWidget::class);
+        $this->assertIsArray($ret);
+        $this->assertNotNull($model->test_widgets);
+        $this->assertIsArray($model->test_widgets);
+        $this->assertEquals(2, count($model->test_widgets));
+        $this->assertTrue(array_key_exists($w1->id, $model->test_widgets));
+        $this->assertTrue(array_key_exists($w2->id, $model->test_widgets));
+
+        array_walk($ret[$model->id], function ($r) {
+            $r->delete();
+        });
+
+        $ret = $model->has_many(TestWidget::class);
+        $this->assertNull($model->test_widgets);
+    }
+
+    public function test_has_many_delete_some()
+    {
+        $r = Relationship::one_to_many(TestWidget::class, TestVersion::class);
+
+        $v1 = new TestVersion(array('version' => '1.2.1'));
+        $v1->save();
+
+        $v2 = new TestVersion(array('version' => '2.0.1'));
+        $v2->save();
+
+        $v3 = new TestVersion(array('version' => '2.0.1'));
+        $v3->save();
+
+        $widget = new TestWidget(array(
+            'color' => 'fuchsia'
+        ));
+        $widget->save();
+
+        $this->models[] = $v1;
+        $this->models[] = $v2;
+        $this->models[] = $v3;
+        $this->models[] = $widget;
+
+        $i1 = $r->between($widget, $v1);
+        $i2 = $r->between($widget, $v2);
+        $i3 = $r->between($widget, $v3);
+
+        // Save
+        $i1->save();
+        $i2->save();
+        $i3->save();
+
+        $versions = array($v1->id => $v1, $v2->id => $v2, $v3->id => $v3);
+
+        $ret = $widget->has_many(TestVersion::class);
+        $this->assertIsArray($ret);
+        $this->assertNotNull($widget->test_versions);
+        $this->assertTrue(array_key_exists($widget->id, $ret));
+        $this->assertIsArray($ret[$widget->id]);
+        $this->assertEquals(3, count($ret[$widget->id]));
+        foreach ($versions as $version_id => $version) {
+            $this->assertTrue(
+                array_key_exists($version_id, $ret[$widget->id]),
+                sprintf("Version with id '%s' not found among members of the relationship.", $version_id)
+            );
+        }
+
+        first(array_values($ret[$widget->id]))->delete();
+
+        // The relationship has lost one member
+        $ret = $widget->has_many(TestVersion::class);
+        $this->assertIsArray($ret);
+        $this->assertTrue(array_key_exists($widget->id, $ret));
+        $this->assertIsArray($ret[$widget->id]);
+        $this->assertEquals(2, count($ret[$widget->id]));
+        foreach ($ret[$widget->id] as $version_id => $r) {
+            $this->assertTrue(
+                array_key_exists($version_id, $versions),
+                sprintf("Unexpected version with id '%s' found among members of the relationship.", $version_id)
+            );
+        }
+    }
+
+    public function test_has_many_delete_all()
+    {
+        $r = Relationship::one_to_many(TestWidget::class, TestVersion::class);
+
+        $v1 = new TestVersion(array('version' => '1.2.1'));
+        $v1->save();
+
+        $v2 = new TestVersion(array('version' => '2.0.1'));
+        $v2->save();
+
+        $widget = new TestWidget(array(
+            'color' => 'fuchsia'
+        ));
+        $widget->save();
+
+        $this->models[] = $v1;
+        $this->models[] = $v2;
+        $this->models[] = $widget;
+
+        $i1 = $r->between($widget, $v1);
+        $i2 = $r->between($widget, $v2);
+
+        // Save
+        $i1->save();
+        $i2->save();
+
+        $versions = array($v1, $v2);
+
+        $ret = $widget->has_many(TestVersion::class);
+        $this->assertIsArray($ret);
+        $this->assertNotNull($widget->test_versions);
+        $this->assertTrue(array_key_exists($widget->id, $ret));
+        $this->assertIsArray($ret[$widget->id]);
+        $this->assertEquals(2, count($ret[$widget->id]));
+        foreach ($versions as $version) {
+            $this->assertTrue(array_key_exists($version->id, $ret[$widget->id]));
+        }
+
+        foreach ($ret[$widget->id] as $r) {
+            $r->delete();
+        }
+        // The relationship has been eliminated entirely
+        $this->assertFalse($widget->has_many(TestVersion::class));
+        // Side effect, the member should be unset
+        $this->assertNull($widget->test_versions);
     }
 }
 ?>
