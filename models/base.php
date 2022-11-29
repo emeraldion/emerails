@@ -11,6 +11,7 @@
 require_once __DIR__ . '/../include/common.inc.php';
 
 use Emeraldion\EmeRails\Db;
+use Emeraldion\EmeRails\Config;
 use Emeraldion\EmeRails\Models\Relationship;
 
 /**
@@ -744,7 +745,7 @@ abstract class ActiveRecord
      *  table bound to the receiver's class, requesting the deletion of the object whose
      *  primary key is equal to the receiver's primary key value. If the object has been
      *  created programmatically and lacks a primary key value, this method has no effect.
-     *  @param bool cleanup Set to <tt>true</tt> if you want the table to be optimized after deletion.
+     *  @param bool optimize Set to <tt>true</tt> if you want the table to be optimized after deletion.
      */
     public function delete($optimize = false)
     {
@@ -757,6 +758,8 @@ abstract class ActiveRecord
                 $this->values[$this->primary_key]
             );
             $conn->exec();
+
+            self::_delete_from_pool(get_called_class(), $this->values[$this->primary_key]);
 
             // Clean up
             if ($optimize) {
@@ -929,8 +932,9 @@ abstract class ActiveRecord
      */
     private static function _add_to_pool($classname, $id, $obj)
     {
-        // FIXME: disable for the moment
-        return;
+        if (!Config::get('OBJECT_POOL_ENABLED')) {
+            return;
+        }
         if (!isset(self::$object_pool[$classname])) {
             self::$object_pool[$classname] = array();
         }
@@ -945,10 +949,40 @@ abstract class ActiveRecord
      */
     private static function _get_from_pool($classname, $id)
     {
+        if (!Config::get('OBJECT_POOL_ENABLED')) {
+            return;
+        }
         if (!isset(self::$object_pool[$classname]) || !isset(self::$object_pool[$classname][$id])) {
             return null;
         }
         return self::$object_pool[$classname][$id];
+    }
+
+    /**
+     *  @fn _delete_from_pool($classname, $id)
+     *  @short Deletes an object from the object pool.
+     *  @param classname Name of the class for the desired object.
+     *  @param id Primary key value for the desired object.
+     */
+    private static function _delete_from_pool($classname, $id)
+    {
+        unset(self::$object_pool[$classname][$id]);
+    }
+
+    /**
+     *  @fn _purge_pool($classname)
+     *  @short Deletes the object pool for a classname.
+     *  @param classname Name of the class to purge.
+     */
+    public static function _purge_pool($classname)
+    {
+        unset(self::$object_pool[$classname]);
+    }
+
+    public static function get_pool_stats($classname)
+    {
+        $count = isset(self::$object_pool[$classname]) ? count(self::$object_pool[$classname]) : 0;
+        return array('count' => $count);
     }
 }
 

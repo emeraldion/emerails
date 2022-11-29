@@ -19,6 +19,8 @@ error_reporting(E_ALL & ~E_USER_DEPRECATED);
 
 class ActiveRecordTest extends \PHPUnit\Framework\TestCase
 {
+    private $models = array();
+
     /**
      * @before
      */
@@ -32,6 +34,10 @@ class ActiveRecordTest extends \PHPUnit\Framework\TestCase
     function teardown(): void
     {
         delete_test_models(array('blip', 'baz'));
+        foreach ($this->models as $model) {
+            $model->delete();
+        }
+        $this->models = array();
     }
 
     public function test_construct()
@@ -721,6 +727,45 @@ class ActiveRecordTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('bar', $instance->name);
         unset($instance->name);
         $this->assertTrue(!isset($instance->name));
+    }
+
+    public function test_object_pool()
+    {
+        $enabled = Config::get('OBJECT_POOL_ENABLED');
+        Config::set('OBJECT_POOL_ENABLED', true);
+
+        TestModel::_purge_pool(TestModel::class);
+        $this->assertEquals(0, TestModel::get_pool_stats(TestModel::class)['count']);
+
+        $models = array();
+
+        for ($i = 0; $i < 100; $i++) {
+            $model = new TestModel(array(
+                'name' => 'baz' . $i
+            ));
+            $model->save();
+
+            $this->models[] = $models[] = $model;
+        }
+
+        // Pool is still empty
+        $this->assertEquals(0, TestModel::get_pool_stats(TestModel::class)['count']);
+
+        foreach ($models as $model) {
+            TestModel::find($model->id);
+        }
+
+        // Pool contains all models created so far
+        $this->assertEquals(count($models), TestModel::get_pool_stats(TestModel::class)['count']);
+
+        foreach ($models as $model) {
+            $model->delete();
+        }
+
+        // Pool is empty again
+        $this->assertEquals(0, TestModel::get_pool_stats(TestModel::class)['count']);
+
+        Config::set('OBJECT_POOL_ENABLED', $enabled);
     }
 }
 ?>
