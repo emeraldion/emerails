@@ -589,6 +589,12 @@ abstract class ActiveRecord
         } else {
             $classname = get_called_class();
         }
+        if (Config::get('OBJECT_POOL_ENABLED')) {
+            $obj = self::_get_from_pool($classname, $id);
+            if ($obj) {
+                return $obj;
+            }
+        }
         $obj = new $classname();
         if ($obj->find_by_id($id)) {
             return $obj;
