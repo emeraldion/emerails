@@ -402,13 +402,21 @@ abstract class ActiveRecord
                 // FIXME: this is not reflecting the real relationship
                 $peer->values[pluralize(camel_case_to_joined_lower(get_class($this)))] = array($this->$pkey => $this);
 
-                // This is the new way to access relationship attributes
-                $dict[$row[$peer_fkey]] = $row;
+                // Store the peer FK before unsetting it
+                $row_peer_fkey = $row[$peer_fkey];
 
-                // Deprecated: store relationship attributes in the peer
-                unset($row['id']);
+                // Remove known id columns to prevent clobbering relationship attributes
                 unset($row[$fkey]);
                 unset($row[$peer_fkey]);
+
+                // This is the new way to access relationship attributes
+                $dict[$row_peer_fkey] = $row;
+
+                // Now we can safely unset the 'id' key
+                // Unsetting it before, we'd lose the PK of the relationship table O:-)
+                unset($row['id']);
+
+                // Deprecated: store relationship attributes in the peer
                 foreach ($row as $key => $value) {
                     $peer->values[$key] = $value;
                 }
