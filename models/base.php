@@ -412,7 +412,7 @@ abstract class ActiveRecord
 
             $ret = Relationship::many_to_many(get_called_class(), $peerclass)->among(
                 array($this),
-                array_values($this->values[$table_name])
+                array_values($this->values[pluralize(camel_case_to_joined_lower($peerclass))])
             );
         } else {
             // Unset previously set value
