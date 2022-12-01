@@ -395,13 +395,17 @@ abstract class ActiveRecord
         $ret = false;
         if ($conn->num_rows() > 0) {
             $this->values[$table_name] = array();
+            $dict = array();
             while ($row = $conn->fetch_assoc()) {
                 $peer = new $peerclass($row);
                 $this->values[pluralize(camel_case_to_joined_lower($peerclass))][$peer->$peer_pk] = $peer;
                 // FIXME: this is not reflecting the real relationship
                 $peer->values[pluralize(camel_case_to_joined_lower(get_class($this)))] = array($this->$pkey => $this);
 
-                // Store relationship data in the peer
+                // This is the new way to access relationship attributes
+                $dict[] = $row;
+
+                // Deprecated: store relationship attributes in the peer
                 unset($row['id']);
                 unset($row[$fkey]);
                 unset($row[$peer_fkey]);
@@ -412,7 +416,8 @@ abstract class ActiveRecord
 
             $ret = Relationship::many_to_many(get_called_class(), $peerclass)->among(
                 array($this),
-                array_values($this->values[pluralize(camel_case_to_joined_lower($peerclass))])
+                array_values($this->values[pluralize(camel_case_to_joined_lower($peerclass))]),
+                array($this->values[$this->get_primary_key()] => $dict)
             );
         } else {
             // Unset previously set value

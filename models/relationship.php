@@ -285,13 +285,17 @@ class Relationship
         $member_pk = first($members)->get_primary_key();
         $other_member_pk = first($other_members)->get_primary_key();
         foreach ($members as $member) {
+            $dict = array_key_exists($member->$member_pk, $params) ? $params[$member->$member_pk] : array();
             $instances[$member->$member_pk] = array();
             foreach ($other_members as $other_member) {
+                array_key_exists($other_member->$other_member_pk, $dict)
+                    ? $dict[$other_member->$other_member_pk]
+                    : array();
                 $instances[$member->$member_pk][$other_member->$other_member_pk] = new RelationshipInstance(
                     $member,
                     $other_member,
                     $this,
-                    $params
+                    $dict
                 );
             }
         }
