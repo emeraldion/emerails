@@ -21,16 +21,10 @@ class RelationshipTest extends \PHPUnit\Framework\TestCase
 {
     private $models = array();
 
-    /**
-     * @before
-     */
     function setUp(): void
     {
     }
 
-    /**
-     * @after
-     */
     function teardown(): void
     {
         array_walk($this->models, function ($model) {
@@ -59,7 +53,7 @@ class RelationshipTest extends \PHPUnit\Framework\TestCase
 
     public function test_many_to_many()
     {
-        $r = Relationship::many_to_many(TestWidget::class, TestVersion::class);
+        $r = Relationship::many_to_many(TestGroup::class, TestModel::class);
         $this->assertNotNull($r);
     }
 

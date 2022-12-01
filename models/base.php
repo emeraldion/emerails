@@ -78,7 +78,7 @@ abstract class ActiveRecord
     protected $primary_key = 'id';
 
     /**
-     *  @attr primary_key_names
+     *  @attr primary_key_name
      *  @short Name of the primary key column for the bound table.
      *  @details Set this attribute only when the primary key of the bound table is not the canonical <tt>id</tt>.
      */

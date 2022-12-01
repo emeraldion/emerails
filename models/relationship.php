@@ -37,6 +37,51 @@ class Relationship
      */
     const MANY_TO_MANY = 'many_to_many';
 
+    /**
+     *  @attr class_initialized
+     *  @short Array containing initialization information for subclasses.
+     */
+    private static $class_initialized = array();
+
+    /**
+     *  @attr actual_primary_key_names
+     *  @short Name of the actual primary key column for the bound table.
+     *  @details This is a dictionary of class name to actual primary key column name.
+     *  The class property is read-only and it is set to the actual primary key of the
+     *  ActiveRecord subclass when introspecting columns of the bound table.
+     */
+    protected static $actual_primary_key_names = array();
+
+    /**
+     *  @attr columns
+     *  @short Array of columns for the model object.
+     */
+    static $columns = array();
+
+    /**
+     *  @attr primary_key_name
+     *  @short Name of the primary key column for the bound table.
+     *  @details Set this attribute only when the primary key of the bound table is not the canonical <tt>id</tt>.
+     */
+    protected static $primary_key_name = null;
+
+    /**
+     *  @fn get_primary_key_name
+     *  @short Returns the name of the primary key for this class.
+     *  @details This method returns the name of the primary key in the table bound to this class.
+     *  By default, ActiveRecord considers as primary key a column named <tt>id</tt>. Of course you can override
+     *  this behavior by setting explicitly the value of <tt>$primary_key</tt> in the declaration of your class.
+     */
+    public function get_primary_key_name()
+    {
+        $ret = 'id';
+        // Set to static primary_key_name member (new way)
+        if ($this::$primary_key_name) {
+            $ret = $this::$primary_key_name;
+        }
+        return $ret;
+    }
+
     public static function one_to_one($classname, $other_classname)
     {
         return new self($classname, $other_classname, self::ONE_TO_ONE);
@@ -57,6 +102,87 @@ class Relationship
         $this->classname = $classname;
         $this->other_classname = $other_classname;
         $this->cardinality = $cardinality;
+
+        if ($cardinality == self::MANY_TO_MANY) {
+            $relationship_name = 'r_' . $this->get_table_name();
+
+            $initialized = self::_is_initialized($relationship_name);
+            if (!$initialized) {
+                $conn = Db::get_connection();
+
+                $conn->prepare('DESCRIBE `{1}`', $this->get_table_name());
+                $conn->exec();
+                $columns = array();
+                while ($row = $conn->fetch_assoc()) {
+                    $columns[] = $row['Field'];
+                    if ($row['Key'] == 'PRI') {
+                        self::$actual_primary_key_names[$relationship_name] = $row['Field'];
+                    }
+                }
+                self::_set_columns($relationship_name, $columns);
+                self::_set_initialized($relationship_name, true);
+
+                Db::close_connection($conn);
+            }
+        }
+    }
+
+    /**
+     *  @fn _is_initialized($classname)
+     *  @short Tells whether the class <tt>classname</tt> has already been initialized.
+     *  @param classname The name of the class that you want to inspect.
+     *  @return <tt>TRUE</tt> if the class has been initialized, <tt>FALSE</tt> otherwise.
+     */
+    private static function _is_initialized($classname)
+    {
+        if (!isset(self::$class_initialized[$classname])) {
+            return false;
+        }
+        return self::$class_initialized[$classname];
+    }
+
+    /**
+     *  @fn _set_columns($classname, $cols)
+     *  @short Stores the columns for the desired class.
+     *  @param classname Name of the class for the desired object.
+     *  @param cols The columns of the model object.
+     */
+    private static function _set_columns($classname, $cols)
+    {
+        self::$columns[$classname] = $cols;
+    }
+
+    /**
+     *  @fn _get_columns($classname)
+     *  @short Returns the columns for the desired class.
+     *  @param classname Name of the class for the desired object.
+     */
+    private static function _get_columns($classname)
+    {
+        if (!isset(self::$class_initialized[$classname])) {
+            return null;
+        }
+        return self::$columns[$classname];
+    }
+
+    public function get_column_names()
+    {
+        $relationship_name = 'r_' . $this->get_table_name();
+        return self::_get_columns($relationship_name);
+    }
+
+    /**
+     *  @fn _set_initialized($classname, $initialized)
+     *  @short Marks the class <tt>classname</tt> as initialized.
+     *  @details This method allows ActiveRecord to keep track of what subclasses have already been
+     *  initialized by inspectioning the bound database table schema, whithout the need for a per-class
+     *  initialization method.
+     *  @param classname The name of the class that should be marked as initialized
+     *  @param initialized <tt>TRUE</tt> if the class should be considered initialized, <tt>FALSE</tt> otherwise.
+     */
+    private static function _set_initialized($classname, $initialized)
+    {
+        self::$class_initialized[$classname] = $initialized;
     }
 
     public function get_table_name()
@@ -180,7 +306,7 @@ class RelationshipInstance
         $this->member = $member;
         $this->other_member = $other_member;
         $this->relationship = $relationship;
-        $this->params = $params;
+        $this->values = $params;
     }
 
     public function of(string $classname)
@@ -252,23 +378,62 @@ class RelationshipInstance
                 break;
 
             case Relationship::MANY_TO_MANY:
-                $cols = '';
-                $values = '';
-                if (!empty($this->params)) {
-                    foreach ($this->params as $key => $value) {
-                        $cols .= ", `{$key}`";
-                        $values .= ", '{$conn->escape($value)}'";
+                $relationship_name = 'r_' . $this->relationship->get_table_name();
+                $columns = $this->relationship->get_column_names();
+                $ret = false;
+                $nonempty = array();
+
+                for ($i = 0; $i < count($columns); $i++) {
+                    if (
+                        // Do not set the primary key
+                        $columns[$i] != $this->relationship->get_primary_key_name() &&
+                        // Exclude read-only columns
+                        // !in_array($columns[$i], self::READONLY_COLUMNS) &&
+                        // Exclude empty columns
+                        isset($this->values[$columns[$i]])
+                    ) {
+                        $nonempty[] = $columns[$i];
                     }
                 }
-                $conn->prepare(
-                    'INSERT INTO `{1}` (`{2}`, `{3}`' . $cols . ") VALUES ('{4}', '{5}'" . $values . ')',
-                    $this->relationship->get_table_name(),
-                    $member_fk,
-                    $other_member_fk,
-                    $this->member->$member_pk,
-                    $this->other_member->$other_member_pk
-                );
-                $conn->exec();
+                if (!empty($this->values[$this->relationship->get_primary_key_name()])) {
+                    $query = 'UPDATE `{1}` SET ';
+                    for ($i = 0; $i < count($nonempty); $i++) {
+                        $query .= "`{$nonempty[$i]}` = '{$conn->escape($this->values[$nonempty[$i]])}'";
+                        if ($i < count($nonempty) - 1) {
+                            $query .= ', ';
+                        }
+                    }
+                    $query .= " WHERE `{$this->relationship->get_primary_key_name()}` = '{2}' LIMIT 1";
+                    $conn->prepare(
+                        $query,
+                        $this->relationship->get_table_name(),
+                        $this->values[$this->relationship->get_primary_key_name()]
+                    );
+                    $conn->exec();
+                    $ret = true;
+                } else {
+                    $query = 'INSERT INTO `{1}` (`{2}`, `{3}`';
+                    for ($i = 0; $i < count($nonempty); $i++) {
+                        $query .= ', ';
+                        $query .= "`{$nonempty[$i]}`";
+                    }
+                    $query .= ") VALUES ('{4}', '{5}'";
+                    for ($i = 0; $i < count($nonempty); $i++) {
+                        $query .= ', ';
+                        $query .= "'{$conn->escape($this->values[$nonempty[$i]])}'";
+                    }
+                    $query .= ')';
+                    $conn->prepare(
+                        $query,
+                        $this->relationship->get_table_name(),
+                        $member_fk,
+                        $other_member_fk,
+                        $this->member->$member_pk,
+                        $this->other_member->$other_member_pk
+                    );
+                    $conn->exec();
+                    $ret = true;
+                }
 
                 // Update models to avoid a reload from DB
                 $member_collection = singularize($this->member->get_table_name());
@@ -297,7 +462,7 @@ class RelationshipInstance
                         $this->member->$member_pk => $this->member
                     );
                 }
-                $ret = true;
+
                 break;
         }
 
