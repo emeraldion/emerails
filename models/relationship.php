@@ -165,6 +165,18 @@ class Relationship
         return self::$columns[$classname];
     }
 
+    /**
+     *  @fn has_column($key)
+     *  @short Verifies the existence of a column named <tt>key</tt> in the bound table.
+     *  @param key The name of the column to check.
+     */
+    public function has_column($key)
+    {
+        $relationship_name = 'r_' . $this->get_table_name();
+        $columns = self::_get_columns($relationship_name);
+        return in_array($key, $columns);
+    }
+
     public function get_column_names()
     {
         $relationship_name = 'r_' . $this->get_table_name();
@@ -285,11 +297,11 @@ class Relationship
         $member_pk = first($members)->get_primary_key();
         $other_member_pk = first($other_members)->get_primary_key();
         foreach ($members as $member) {
-            $dict = array_key_exists($member->$member_pk, $params) ? $params[$member->$member_pk] : array();
+            $member_dict = array_key_exists($member->$member_pk, $params) ? $params[$member->$member_pk] : array();
             $instances[$member->$member_pk] = array();
             foreach ($other_members as $other_member) {
-                array_key_exists($other_member->$other_member_pk, $dict)
-                    ? $dict[$other_member->$other_member_pk]
+                $dict = array_key_exists($other_member->$other_member_pk, $member_dict)
+                    ? $member_dict[$other_member->$other_member_pk]
                     : array();
                 $instances[$member->$member_pk][$other_member->$other_member_pk] = new RelationshipInstance(
                     $member,
@@ -305,6 +317,18 @@ class Relationship
 
 class RelationshipInstance
 {
+    /**
+     *  @attr values
+     *  @short Array of values for the columns of model object.
+     */
+    private $values;
+
+    private $member;
+
+    private $other_member;
+
+    private $relationship;
+
     public function __construct($member, $other_member, $relationship, $params)
     {
         $this->member = $member;
@@ -543,6 +567,72 @@ class RelationshipInstance
         Db::close_connection($conn);
 
         return $ret;
+    }
+
+    /**
+     *  @fn __set($key, $value)
+     *  @short Magic method to set the value of a property.
+     *  @param key The key of the property.
+     *  @param value The value of the property.
+     */
+    public function __set($key, $value)
+    {
+        if ($this->relationship->has_column($key)) {
+            $this->values[$key] = $value;
+        } else {
+            $this->$key = $value;
+        }
+    }
+
+    /**
+     *  @fn __get($key)
+     *  @short Magic method to get the value of a property.
+     *  @param key The key of the desired property.
+     */
+    public function __get($key)
+    {
+        if ($this->values !== null && array_key_exists($key, $this->values)) {
+            return $this->values[$key];
+        }
+        if (isset($this->$key)) {
+            return $this->$key;
+        }
+        return null;
+    }
+
+    /**
+     *  @fn __isset($key)
+     *  @short Magic method to determine if a property exists.
+     *  @param key The key to test.
+     */
+    public function __isset($key)
+    {
+        if (!(isset($this->values) && !empty($this->values))) {
+            return false;
+        }
+        if (array_key_exists($key, $this->values)) {
+            return true;
+        } elseif (isset($this->$key)) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     *      @fn __unset($key)
+     *      @short Magic method to unset a property.
+     *      @param key The key to unset.
+     */
+    public function __unset($key)
+    {
+        if (!(isset($this->values) && !empty($this->values))) {
+            return;
+        }
+        if (array_key_exists($key, $this->values)) {
+            unset($this->values[$key]);
+        } elseif (isset($this->$key)) {
+            unset($this->key);
+        }
     }
 }
 ?>

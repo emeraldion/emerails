@@ -3,21 +3,12 @@
  * @format
  */
 
-require_once __DIR__ . '/../../../vendor/autoload.php';
-require_once __DIR__ . '/../../../config/db.conf.php';
 require_once __DIR__ . '/../../utils.php';
+require_once __DIR__ . '/../base_test.php';
 
-use Emeraldion\EmeRails\Config;
-use Emeraldion\EmeRails\Db;
-use Emeraldion\EmeRails\DbAdapters\MysqlAdapter;
-use Emeraldion\EmeRails\DbAdapters\MysqliAdapter;
-use Emeraldion\EmeRails\Models\ActiveRecord;
 use Emeraldion\EmeRails\Models\Relationship;
 
-Db::register_adapter(new MysqlAdapter(), MysqlAdapter::NAME);
-Db::register_adapter(new MysqliAdapter(), MysqliAdapter::NAME);
-
-class RelationshipTest extends \PHPUnit\Framework\TestCase
+class RelationshipTest extends UnitTest
 {
     private $models = array();
 
@@ -105,6 +96,104 @@ class RelationshipTest extends \PHPUnit\Framework\TestCase
         $model = new TestModel();
         $group = new TestGroup();
         $r->between($model, $group);
+    }
+
+    public function test_among_save()
+    {
+        $this->models[] = $model = new TestModel();
+        $model->save();
+        $this->models[] = $group = new TestGroup();
+        $group->save();
+
+        $r = Relationship::many_to_many(TestModel::class, TestGroup::class)->among(
+            array($model),
+            array($group),
+            array($model->id => array($group->id => array('count' => 100)))
+        );
+
+        foreach ($r as $model_id => $s) {
+            foreach ($s as $group_id => $t) {
+                $this->models[] = $t;
+                $t->save();
+            }
+        }
+
+        $ret = $model->has_and_belongs_to_many(TestGroup::class);
+        $this->assertNotNull($ret);
+        $this->assertIsArray($ret);
+        $this->assertEquals(1, count($ret));
+        $this->assertTrue(array_key_exists($model->id, $ret));
+        $this->assertIsArray($ret[$model->id]);
+        $this->assertEquals(1, count($ret[$model->id]));
+        $this->assertTrue(array_key_exists($group->id, $ret[$model->id]));
+        $this->assertIsObject($ret[$model->id][$group->id]);
+        $this->assertTrue(isset($ret[$model->id][$group->id]->count));
+        $this->assertEquals(100, $ret[$model->id][$group->id]->count);
+    }
+
+    public function test_among_update()
+    {
+        $this->models[] = $model = new TestModel();
+        $model->save();
+        $this->models[] = $g1 = new TestGroup();
+        $g1->save();
+        $this->models[] = $g2 = new TestGroup();
+        $g2->save();
+
+        $r = Relationship::many_to_many(TestModel::class, TestGroup::class)->among(
+            array($model),
+            array($g1, $g2),
+            array($model->id => array($g1->id => array('count' => 100), $g2->id => array('count' => 200)))
+        );
+
+        foreach ($r as $model_id => $s) {
+            foreach ($s as $group_id => $t) {
+                $this->models[] = $t;
+                $t->save();
+            }
+        }
+
+        $ret = $model->has_and_belongs_to_many(TestGroup::class);
+        $this->assertNotNull($ret);
+        $this->assertIsArray($ret);
+        $this->assertEquals(1, count($ret));
+        $this->assertTrue(array_key_exists($model->id, $ret));
+        $this->assertIsArray($ret[$model->id]);
+        $this->assertEquals(2, count($ret[$model->id]));
+
+        $this->assertTrue(array_key_exists($g1->id, $ret[$model->id]));
+        $this->assertIsObject($ret[$model->id][$g1->id]);
+        $this->assertTrue(isset($ret[$model->id][$g1->id]->count));
+        $this->assertEquals(100, $ret[$model->id][$g1->id]->count);
+
+        $this->assertTrue(array_key_exists($g2->id, $ret[$model->id]));
+        $this->assertIsObject($ret[$model->id][$g2->id]);
+        $this->assertTrue(isset($ret[$model->id][$g2->id]->count));
+        $this->assertEquals(200, $ret[$model->id][$g2->id]->count);
+
+        foreach ($r as $model_id => $s) {
+            foreach ($s as $group_id => $t) {
+                $this->models[] = $t;
+                $t->count *= 2;
+                $t->save();
+            }
+        }
+
+        $ret = $model->has_and_belongs_to_many(TestGroup::class);
+        $this->assertNotNull($ret);
+        $this->assertIsArray($ret);
+        $this->assertEquals(1, count($ret));
+        $this->assertTrue(array_key_exists($model->id, $ret));
+        $this->assertIsArray($ret[$model->id]);
+        $this->assertEquals(2, count($ret[$model->id]));
+        $this->assertTrue(array_key_exists($g1->id, $ret[$model->id]));
+        $this->assertIsObject($ret[$model->id][$g1->id]);
+        $this->assertTrue(isset($ret[$model->id][$g1->id]->count));
+        $this->assertEquals(200, $ret[$model->id][$g1->id]->count);
+        $this->assertTrue(array_key_exists($g2->id, $ret[$model->id]));
+        $this->assertIsObject($ret[$model->id][$g2->id]);
+        $this->assertTrue(isset($ret[$model->id][$g2->id]->count));
+        $this->assertEquals(400, $ret[$model->id][$g2->id]->count);
     }
 
     public function test_among_wrong_class()

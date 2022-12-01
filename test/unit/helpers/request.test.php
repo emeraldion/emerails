@@ -3,6 +3,8 @@
  * @format
  */
 
+require_once __DIR__ . '/../base_test.php';
+
 use Emeraldion\EmeRails\Helpers\Request;
 
 class MockRequest extends Request
@@ -13,7 +15,7 @@ class MockRequest extends Request
     }
 }
 
-class RequestTest extends \PHPUnit\Framework\TestCase
+class RequestTest extends UnitTest
 {
     public function test_construct()
     {

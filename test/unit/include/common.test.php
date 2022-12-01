@@ -4,8 +4,9 @@
  */
 
 require_once __DIR__ . '/../../../include/common.inc.php';
+require_once __DIR__ . '/../base_test.php';
 
-class CommonTest extends \PHPUnit\Framework\TestCase
+class CommonTest extends UnitTest
 {
     public function test_pluralize()
     {

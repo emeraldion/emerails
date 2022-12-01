@@ -3,9 +3,11 @@
  * @format
  */
 
+require_once __DIR__ . '/../base_test.php';
+
 use Emeraldion\EmeRails\Helpers\ReadingTime;
 
-class ReadingTimeTest extends \PHPUnit\Framework\TestCase
+class ReadingTimeTest extends UnitTest
 {
     const LOREM_IPSUM = <<<EOT
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed

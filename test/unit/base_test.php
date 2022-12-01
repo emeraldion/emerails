@@ -4,6 +4,19 @@
  * @format
  */
 
+require_once __DIR__ . '/../../vendor/autoload.php';
+require_once __DIR__ . '/../../config/db.conf.php';
+
+use Emeraldion\EmeRails\Config;
+use Emeraldion\EmeRails\Db;
+use Emeraldion\EmeRails\DbAdapters\MysqliAdapter;
+use Emeraldion\EmeRails\DbAdapters\MysqlAdapter;
+
+Db::register_adapter(new MysqliAdapter(), MysqliAdapter::NAME);
+Db::register_adapter(new MysqlAdapter(), MysqlAdapter::NAME);
+
+error_reporting(E_ALL | E_STRICT);
+
 /**
  *	@class UnitTest
  *	@short Base class for Unit Testing.
@@ -22,6 +35,13 @@ abstract class UnitTest extends \PHPUnit\Framework\TestCase
     {
         $condition = $expr >= $min && $expr <= $max;
         self::assertThat($condition, self::isTrue(), $message);
+    }
+
+    protected function with_db_debug($fn)
+    {
+        Config::set('DB_DEBUG', true);
+        $fn();
+        Config::set('DB_DEBUG', false);
     }
 }
 

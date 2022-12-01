@@ -403,7 +403,7 @@ abstract class ActiveRecord
                 $peer->values[pluralize(camel_case_to_joined_lower(get_class($this)))] = array($this->$pkey => $this);
 
                 // This is the new way to access relationship attributes
-                $dict[] = $row;
+                $dict[$row[$peer_fkey]] = $row;
 
                 // Deprecated: store relationship attributes in the peer
                 unset($row['id']);
@@ -417,7 +417,7 @@ abstract class ActiveRecord
             $ret = Relationship::many_to_many(get_called_class(), $peerclass)->among(
                 array($this),
                 array_values($this->values[pluralize(camel_case_to_joined_lower($peerclass))]),
-                array($this->values[$this->get_primary_key()] => $dict)
+                array($this->values[$pkey] => $dict)
             );
         } else {
             // Unset previously set value

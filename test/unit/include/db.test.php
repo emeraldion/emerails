@@ -3,6 +3,8 @@
  * @format
  */
 
+require_once __DIR__ . '/../base_test.php';
+
 use Emeraldion\EmeRails\Db;
 use Emeraldion\EmeRails\DbAdapter;
 
@@ -79,7 +81,7 @@ class TestAdapterOther extends TestAdapterBase
     const NAME = 'test_other';
 }
 
-class DBTest extends \PHPUnit\Framework\TestCase
+class DBTest extends UnitTest
 {
     public function test_get_adapter()
     {

@@ -3,21 +3,15 @@
  * @format
  */
 
-require_once __DIR__ . '/../../../vendor/autoload.php';
-require_once __DIR__ . '/../../../config/db.conf.php';
 require_once __DIR__ . '/../../utils.php';
+require_once __DIR__ . '/../base_test.php';
 
 use Emeraldion\EmeRails\Config;
 use Emeraldion\EmeRails\Db;
-use Emeraldion\EmeRails\DbAdapters\MysqlAdapter;
-use Emeraldion\EmeRails\DbAdapters\MysqliAdapter;
-
-Db::register_adapter(new MysqlAdapter(), MysqlAdapter::NAME);
-Db::register_adapter(new MysqliAdapter(), MysqliAdapter::NAME);
 
 error_reporting(E_ALL & ~E_USER_DEPRECATED);
 
-class ActiveRecordTest extends \PHPUnit\Framework\TestCase
+class ActiveRecordTest extends UnitTest
 {
     private $models = array();
 

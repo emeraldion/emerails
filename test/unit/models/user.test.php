@@ -3,19 +3,9 @@
  * @format
  */
 
-require_once __DIR__ . '/../../../vendor/autoload.php';
 require_once __DIR__ . '/../../../config/db.conf.php';
 require_once __DIR__ . '/../../utils.php';
-
-use Emeraldion\EmeRails\Config;
-use Emeraldion\EmeRails\Db;
-use Emeraldion\EmeRails\DbAdapters\MysqlAdapter;
-use Emeraldion\EmeRails\DbAdapters\MysqliAdapter;
-use Emeraldion\EmeRails\Models\ActiveRecord;
-use Emeraldion\EmeRails\Models\Relationship;
-
-Db::register_adapter(new MysqlAdapter(), MysqlAdapter::NAME);
-Db::register_adapter(new MysqliAdapter(), MysqliAdapter::NAME);
+require_once __DIR__ . '/../base_test.php';
 
 class User extends ActiveRecord
 {
@@ -30,7 +20,7 @@ class Account extends ActiveRecord
     protected $table_name = 'user_accounts';
 }
 
-class UserTest extends \PHPUnit\Framework\TestCase
+class UserTest extends UnitTest
 {
     /**
      * @before

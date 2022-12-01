@@ -3,19 +3,11 @@
  * @format
  */
 
-require_once __DIR__ . '/../../../vendor/autoload.php';
-require_once __DIR__ . '/../../../config/db.conf.php';
 require_once __DIR__ . '/../../utils.php';
+require_once __DIR__ . '/../base_test.php';
 
-use Emeraldion\EmeRails\Config;
-use Emeraldion\EmeRails\Db;
-use Emeraldion\EmeRails\DbAdapters\MysqlAdapter;
-use Emeraldion\EmeRails\DbAdapters\MysqliAdapter;
 use Emeraldion\EmeRails\Models\ActiveRecord;
 use Emeraldion\EmeRails\Models\Relationship;
-
-Db::register_adapter(new MysqlAdapter(), MysqlAdapter::NAME);
-Db::register_adapter(new MysqliAdapter(), MysqliAdapter::NAME);
 
 class Car extends ActiveRecord
 {
@@ -27,7 +19,7 @@ class Engine extends ActiveRecord
     protected $table_name = 'motores';
 }
 
-class CocheTest extends \PHPUnit\Framework\TestCase
+class CocheTest extends UnitTest
 {
     public function test_correct_member_names_by_class()
     {
