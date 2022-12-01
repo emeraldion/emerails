@@ -375,7 +375,7 @@ abstract class ActiveRecord
         $relation_table = implode('_', $table_names);
 
         $conn->prepare(
-            "SELECT * FROM `{1}` JOIN `{2}` ON `{1}`.`{3}` = `{2}`.`{4}` WHERE (`{1}`.`{5}` = '{6}' AND " .
+            "SELECT `{2}`.*, `{1}`.* FROM `{1}` JOIN `{2}` ON `{1}`.`{3}` = `{2}`.`{4}` WHERE (`{1}`.`{5}` = '{6}' AND " .
                 ($params['where_clause'] ?? '1') .
                 ') ' .
                 'ORDER BY ' .
@@ -402,19 +402,13 @@ abstract class ActiveRecord
                 // FIXME: this is not reflecting the real relationship
                 $peer->values[pluralize(camel_case_to_joined_lower(get_class($this)))] = array($this->$pkey => $this);
 
-                // Store the peer FK before unsetting it
-                $row_peer_fkey = $row[$peer_fkey];
+                // This is the new way to access relationship attributes
+                $dict[$row[$peer_fkey]] = $row;
 
                 // Remove known id columns to prevent clobbering relationship attributes
+                unset($row['id']);
                 unset($row[$fkey]);
                 unset($row[$peer_fkey]);
-
-                // This is the new way to access relationship attributes
-                $dict[$row_peer_fkey] = $row;
-
-                // Now we can safely unset the 'id' key
-                // Unsetting it before, we'd lose the PK of the relationship table O:-)
-                unset($row['id']);
 
                 // Deprecated: store relationship attributes in the peer
                 foreach ($row as $key => $value) {
