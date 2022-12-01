@@ -213,8 +213,8 @@ class Relationship
                     $other_classname = $other_parts[count($other_parts) - 1];
 
                     $table_names = array(
-                        class_name_to_table_name($classname),
-                        class_name_to_table_name($other_classname)
+                        (new $classname())->get_table_name(),
+                        (new $other_classname())->get_table_name()
                     );
                     sort($table_names);
 
