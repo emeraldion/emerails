@@ -81,6 +81,24 @@ class ActiveRecordTest extends UnitTest
         $instance->delete();
     }
 
+    public function test_save_nullable_field()
+    {
+        $this->models[] = $model = new TestModel(array('name' => 'foo'));
+        $model->save();
+
+        $this->assertNotNull($model->name);
+        $this->assertEquals('foo', $model->name);
+
+        $model->name = null;
+        $model->save();
+
+        $other = TestModel::find($model->id);
+
+        $this->assertNotNull($other->id);
+        $this->assertEquals($model->id, $other->id);
+        $this->assertNull($other->name);
+    }
+
     public function test_save_dupe()
     {
         $instance = new TestModel(array(
@@ -721,6 +739,86 @@ class ActiveRecordTest extends UnitTest
         $this->assertEquals('bar', $instance->name);
         unset($instance->name);
         $this->assertTrue(!isset($instance->name));
+    }
+
+    public function test_validate_on_save_string_for_int()
+    {
+        $this->models[] = $athlete = new Athlete(array(
+            'name' => 'Marcell',
+            'weight' => '123'
+        ));
+
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage("Field 'weight' has the wrong type. Expected 'int(11)', found: 'string'");
+
+        // Throws:
+        $athlete->save();
+    }
+
+    public function test_validate_on_save_string_for_float()
+    {
+        $this->models[] = $athlete = new Athlete(array(
+            'name' => 'Marcell',
+            'height' => '123.456'
+        ));
+
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage("Field 'height' has the wrong type. Expected 'float', found: 'string'");
+
+        // Throws:
+        $athlete->save();
+    }
+
+    public function test_validate_on_set_string_for_int()
+    {
+        $this->models[] = $athlete = new Athlete(array(
+            'name' => 'Marcell'
+        ));
+
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage(
+            "Attempt to set the field 'weight' to a value with incorrect type. Expected 'int(11)', found: 'string'"
+        );
+
+        // This is okay:
+        $athlete->weight = 123;
+
+        // Throws:
+        $athlete->weight = '123';
+    }
+
+    public function test_validate_on_set_string_for_float()
+    {
+        $this->models[] = $athlete = new Athlete(array(
+            'name' => 'Marcell'
+        ));
+
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage(
+            "Attempt to set the field 'height' to a value with incorrect type. Expected 'float', found: 'string'"
+        );
+
+        // This is okay:
+        $athlete->height = 123.456;
+
+        // This throws:
+        $athlete->height = '123.456';
+    }
+
+    public function test_validate_on_set_null_for_not_nullable()
+    {
+        $this->models[] = $athlete = new Athlete(array(
+            'name' => 'Marcell'
+        ));
+
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage("Attempt to null the field 'weight' but it is not nullable");
+
+        // This is okay:
+        $athlete->weight = 123;
+
+        // Throws:
+        $athlete->weight = null;
     }
 
     public function test_object_pool()

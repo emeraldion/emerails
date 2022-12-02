@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:8889
--- Generation Time: Nov 28, 2022 at 01:39 PM
+-- Generation Time: Dec 02, 2022 at 11:27 PM
 -- Server version: 5.7.34
 -- PHP Version: 7.4.21
 
@@ -16,6 +16,25 @@ SET time_zone = "+00:00";
 --
 CREATE DATABASE IF NOT EXISTS `emerails_test` DEFAULT CHARACTER SET latin1 COLLATE latin1_general_cs;
 USE `emerails_test`;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `athletes`
+--
+
+DROP TABLE IF EXISTS `athletes`;
+CREATE TABLE IF NOT EXISTS `athletes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `weight` int(11) NOT NULL DEFAULT '0' COMMENT 'Weight in kg',
+  `height` float NOT NULL DEFAULT '0' COMMENT 'Height in cm',
+  `name` varchar(24) COLLATE latin1_general_cs NOT NULL,
+  `foo` datetime DEFAULT NULL,
+  `bar` timestamp NULL DEFAULT NULL,
+  `baz` tinyint(4) DEFAULT NULL,
+  `bip` enum('red','green','blue') COLLATE latin1_general_cs NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 -- --------------------------------------------------------
 

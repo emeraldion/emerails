@@ -55,4 +55,8 @@ class TestVersion extends ActiveRecord
 {
 }
 
+class Athlete extends ActiveRecord
+{
+}
+
 ?>

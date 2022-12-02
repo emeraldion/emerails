@@ -40,6 +40,8 @@ abstract class ActiveRecord
      */
     static $columns = array();
 
+    static $column_info = array();
+
     /**
      *  @attr class_initialized
      *  @short Array containing initialization information for subclasses.
@@ -128,21 +130,23 @@ abstract class ActiveRecord
             $conn->prepare('DESCRIBE `{1}`', $this->get_table_name());
             $conn->exec();
             $columns = array();
+            $column_info = array();
             while ($row = $conn->fetch_assoc()) {
                 $columns[] = $row['Field'];
+                $column_info[] = $row;
                 if ($row['Key'] == 'PRI') {
                     self::$actual_primary_key_names[get_called_class()] = $row['Field'];
                 }
             }
             self::_set_columns($classname, $columns);
+            self::_set_column_info($classname, $column_info);
             self::_set_initialized($classname, true);
         }
         $columns = self::_get_columns($classname);
         if (!empty($_values)) {
             $this->values = array();
             foreach ($_values as $key => $val) {
-                $keyexists = in_array($key, $columns);
-                if ($keyexists) {
+                if (in_array($key, $columns)) {
                     $this->values[$key] = $val;
                 }
             }
@@ -679,6 +683,27 @@ abstract class ActiveRecord
         return $ret;
     }
 
+    protected function wrap_value_for_query($key, $value, $conn)
+    {
+        if (is_null($value)) {
+            return 'NULL';
+        }
+        $classname = get_class($this);
+        $column_info = self::_get_column_info($classname);
+        $info = array_find($column_info, function ($info) use ($key) {
+            return $info['Field'] === $key;
+        });
+        preg_match('/([a-z]+)(\((\d+)\))?/', $info['Type'], $matches);
+        list(, $type) = $matches;
+        switch ($type) {
+            case 'int':
+            case 'tinyint':
+            case 'smallint':
+                return $conn->escape($value);
+        }
+        return "'{$conn->escape($value)}'";
+    }
+
     /**
      *  @fn save
      *  @short Requests the receiver to save its data in the bound table.
@@ -697,6 +722,8 @@ abstract class ActiveRecord
         $columns = self::_get_columns($classname);
         $ret = false;
 
+        $this->validate();
+
         $nonempty = array();
         for ($i = 0; $i < count($columns); $i++) {
             if (
@@ -705,7 +732,9 @@ abstract class ActiveRecord
                 // Exclude read-only columns
                 !in_array($columns[$i], self::READONLY_COLUMNS) &&
                 // Exclude empty columns
-                isset($this->values[$columns[$i]])
+                $this->values &&
+                array_key_exists($columns[$i], $this->values) &&
+                (isset($this->values[$columns[$i]]) || is_null($this->values[$columns[$i]]))
             ) {
                 $nonempty[] = $columns[$i];
             }
@@ -714,7 +743,11 @@ abstract class ActiveRecord
         if (!empty($this->values[$this->get_primary_key()]) && !isset($this->_force_create)) {
             $query = 'UPDATE `{1}` SET ';
             for ($i = 0; $i < count($nonempty); $i++) {
-                $query .= "`{$nonempty[$i]}` = '{$conn->escape($this->values[$nonempty[$i]])}'";
+                $query .= "`{$nonempty[$i]}` = {$this->wrap_value_for_query(
+                    $nonempty[$i],
+                    $this->values[$nonempty[$i]],
+                    $conn
+                )}";
                 if ($i < count($nonempty) - 1) {
                     $query .= ', ';
                 }
@@ -733,7 +766,7 @@ abstract class ActiveRecord
             }
             $query .= ') VALUES (';
             for ($i = 0; $i < count($nonempty); $i++) {
-                $query .= "'{$conn->escape($this->values[$nonempty[$i]])}'";
+                $query .= $this->wrap_value_for_query($nonempty[$i], $this->values[$nonempty[$i]], $conn);
                 if ($i < count($nonempty) - 1) {
                     $query .= ', ';
                 }
@@ -788,6 +821,110 @@ abstract class ActiveRecord
         Db::close_connection($conn);
     }
 
+    protected function validate()
+    {
+        if (!$this->values) {
+            return;
+        }
+
+        $classname = get_class($this);
+        $column_info = self::_get_column_info($classname);
+
+        foreach ($column_info as $info) {
+            $key = $info['Field'];
+            $nullable = $info['Null'] === 'YES';
+            preg_match('/([a-z]+)(\((\d+)\))?/', $info['Type'], $matches);
+            list(, $type) = $matches;
+
+            if (!array_key_exists($key, $this->values)) {
+                continue;
+            }
+
+            $value = $this->values[$key];
+
+            switch ($type) {
+                case 'int':
+                case 'tinyint':
+                    $max_length = $matches[3];
+                    if (!is_int($value)) {
+                        throw new Exception(
+                            sprintf(
+                                "Field '%s' has the wrong type. Expected '%s(%d)', found: '%s'",
+                                $key,
+                                $type,
+                                $max_length,
+                                gettype($value)
+                            )
+                        );
+                    }
+                    break;
+                case 'float':
+                    if (!is_float($value)) {
+                        throw new Exception(
+                            sprintf(
+                                "Field '%s' has the wrong type. Expected 'float', found: '%s'",
+                                $key,
+                                gettype($value)
+                            )
+                        );
+                    }
+                    break;
+            }
+        }
+    }
+
+    protected function validate_column($key, $value)
+    {
+        $classname = get_class($this);
+        $column_info = self::_get_column_info($classname);
+        $info = array_find($column_info, function ($info) use ($key) {
+            return $info['Field'] === $key;
+        });
+
+        if (!$info) {
+            // We shouldn't get here but...
+            return;
+        }
+
+        $nullable = $info['Null'] === 'YES';
+
+        if (is_null($value) && !$nullable) {
+            throw new Exception(sprintf("Attempt to null the field '%s' but it is not nullable", $key));
+        }
+
+        preg_match('/([a-z]+)(\((\d+)\))?/', $info['Type'], $matches);
+        list(, $type) = $matches;
+
+        switch ($type) {
+            case 'int':
+            case 'tinyint':
+                $max_length = $matches[3];
+                if (!is_int($value)) {
+                    throw new Exception(
+                        sprintf(
+                            "Attempt to set the field '%s' to a value with incorrect type. Expected '%s(%d)', found: '%s'",
+                            $key,
+                            $type,
+                            $max_length,
+                            gettype($value)
+                        )
+                    );
+                }
+                break;
+            case 'float':
+                if (!is_float($value)) {
+                    throw new Exception(
+                        sprintf(
+                            "Attempt to set the field '%s' to a value with incorrect type. Expected 'float', found: '%s'",
+                            $key,
+                            gettype($value)
+                        )
+                    );
+                }
+                break;
+        }
+    }
+
     /**
      *  @fn relative_url
      *  @short Provides a relative URL that will be used by the <tt>permalink</tt> public method.
@@ -831,6 +968,7 @@ abstract class ActiveRecord
     public function __set($key, $value)
     {
         if ($this->has_column($key)) {
+            $this->validate_column($key, $value);
             $this->values[$key] = $value;
         } else {
             $this->$key = $value;
@@ -938,6 +1076,30 @@ abstract class ActiveRecord
             return null;
         }
         return self::$columns[$classname];
+    }
+
+    /**
+     *  @fn _set_column_info($classname, $info)
+     *  @short Stores column info for the desired class.
+     *  @param classname Name of the class for the desired object.
+     *  @param info The info of the model object.
+     */
+    private static function _set_column_info($classname, $info)
+    {
+        self::$column_info[$classname] = $info;
+    }
+
+    /**
+     *  @fn _get_column_info($classname)
+     *  @short Returns column info for the desired class.
+     *  @param classname Name of the class for the desired object.
+     */
+    private static function _get_column_info($classname)
+    {
+        if (!isset(self::$class_initialized[$classname])) {
+            return null;
+        }
+        return self::$column_info[$classname];
     }
 
     /**

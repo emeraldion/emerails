@@ -415,10 +415,10 @@ class RelationshipInstance
                     if (
                         // Do not set the primary key
                         $columns[$i] != $this->relationship->get_primary_key_name() &&
-                        // Exclude read-only columns
-                        // !in_array($columns[$i], self::READONLY_COLUMNS) &&
                         // Exclude empty columns
-                        isset($this->values[$columns[$i]])
+                        $this->values &&
+                        array_key_exists($columns[$i], $this->values) &&
+                        (isset($this->values[$columns[$i]]) || is_null($this->values[$columns[$i]]))
                     ) {
                         $nonempty[] = $columns[$i];
                     }
