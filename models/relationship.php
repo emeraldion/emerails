@@ -54,7 +54,7 @@ class Relationship
 
     /**
      *  @attr columns
-     *  @short Array of columns for the model object.
+     *  @short Array of columns for the relationship table.
      */
     static $columns = array();
 
@@ -145,7 +145,7 @@ class Relationship
      *  @fn _set_columns($classname, $cols)
      *  @short Stores the columns for the desired class.
      *  @param classname Name of the class for the desired object.
-     *  @param cols The columns of the model object.
+     *  @param cols The columns of the relationship table.
      */
     private static function _set_columns($classname, $cols)
     {
@@ -319,7 +319,7 @@ class RelationshipInstance
 {
     /**
      *  @attr values
-     *  @short Array of values for the columns of model object.
+     *  @short Array of values for the columns of a relationship table.
      */
     private $values;
 
@@ -440,7 +440,7 @@ class RelationshipInstance
                     $conn->exec();
                     $ret = true;
                 } else {
-                    $query = 'INSERT INTO `{1}` (`{2}`, `{3}`';
+                    $query = (isset($this->_ignore) ? 'INSERT IGNORE' : 'INSERT') . ' INTO `{1}` (`{2}`, `{3}`';
                     for ($i = 0; $i < count($nonempty); $i++) {
                         $query .= ', ';
                         $query .= "`{$nonempty[$i]}`";

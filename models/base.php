@@ -397,7 +397,11 @@ abstract class ActiveRecord
             $this->values[$table_name] = array();
             $dict = array();
             while ($row = $conn->fetch_assoc()) {
-                $peer = new $peerclass($row);
+                $peer_row = $row;
+                // Fixup pkey from fkey
+                $peer_row[$peer_pk] = $row[$peer_fkey];
+
+                $peer = new $peerclass($peer_row);
                 $this->values[pluralize(camel_case_to_joined_lower($peerclass))][$peer->$peer_pk] = $peer;
                 // FIXME: this is not reflecting the real relationship
                 $peer->values[pluralize(camel_case_to_joined_lower(get_class($this)))] = array($this->$pkey => $this);
