@@ -94,11 +94,12 @@ class Request
      *	@fn get_parameter($name)
      *	@short Returns the value of the requested parameter.
      *	@param name The name of the parameter to return.
+      * @param fallback The fallback value if the parameter is not set.
      *	@return The value of the parameter <tt>name</tt>.
      */
-    public function get_parameter($name)
+    public function get_parameter($name, $fallback = null)
     {
-        return @$_REQUEST[$name];
+        return isset($_REQUEST[$name]) ? $_REQUEST[$name] : $fallback;
     }
 
     /**

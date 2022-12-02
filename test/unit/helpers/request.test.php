@@ -30,6 +30,20 @@ class RequestTest extends UnitTest
         $this->assertEquals('bar', $request->get_parameter('foo'));
     }
 
+    public function test_get_parameter_fallback()
+    {
+        $request = new Request();
+
+        $_REQUEST['bat'] = 'man';
+        $this->assertEquals('man', $request->get_parameter('bat', 'baz'));
+
+        unset($_REQUEST['bat']);
+        $this->assertEquals('baz', $request->get_parameter('bat', 'baz'));
+
+        $_REQUEST['bat'] = 'man';
+        $this->assertEquals('man', $request->get_parameter('bat', 'baz'));
+    }
+
     public function test_is_head()
     {
         $request = new Request();
