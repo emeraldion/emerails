@@ -151,7 +151,8 @@ abstract class ActiveRecord
             $this->values = array();
             foreach ($_values as $key => $val) {
                 if (in_array($key, $columns)) {
-                    $this->values[$key] = $val;
+                    // We can't be strict here as the data read from DB is untyped :(
+                    $this->values[$key] = $this->validate_field($key, $val);
                 }
             }
         }
@@ -645,7 +646,7 @@ abstract class ActiveRecord
             $columns = self::_get_columns($classname);
             $values = $conn->fetch_assoc();
             foreach ($columns as $column) {
-                $this->values[$column] = $values[$column];
+                $this->values[$column] = $this->validate_field($column, $values[$column]);
             }
             self::_add_to_pool($classname, $id, $this);
 
@@ -831,146 +832,25 @@ abstract class ActiveRecord
         }
 
         $classname = get_class($this);
-        $column_info = self::_get_column_info($classname);
+        $columns = self::_get_columns($classname);
 
-        foreach ($column_info as $info) {
-            $key = $info['Field'];
-            $nullable = $info['Null'] === 'YES';
-            preg_match('/([a-z]+)(\((.+)\))?/', $info['Type'], $matches);
-            list(, $type) = $matches;
-
-            if (!array_key_exists($key, $this->values)) {
-                continue;
-            }
-
-            $value = $this->values[$key];
-
-            if (is_null($value)) {
-                if (!$nullable) {
-                    throw new Exception(sprintf("Attempt to null the field '%s' but it is not nullable", $key));
-                }
-                return;
-            }
-
-            switch ($type) {
-                case 'enum':
-                    $possible_values = array_map(function ($value) {
-                        return trim($value, '\'');
-                    }, explode(',', $matches[3]));
-                    if (!in_array($value, $possible_values)) {
-                        throw new Exception(
-                            sprintf(
-                                "Field '%s' has the wrong type. Expected '%s(%s)' but found: '%s'",
-                                $key,
-                                $type,
-                                $matches[3],
-                                gettype($value)
-                            )
-                        );
-                    }
-                    break;
-                case 'int':
-                case 'tinyint':
-                    $max_length = (int) $matches[3];
-                    if (!is_int($value)) {
-                        throw new Exception(
-                            sprintf(
-                                "Field '%s' has the wrong type. Expected '%s(%d)' but found: '%s'",
-                                $key,
-                                $type,
-                                $max_length,
-                                gettype($value)
-                            )
-                        );
-                    }
-                    break;
-                case 'float':
-                    if (!is_float($value)) {
-                        throw new Exception(
-                            sprintf(
-                                "Field '%s' has the wrong type. Expected 'float' but found: '%s'",
-                                $key,
-                                gettype($value)
-                            )
-                        );
-                    }
-                    break;
+        foreach ($columns as $column) {
+            if (
+                // Do not set the primary key unless we're creating a new row
+                ($column != $this->get_primary_key() || $this->_force_create) &&
+                // Exclude read-only columns
+                !in_array($column, self::READONLY_COLUMNS) &&
+                // Exclude empty columns
+                $this->values &&
+                array_key_exists($column, $this->values) &&
+                (isset($this->values[$column]) || is_null($this->values[$column]))
+            ) {
+                $this->validate_field($column, $this->values[$column], true);
             }
         }
     }
 
-    protected function validate_column($key, $value)
-    {
-        $classname = get_class($this);
-        $column_info = self::_get_column_info($classname);
-        $info = array_find($column_info, function ($info) use ($key) {
-            return $info['Field'] === $key;
-        });
-
-        if (!$info) {
-            // We shouldn't get here but...
-            return;
-        }
-
-        $nullable = $info['Null'] === 'YES';
-
-        if (is_null($value)) {
-            if (!$nullable) {
-                throw new Exception(sprintf("Attempt to null the field '%s' but it is not nullable", $key));
-            }
-            return;
-        }
-
-        preg_match('/([a-z]+)(\((.+)\))?/', $info['Type'], $matches);
-        list(, $type) = $matches;
-
-        switch ($type) {
-            case 'enum':
-                $possible_values = array_map(function ($value) {
-                    return trim($value, '\'');
-                }, explode(',', $matches[3]));
-                if (!in_array($value, $possible_values)) {
-                    throw new Exception(
-                        sprintf(
-                            "Field '%s' has the wrong type. Expected '%s(%s)' but found: '%s'",
-                            $key,
-                            $type,
-                            $matches[3],
-                            gettype($value)
-                        )
-                    );
-                }
-                break;
-            case 'int':
-            case 'tinyint':
-                $max_length = (int) $matches[3];
-                if (!is_int($value)) {
-                    throw new Exception(
-                        sprintf(
-                            "Attempt to set the field '%s' to a value with incorrect type. Expected '%s(%d)' but found: '%s'",
-                            $key,
-                            $type,
-                            $max_length,
-                            gettype($value)
-                        )
-                    );
-                }
-                break;
-            case 'float':
-                if (!is_float($value)) {
-                    throw new Exception(
-                        sprintf(
-                            "Attempt to set the field '%s' to a value with incorrect type. Expected 'float' but found: '%s'",
-                            $key,
-                            gettype($value)
-                        )
-                    );
-                }
-                break;
-        }
-    }
-
-    protected function fix_type($key, $value)
+    protected function validate_field($key, $value, $raise = false)
     {
         $classname = get_class($this);
         $column_info = self::_get_column_info($classname);
@@ -987,6 +867,9 @@ abstract class ActiveRecord
             $nullable = $info['Null'] === 'YES';
 
             if (is_null($value) && !$nullable) {
+                if ($raise) {
+                    throw new Exception(sprintf("Attempt to null the field '%s' but it is not nullable", $key));
+                }
                 $ret = null;
             } else {
                 preg_match('/([a-z]+)(\((.+)\))?/', $info['Type'], $matches);
@@ -998,6 +881,17 @@ abstract class ActiveRecord
                             return trim($value, '\'');
                         }, explode(',', $matches[3]));
                         if (!in_array($value, $possible_values)) {
+                            if ($raise) {
+                                throw new Exception(
+                                    sprintf(
+                                        "Field '%s' has the wrong type. Expected '%s(%s)' but found: '%s'",
+                                        $key,
+                                        $type,
+                                        $matches[3],
+                                        gettype($value)
+                                    )
+                                );
+                            }
                             $ret = null;
                         } else {
                             $ret = $value;
@@ -1006,9 +900,29 @@ abstract class ActiveRecord
                     case 'int':
                     case 'tinyint':
                         $max_length = (int) $matches[3];
+                        if ($raise && !is_int($value)) {
+                            throw new Exception(
+                                sprintf(
+                                    "Attempt to set the field '%s' to a value with incorrect type. Expected '%s(%d)' but found: '%s'",
+                                    $key,
+                                    $type,
+                                    $max_length,
+                                    gettype($value)
+                                )
+                            );
+                        }
                         $ret = (int) $value;
                         break;
                     case 'float':
+                        if ($raise && !is_float($value)) {
+                            throw new Exception(
+                                sprintf(
+                                    "Attempt to set the field '%s' to a value with incorrect type. Expected 'float' but found: '%s'",
+                                    $key,
+                                    gettype($value)
+                                )
+                            );
+                        }
                         $ret = (float) $value;
                         break;
                     default:
@@ -1016,17 +930,17 @@ abstract class ActiveRecord
                 }
             }
         }
-        if ($ret != $value) {
+        if ($type != 'enum' && $ret != $value) {
             trigger_error(
                 sprintf(
-                    "Expected %s::%s('%s', '%s') to return: '%s' of type '%s' but got: '%s'.",
+                    "Expected %s::%s('%s', '%s') to return: '%s' of type '%s' but got: %s.",
                     get_class($this),
                     __FUNCTION__,
                     $key,
                     $value,
                     $value,
                     $type,
-                    $ret
+                    var_export($ret, true)
                 ),
                 E_USER_NOTICE
             );
@@ -1078,8 +992,7 @@ abstract class ActiveRecord
     public function __set($key, $value)
     {
         if ($this->has_column($key)) {
-            $this->validate_column($key, $value);
-            $this->values[$key] = $value;
+            $this->values[$key] = $this->validate_field($key, $value, true);
         } else {
             $this->$key = $value;
         }
@@ -1099,8 +1012,7 @@ abstract class ActiveRecord
         } else {
             $value = null;
         }
-        $fixed = $this->fix_type($key, $value);
-        return $value;
+        return $this->validate_field($key, $value);
     }
 
     /**

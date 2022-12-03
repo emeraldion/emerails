@@ -34,7 +34,7 @@ class ActiveRecordTest extends UnitTest
         $this->assertNotNull($instance);
     }
 
-    public function test_save_boo()
+    public function test_save()
     {
         $instance = new TestModel(array(
             'name' => 'baz'
@@ -751,66 +751,6 @@ class ActiveRecordTest extends UnitTest
         $this->assertEquals('bar', $instance->name);
         unset($instance->name);
         $this->assertTrue(!isset($instance->name));
-    }
-
-    public function test_validate_on_save_string_for_int()
-    {
-        $this->models[] = $athlete = new Athlete(array(
-            'name' => 'Marcell',
-            'weight' => '123'
-        ));
-
-        $this->expectException(Exception::class);
-        $this->expectExceptionMessage("Field 'weight' has the wrong type. Expected 'int(11)' but found: 'string'");
-
-        // Throws:
-        $athlete->save();
-    }
-
-    public function test_validate_on_save_string_for_float()
-    {
-        $this->models[] = $athlete = new Athlete(array(
-            'name' => 'Marcell',
-            'height' => '123.456'
-        ));
-
-        $this->expectException(Exception::class);
-        $this->expectExceptionMessage("Field 'height' has the wrong type. Expected 'float' but found: 'string'");
-
-        // Throws:
-        $athlete->save();
-    }
-
-    public function test_validate_on_save_int_for_enum()
-    {
-        $this->models[] = $athlete = new Athlete(array(
-            'name' => 'Marcell',
-            'bip' => 123
-        ));
-
-        $this->expectException(Exception::class);
-        $this->expectExceptionMessage(
-            "Field 'bip' has the wrong type. Expected 'enum('red','green','blue')' but found: 'integer'"
-        );
-
-        // Throws:
-        $athlete->save();
-    }
-
-    public function test_validate_on_save_string_for_enum()
-    {
-        $this->models[] = $athlete = new Athlete(array(
-            'name' => 'Marcell',
-            'bip' => 'orange'
-        ));
-
-        $this->expectException(Exception::class);
-        $this->expectExceptionMessage(
-            "Field 'bip' has the wrong type. Expected 'enum('red','green','blue')' but found: 'string'"
-        );
-
-        // Throws:
-        $athlete->save();
     }
 
     public function test_validate_on_save_null_for_not_nullable()
