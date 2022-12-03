@@ -970,6 +970,71 @@ abstract class ActiveRecord
         }
     }
 
+    protected function fix_type($key, $value)
+    {
+        $classname = get_class($this);
+        $column_info = self::_get_column_info($classname);
+        $info = array_find($column_info, function ($info) use ($key) {
+            return $info['Field'] === $key;
+        });
+
+        $type = 'unknown';
+        $ret = null;
+        if (!$info) {
+            // No info, return value as-is
+            $ret = $value;
+        } else {
+            $nullable = $info['Null'] === 'YES';
+
+            if (is_null($value) && !$nullable) {
+                $ret = null;
+            } else {
+                preg_match('/([a-z]+)(\((.+)\))?/', $info['Type'], $matches);
+                list(, $type) = $matches;
+
+                switch ($type) {
+                    case 'enum':
+                        $possible_values = array_map(function ($value) {
+                            return trim($value, '\'');
+                        }, explode(',', $matches[3]));
+                        if (!in_array($value, $possible_values)) {
+                            $ret = null;
+                        } else {
+                            $ret = $value;
+                        }
+                        break;
+                    case 'int':
+                    case 'tinyint':
+                        $max_length = (int) $matches[3];
+                        $ret = (int) $value;
+                        break;
+                    case 'float':
+                        $ret = (float) $value;
+                        break;
+                    default:
+                        $ret = $value;
+                }
+            }
+        }
+        if ($ret != $value) {
+            trigger_error(
+                sprintf(
+                    "Expected %s::%s('%s', '%s') to return: '%s' of type '%s' but got: '%s'.",
+                    get_class($this),
+                    __FUNCTION__,
+                    $key,
+                    $value,
+                    $value,
+                    $type,
+                    $ret
+                ),
+                E_USER_NOTICE
+            );
+        }
+
+        return $ret;
+    }
+
     /**
      *  @fn relative_url
      *  @short Provides a relative URL that will be used by the <tt>permalink</tt> public method.
@@ -1028,12 +1093,14 @@ abstract class ActiveRecord
     public function __get($key)
     {
         if ($this->values !== null && array_key_exists($key, $this->values)) {
-            return $this->values[$key];
+            $value = $this->values[$key];
+        } elseif (property_exists($this, $key)) {
+            $value = $this->$key;
+        } else {
+            $value = null;
         }
-        if (isset($this->$key)) {
-            return $this->$key;
-        }
-        return null;
+        $fixed = $this->fix_type($key, $value);
+        return $value;
     }
 
     /**
@@ -1048,7 +1115,8 @@ abstract class ActiveRecord
         }
         if (array_key_exists($key, $this->values)) {
             return true;
-        } elseif (isset($this->$key)) {
+        }
+        if (property_exists($this, $key)) {
             return true;
         }
         return false;

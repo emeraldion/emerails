@@ -34,7 +34,7 @@ class ActiveRecordTest extends UnitTest
         $this->assertNotNull($instance);
     }
 
-    public function test_save()
+    public function test_save_boo()
     {
         $instance = new TestModel(array(
             'name' => 'baz'
@@ -48,7 +48,6 @@ class ActiveRecordTest extends UnitTest
         $this->assertNotNull($other_instance);
         $ret = $other_instance->find_by_id($instance->id);
         $this->assertTrue($ret);
-
         $this->assertEquals('baz', $other_instance->name);
     }
 
@@ -696,6 +695,16 @@ class ActiveRecordTest extends UnitTest
         ));
         $this->assertNotNull($instance);
         $this->assertNull($instance->foo);
+    }
+
+    public function test_isset()
+    {
+        $instance = new TestModel();
+        $this->assertFalse(isset($instance->name));
+        $this->assertFalse(isset($instance->foo));
+        $instance->name = 'foo';
+        $this->assertTrue(isset($instance->name));
+        $this->assertFalse(isset($instance->foo));
     }
 
     public function test_get_set_column()
