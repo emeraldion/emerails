@@ -39,9 +39,12 @@ abstract class UnitTest extends \PHPUnit\Framework\TestCase
 
     protected function with_db_debug($fn)
     {
-        Config::set('DB_DEBUG', true);
-        $fn();
-        Config::set('DB_DEBUG', false);
+        try {
+            Config::set('DB_DEBUG', true);
+            $fn();
+        } finally {
+            Config::set('DB_DEBUG', false);
+        }
     }
 }
 

@@ -74,7 +74,7 @@ class ActiveRecordTest extends UnitTest
         $instance->delete();
     }
 
-    public function test_save_nullable_field()
+    public function test_save_nullable_field_varchar_set()
     {
         $this->models[] = $model = new TestModel(array('name' => 'foo'));
         $model->save();
@@ -85,11 +85,61 @@ class ActiveRecordTest extends UnitTest
         $model->name = null;
         $model->save();
 
+        $this->assertNull($model->name);
+
         $other = TestModel::find($model->id);
 
         $this->assertNotNull($other->id);
         $this->assertEquals($model->id, $other->id);
         $this->assertNull($other->name);
+    }
+
+    public function test_save_nullable_field_varchar_construct()
+    {
+        $this->models[] = $model = new TestModel(array('name' => null));
+        $model->save();
+
+        $this->assertNull($model->name);
+
+        $other = TestModel::find($model->id);
+
+        $this->assertNotNull($other->id);
+        $this->assertEquals($model->id, $other->id);
+        $this->assertNull($other->name);
+    }
+
+    public function test_save_nullable_field_enum_set()
+    {
+        $this->models[] = $athlete = new Athlete(array('name' => 'Alfonso', 'shirt_color' => 'red'));
+        $athlete->save();
+
+        $this->assertNotNull($athlete->shirt_color);
+        $this->assertEquals('red', $athlete->shirt_color);
+
+        $athlete->shirt_color = null;
+        $athlete->save();
+
+        $this->assertNull($athlete->shirt_color);
+
+        $other = Athlete::find($athlete->id);
+
+        $this->assertNotNull($other->id);
+        $this->assertEquals($athlete->id, $other->id);
+        $this->assertNull($other->shirt_color);
+    }
+
+    public function test_save_nullable_field_enum_construct()
+    {
+        $this->models[] = $athlete = new Athlete(array('name' => 'Alfonso', 'shirt_color' => null));
+        $athlete->save();
+
+        $this->assertNull($athlete->shirt_color);
+
+        $other = Athlete::find($athlete->id);
+
+        $this->assertNotNull($other->id);
+        $this->assertEquals($athlete->id, $other->id);
+        $this->assertNull($other->shirt_color);
     }
 
     public function test_save_dupe()
@@ -811,14 +861,14 @@ class ActiveRecordTest extends UnitTest
 
         $this->expectException(Exception::class);
         $this->expectExceptionMessage(
-            "Field 'bip' has the wrong type. Expected 'enum('red','green','blue')' but found: 'integer'"
+            "Field 'shirt_color' has the wrong type. Expected 'enum('red','green','blue')' but found: 'integer'"
         );
 
         // This is okay:
-        $athlete->bip = 'red';
+        $athlete->shirt_color = 'red';
 
         // This throws:
-        $athlete->bip = 123;
+        $athlete->shirt_color = 123;
     }
 
     public function test_validate_on_set_string_for_enum()
@@ -829,14 +879,14 @@ class ActiveRecordTest extends UnitTest
 
         $this->expectException(Exception::class);
         $this->expectExceptionMessage(
-            "Field 'bip' has the wrong type. Expected 'enum('red','green','blue')' but found: 'string'"
+            "Field 'shirt_color' has the wrong type. Expected 'enum('red','green','blue')' but found: 'string'"
         );
 
         // This is okay:
-        $athlete->bip = 'red';
+        $athlete->shirt_color = 'red';
 
         // This throws:
-        $athlete->bip = 'orange';
+        $athlete->shirt_color = 'orange';
     }
 
     public function test_validate_on_set_null_for_not_nullable()

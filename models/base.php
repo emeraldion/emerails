@@ -880,7 +880,7 @@ abstract class ActiveRecord
                         $possible_values = array_map(function ($value) {
                             return trim($value, '\'');
                         }, explode(',', $matches[3]));
-                        if (!in_array($value, $possible_values)) {
+                        if (!(is_null($value) || in_array($value, $possible_values))) {
                             if ($raise) {
                                 throw new Exception(
                                     sprintf(
