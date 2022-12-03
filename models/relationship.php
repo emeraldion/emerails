@@ -59,6 +59,12 @@ class Relationship
     static $columns = array();
 
     /**
+     *  @attr column_info
+     *  @short Array of column info for the model object.
+     */
+    static $column_info = array();
+
+    /**
      *  @attr primary_key_name
      *  @short Name of the primary key column for the bound table.
      *  @details Set this attribute only when the primary key of the bound table is not the canonical <tt>id</tt>.
@@ -113,13 +119,16 @@ class Relationship
                 $conn->prepare('DESCRIBE `{1}`', $this->get_table_name());
                 $conn->exec();
                 $columns = array();
+                $column_info = array();
                 while ($row = $conn->fetch_assoc()) {
                     $columns[] = $row['Field'];
+                    $column_info[] = $row;
                     if ($row['Key'] == 'PRI') {
                         self::$actual_primary_key_names[$relationship_name] = $row['Field'];
                     }
                 }
                 self::_set_columns($relationship_name, $columns);
+                self::_set_column_info($relationship_name, $column_info);
                 self::_set_initialized($relationship_name, true);
 
                 Db::close_connection($conn);
@@ -166,6 +175,30 @@ class Relationship
     }
 
     /**
+     *  @fn _set_column_info($classname, $info)
+     *  @short Stores column info for the desired class.
+     *  @param classname Name of the class for the desired object.
+     *  @param info The info of the model object.
+     */
+    private static function _set_column_info($classname, $info)
+    {
+        self::$column_info[$classname] = $info;
+    }
+
+    /**
+     *  @fn _get_column_info($classname)
+     *  @short Returns column info for the desired class.
+     *  @param classname Name of the class for the desired object.
+     */
+    private static function _get_column_info($classname)
+    {
+        if (!isset(self::$class_initialized[$classname])) {
+            return null;
+        }
+        return self::$column_info[$classname];
+    }
+
+    /**
      *  @fn has_column($key)
      *  @short Verifies the existence of a column named <tt>key</tt> in the bound table.
      *  @param key The name of the column to check.
@@ -181,6 +214,12 @@ class Relationship
     {
         $relationship_name = 'r_' . $this->get_table_name();
         return self::_get_columns($relationship_name);
+    }
+
+    public function get_column_info()
+    {
+        $relationship_name = 'r_' . $this->get_table_name();
+        return self::_get_column_info($relationship_name);
     }
 
     /**
@@ -569,6 +608,74 @@ class RelationshipInstance
         return $ret;
     }
 
+    protected function validate_column($key, $value)
+    {
+        $classname = get_class($this);
+        $column_info = $this->relationship->get_column_info();
+        $info = array_find($column_info, function ($info) use ($key) {
+            return $info['Field'] === $key;
+        });
+
+        if (!$info) {
+            // We shouldn't get here but...
+            return;
+        }
+
+        $nullable = $info['Null'] === 'YES';
+
+        if (is_null($value) && !$nullable) {
+            throw new Exception(sprintf("Attempt to null the field '%s' but it is not nullable", $key));
+        }
+
+        preg_match('/([a-z]+)(\((.+)\))?/', $info['Type'], $matches);
+        list(, $type) = $matches;
+
+        switch ($type) {
+            case 'enum':
+                $possible_values = array_map(function ($value) {
+                    return trim($value, '\'');
+                }, explode(',', $matches[3]));
+                if (!in_array($value, $possible_values)) {
+                    throw new Exception(
+                        sprintf(
+                            "Field '%s' has the wrong type. Expected '%s(%s)' but found: '%s'",
+                            $key,
+                            $type,
+                            $matches[3],
+                            gettype($value)
+                        )
+                    );
+                }
+                break;
+            case 'int':
+            case 'tinyint':
+                $max_length = (int) $matches[3];
+                if (!is_int($value)) {
+                    throw new Exception(
+                        sprintf(
+                            "Attempt to set the field '%s' to a value with incorrect type. Expected '%s(%d)' but found: '%s'",
+                            $key,
+                            $type,
+                            $max_length,
+                            gettype($value)
+                        )
+                    );
+                }
+                break;
+            case 'float':
+                if (!is_float($value)) {
+                    throw new Exception(
+                        sprintf(
+                            "Attempt to set the field '%s' to a value with incorrect type. Expected 'float' but found: '%s'",
+                            $key,
+                            gettype($value)
+                        )
+                    );
+                }
+                break;
+        }
+    }
+
     /**
      *  @fn __set($key, $value)
      *  @short Magic method to set the value of a property.
@@ -578,6 +685,7 @@ class RelationshipInstance
     public function __set($key, $value)
     {
         if ($this->relationship->has_column($key)) {
+            $this->validate_column($key, $value);
             $this->values[$key] = $value;
         } else {
             $this->$key = $value;

@@ -196,6 +196,64 @@ class RelationshipTest extends UnitTest
         $this->assertEquals(400, $ret[$model->id][$g2->id]->count);
     }
 
+    public function test_among_validate_on_set()
+    {
+        $this->models[] = $model = new TestModel();
+        $model->save();
+        $this->models[] = $group = new TestGroup();
+        $group->save();
+
+        $r = Relationship::many_to_many(TestModel::class, TestGroup::class)->among(array($model), array($group));
+
+        foreach ($r as $model_id => $s) {
+            foreach ($s as $group_id => $t) {
+                $this->models[] = $t;
+                $t->save();
+            }
+        }
+
+        $ret = $model->has_and_belongs_to_many(TestGroup::class);
+
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage(
+            "Field 'color' has the wrong type. Expected 'enum('red','green','blue')' but found: 'string'"
+        );
+
+        // This is ok
+        $ret[$model->id][$group->id]->color = 'red';
+
+        // This throws
+        $ret[$model->id][$group->id]->color = 'lime';
+    }
+
+    public function test_among_validate_null_non_nullable_field()
+    {
+        $this->models[] = $model = new TestModel();
+        $model->save();
+        $this->models[] = $group = new TestGroup();
+        $group->save();
+
+        $r = Relationship::many_to_many(TestModel::class, TestGroup::class)->among(array($model), array($group));
+
+        foreach ($r as $model_id => $s) {
+            foreach ($s as $group_id => $t) {
+                $this->models[] = $t;
+                $t->save();
+            }
+        }
+
+        $ret = $model->has_and_belongs_to_many(TestGroup::class);
+
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage("Attempt to null the field 'count' but it is not nullable");
+
+        // This is ok
+        $ret[$model->id][$group->id]->count = 100;
+
+        // This throws
+        $ret[$model->id][$group->id]->count = null;
+    }
+
     public function test_among_wrong_class()
     {
         $this->expectException(Exception::class);

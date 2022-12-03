@@ -40,6 +40,10 @@ abstract class ActiveRecord
      */
     static $columns = array();
 
+    /**
+     *  @attr column_info
+     *  @short Array of column info for the model object.
+     */
     static $column_info = array();
 
     /**

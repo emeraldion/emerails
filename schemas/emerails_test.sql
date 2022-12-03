@@ -108,7 +108,8 @@ DROP TABLE IF EXISTS `test_groups_test_models`;
 CREATE TABLE IF NOT EXISTS `test_groups_test_models` (
   `test_model_id` int(11) NOT NULL,
   `test_group_id` int(11) NOT NULL,
-  `count` int(11) DEFAULT '0',
+  `count` int(11) NOT NULL DEFAULT '0',
+  `color` enum('red','green','blue') COLLATE latin1_general_cs DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   KEY `test_group_id` (`test_group_id`,`test_model_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
