@@ -465,7 +465,11 @@ class RelationshipInstance
                 if (!empty($this->values[$this->relationship->get_primary_key_name()])) {
                     $query = 'UPDATE `{1}` SET ';
                     for ($i = 0; $i < count($nonempty); $i++) {
-                        $query .= "`{$nonempty[$i]}` = '{$conn->escape($this->values[$nonempty[$i]])}'";
+                        $query .= "`{$nonempty[$i]}` = {$this->wrap_value_for_query(
+                            $nonempty[$i],
+                            $this->values[$nonempty[$i]],
+                            $conn
+                        )}";
                         if ($i < count($nonempty) - 1) {
                             $query .= ', ';
                         }
@@ -481,13 +485,12 @@ class RelationshipInstance
                 } else {
                     $query = (isset($this->_ignore) ? 'INSERT IGNORE' : 'INSERT') . ' INTO `{1}` (`{2}`, `{3}`';
                     for ($i = 0; $i < count($nonempty); $i++) {
-                        $query .= ', ';
-                        $query .= "`{$nonempty[$i]}`";
+                        $query .= ", `{$nonempty[$i]}`";
                     }
                     $query .= ") VALUES ('{4}', '{5}'";
                     for ($i = 0; $i < count($nonempty); $i++) {
-                        $query .= ', ';
-                        $query .= "'{$conn->escape($this->values[$nonempty[$i]])}'";
+                        $query .=
+                            ', ' . $this->wrap_value_for_query($nonempty[$i], $this->values[$nonempty[$i]], $conn);
                     }
                     $query .= ')';
                     $conn->prepare(
@@ -606,6 +609,26 @@ class RelationshipInstance
         Db::close_connection($conn);
 
         return $ret;
+    }
+
+    protected function wrap_value_for_query($key, $value, $conn)
+    {
+        if (is_null($value)) {
+            return 'NULL';
+        }
+        $column_info = $this->relationship->get_column_info();
+        $info = array_find($column_info, function ($info) use ($key) {
+            return $info['Field'] === $key;
+        });
+        preg_match('/([a-z]+)(\((\d+)\))?/', $info['Type'], $matches);
+        list(, $type) = $matches;
+        switch ($type) {
+            case 'int':
+            case 'tinyint':
+            case 'smallint':
+                return $conn->escape($value);
+        }
+        return "'{$conn->escape($value)}'";
     }
 
     protected function validate_column($key, $value)
