@@ -804,6 +804,20 @@ class ActiveRecordTest extends UnitTest
         $athlete->save();
     }
 
+    public function test_validate_on_save_null_for_not_nullable()
+    {
+        $this->models[] = $athlete = new Athlete(array(
+            'name' => 'Marcell',
+            'weight' => null
+        ));
+
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage("Attempt to null the field 'weight' but it is not nullable");
+
+        // Throws:
+        $athlete->save();
+    }
+
     public function test_validate_on_set_string_for_int()
     {
         $this->models[] = $athlete = new Athlete(array(

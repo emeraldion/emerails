@@ -131,6 +131,39 @@ class RelationshipTest extends UnitTest
         $this->assertEquals(100, $ret[$model->id][$group->id]->count);
     }
 
+    public function test_among_save_nullable_field()
+    {
+        $this->models[] = $model = new TestModel();
+        $model->save();
+        $this->models[] = $group = new TestGroup();
+        $group->save();
+
+        $r = Relationship::many_to_many(TestModel::class, TestGroup::class)->among(
+            array($model),
+            array($group),
+            array($model->id => array($group->id => array('color' => null)))
+        );
+
+        foreach ($r as $model_id => $s) {
+            foreach ($s as $group_id => $t) {
+                $this->models[] = $t;
+                $t->save();
+            }
+        }
+
+        $ret = $model->has_and_belongs_to_many(TestGroup::class);
+        $this->assertNotNull($ret);
+        $this->assertIsArray($ret);
+        $this->assertEquals(1, count($ret));
+        $this->assertTrue(array_key_exists($model->id, $ret));
+        $this->assertIsArray($ret[$model->id]);
+        $this->assertEquals(1, count($ret[$model->id]));
+        $this->assertTrue(array_key_exists($group->id, $ret[$model->id]));
+        $this->assertIsObject($ret[$model->id][$group->id]);
+        $this->assertTrue(isset($ret[$model->id][$group->id]->color));
+        $this->assertNull($ret[$model->id][$group->id]->color);
+    }
+
     public function test_among_update()
     {
         $this->models[] = $model = new TestModel();
@@ -194,6 +227,59 @@ class RelationshipTest extends UnitTest
         $this->assertIsObject($ret[$model->id][$g2->id]);
         $this->assertTrue(isset($ret[$model->id][$g2->id]->count));
         $this->assertEquals(400, $ret[$model->id][$g2->id]->count);
+    }
+
+    public function test_among_update_nullable_field()
+    {
+        $this->models[] = $model = new TestModel();
+        $model->save();
+        $this->models[] = $group = new TestGroup();
+        $group->save();
+
+        $r = Relationship::many_to_many(TestModel::class, TestGroup::class)->among(
+            array($model),
+            array($group),
+            array($model->id => array($group->id => array('color' => 'red')))
+        );
+
+        foreach ($r as $model_id => $s) {
+            foreach ($s as $group_id => $t) {
+                $this->models[] = $t;
+                $t->save();
+            }
+        }
+
+        $ret = $model->has_and_belongs_to_many(TestGroup::class);
+        $this->assertNotNull($ret);
+        $this->assertIsArray($ret);
+        $this->assertEquals(1, count($ret));
+        $this->assertTrue(array_key_exists($model->id, $ret));
+        $this->assertIsArray($ret[$model->id]);
+        $this->assertEquals(1, count($ret[$model->id]));
+        $this->assertTrue(array_key_exists($group->id, $ret[$model->id]));
+        $this->assertIsObject($ret[$model->id][$group->id]);
+        $this->assertTrue(isset($ret[$model->id][$group->id]->color));
+        $this->assertNotNull($ret[$model->id][$group->id]->color);
+        $this->assertEquals('red', $ret[$model->id][$group->id]->color);
+
+        foreach ($r as $model_id => $s) {
+            foreach ($s as $group_id => $t) {
+                $t->color = null;
+                $t->save();
+            }
+        }
+
+        $ret = $model->has_and_belongs_to_many(TestGroup::class);
+        $this->assertNotNull($ret);
+        $this->assertIsArray($ret);
+        $this->assertEquals(1, count($ret));
+        $this->assertTrue(array_key_exists($model->id, $ret));
+        $this->assertIsArray($ret[$model->id]);
+        $this->assertEquals(1, count($ret[$model->id]));
+        $this->assertTrue(array_key_exists($group->id, $ret[$model->id]));
+        $this->assertIsObject($ret[$model->id][$group->id]);
+        $this->assertTrue(isset($ret[$model->id][$group->id]->color));
+        $this->assertNull($ret[$model->id][$group->id]->color);
     }
 
     public function test_among_validate_on_set()

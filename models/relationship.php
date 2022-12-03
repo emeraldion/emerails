@@ -646,8 +646,11 @@ class RelationshipInstance
 
         $nullable = $info['Null'] === 'YES';
 
-        if (is_null($value) && !$nullable) {
-            throw new Exception(sprintf("Attempt to null the field '%s' but it is not nullable", $key));
+        if (is_null($value)) {
+            if (!$nullable) {
+                throw new Exception(sprintf("Attempt to null the field '%s' but it is not nullable", $key));
+            }
+            return;
         }
 
         preg_match('/([a-z]+)(\((.+)\))?/', $info['Type'], $matches);
