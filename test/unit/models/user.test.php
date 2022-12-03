@@ -22,16 +22,10 @@ class Account extends ActiveRecord
 
 class UserTest extends UnitTest
 {
-    /**
-     * @before
-     */
     function setUp(): void
     {
     }
 
-    /**
-     * @after
-     */
     function teardown(): void
     {
         if (isset($this->user)) {

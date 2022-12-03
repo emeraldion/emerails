@@ -15,16 +15,10 @@ class ActiveRecordTest extends UnitTest
 {
     private $models = array();
 
-    /**
-     * @before
-     */
     function setUp(): void
     {
     }
 
-    /**
-     * @after
-     */
     function teardown(): void
     {
         delete_test_models(array('blip', 'baz'));
@@ -749,7 +743,7 @@ class ActiveRecordTest extends UnitTest
         ));
 
         $this->expectException(Exception::class);
-        $this->expectExceptionMessage("Field 'weight' has the wrong type. Expected 'int(11)', found: 'string'");
+        $this->expectExceptionMessage("Field 'weight' has the wrong type. Expected 'int(11)' but found: 'string'");
 
         // Throws:
         $athlete->save();
@@ -763,7 +757,39 @@ class ActiveRecordTest extends UnitTest
         ));
 
         $this->expectException(Exception::class);
-        $this->expectExceptionMessage("Field 'height' has the wrong type. Expected 'float', found: 'string'");
+        $this->expectExceptionMessage("Field 'height' has the wrong type. Expected 'float' but found: 'string'");
+
+        // Throws:
+        $athlete->save();
+    }
+
+    public function test_validate_on_save_int_for_enum()
+    {
+        $this->models[] = $athlete = new Athlete(array(
+            'name' => 'Marcell',
+            'bip' => 123
+        ));
+
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage(
+            "Field 'bip' has the wrong type. Expected 'enum('red','green','blue')' but found: 'integer'"
+        );
+
+        // Throws:
+        $athlete->save();
+    }
+
+    public function test_validate_on_save_string_for_enum()
+    {
+        $this->models[] = $athlete = new Athlete(array(
+            'name' => 'Marcell',
+            'bip' => 'orange'
+        ));
+
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage(
+            "Field 'bip' has the wrong type. Expected 'enum('red','green','blue')' but found: 'string'"
+        );
 
         // Throws:
         $athlete->save();
@@ -777,7 +803,7 @@ class ActiveRecordTest extends UnitTest
 
         $this->expectException(Exception::class);
         $this->expectExceptionMessage(
-            "Attempt to set the field 'weight' to a value with incorrect type. Expected 'int(11)', found: 'string'"
+            "Attempt to set the field 'weight' to a value with incorrect type. Expected 'int(11)' but found: 'string'"
         );
 
         // This is okay:
@@ -795,7 +821,7 @@ class ActiveRecordTest extends UnitTest
 
         $this->expectException(Exception::class);
         $this->expectExceptionMessage(
-            "Attempt to set the field 'height' to a value with incorrect type. Expected 'float', found: 'string'"
+            "Attempt to set the field 'height' to a value with incorrect type. Expected 'float' but found: 'string'"
         );
 
         // This is okay:
@@ -803,6 +829,42 @@ class ActiveRecordTest extends UnitTest
 
         // This throws:
         $athlete->height = '123.456';
+    }
+
+    public function test_validate_on_set_int_for_enum()
+    {
+        $this->models[] = $athlete = new Athlete(array(
+            'name' => 'Marcell'
+        ));
+
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage(
+            "Field 'bip' has the wrong type. Expected 'enum('red','green','blue')' but found: 'integer'"
+        );
+
+        // This is okay:
+        $athlete->bip = 'red';
+
+        // This throws:
+        $athlete->bip = 123;
+    }
+
+    public function test_validate_on_set_string_for_enum()
+    {
+        $this->models[] = $athlete = new Athlete(array(
+            'name' => 'Marcell'
+        ));
+
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage(
+            "Field 'bip' has the wrong type. Expected 'enum('red','green','blue')' but found: 'string'"
+        );
+
+        // This is okay:
+        $athlete->bip = 'red';
+
+        // This throws:
+        $athlete->bip = 'orange';
     }
 
     public function test_validate_on_set_null_for_not_nullable()

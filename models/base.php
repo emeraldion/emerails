@@ -583,9 +583,8 @@ abstract class ActiveRecord
     /**
      *  @fn find($id, $classname)
      *  @short Returns an object whose primary key value is <tt>id</tt>.
-     *  @details Due to limitations of PHP, a static method always apply to the
-     *  superclass. We have to explicitly reference the name of the subclass in order to
-     *  create the right object.
+     *  @details This method historically accepts a second argument to explicitly reference the name of the ActiveRecord subclass in order to
+     *  create the right object with older PHP versions. This is now deprecated as no longer necessary.
      *  @param id The value of the primary key.
      *  @param classname The name of the subclass to apply this static method to.
      */
@@ -833,7 +832,7 @@ abstract class ActiveRecord
         foreach ($column_info as $info) {
             $key = $info['Field'];
             $nullable = $info['Null'] === 'YES';
-            preg_match('/([a-z]+)(\((\d+)\))?/', $info['Type'], $matches);
+            preg_match('/([a-z]+)(\((.+)\))?/', $info['Type'], $matches);
             list(, $type) = $matches;
 
             if (!array_key_exists($key, $this->values)) {
@@ -843,13 +842,29 @@ abstract class ActiveRecord
             $value = $this->values[$key];
 
             switch ($type) {
+                case 'enum':
+                    $possible_values = array_map(function ($value) {
+                        return trim($value, '\'');
+                    }, explode(',', $matches[3]));
+                    if (!in_array($value, $possible_values)) {
+                        throw new Exception(
+                            sprintf(
+                                "Field '%s' has the wrong type. Expected '%s(%s)' but found: '%s'",
+                                $key,
+                                $type,
+                                $matches[3],
+                                gettype($value)
+                            )
+                        );
+                    }
+                    break;
                 case 'int':
                 case 'tinyint':
-                    $max_length = $matches[3];
+                    $max_length = (int) $matches[3];
                     if (!is_int($value)) {
                         throw new Exception(
                             sprintf(
-                                "Field '%s' has the wrong type. Expected '%s(%d)', found: '%s'",
+                                "Field '%s' has the wrong type. Expected '%s(%d)' but found: '%s'",
                                 $key,
                                 $type,
                                 $max_length,
@@ -862,7 +877,7 @@ abstract class ActiveRecord
                     if (!is_float($value)) {
                         throw new Exception(
                             sprintf(
-                                "Field '%s' has the wrong type. Expected 'float', found: '%s'",
+                                "Field '%s' has the wrong type. Expected 'float' but found: '%s'",
                                 $key,
                                 gettype($value)
                             )
@@ -892,17 +907,33 @@ abstract class ActiveRecord
             throw new Exception(sprintf("Attempt to null the field '%s' but it is not nullable", $key));
         }
 
-        preg_match('/([a-z]+)(\((\d+)\))?/', $info['Type'], $matches);
+        preg_match('/([a-z]+)(\((.+)\))?/', $info['Type'], $matches);
         list(, $type) = $matches;
 
         switch ($type) {
+            case 'enum':
+                $possible_values = array_map(function ($value) {
+                    return trim($value, '\'');
+                }, explode(',', $matches[3]));
+                if (!in_array($value, $possible_values)) {
+                    throw new Exception(
+                        sprintf(
+                            "Field '%s' has the wrong type. Expected '%s(%s)' but found: '%s'",
+                            $key,
+                            $type,
+                            $matches[3],
+                            gettype($value)
+                        )
+                    );
+                }
+                break;
             case 'int':
             case 'tinyint':
-                $max_length = $matches[3];
+                $max_length = (int) $matches[3];
                 if (!is_int($value)) {
                     throw new Exception(
                         sprintf(
-                            "Attempt to set the field '%s' to a value with incorrect type. Expected '%s(%d)', found: '%s'",
+                            "Attempt to set the field '%s' to a value with incorrect type. Expected '%s(%d)' but found: '%s'",
                             $key,
                             $type,
                             $max_length,
@@ -915,7 +946,7 @@ abstract class ActiveRecord
                 if (!is_float($value)) {
                     throw new Exception(
                         sprintf(
-                            "Attempt to set the field '%s' to a value with incorrect type. Expected 'float', found: '%s'",
+                            "Attempt to set the field '%s' to a value with incorrect type. Expected 'float' but found: '%s'",
                             $key,
                             gettype($value)
                         )
