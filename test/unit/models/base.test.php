@@ -716,6 +716,15 @@ class ActiveRecordTest extends UnitTest
         $this->assertEquals('bar', $instance->foo);
     }
 
+    public function test_get_set_nullable_column()
+    {
+        $instance = new TestModel(array('name' => 'blip'));
+        $this->assertNotNull($instance);
+        $this->assertNotNull($instance->name);
+        $instance->name = null;
+        $this->assertNull($instance->name);
+    }
+
     public function test_unset()
     {
         $instance = new TestModel();
