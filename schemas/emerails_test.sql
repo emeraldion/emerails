@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:8889
--- Generation Time: Dec 02, 2022 at 11:27 PM
+-- Generation Time: Dec 03, 2022 at 01:13 AM
 -- Server version: 5.7.34
 -- PHP Version: 7.4.21
 
@@ -24,17 +24,16 @@ USE `emerails_test`;
 --
 
 DROP TABLE IF EXISTS `athletes`;
-CREATE TABLE IF NOT EXISTS `athletes` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `athletes` (
+  `id` int(11) NOT NULL,
   `weight` int(11) NOT NULL DEFAULT '0' COMMENT 'Weight in kg',
   `height` float NOT NULL DEFAULT '0' COMMENT 'Height in cm',
   `name` varchar(24) COLLATE latin1_general_cs NOT NULL,
   `foo` datetime DEFAULT NULL,
   `bar` timestamp NULL DEFAULT NULL,
   `baz` tinyint(4) DEFAULT NULL,
-  `bip` enum('red','green','blue') COLLATE latin1_general_cs NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+  `bip` enum('red','green','blue') COLLATE latin1_general_cs NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 -- --------------------------------------------------------
 
@@ -43,10 +42,9 @@ CREATE TABLE IF NOT EXISTS `athletes` (
 --
 
 DROP TABLE IF EXISTS `coches`;
-CREATE TABLE IF NOT EXISTS `coches` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+CREATE TABLE `coches` (
+  `id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `coches`
@@ -62,12 +60,10 @@ INSERT INTO `coches` (`id`) VALUES
 --
 
 DROP TABLE IF EXISTS `motores`;
-CREATE TABLE IF NOT EXISTS `motores` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `car_id` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `car_id` (`car_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+CREATE TABLE `motores` (
+  `id` int(11) NOT NULL,
+  `car_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `motores`
@@ -83,11 +79,10 @@ INSERT INTO `motores` (`id`, `car_id`) VALUES
 --
 
 DROP TABLE IF EXISTS `test_groups`;
-CREATE TABLE IF NOT EXISTS `test_groups` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+CREATE TABLE `test_groups` (
+  `id` int(11) NOT NULL,
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `test_groups`
@@ -105,13 +100,12 @@ INSERT INTO `test_groups` (`id`) VALUES
 --
 
 DROP TABLE IF EXISTS `test_groups_test_models`;
-CREATE TABLE IF NOT EXISTS `test_groups_test_models` (
+CREATE TABLE `test_groups_test_models` (
   `test_model_id` int(11) NOT NULL,
   `test_group_id` int(11) NOT NULL,
   `count` int(11) NOT NULL DEFAULT '0',
-  `color` enum('red','green','blue') COLLATE latin1_general_cs DEFAULT NULL,
-  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  KEY `test_group_id` (`test_group_id`,`test_model_id`)
+  `color` enum('red','green','blue') CHARACTER SET latin1 COLLATE latin1_general_cs DEFAULT NULL,
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -130,12 +124,11 @@ INSERT INTO `test_groups_test_models` (`test_model_id`, `test_group_id`, `count`
 --
 
 DROP TABLE IF EXISTS `test_models`;
-CREATE TABLE IF NOT EXISTS `test_models` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `test_models` (
+  `id` int(11) NOT NULL,
   `name` varchar(24) DEFAULT NULL,
-  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1 COMMENT='Test models for Emerails tests';
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Test models for Emerails tests';
 
 --
 -- Dumping data for table `test_models`
@@ -152,14 +145,12 @@ INSERT INTO `test_models` (`id`, `name`) VALUES
 --
 
 DROP TABLE IF EXISTS `test_versions`;
-CREATE TABLE IF NOT EXISTS `test_versions` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `test_versions` (
+  `id` int(11) NOT NULL,
   `test_widget_id` int(11) DEFAULT NULL,
   `version` varchar(24) NOT NULL,
-  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  KEY `widget_id` (`test_widget_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `test_versions`
@@ -179,14 +170,12 @@ INSERT INTO `test_versions` (`id`, `test_widget_id`, `version`) VALUES
 --
 
 DROP TABLE IF EXISTS `test_widgets`;
-CREATE TABLE IF NOT EXISTS `test_widgets` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `test_widgets` (
+  `id` int(11) NOT NULL,
   `test_model_id` int(11) DEFAULT NULL,
   `color` varchar(24) NOT NULL,
-  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  KEY `model_id` (`test_model_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `test_widgets`
@@ -204,11 +193,9 @@ INSERT INTO `test_widgets` (`id`, `test_model_id`, `color`) VALUES
 --
 
 DROP TABLE IF EXISTS `user_accounts`;
-CREATE TABLE IF NOT EXISTS `user_accounts` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `username` varchar(24) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `username` (`username`)
+CREATE TABLE `user_accounts` (
+  `id` int(11) NOT NULL,
+  `username` varchar(24) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -218,10 +205,135 @@ CREATE TABLE IF NOT EXISTS `user_accounts` (
 --
 
 DROP TABLE IF EXISTS `user_profiles`;
-CREATE TABLE IF NOT EXISTS `user_profiles` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `username` varchar(24) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `username` (`username`)
+CREATE TABLE `user_profiles` (
+  `id` int(11) NOT NULL,
+  `username` varchar(24) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `athletes`
+--
+ALTER TABLE `athletes`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `coches`
+--
+ALTER TABLE `coches`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `motores`
+--
+ALTER TABLE `motores`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `car_id` (`car_id`);
+
+--
+-- Indexes for table `test_groups`
+--
+ALTER TABLE `test_groups`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `test_groups_test_models`
+--
+ALTER TABLE `test_groups_test_models`
+  ADD KEY `test_group_id` (`test_group_id`,`test_model_id`);
+
+--
+-- Indexes for table `test_models`
+--
+ALTER TABLE `test_models`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `test_versions`
+--
+ALTER TABLE `test_versions`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `widget_id` (`test_widget_id`);
+
+--
+-- Indexes for table `test_widgets`
+--
+ALTER TABLE `test_widgets`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `model_id` (`test_model_id`);
+
+--
+-- Indexes for table `user_accounts`
+--
+ALTER TABLE `user_accounts`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `username` (`username`);
+
+--
+-- Indexes for table `user_profiles`
+--
+ALTER TABLE `user_profiles`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `username` (`username`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `athletes`
+--
+ALTER TABLE `athletes`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
+
+--
+-- AUTO_INCREMENT for table `coches`
+--
+ALTER TABLE `coches`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `motores`
+--
+ALTER TABLE `motores`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `test_groups`
+--
+ALTER TABLE `test_groups`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=101;
+
+--
+-- AUTO_INCREMENT for table `test_models`
+--
+ALTER TABLE `test_models`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=964;
+
+--
+-- AUTO_INCREMENT for table `test_versions`
+--
+ALTER TABLE `test_versions`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=78;
+
+--
+-- AUTO_INCREMENT for table `test_widgets`
+--
+ALTER TABLE `test_widgets`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=68;
+
+--
+-- AUTO_INCREMENT for table `user_accounts`
+--
+ALTER TABLE `user_accounts`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
+-- AUTO_INCREMENT for table `user_profiles`
+--
+ALTER TABLE `user_profiles`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 COMMIT;
