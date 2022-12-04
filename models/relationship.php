@@ -445,10 +445,11 @@ class RelationshipInstance
                 break;
 
             case Relationship::MANY_TO_MANY:
-                $relationship_name = 'r_' . $this->relationship->get_table_name();
                 $columns = $this->relationship->get_column_names();
                 $ret = false;
                 $nonempty = array();
+
+                $this->validate();
 
                 for ($i = 0; $i < count($columns); $i++) {
                     if (
@@ -631,75 +632,124 @@ class RelationshipInstance
         return "'{$conn->escape($value)}'";
     }
 
-    protected function validate_column($key, $value)
+    protected function validate()
     {
-        $classname = get_class($this);
+        if (!$this->values) {
+            return;
+        }
+
+        $columns = $this->relationship->get_column_names();
+
+        foreach ($columns as $column) {
+            if (
+                // Do not set the primary key
+                $column != $this->relationship->get_primary_key_name() &&
+                // Exclude empty columns
+                $this->values &&
+                array_key_exists($column, $this->values) &&
+                (isset($this->values[$column]) || is_null($this->values[$column]))
+            ) {
+                $this->validate_field($column, $this->values[$column], true);
+            }
+        }
+    }
+
+    protected function validate_field($key, $value, $raise = false)
+    {
         $column_info = $this->relationship->get_column_info();
         $info = array_find($column_info, function ($info) use ($key) {
             return $info['Field'] === $key;
         });
 
+        $type = 'unknown';
+        $ret = null;
         if (!$info) {
-            // We shouldn't get here but...
-            return;
-        }
+            // No info, return value as-is
+            $ret = $value;
+        } else {
+            $nullable = $info['Null'] === 'YES';
 
-        $nullable = $info['Null'] === 'YES';
+            if (is_null($value) && !$nullable) {
+                if ($raise) {
+                    throw new Exception(sprintf("Attempt to null the field '%s' but it is not nullable", $key));
+                }
+                $ret = null;
+            } else {
+                preg_match('/([a-z]+)(\((.+)\))?/', $info['Type'], $matches);
+                list(, $type) = $matches;
 
-        if (is_null($value)) {
-            if (!$nullable) {
-                throw new Exception(sprintf("Attempt to null the field '%s' but it is not nullable", $key));
+                switch ($type) {
+                    case 'enum':
+                        $possible_values = array_map(function ($value) {
+                            return trim($value, '\'');
+                        }, explode(',', $matches[3]));
+                        if (!(is_null($value) || in_array($value, $possible_values))) {
+                            if ($raise) {
+                                throw new Exception(
+                                    sprintf(
+                                        "Field '%s' has the wrong type. Expected '%s(%s)' but found: '%s'",
+                                        $key,
+                                        $type,
+                                        $matches[3],
+                                        gettype($value)
+                                    )
+                                );
+                            }
+                            $ret = null;
+                        } else {
+                            $ret = $value;
+                        }
+                        break;
+                    case 'int':
+                    case 'tinyint':
+                        $max_length = (int) $matches[3];
+                        if ($raise && !is_int($value)) {
+                            throw new Exception(
+                                sprintf(
+                                    "Attempt to set the field '%s' to a value with incorrect type. Expected '%s(%d)' but found: '%s'",
+                                    $key,
+                                    $type,
+                                    $max_length,
+                                    gettype($value)
+                                )
+                            );
+                        }
+                        $ret = (int) $value;
+                        break;
+                    case 'float':
+                        if ($raise && !is_float($value)) {
+                            throw new Exception(
+                                sprintf(
+                                    "Attempt to set the field '%s' to a value with incorrect type. Expected 'float' but found: '%s'",
+                                    $key,
+                                    gettype($value)
+                                )
+                            );
+                        }
+                        $ret = (float) $value;
+                        break;
+                    default:
+                        $ret = $value;
+                }
             }
-            return;
+        }
+        if ($type != 'enum' && $ret != $value) {
+            trigger_error(
+                sprintf(
+                    "Expected %s::%s('%s', '%s') to return: '%s' of type '%s' but got: %s.",
+                    get_class($this),
+                    __FUNCTION__,
+                    $key,
+                    $value,
+                    $value,
+                    $type,
+                    var_export($ret, true)
+                ),
+                E_USER_NOTICE
+            );
         }
 
-        preg_match('/([a-z]+)(\((.+)\))?/', $info['Type'], $matches);
-        list(, $type) = $matches;
-
-        switch ($type) {
-            case 'enum':
-                $possible_values = array_map(function ($value) {
-                    return trim($value, '\'');
-                }, explode(',', $matches[3]));
-                if (!in_array($value, $possible_values)) {
-                    throw new Exception(
-                        sprintf(
-                            "Field '%s' has the wrong type. Expected '%s(%s)' but found: '%s'",
-                            $key,
-                            $type,
-                            $matches[3],
-                            gettype($value)
-                        )
-                    );
-                }
-                break;
-            case 'int':
-            case 'tinyint':
-                $max_length = (int) $matches[3];
-                if (!is_int($value)) {
-                    throw new Exception(
-                        sprintf(
-                            "Attempt to set the field '%s' to a value with incorrect type. Expected '%s(%d)' but found: '%s'",
-                            $key,
-                            $type,
-                            $max_length,
-                            gettype($value)
-                        )
-                    );
-                }
-                break;
-            case 'float':
-                if (!is_float($value)) {
-                    throw new Exception(
-                        sprintf(
-                            "Attempt to set the field '%s' to a value with incorrect type. Expected 'float' but found: '%s'",
-                            $key,
-                            gettype($value)
-                        )
-                    );
-                }
-                break;
-        }
+        return $ret;
     }
 
     /**
@@ -711,8 +761,7 @@ class RelationshipInstance
     public function __set($key, $value)
     {
         if ($this->relationship->has_column($key)) {
-            $this->validate_column($key, $value);
-            $this->values[$key] = $value;
+            $this->values[$key] = $this->validate_field($key, $value, true);
         } else {
             $this->$key = $value;
         }
@@ -726,12 +775,13 @@ class RelationshipInstance
     public function __get($key)
     {
         if ($this->values !== null && array_key_exists($key, $this->values)) {
-            return $this->values[$key];
+            $value = $this->values[$key];
+        } elseif (property_exists($this, $key)) {
+            $value = $this->$key;
+        } else {
+            $value = null;
         }
-        if (isset($this->$key)) {
-            return $this->$key;
-        }
-        return null;
+        return $this->validate_field($key, $value);
     }
 
     /**
@@ -746,7 +796,8 @@ class RelationshipInstance
         }
         if (array_key_exists($key, $this->values)) {
             return true;
-        } elseif (isset($this->$key)) {
+        }
+        if (property_exists($this, $key)) {
             return true;
         }
         return false;
@@ -764,7 +815,7 @@ class RelationshipInstance
         }
         if (array_key_exists($key, $this->values)) {
             unset($this->values[$key]);
-        } elseif (isset($this->$key)) {
+        } elseif (property_exists($this, $key)) {
             unset($this->key);
         }
     }

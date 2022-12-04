@@ -1046,7 +1046,7 @@ abstract class ActiveRecord
         }
         if (array_key_exists($key, $this->values)) {
             unset($this->values[$key]);
-        } elseif (isset($this->$key)) {
+        } elseif (property_exists($this, $key)) {
             unset($this->key);
         }
     }
