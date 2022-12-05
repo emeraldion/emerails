@@ -725,10 +725,10 @@ abstract class ActiveRecord
         $classname = get_class($this);
         $columns = self::_get_columns($classname);
         $ret = false;
-
-        $this->validate();
-
         $nonempty = array();
+
+        $this->validate(true);
+
         for ($i = 0; $i < count($columns); $i++) {
             if (
                 // Do not set the primary key unless we're creating a new row
@@ -825,7 +825,7 @@ abstract class ActiveRecord
         Db::close_connection($conn);
     }
 
-    protected function validate()
+    protected function validate($raise = false)
     {
         if (!$this->values) {
             return;
@@ -845,7 +845,7 @@ abstract class ActiveRecord
                 array_key_exists($column, $this->values) &&
                 (isset($this->values[$column]) || is_null($this->values[$column]))
             ) {
-                $this->validate_field($column, $this->values[$column], true);
+                $this->values[$column] = $this->validate_field($column, $this->values[$column], $raise);
             }
         }
     }

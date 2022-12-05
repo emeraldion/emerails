@@ -374,6 +374,8 @@ class RelationshipInstance
         $this->other_member = $other_member;
         $this->relationship = $relationship;
         $this->values = $params;
+
+        $this->validate();
     }
 
     public function of(string $classname)
@@ -449,7 +451,7 @@ class RelationshipInstance
                 $ret = false;
                 $nonempty = array();
 
-                $this->validate();
+                $this->validate(true);
 
                 for ($i = 0; $i < count($columns); $i++) {
                     if (
@@ -632,7 +634,7 @@ class RelationshipInstance
         return "'{$conn->escape($value)}'";
     }
 
-    protected function validate()
+    protected function validate($raise = false)
     {
         if (!$this->values) {
             return;
@@ -649,7 +651,7 @@ class RelationshipInstance
                 array_key_exists($column, $this->values) &&
                 (isset($this->values[$column]) || is_null($this->values[$column]))
             ) {
-                $this->validate_field($column, $this->values[$column], true);
+                $this->values[$column] = $this->validate_field($column, $this->values[$column], $raise);
             }
         }
     }
