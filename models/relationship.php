@@ -705,7 +705,7 @@ class RelationshipInstance
                     case 'int':
                     case 'tinyint':
                         $max_length = (int) $matches[3];
-                        if ($raise && !is_int($value)) {
+                        if ($raise && !is_null($value) && !is_int($value)) {
                             throw new Exception(
                                 sprintf(
                                     "Attempt to set the field '%s' to a value with incorrect type. Expected '%s(%d)' but found: '%s'",
@@ -716,10 +716,10 @@ class RelationshipInstance
                                 )
                             );
                         }
-                        $ret = (int) $value;
+                        $ret = is_null($value) ? null : (int) $value;
                         break;
                     case 'float':
-                        if ($raise && !is_float($value)) {
+                        if ($raise && !is_null($value) && !is_float($value)) {
                             throw new Exception(
                                 sprintf(
                                     "Attempt to set the field '%s' to a value with incorrect type. Expected 'float' but found: '%s'",
@@ -728,7 +728,7 @@ class RelationshipInstance
                                 )
                             );
                         }
-                        $ret = (float) $value;
+                        $ret = is_null($value) ? null : (float) $value;
                         break;
                     default:
                         $ret = $value;
