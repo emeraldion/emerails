@@ -861,7 +861,7 @@ class BaseController
             $controller_name = basename($params['controller']);
 
             // Include the controller class file
-            require_once __DIR__ . "/../controllers/{$controller_name}_controller.php";
+            require_once sprintf('%s/controllers/%s_controller.php', $this->base_path, $controller_name);
 
             // Load localization table
             Localization::add_strings_table($controller_name);
@@ -874,6 +874,9 @@ class BaseController
         $controller = new $classname();
         $controller->_name = $this->name;
         $controller->_action = $this->action;
+
+        // Propagate base path
+        $controller->set_base_path($this->base_path);
 
         // Unset controller key from params (why?)
         unset($params['controller']);
