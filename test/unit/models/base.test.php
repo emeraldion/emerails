@@ -803,6 +803,53 @@ class ActiveRecordTest extends UnitTest
         $this->assertTrue(!isset($instance->name));
     }
 
+    public function test_debug_info()
+    {
+        $instance = new TestModel();
+        $this->assertNotNull($instance);
+        $ret = $instance->find_by_id(1);
+        $this->assertTrue($ret);
+        ob_start();
+        print_r($instance);
+        $printed = ob_get_clean();
+        $this->assertNotNull($printed);
+        $this->assertThat(
+            $printed,
+            $this->matchesRegularExpression(
+                <<<EOT
+/TestModel Object
+\(
+    \[id\] => 1
+    \[name\] => foo
+    \[created_at\] => \d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}
+\)
+/
+EOT
+            )
+        );
+
+        ob_start();
+        var_dump($instance);
+        $printed = ob_get_clean();
+        $this->assertNotNull($printed);
+        $this->assertThat(
+            $printed,
+            $this->matchesRegularExpression(
+                <<<EOT
+/object\(TestModel\)#\d+ \(3\) \{
+  \["id"\]=>
+  int\(1\)
+  \["name"\]=>
+  string\(3\) "foo"
+  \["created_at"\]=>
+  string\(19\) "\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}"
+\}
+/
+EOT
+            )
+        );
+    }
+
     public function test_validate_on_save_null_for_not_nullable()
     {
         $this->models[] = $athlete = new Athlete(array(

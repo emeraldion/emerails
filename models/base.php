@@ -239,6 +239,13 @@ abstract class ActiveRecord
         return in_array($key, $columns);
     }
 
+    public function get_column_names()
+    {
+        $classname = get_class($this);
+        $columns = self::_get_columns($classname);
+        return $columns;
+    }
+
     /**
      *  @fn belongs_to($class_or_table_name)
      *  @short Loads the parent of the receiver in a one-to-many relationship.
@@ -1035,9 +1042,9 @@ abstract class ActiveRecord
     }
 
     /**
-     *      @fn __unset($key)
-     *      @short Magic method to unset a property.
-     *      @param key The key to unset.
+     *  @fn __unset($key)
+     *  @short Magic method to unset a property.
+     *  @param key The key to unset.
      */
     public function __unset($key)
     {
@@ -1049,6 +1056,20 @@ abstract class ActiveRecord
         } elseif (property_exists($this, $key)) {
             unset($this->key);
         }
+    }
+
+    /**
+     *  @fn __debugInfo()
+     *  @short Magic method to print debug information about an instance.
+     *  @return an array of key/value pairs representing the instance's properties.
+     */
+    public function __debugInfo()
+    {
+        $debug_info = array();
+        foreach ($this->get_column_names() as $column) {
+            $debug_info[$column] = $this->values[$column];
+        }
+        return $debug_info;
     }
 
     /**
