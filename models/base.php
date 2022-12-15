@@ -1067,7 +1067,9 @@ abstract class ActiveRecord
     {
         $debug_info = array();
         foreach ($this->get_column_names() as $column) {
-            $debug_info[$column] = $this->values[$column];
+            if (isset($this->values[$column])) {
+                $debug_info[$column] = is_null($this->values[$column]) ? 'NULL' : $this->values[$column];
+            }
         }
         return $debug_info;
     }
