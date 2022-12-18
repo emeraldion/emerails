@@ -852,6 +852,8 @@ class BaseController
     {
         // Merge request and user parameters
         $_GET = array_merge($_GET, $params);
+        $_POST = array_merge($_POST, $params);
+        $_REQUEST = array_merge($_REQUEST, $params);
 
         // If a controller is not set, use current controller
         if (!isset($params['controller'])) {
