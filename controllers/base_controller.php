@@ -925,19 +925,39 @@ class BaseController
      */
     protected function evaluate_part($partfile, $params = array())
     {
-        if (isset($params['partial'])) {
-            $partial = basename($params['partial']);
-
-            // Connect main object
-            if (isset($params['object'])) {
-                eval("\${$partial} = \$params['object'];");
-            } elseif (isset($this->$partial)) {
-                eval("\${$partial} = \$this->{$partial};");
-            }
-        }
-
         $GLOBALS['__PART__'] = $partfile;
-        $ret = eval($this->load_part_contents($partfile));
+        try {
+            if (isset($params['partial'])) {
+                $partial = basename($params['partial']);
+
+                // Connect main object
+                if (isset($params['object'])) {
+                    eval("\${$partial} = \$params['object'];");
+                } elseif (isset($this->$partial)) {
+                    eval("\${$partial} = \$this->{$partial};");
+                }
+            }
+
+            $ret = eval($this->load_part_contents($partfile));
+        } catch (Throwable $t) {
+            $file = preg_replace(
+                '/' . addcslashes($this->base_path, '/') . '/',
+                htmlentities('<PROJECT_ROOT>'),
+                $partfile
+            );
+            $ret = block_tag(
+                'div',
+                implode("\n", array(
+                    h3('Error', null),
+                    block_tag(
+                        'p',
+                        sprintf('[%d] %s, at: %s:%d', $t->getCode(), $t->getMessage(), $file, $t->getLine()),
+                        null
+                    )
+                )),
+                array('class' => 'msg error')
+            );
+        }
         unset($GLOBALS['__PART__']);
 
         return $ret;
