@@ -657,18 +657,11 @@ class BaseController
             // Get part file
             $partfile = sprintf('%s/views/%s/_%s.php', $this->base_path, $this->name, $partial);
 
-            // Connect main object
-            if (isset($params['object'])) {
-                eval("\${$partial} = \$params['object'];");
-            } elseif (isset($this->$partial)) {
-                eval("\${$partial} = \$this->{$partial};");
-            }
-
             // Start output buffering
             ob_start();
 
             // Evaluate and send to buffer
-            print eval($this->load_part_contents($partfile));
+            print $this->evaluate_part($partfile, $params);
 
             // Get buffer contents, clean output buffer
             $rendered = ob_get_clean();
@@ -684,7 +677,7 @@ class BaseController
             ob_start();
 
             // Evaluate and send to buffer
-            print eval($this->load_part_contents($partfile));
+            print $this->evaluate_part($partfile);
 
             // Get buffer contents
             $this->content_for_layout = ob_get_contents();
@@ -755,7 +748,7 @@ class BaseController
         }
 
         // Evaluate and send to buffer
-        print eval($this->load_part_contents($partfile));
+        print $this->evaluate_part($partfile);
 
         // Get buffer contents, clean output buffer
         $rendered = ob_get_clean();
@@ -920,6 +913,34 @@ class BaseController
         }
         $contents = file_get_contents($filename);
         return $this->strip_external_php_tags($contents);
+    }
+
+    /**
+     *  @fn evaluate_part($partfile, $params)
+     *  @short Evaluates a part file and returns it as a string.
+     *  @details This method loads and evaluates a part file, setting the corresponding
+     *  implicit variables, handling symbolication for errors.
+     *  @param partfile The name of the part file to load and evaluate.
+     *  @param params Parameters defining how the rendering should be realized.
+     */
+    protected function evaluate_part($partfile, $params = array())
+    {
+        if (isset($params['partial'])) {
+            $partial = basename($params['partial']);
+
+            // Connect main object
+            if (isset($params['object'])) {
+                eval("\${$partial} = \$params['object'];");
+            } elseif (isset($this->$partial)) {
+                eval("\${$partial} = \$this->{$partial};");
+            }
+        }
+
+        $GLOBALS['__PART__'] = $partfile;
+        $ret = eval($this->load_part_contents($partfile));
+        unset($GLOBALS['__PART__']);
+
+        return $ret;
     }
 
     /**
