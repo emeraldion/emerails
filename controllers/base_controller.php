@@ -653,6 +653,7 @@ class BaseController
             $this->rendered = true;
         } elseif (isset($params['partial'])) {
             $partial = basename($params['partial']);
+            $params['part'] = $partial;
 
             // Get part file
             $partfile = sprintf('%s/views/%s/_%s.php', $this->base_path, $this->name, $partial);
@@ -669,6 +670,7 @@ class BaseController
             // Get action to render
             $action =
                 isset($params['action']) && !empty($params['action']) ? basename($params['action']) : $this->action;
+            $params['part'] = $action;
 
             // Get part file
             $partfile = sprintf('%s/views/%s/%s.php', $this->base_path, $this->name, $action);
@@ -677,7 +679,7 @@ class BaseController
             ob_start();
 
             // Evaluate and send to buffer
-            print $this->evaluate_part($partfile);
+            print $this->evaluate_part($partfile, $params);
 
             // Get buffer contents
             $this->content_for_layout = ob_get_contents();
@@ -792,7 +794,7 @@ class BaseController
 
             // Call eventual controller action
             if (is_callable(array($this, $this->action))) {
-                $this->{$this->action}();
+                $this->invoke_action();
             } else {
                 $this->send_error(500);
             }
@@ -827,6 +829,16 @@ class BaseController
 
         // Finally, flush responses
         $this->response->flush($this->request->is_head());
+    }
+
+    /**
+     * @fn invoke_action()
+     * @short Thin wrapper around invocation of the controller's action method
+     * @details This method is provided as a convenience to subclassers. You can override it to add 
+     * side effects or instrumentation, e.g. performance measurements.
+     */
+    protected function invoke_action() {
+        $this->{$this->action}();
     }
 
     /**
