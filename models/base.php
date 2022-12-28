@@ -685,7 +685,7 @@ abstract class ActiveRecord
         $conn->prepare("SELECT COUNT(*) FROM `{1}` WHERE (1 AND ({$params['where_clause']}))", $this->get_table_name());
         $result = $conn->exec();
 
-        $ret = $conn->fetch_array()[0];
+        $ret = (int) $conn->fetch_array()[0];
 
         $conn->free_result();
 
