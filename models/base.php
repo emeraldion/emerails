@@ -875,7 +875,9 @@ abstract class ActiveRecord
 
             if (is_null($value) && !$nullable) {
                 if ($raise) {
-                    throw new Exception(sprintf("Attempt to null the field '%s' but it is not nullable", $key));
+                    throw new Exception(
+                        sprintf("%s: Attempt to null the field '%s' but it is not nullable", get_called_class(), $key)
+                    );
                 }
                 $ret = null;
             } else {
@@ -891,7 +893,8 @@ abstract class ActiveRecord
                             if ($raise) {
                                 throw new Exception(
                                     sprintf(
-                                        "Field '%s' has the wrong type. Expected '%s(%s)' but found: '%s'",
+                                        "%s: Field '%s' has the wrong type. Expected '%s(%s)' but found: '%s'",
+                                        get_called_class(),
                                         $key,
                                         $type,
                                         $matches[3],
@@ -910,7 +913,8 @@ abstract class ActiveRecord
                         if ($raise && !is_null($value) && !is_int($value)) {
                             throw new Exception(
                                 sprintf(
-                                    "Attempt to set the field '%s' to a value with incorrect type. Expected '%s(%d)' but found: '%s'",
+                                    "%s: Attempt to set the field '%s' to a value with incorrect type. Expected '%s(%d)' but found: '%s'",
+                                    get_called_class(),
                                     $key,
                                     $type,
                                     $max_length,
@@ -924,7 +928,8 @@ abstract class ActiveRecord
                         if ($raise && !is_null($value) && !is_float($value)) {
                             throw new Exception(
                                 sprintf(
-                                    "Attempt to set the field '%s' to a value with incorrect type. Expected 'float' but found: '%s'",
+                                    "%s: Attempt to set the field '%s' to a value with incorrect type. Expected 'float' but found: '%s'",
+                                    get_called_class(),
                                     $key,
                                     gettype($value)
                                 )
