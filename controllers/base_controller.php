@@ -834,10 +834,11 @@ class BaseController
     /**
      * @fn invoke_action()
      * @short Thin wrapper around invocation of the controller's action method
-     * @details This method is provided as a convenience to subclassers. You can override it to add 
+     * @details This method is provided as a convenience to subclassers. You can override it to add
      * side effects or instrumentation, e.g. performance measurements.
      */
-    protected function invoke_action() {
+    protected function invoke_action()
+    {
         $this->{$this->action}();
     }
 
