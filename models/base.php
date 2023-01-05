@@ -35,6 +35,14 @@ abstract class ActiveRecord
     const READONLY_COLUMNS = array('created_at', 'updated_at');
 
     /**
+     *  @const WRITEONLY_COLUMNS
+     *  @short Array of write-only columns that must not be printed.
+     *  @details This is a list of columns representing potentially sensitive data,
+     *  e.g. password hashes, that must never be printed.
+     */
+    const WRITEONLY_COLUMNS = array('password');
+
+    /**
      *  @attr columns
      *  @short Array of columns for the model object.
      */
@@ -1017,6 +1025,9 @@ abstract class ActiveRecord
      */
     public function __get($key)
     {
+        if (in_array($key, self::WRITEONLY_COLUMNS)) {
+            return '***';
+        }
         if ($this->values !== null && array_key_exists($key, $this->values)) {
             $value = $this->values[$key];
         } elseif (property_exists($this, $key)) {
@@ -1072,7 +1083,9 @@ abstract class ActiveRecord
     {
         $debug_info = array();
         foreach ($this->get_column_names() as $column) {
-            if (isset($this->values[$column])) {
+            if (in_array($column, self::WRITEONLY_COLUMNS)) {
+                $debug_info[$column] = '***';
+            } elseif (isset($this->values[$column])) {
                 $debug_info[$column] = is_null($this->values[$column]) ? 'NULL' : $this->values[$column];
             }
         }

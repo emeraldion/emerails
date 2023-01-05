@@ -39,6 +39,68 @@ class UserTest extends UnitTest
         }
     }
 
+    public function test_get_writeonly()
+    {
+        $this->user = new User(array(
+            'username' => 'brixton',
+            'password' => sha1('brixton')
+        ));
+
+        $this->assertEquals('***', $this->user->password);
+
+        $this->user->_force_create = true;
+        $this->user->save();
+
+        $this->assertEquals('***', $this->user->password);
+    }
+
+    public function test_debug_info_writeonly()
+    {
+        $this->user = new User(array(
+            'username' => 'brixton',
+            'password' => sha1('brixton')
+        ));
+        $this->user->_force_create = true;
+        $this->user->save();
+
+        ob_start();
+        print_r($this->user);
+        $printed = ob_get_clean();
+        $this->assertNotNull($printed);
+        $this->assertThat(
+            $printed,
+            $this->matchesRegularExpression(
+                <<<EOT
+/User Object
+\(
+    \[id\] => \d+
+    \[username\] => brixton
+\)
+/
+EOT
+            )
+        );
+
+        ob_start();
+        var_dump($this->user);
+        $printed = ob_get_clean();
+        $this->assertNotNull($printed);
+        $this->assertThat(
+            $printed,
+            $this->matchesRegularExpression(
+                <<<EOT
+/object\(User\)#\d+ \(2\) \{
+  \["id"\]=>
+  int\(\d+\)
+  \["username"\]=>
+  string\(7\) "brixton"
+\}
+/
+EOT
+            )
+        );
+    }
+
     public function test_actual_primary_key_column_set_on_save()
     {
         $this->user = new User(array(

@@ -195,7 +195,8 @@ INSERT INTO `test_widgets` (`id`, `test_model_id`, `color`) VALUES
 DROP TABLE IF EXISTS `user_accounts`;
 CREATE TABLE `user_accounts` (
   `id` int(11) NOT NULL,
-  `username` varchar(24) NOT NULL
+  `username` varchar(24) NOT NULL,
+  `password` varchar(24) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
