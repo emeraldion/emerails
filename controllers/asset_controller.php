@@ -67,7 +67,7 @@ class AssetController extends BaseController
             strip_double_dots($this->request->get_parameter('file')),
             strip_double_dots($this->request->get_parameter('ext'))
         );
-        $asset_file = self::resolve_asset_file($asset_file, $this->base_path);
+        $asset_file = get_called_class()::resolve_asset_file($asset_file, $this->base_path);
 
         $this->response->body = $this->rewrite(file_get_contents($asset_file));
 
@@ -87,8 +87,8 @@ class AssetController extends BaseController
     {
         $this->response->body = '';
         $mtime = 0;
-        foreach ($this->get_aggregate_files() as $asset_file) {
-            $asset_file = self::resolve_asset_file($asset_file, $this->base_path);
+        foreach (get_called_class()::get_aggregate_files() as $asset_file) {
+            $asset_file = get_called_class()::resolve_asset_file($asset_file, $this->base_path);
             $mtime = max($mtime, filemtime($asset_file));
             $this->response->body .= $this->rewrite(file_get_contents($asset_file));
         }
