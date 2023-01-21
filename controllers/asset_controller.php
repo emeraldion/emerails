@@ -106,7 +106,7 @@ class AssetController extends BaseController
      * more specialized rewriting e.g. customize CSS vars, etc.
      * @param body The body of the asset
      */
-    private function rewrite($body)
+    protected function rewrite($body)
     {
         if (Config::get('APPLICATION_ROOT') !== '/') {
             return preg_replace('/\/assets\//i', Config::get('APPLICATION_ROOT') . 'assets/', $body);
@@ -148,7 +148,7 @@ class AssetController extends BaseController
      * @short Returns the files to aggregate
      * @details This method is abstract and must be overridden by subclassers to specify the list of files to aggregate.
      */
-    protected function get_aggregate_files()
+    protected static function get_aggregate_files()
     {
         return array();
     }
