@@ -1,10 +1,12 @@
+#                                   _ __
+#   ___  ____ ___  ___  _________ _(_) /____
+#  / _ \/ __ `__ \/ _ \/ ___/ __ `/ / / ___/
+# /  __/ / / / / /  __/ /  / /_/ / / (__  )
+# \___/_/ /_/ /_/\___/_/   \__,_/_/_/____/
 #
-#	Project EmeRails - Codename Ocarina
+# (c) Claudio Procida 2008-2023
 #
-#	Copyright (c) 2008, 2017 Claudio Procida
-#	http://www.emeraldion.it
-#
-#
+
 .PHONY: docs test install update
 
 update:

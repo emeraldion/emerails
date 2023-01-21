@@ -1,9 +1,12 @@
 <?php
 /**
- *  Project EmeRails - Codename Ocarina
+ *                                   _ __
+ *   ___  ____ ___  ___  _________ _(_) /____
+ *  / _ \/ __ `__ \/ _ \/ ___/ __ `/ / / ___/
+ * /  __/ / / / / /  __/ /  / /_/ / / (__  )
+ * \___/_/ /_/ /_/\___/_/   \__,_/_/_/____/
  *
- *  Copyright (c) 2008, 2017 Claudio Procida
- *  http://www.emeraldion.it
+ * (c) Claudio Procida 2008-2023
  *
  * @format
  */
@@ -13,10 +16,10 @@ require_once __DIR__ . '/base_controller.php';
 use Emeraldion\EmeRails\Config;
 
 /**
- *  @class AssetController
- *  @short Controller for asset retrieval and inherent optimizations.
- *  @details The Asset controller tries to save bandwidth by compressing the plain text resources
- *  (e.g. CSS stylesheets, Javascript source code, etc.)
+ *	@class AssetController
+ *	@short Controller for asset retrieval and inherent optimizations.
+ *	@details The Asset controller tries to save bandwidth by compressing the plain text resources
+ *	(e.g. CSS stylesheets, Javascript source code, etc.)
  */
 class AssetController extends BaseController
 {
