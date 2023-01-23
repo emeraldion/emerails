@@ -384,7 +384,12 @@ class BaseController
     protected function redirect_to($params)
     {
         if (is_array($params)) {
-            $URL = sprintf('http://%s%s', $_SERVER['HTTP_HOST'], $this->url_to($params));
+            $URL = sprintf(
+                '%s://%s%s',
+                isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS']) ? 'https' : 'http',
+                $_SERVER['HTTP_HOST'],
+                $this->url_to($params)
+            );
             if (!isset($params['after'])) {
                 $this->response->add_header('Location', $URL);
                 $this->response->flush();
@@ -570,7 +575,14 @@ class BaseController
             'type' => $this->type,
             'id' => @$_REQUEST['id']
         ));
-        return $relative ? $url : sprintf('http://%s%s', $_SERVER['HTTP_HOST'], $url);
+        return $relative
+            ? $url
+            : sprintf(
+                '%s://%s%s',
+                isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS']) ? 'https' : 'http',
+                $_SERVER['HTTP_HOST'],
+                $url
+            );
     }
 
     /**

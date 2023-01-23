@@ -996,7 +996,13 @@ abstract class ActiveRecord
         $relative_url = $this->relative_url();
         return $relative
             ? sprintf('%s%s', APPLICATION_ROOT, $relative_url)
-            : sprintf('http://%s%s%s', $_SERVER['HTTP_HOST'], APPLICATION_ROOT, $relative_url);
+            : sprintf(
+                '%s://%s%s%s',
+                isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS']) ? 'https' : 'http',
+                $_SERVER['HTTP_HOST'],
+                APPLICATION_ROOT,
+                $relative_url
+            );
     }
 
     /*

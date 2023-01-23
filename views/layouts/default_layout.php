@@ -29,7 +29,7 @@
 <?php print $this->content_for_layout; ?>
 		</div>
 		<div id="footer">
-			<a href="http://emerails.emeraldion.it">EmeRails</a> &copy; 2008-2017 Claudio Procida &mdash; Emeraldion Lodge
+			<a href="https://emerails.emeraldion.it">EmeRails</a> &copy; 2008-2017 Claudio Procida &mdash; Emeraldion Lodge
 		</div>
 	</body>
 </html>
