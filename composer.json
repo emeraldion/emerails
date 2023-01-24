@@ -51,5 +51,14 @@
       ".gitignore",
       ".travis.yml"
     ]
+  },
+  "scripts": {
+    "post-update-cmd": [
+      "rm -rf vendor/tedivm/jshrink/.github",
+      "rm -rf vendor/tubalmartin/cssmin/.github",
+      "rm -rf vendor/tubalmartin/cssmin/gui",
+      "rm -rf vendor/tubalmartin/cssmin/tests",
+      "rm -rf vendor/php-coveralls/php-coveralls/tests"
+    ]
   }
 }
