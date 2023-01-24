@@ -22,10 +22,10 @@ require_once __DIR__ . '/base_controller.php';
 class ErrorController extends BaseController
 {
     /**
-     *	@fn _404
-     *	@short Handles 404 Not Found HTTP errors.
+     *	@fn _400
+     *	@short Handles 400 Bad Request HTTP errors.
      */
-    public function _404()
+    public function _400()
     {
         $this->error();
     }
@@ -40,10 +40,28 @@ class ErrorController extends BaseController
     }
 
     /**
+     *	@fn _404
+     *	@short Handles 404 Not Found HTTP errors.
+     */
+    public function _404()
+    {
+        $this->error();
+    }
+
+    /**
      *	@fn _405
      *	@short Handles 405 Method Not Supported HTTP errors.
      */
     public function _405()
+    {
+        $this->error();
+    }
+
+    /**
+     *	@fn _418
+     *	@short Handles 418 I'm a Teapot HTTP errors.
+     */
+    public function _418()
     {
         $this->error();
     }
