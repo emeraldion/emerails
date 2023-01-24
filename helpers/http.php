@@ -29,12 +29,21 @@ class HTTP
      */
     public static function error($code = 500, $headers = array())
     {
+        if ($code < 400 || $code > 599) {
+            throw new Exception(sprintf('Not an HTTP error response status code: %d', $code));
+        }
         foreach ($headers as $header => $value) {
             header("$header: $value");
         }
         $_SESSION['error_processed'] = true;
         header(
-            sprintf('Location: http://%s%serror/%s.html', $_SERVER['HTTP_HOST'], Config::get('APPLICATION_ROOT'), $code)
+            sprintf(
+                'Location: %s://%s%serror/%s.html',
+                isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS']) ? 'https' : 'http',
+                $_SERVER['HTTP_HOST'],
+                Config::get('APPLICATION_ROOT'),
+                $code
+            )
         );
         exit();
     }
