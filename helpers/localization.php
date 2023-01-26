@@ -13,7 +13,7 @@
 
 require_once __DIR__ . '/../include/tag_support.inc.php';
 
-define('LOCALIZATION_DEBUG', 0);
+use Emeraldion\EmeRails\Config;
 
 /**
  *	@class Localization
@@ -21,6 +21,8 @@ define('LOCALIZATION_DEBUG', 0);
  */
 class Localization
 {
+    private static $base_dir = __DIR__ . '/../';
+
     /**
      *	@attr languages
      *	@short Array of supported languages.
@@ -53,6 +55,16 @@ class Localization
      *	@short Table of translated strings.
      */
     private static $strings_table;
+
+    /**
+     *	@fn set_base_dir($base_dir)
+     *	@short Initializes the base directory for localization files.
+     *	@param base_dir The base directory. Defaults to the directory of this file.
+     */
+    public static function set_base_dir($base_dir = __DIR__ . '/../')
+    {
+        self::$base_dir = $base_dir;
+    }
 
     /**
      *	@fn localize($term)
@@ -90,7 +102,7 @@ class Localization
      */
     private static function wrap($term)
     {
-        if (!LOCALIZATION_DEBUG) {
+        if (!Config::get('LOCALIZATION_DEBUG')) {
             return $term;
         }
         return span($term, array('class' => 'localization-debug'));
@@ -105,10 +117,10 @@ class Localization
     private static function load_strings_file($lang = 'en', $controller = null)
     {
         $strings_file = $controller
-            ? __DIR__ . "/../assets/strings/$controller/localizable-$lang.strings"
-            : __DIR__ . "/../assets/strings/localizable-$lang.strings";
+            ? sprintf('%sassets/strings/%s/localizable-%s.strings', self::$base_dir, $controller, $lang)
+            : sprintf('%sassets/strings/localizable-%s.strings', self::$base_dir, $lang);
 
-        //print_r($strings_file);
+        // print_r($strings_file);
 
         if (file_exists($strings_file)) {
             return file_get_contents($strings_file);
