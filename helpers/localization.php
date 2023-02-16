@@ -139,12 +139,13 @@ class Localization
     {
         $table = array();
 
-        $controller = $_REQUEST['controller'];
-
         $global_strings = self::load_strings_file(@$_COOKIE['hl'] /* GLOBAL */);
         $table = array_merge($table, eval("return {$global_strings}"));
-        $local_strings = self::load_strings_file(@$_COOKIE['hl'], $controller);
-        $table = array_merge($table, eval("return {$local_strings}"));
+        if (isset($_REQUEST['controller'])) {
+            $controller = $_REQUEST['controller'];
+            $local_strings = self::load_strings_file(@$_COOKIE['hl'], $controller);
+            $table = array_merge($table, eval("return {$local_strings}"));
+        }
 
         self::$strings_table = $table;
     }
