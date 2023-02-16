@@ -462,7 +462,12 @@ class BaseController
         unset($params['id']);
         unset($params['query_string']);
 
-        print a($text, $params);
+        $ret = a($text, $params);
+        if (isset($params['return']) && $params['return']) {
+            return $ret;
+        } else {
+            print $ret;
+        }
     }
 
     /**
@@ -496,7 +501,12 @@ class BaseController
         unset($params['target']);
         unset($params['remote_url']);
 
-        print a($text, $params);
+        $ret = a($text, $params);
+        if (isset($params['return']) && $params['return']) {
+            return $ret;
+        } else {
+            print $ret;
+        }
     }
 
     /**
@@ -522,7 +532,12 @@ class BaseController
         unset($params['query_string']);
         unset($params['href']);
 
-        print button(joined_lower($text), $text, $params);
+        $ret = button(joined_lower($text), $text, $params);
+        if (isset($params['return']) && $params['return']) {
+            return $ret;
+        } else {
+            print $ret;
+        }
     }
 
     /**
