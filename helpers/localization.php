@@ -21,6 +21,11 @@ use Emeraldion\EmeRails\Config;
  */
 class Localization
 {
+    /**
+     *	@attr base_dir
+     *	@short The base directory for localization files.
+     *  @details Defaults to the parent directory of this file.
+     */
     private static $base_dir = __DIR__ . '/../';
 
     /**
@@ -59,7 +64,7 @@ class Localization
     /**
      *	@fn set_base_dir($base_dir)
      *	@short Initializes the base directory for localization files.
-     *	@param base_dir The base directory. Defaults to the directory of this file.
+     *	@param base_dir The base directory. Defaults to the parent directory of this file.
      */
     public static function set_base_dir($base_dir = __DIR__ . '/../')
     {
