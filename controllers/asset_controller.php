@@ -82,12 +82,13 @@ class AssetController extends BaseController
      * @details This action method returns aggregated resources from a list provided by <code>get_aggregate_files</code>.
      * Note that the base implementation returns nothing as the <code>get_aggregate_files</code> method returns an empty list, and must
      * be overridden by subclassers.
+     * @param bundle The name of the bundle, defaults to null
      */
-    public function aggregate()
+    public function aggregate($bundle = null)
     {
         $this->response->body = '';
         $mtime = 0;
-        foreach (get_called_class()::get_aggregate_files() as $asset_file) {
+        foreach (get_called_class()::get_aggregate_files($bundle) as $asset_file) {
             $asset_file = get_called_class()::resolve_asset_file($asset_file, $this->base_path);
             $mtime = max($mtime, filemtime($asset_file));
             $this->response->body .= $this->rewrite(file_get_contents($asset_file));
@@ -147,8 +148,9 @@ class AssetController extends BaseController
      * @fn get_aggregate_files
      * @short Returns the files to aggregate
      * @details This method is abstract and must be overridden by subclassers to specify the list of files to aggregate.
+     * @param bundle The name of the bundle to aggregate, defaults to null
      */
-    protected static function get_aggregate_files()
+    protected static function get_aggregate_files($bundle = null)
     {
         return array();
     }
