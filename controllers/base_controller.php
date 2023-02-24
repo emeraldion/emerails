@@ -947,14 +947,32 @@ class BaseController
      *  @short Loads the contents of the desired view file.
      *  @details This method returns the contents of the requested view file
      *  without parsing.
-     *  @param filename The name of the view file to load.
+     *  @param partfile The name of the view file to load.
      */
-    protected function load_part_contents($filename)
+    protected function load_part_contents($partfile)
     {
-        if (!file_exists($filename)) {
-            $this->send_error(500);
+        if (!file_exists($partfile)) {
+            if (Config::get('DEV_MODE')) {
+                $file = preg_replace(
+                    '/' . addcslashes($this->base_path, '/') . '/',
+                    htmlentities('<PROJECT_ROOT>'),
+                    $partfile
+                );
+                return $this->strip_external_php_tags(
+                    block_tag(
+                        'div',
+                        implode("\n", array(
+                            h3('Error', null),
+                            block_tag('p', sprintf('Missing part file: %s', $file), null)
+                        )),
+                        array('class' => 'msg error')
+                    )
+                );
+            } else {
+                $this->send_error(500);
+            }
         }
-        $contents = file_get_contents($filename);
+        $contents = file_get_contents($partfile);
         return $this->strip_external_php_tags($contents);
     }
 
@@ -983,23 +1001,27 @@ class BaseController
 
             $ret = eval($this->load_part_contents($partfile));
         } catch (Throwable $t) {
-            $file = preg_replace(
-                '/' . addcslashes($this->base_path, '/') . '/',
-                htmlentities('<PROJECT_ROOT>'),
-                $partfile
-            );
-            $ret = block_tag(
-                'div',
-                implode("\n", array(
-                    h3('Error', null),
-                    block_tag(
-                        'p',
-                        sprintf('[%d] %s, at: %s:%d', $t->getCode(), $t->getMessage(), $file, $t->getLine()),
-                        null
-                    )
-                )),
-                array('class' => 'msg error')
-            );
+            if (Config::get('DEV_MODE')) {
+                $file = preg_replace(
+                    '/' . addcslashes($this->base_path, '/') . '/',
+                    htmlentities('<PROJECT_ROOT>'),
+                    $partfile
+                );
+                $ret = block_tag(
+                    'div',
+                    implode("\n", array(
+                        h3('Error', null),
+                        block_tag(
+                            'p',
+                            sprintf('[%d] %s, at: %s:%d', $t->getCode(), $t->getMessage(), $file, $t->getLine()),
+                            null
+                        )
+                    )),
+                    array('class' => 'msg error')
+                );
+            } else {
+                throw $t;
+            }
         }
         unset($GLOBALS['__PART__']);
 
