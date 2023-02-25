@@ -270,7 +270,8 @@ class BaseController
                     return true;
                 }
             }
-            return false;
+            // Allow a flat list of actions per filter as an alias for the 'only' form
+            return in_array($this->action, $conditions);
         }
         return true;
     }
@@ -804,8 +805,8 @@ class BaseController
     {
         // Process before filters queue
         foreach ($this->before_filters as $before_filter) {
-            if ($this->filter_applicable($before_filter[1])) {
-                $filter = $before_filter[0];
+            list($filter, $conditions) = $before_filter;
+            if ($this->filter_applicable($conditions)) {
                 $this->$filter();
             }
         }
@@ -847,8 +848,8 @@ class BaseController
 
         // Process after filters queue
         foreach ($this->after_filters as $after_filter) {
-            if ($this->filter_applicable($after_filter[1])) {
-                $filter = $after_filter[0];
+            list($filter, $conditions) = $after_filter;
+            if ($this->filter_applicable($conditions)) {
                 $this->$filter();
             }
         }
