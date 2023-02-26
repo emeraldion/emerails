@@ -42,6 +42,92 @@ class ActiveRecordTest extends UnitTest
         $this->assertNotNull($instance);
     }
 
+    public function test_get_column_names()
+    {
+        $instance = new TestModel();
+        $this->assertEquals(array('id', 'name', 'created_at'), $instance->get_column_names());
+
+        $instance = new TestWidget();
+        $this->assertEquals(array('id', 'test_model_id', 'color', 'created_at'), $instance->get_column_names());
+    }
+
+    public function test_get_column_names_for_query()
+    {
+        $instance = new TestModel();
+        $this->assertEquals(
+            array('`test_models`.`id`', '`test_models`.`name`', '`test_models`.`created_at`'),
+            $instance->get_column_names_for_query()
+        );
+
+        $instance = new TestWidget();
+        $this->assertEquals(
+            array(
+                '`test_widgets`.`id`',
+                '`test_widgets`.`test_model_id`',
+                '`test_widgets`.`color`',
+                '`test_widgets`.`created_at`'
+            ),
+            $instance->get_column_names_for_query()
+        );
+    }
+
+    public function test_get_column_names_for_query_with_prefix()
+    {
+        $instance = new TestModel();
+        $this->assertEquals(
+            array(
+                '`test_models`.`id` AS `test_models:id`',
+                '`test_models`.`name` AS `test_models:name`',
+                '`test_models`.`created_at` AS `test_models:created_at`'
+            ),
+            $instance->get_column_names_for_query(true)
+        );
+
+        $instance = new TestWidget();
+        $this->assertEquals(
+            array(
+                '`test_widgets`.`id` AS `test_widgets:id`',
+                '`test_widgets`.`test_model_id` AS `test_widgets:test_model_id`',
+                '`test_widgets`.`color` AS `test_widgets:color`',
+                '`test_widgets`.`created_at` AS `test_widgets:created_at`'
+            ),
+            $instance->get_column_names_for_query(true)
+        );
+    }
+
+    public function test_demux_column_names()
+    {
+        $row = array(
+            'test_models:id' => 123,
+            'test_models:name' => 'Heidi',
+            'test_models:created_at' => '2023-02-26 16:11:02',
+            'test_widgets:id' => 456,
+            'test_widgets:test_model_id' => 123,
+            'test_widgets:color' => 'white',
+            'test_widgets:created_at' => '1970-01-01 12:00:00'
+        );
+        $instance = new TestModel();
+        $this->assertEquals(
+            array(
+                'id' => 123,
+                'name' => 'Heidi',
+                'created_at' => '2023-02-26 16:11:02'
+            ),
+            $instance->demux_column_names($row)
+        );
+
+        $instance = new TestWidget();
+        $this->assertEquals(
+            array(
+                'id' => 456,
+                'test_model_id' => 123,
+                'color' => 'white',
+                'created_at' => '1970-01-01 12:00:00'
+            ),
+            $instance->demux_column_names($row)
+        );
+    }
+
     public function test_save()
     {
         $instance = new TestModel(array(
@@ -285,6 +371,34 @@ class ActiveRecordTest extends UnitTest
         $instance = $instances[0];
         $this->assertNotNull($instance);
         $this->assertEquals('bar', $instance->name);
+    }
+
+    public function test_find_all_with_join()
+    {
+        $widget_factory = new TestWidget();
+        $widgets = $widget_factory->find_all(array(
+            'join' => TestModel::class
+        ));
+        $this->assertTrue(is_array($widgets));
+        foreach ($widgets as $widget) {
+            $this->assertNotNull($widget->test_model);
+            // var_dump($widget->test_model);
+        }
+    }
+
+    public function test_find_all_with_join_reverse()
+    {
+        $model_factory = new TestModel();
+        $models = $model_factory->find_all(array(
+            'join' => TestWidget::class
+        ));
+        $this->assertTrue(is_array($models));
+        foreach ($models as $model) {
+            $this->assertNotNull($model->test_widget);
+            $this->assertTrue(isset($model->id));
+            $this->assertTrue(isset($model->name));
+            $this->assertTrue(isset($model->created_at));
+        }
     }
 
     public function test_count_all_no_args()

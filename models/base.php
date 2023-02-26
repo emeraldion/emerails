@@ -250,11 +250,50 @@ abstract class ActiveRecord
         return in_array($key, $columns);
     }
 
+    /**
+     *  @fn get_column_names()
+     *  @short Returns a list of column names in the bound table, equivalent to the object's fields
+     */
     public function get_column_names()
     {
         $classname = get_class($this);
         $columns = self::_get_columns($classname);
         return $columns;
+    }
+
+    /**
+     *  @fn get_column_names_for_query($with_prefix = false)
+     *  @short Returns the list of column names for a SELECT query
+     *  @details This method can be used to return a list of columns for a query. Additionally, the caller
+     *  can request the column names to be aliased for multiplexing in a multi-table query, e.g. a JOIN.
+     *  @param with_prefix Set to true to create aliases with the table name as a prefix
+     */
+    public function get_column_names_for_query($with_prefix = false)
+    {
+        $columns = array_map(function ($c) use ($with_prefix) {
+            return $with_prefix
+                ? sprintf('`%s`.`%s` AS `%s:%s`', $this->get_table_name(), $c, $this->get_table_name(), $c)
+                : sprintf('`%s`.`%s`', $this->get_table_name(), $c);
+        }, $this->get_column_names());
+        return $columns;
+    }
+
+    /**
+     *  @fn demux_column_names($columns)
+     *  @short Demuxes a list of prefixed columns to intercept values of interest
+     *  @details This method can be used to filter a list of columns returned by a multi-table query, capturing
+     *  only those of interest to the receiving object.
+     *  @param columns The list of columns to filter
+     */
+    public function demux_column_names($columns)
+    {
+        $ret = array();
+        foreach ($columns as $key => $val) {
+            if (strpos($key, $this->get_table_name()) === 0) {
+                $ret[explode(':', $key)[1]] = $val;
+            }
+        }
+        return $ret;
     }
 
     /**
@@ -570,7 +609,7 @@ abstract class ActiveRecord
             $params['where_clause'] = '1';
         }
         if (empty($params['order_by'])) {
-            $params['order_by'] = "`{$this->primary_key}` ASC";
+            $params['order_by'] = "`{$this->get_table_name()}`.`{$this->get_primary_key()}` ASC";
         }
         if (empty($params['limit'])) {
             $params['limit'] = 999;
@@ -581,18 +620,50 @@ abstract class ActiveRecord
 
         $ret = null;
 
-        $conn->prepare(
-            "SELECT * FROM `{1}` WHERE (1 AND ({$params['where_clause']})) ORDER BY {$params['order_by']} LIMIT {$params['start']}, {$params['limit']}",
-            $this->get_table_name()
-        );
+        if (!empty($params['join'])) {
+            $has_join = true;
+            // var_dump($params);
+            $joined_classname = $params['join'];
+            $joined_obj = new $joined_classname();
+            if ($joined_obj->has_column($this->get_foreign_key_name())) {
+                $query = 'SELECT {7} FROM `{1}` JOIN `{4}` ON `{1}`.`{2}` = `{4}`.`{3}`';
+            } elseif ($this->has_column($joined_obj->get_foreign_key_name())) {
+                $query = 'SELECT {7} FROM `{1}` JOIN `{4}` ON `{1}`.`{6}` = `{4}`.`{5}`';
+            }
+            $query .= " WHERE (1 AND ({$params['where_clause']})) ORDER BY {$params['order_by']} LIMIT {$params['start']}, {$params['limit']}";
+            $conn->prepare(
+                $query,
+                $this->get_table_name(), // 1
+                $this->get_primary_key(), // 2
+                $this->get_foreign_key_name(), // 3
+                $joined_obj->get_table_name(), // 4
+                $joined_obj->get_primary_key(), // 5
+                $joined_obj->get_foreign_key_name(), // 6,
+                implode(
+                    ',',
+                    array_merge($this->get_column_names_for_query(true), $joined_obj->get_column_names_for_query(true))
+                ) // 7
+            );
+        } else {
+            $has_join = false;
+            $conn->prepare(
+                "SELECT * FROM `{1}` WHERE (1 AND ({$params['where_clause']})) ORDER BY {$params['order_by']} LIMIT {$params['start']}, {$params['limit']}",
+                $this->get_table_name()
+            );
+        }
         $conn->exec();
         if ($conn->num_rows() > 0) {
             $classname = get_class($this);
             $results = array();
             while ($row = $conn->fetch_assoc()) {
-                $obj = new $classname();
-                $obj->find_by_id($row[$this->primary_key]);
+                $obj = new $classname($has_join ? $this->demux_column_names($row) : $row);
                 $results[] = $obj;
+
+                if ($has_join) {
+                    $joined_obj = new $joined_classname($joined_obj->demux_column_names($row));
+                    $obj->values[camel_case_to_joined_lower($joined_classname)] = $joined_obj;
+                    $joined_obj->values[camel_case_to_joined_lower($classname)] = $obj;
+                }
             }
             $ret = $results;
         }
