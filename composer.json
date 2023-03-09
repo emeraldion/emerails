@@ -25,6 +25,7 @@
   },
   "require": {
     "php": ">=5.6.0",
+    "composer-runtime-api": "^2.2.2",
     "tedivm/jshrink": "^1.4.0",
     "tubalmartin/cssmin": "^4.1.1",
     "splitbrain/php-cli": "dev-master"
@@ -40,7 +41,8 @@
     }
   },
   "bin": [
-    "scripts/generate.php"
+    "scripts/emerails_generate.php",
+    "scripts/emerails_localize.php"
   ],
   "archive": {
     "exclude": [

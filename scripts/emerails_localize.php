@@ -23,7 +23,7 @@ class EmerailsLocalize extends ScriptCommand
     protected $name = 'EmeRails Localization Utility';
     protected $version = 'v1.0';
 
-    const DEFAULT_BASE_DIR = __DIR__ . '/../assets/strings';
+    const DEFAULT_BASE_DIR = '/../../assets/strings';
     const STRINGS_FILE_EXTENSION = '.strings';
 
     private $thesaurus = array();
@@ -70,7 +70,9 @@ class EmerailsLocalize extends ScriptCommand
     {
         $dry_run = $options->getOpt('dry-run');
         $verbose = $options->getOpt('verbose');
-        $base_dir = $options->getOpt('base-dir') ?: self::DEFAULT_BASE_DIR;
+        $base_dir =
+            $options->getOpt('base-dir') ?:
+            ($GLOBALS['_composer_bin_dir'] ?? __DIR__ . '/../vendor/bin') . self::DEFAULT_BASE_DIR;
 
         switch ($options->getCmd()) {
             case 'check':
@@ -149,11 +151,17 @@ EOT;
                 if ($language == 'en') {
                     continue;
                 }
-                $common_strings = array_intersect_key($this->thesaurus[$dir]['en'], $this->thesaurus[$dir][$language]);
+                $common_strings = array_intersect_key(
+                    $this->thesaurus[$dir]['en'] ?? array(),
+                    $this->thesaurus[$dir][$language] ?? array()
+                );
                 if (count($strings) > count($common_strings)) {
                     $success = !$strict;
                     foreach (
-                        array_diff_key($this->thesaurus[$dir][$language], $this->thesaurus[$dir]['en'])
+                        array_diff_key(
+                            $this->thesaurus[$dir][$language] ?? array(),
+                            $this->thesaurus[$dir]['en'] ?? array()
+                        )
                         as $key => $value
                     ) {
                         ANSIColorWriter::printf("Warning: missing key in strings file\n", 'yellow');
@@ -260,8 +268,9 @@ EOT;
 
     protected function get_string_file($dir)
     {
-        if (strpos($dir, self::DEFAULT_BASE_DIR) === 0) {
-            $dir = substr($dir, strlen(self::DEFAULT_BASE_DIR) + 1);
+        $base_dir = ($GLOBALS['_composer_bin_dir'] ?? __DIR__ . '/../vendor/bin') . self::DEFAULT_BASE_DIR;
+        if (strpos($dir, $base_dir) === 0) {
+            $dir = substr($dir, strlen($base_dir) + 1);
         }
         return $dir;
     }

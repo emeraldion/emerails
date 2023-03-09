@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7f99a8ea99c9f1e7242e24652bdc5d9b",
+    "content-hash": "34de8a65844cec715d9e4accf7f23303",
     "packages": [
         {
             "name": "splitbrain/php-cli",
@@ -3856,7 +3856,8 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=5.6.0"
+        "php": ">=5.6.0",
+        "composer-runtime-api": "^2.2.2"
     },
     "platform-dev": [],
     "plugin-api-version": "2.3.0"
