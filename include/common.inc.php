@@ -224,4 +224,15 @@ function array_find(array $array, callable $fn)
     }
     return false;
 }
+
+/**
+ * Ponyfill
+ */
+if (!function_exists('str_ends_with')) {
+    function str_ends_with($haystack, $needle)
+    {
+        $length = strlen($needle);
+        return $length > 0 ? substr($haystack, -$length) === $needle : true;
+    }
+}
 ?>
