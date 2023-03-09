@@ -299,7 +299,10 @@ abstract class ActiveRecord
     /**
      *  @fn belongs_to($class_or_table_name)
      *  @short Loads the parent of the receiver in a one-to-many relationship.
+     *  @details This method tries to find the owner of the current object via its foreign key. The method
+     *  returns early if the fk column is null.
      *  @param class_or_table_name The name of the parent class or table.
+     *  @return ret Handle to the relationship between the receiver class and the parent class
      */
     public function belongs_to($class_or_table_name)
     {
@@ -324,11 +327,15 @@ abstract class ActiveRecord
                 E_USER_DEPRECATED
             );
         }
-        $ret = false;
+        $fk = null;
         if (in_array(table_name_to_foreign_key($table_name), $columns)) {
-            $ret = $owner->find_by_id($this->values[table_name_to_foreign_key($table_name)]);
+            $fk = $this->values[table_name_to_foreign_key($table_name)];
         } elseif (in_array($owner->get_foreign_key_name(), $columns)) {
-            $ret = $owner->find_by_id($this->values[$owner->get_foreign_key_name()]);
+            $fk = $this->values[$owner->get_foreign_key_name()];
+        }
+        $ret = false;
+        if ($fk) {
+            $ret = $owner->find_by_id($fk);
         }
         if ($ret) {
             $this->values[camel_case_to_joined_lower($ownerclass)] = $owner;
@@ -347,7 +354,7 @@ abstract class ActiveRecord
      *  @short Loads the children of the receiver in a one-to-many relationship.
      *  @param class_or_table_name The name of the child class or table.
      *  @param params An array of conditions. For the semantics, see find_all
-     *  @return true if the relationship is fulfilled, false otherwise
+     *  @return ret Handle to the relationship between the receiver class and the child class
      *  @see find_all
      */
     public function has_many($class_or_table_name, $params = array())
@@ -402,6 +409,7 @@ abstract class ActiveRecord
      *  @short Loads the object network the receiver belongs to in a many-to-many relationship.
      *  @param class_or_table_name The name of the peer class or table.
      *  @param params An array of conditions. For the semantics, see find_all
+     *  @return ret Handle to the relationship between the receiver class and the peer class
      *  @see find_all
      */
     public function has_and_belongs_to_many($class_or_table_name, $params = array())
@@ -508,7 +516,7 @@ abstract class ActiveRecord
      *  @param class_or_table_name The name of the child class or table.
      *  @param params An array of conditions. For the semantics, see find_all
      *  @param strict Set to <tt>true</tt> if should raise when more than one child is found
-     *  @return TBD
+     *  @return ret Handle to the relationship between the receiver class and the child class
      *  @see find_all
      */
     public function has_one($class_or_table_name, $strict = false)
