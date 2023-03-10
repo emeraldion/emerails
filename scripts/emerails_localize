@@ -70,6 +70,7 @@ class EmerailsLocalize extends ScriptCommand
     {
         $dry_run = $options->getOpt('dry-run');
         $verbose = $options->getOpt('verbose');
+        // This path is relative to the Composer bin directory if available
         $base_dir =
             $options->getOpt('base-dir') ?:
             ($GLOBALS['_composer_bin_dir'] ?? __DIR__ . '/../vendor/bin') . self::DEFAULT_BASE_DIR;
@@ -268,6 +269,7 @@ EOT;
 
     protected function get_string_file($dir)
     {
+        // This path is relative to the Composer bin directory if available
         $base_dir = ($GLOBALS['_composer_bin_dir'] ?? __DIR__ . '/../vendor/bin') . self::DEFAULT_BASE_DIR;
         if (strpos($dir, $base_dir) === 0) {
             $dir = substr($dir, strlen($base_dir) + 1);

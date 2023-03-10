@@ -11,9 +11,10 @@
  * @format
  */
 
+// This path is relative to the Composer autoload path if available
 require_once $GLOBALS['_composer_autoload_path'] ?? __DIR__ . '/../vendor/autoload.php';
-
-require_once __DIR__ . '/../config/db.conf.php';
+// This path is relative to the Composer bin directory if available
+require_once ($GLOBALS['_composer_bin_dir'] ?? __DIR__ . '/../vendor/bin') . '/../../config/db.conf.php';
 require_once __DIR__ . '/../include/common.inc.php';
 
 use splitbrain\phpcli\CLI;

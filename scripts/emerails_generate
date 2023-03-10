@@ -144,6 +144,7 @@ EOT;
 
 EOT;
 
+                // This path is relative to the Composer bin directory if available
                 $dir = sprintf('%s/../../controllers', $GLOBALS['_composer_bin_dir'] ?? __DIR__ . '/../vendor/bin');
 
                 if (!(file_exists($dir) && is_dir($dir))) {
@@ -179,6 +180,7 @@ class {$model_class} extends ActiveRecord
 
 EOT;
 
+                // This path is relative to the Composer bin directory if available
                 $dir = sprintf('%s/../../models', $GLOBALS['_composer_bin_dir'] ?? __DIR__ . '/../vendor/bin');
 
                 if (!(file_exists($dir) && is_dir($dir))) {
@@ -232,6 +234,7 @@ EOT;
     {
         print "\tcreating views/$controller/$action.php\n";
 
+        // This path is relative to the Composer bin directory if available
         $dir = sprintf('%s/../../views/%s', $GLOBALS['_composer_bin_dir'] ?? __DIR__ . '/../vendor/bin', $controller);
 
         if (!(file_exists($dir) && is_dir($dir))) {
