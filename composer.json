@@ -41,8 +41,8 @@
     }
   },
   "bin": [
-    "scripts/emerails_generate.php",
-    "scripts/emerails_localize.php"
+    "scripts/emerails_generate",
+    "scripts/emerails_localize"
   ],
   "archive": {
     "exclude": [
