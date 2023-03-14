@@ -84,9 +84,9 @@ class Request
     }
 
     /**
-     *	@fn is_method($method)
-     *	@short Returns <tt>TRUE</tt> if the request method is <tt>method</tt>.
-     *	@param method The method name to be checked.
+     * @fn is_method($method)
+     * @short Returns <tt>TRUE</tt> if the request method is <tt>method</tt>.
+     * @param method The method name to be checked.
      */
     public static function is_method($method)
     {
@@ -94,15 +94,26 @@ class Request
     }
 
     /**
-     *	@fn get_parameter($name)
-     *	@short Returns the value of the requested parameter.
-     *	@param name The name of the parameter to return.
+     * @fn get_parameter($name)
+     * @short Returns the value of the requested parameter.
+     * @param name The name of the parameter to return.
      * @param fallback The fallback value if the parameter is not set.
-     *	@return The value of the parameter <tt>name</tt>.
+     * @return The value of the parameter <tt>name</tt>.
      */
     public function get_parameter($name, $fallback = null)
     {
         return isset($_REQUEST[$name]) ? $_REQUEST[$name] : $fallback;
+    }
+
+    /**
+     * @fn get_all_parameters()
+     * @short Returns all request parameters.
+     * @return All request parameters.
+     */
+    public function get_all_parameters()
+    {
+        $all_params = $_REQUEST;
+        return $all_params;
     }
 
     /**
