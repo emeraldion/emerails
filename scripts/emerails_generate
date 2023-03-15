@@ -68,11 +68,62 @@ class EmerailsGenerate extends ScriptCommand
             case 'controller':
                 $controller = strtolower(first($options->getArgs()));
 
-                print "\tcreating controllers/{$controller}_controller.php\n";
+                // This path is relative to the Composer bin directory if available
+                $dir = sprintf('%s/../../controllers', $GLOBALS['_composer_bin_dir'] ?? __DIR__ . '/../vendor/bin');
 
                 $controller_class = table_name_to_class_name("{$controller}_controller");
 
-                $controller_code = <<<EOT
+                $actions = explode(',', $options->getOpt('actions'));
+
+                $controller_file_path = sprintf('%s/%s_controller.php', $dir, $controller);
+
+                if (file_exists($controller_file_path)) {
+                    require $controller_file_path;
+                    $rc = new ReflectionClass($controller_class);
+
+                    foreach ($actions as $action) {
+                        if ($rc->hasMethod($action)) {
+                            throw new Exception(sprintf('Method %s::%s exists already', $controller_class, $action));
+                        }
+                    }
+
+                    print "\tupdating controllers/{$controller}_controller.php\n";
+
+                    $controller_code = file_get_contents($controller_file_path);
+                    $insertion_point = strrpos($controller_code, '}');
+
+                    $updated_code = substr($controller_code, 0, $insertion_point);
+
+                    for ($i = 0; $i < count($actions); $i += 1) {
+                        $action = strtolower($actions[$i]);
+
+                        if ($action === 'index') {
+                            continue;
+                        }
+
+                        $this->create_view($controller, $action);
+
+                        $updated_code .= <<<EOT
+
+    /**
+     * @fn {$action}
+     * @short Edit this actions's short description
+     * @details Edit this actions's detailed description
+     */
+    public function {$action}()
+    {
+        // TODO: add your code here
+    }
+
+EOT;
+                    }
+                    $updated_code .= substr($controller_code, $insertion_point);
+
+                    file_put_contents($controller_file_path, $updated_code);
+                } else {
+                    print "\tcreating controllers/{$controller}_controller.php\n";
+
+                    $controller_code = <<<EOT
 <?php
 /**
  * @format
@@ -110,20 +161,18 @@ class {$controller_class} extends BaseController
     }
 
 EOT;
-                $this->create_view($controller, 'index');
+                    $this->create_view($controller, 'index');
 
-                $actions = explode(',', $options->getOpt('actions'));
+                    for ($i = 0; $i < count($actions); $i += 1) {
+                        $action = strtolower($actions[$i]);
 
-                for ($i = 0; $i < count($actions); $i += 1) {
-                    $action = strtolower($actions[$i]);
+                        if ($action === 'index') {
+                            continue;
+                        }
 
-                    if ($action === 'index') {
-                        continue;
-                    }
+                        $this->create_view($controller, $action);
 
-                    $this->create_view($controller, $action);
-
-                    $controller_code .= <<<EOT
+                        $controller_code .= <<<EOT
 
     /**
      * @fn {$action}
@@ -136,21 +185,19 @@ EOT;
     }
 
 EOT;
-                }
-                $controller_code .= <<<EOT
+                    }
+                    $controller_code .= <<<EOT
 }
 
 ?>
 
 EOT;
 
-                // This path is relative to the Composer bin directory if available
-                $dir = sprintf('%s/../../controllers', $GLOBALS['_composer_bin_dir'] ?? __DIR__ . '/../vendor/bin');
-
-                if (!(file_exists($dir) && is_dir($dir))) {
-                    mkdir($dir, 0755, true);
+                    if (!(file_exists($dir) && is_dir($dir))) {
+                        mkdir($dir, 0755, true);
+                    }
+                    file_put_contents($controller_file_path, $controller_code);
                 }
-                file_put_contents(sprintf('%s/%s_controller.php', $dir, $controller), $controller_code);
                 break;
             case 'model':
                 $model_class = joined_lower_to_camel_case(first($options->getArgs()));
