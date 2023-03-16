@@ -198,7 +198,7 @@ EOT;
 
     protected function create_view($basedir, $controller, $action)
     {
-        $dir = sprintf('%s/../../views/%s', $basedir, $controller);
+        $dir = sprintf('%s/views/%s', $basedir, $controller);
 
         print "\tcreating views/$controller/$action.php\n";
 
