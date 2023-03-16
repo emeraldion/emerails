@@ -3,7 +3,7 @@
  * @format
  */
 
-require_once __DIR__ . '/vendor/emeraldion/emerails/include/common.inc.php';
+require_once __DIR__ . '/../vendor/emeraldion/emerails/include/common.inc.php';
 
 use Emeraldion\EmeRails\Config;
 
