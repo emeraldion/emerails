@@ -1,0 +1,56 @@
+#                                   _ __
+#   ___  ____ ___  ___  _________ _(_) /____
+#  / _ \/ __ `__ \/ _ \/ ___/ __ `/ / / ___/
+# /  __/ / / / / /  __/ /  / /_/ / / (__  )
+# \___/_/ /_/ /_/\___/_/   \__,_/_/_/____/
+#
+# (c) Claudio Procida 2008-2023
+#
+
+ErrorDocument 404 error/404.html
+ErrorDocument 403 error/403.html
+
+<IfModule mod_rewrite.c>
+	RewriteEngine On
+	RewriteBase /
+
+	# Store the current location in an environment variable CWD
+	# http://www.zeilenwechsel.de/it/articles/8/Using-mod_rewrite-in-.htaccess-files-without-knowing-the-RewriteBase.html
+	RewriteCond $0#%{REQUEST_URI} ([^#]*)#(.*)\1$
+	RewriteRule ^.*$ - [E=CWD:%2]
+
+	#
+	#	TODO: Add your custom rules here.
+	#
+
+	# Text assets are zipped to save bandwidth
+	RewriteRule ^assets/(javascript|styles)((/[^/]+)*)/([^/]+)\.([^\.]+)$ %{ENV:CWD}router.php?controller=asset&action=index&dir=$1$2&file=$4&ext=$5 [L,QSA]
+
+	# Error rules
+	RewriteCond %{REQUEST_FILENAME} !-d
+	RewriteCond %{REQUEST_FILENAME} !-f
+	RewriteRule ^error/([0-9]+)\.html$ %{ENV:CWD}router.php?controller=error&action=_$1 [L,QSA]
+
+	# Default rules
+
+	# Controller alone
+	RewriteCond %{REQUEST_FILENAME} !-d
+	RewriteCond %{REQUEST_FILENAME} !-f
+	RewriteRule ^([^/]+)\.html$ %{ENV:CWD}router.php?controller=$1 [L,QSA]
+
+	# Controller, with action
+	RewriteCond %{REQUEST_FILENAME} !-d
+	RewriteCond %{REQUEST_FILENAME} !-f
+	RewriteRule ^([^/]+)/([^/]+)\.html$ %{ENV:CWD}router.php?controller=$1&action=$2 [L,QSA]
+	
+	# Controller, action and id of target
+	RewriteCond %{REQUEST_FILENAME} !-d
+	RewriteCond %{REQUEST_FILENAME} !-f
+	RewriteRule ^([^/]+)/([^/]+)/([^/]+)$ %{ENV:CWD}router.php?controller=$1&action=$2&id=$3 [L,QSA]
+
+	# Default controller
+	#
+	#	TODO: Replace the following with your favorite default controller.
+	#
+	RewriteRule ^$ %{ENV:CWD}home.html [L,QSA]
+</IfModule>

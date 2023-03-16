@@ -31,6 +31,10 @@ class EmerailsGenerate extends ScriptCommand
         $options->registerOption('verbose', 'Print additional messages');
         $options->registerOption('dry-run', 'Do not commit changes');
 
+        // Create command
+        $options->registerCommand('create', 'Create an EmeRails app');
+        $options->registerOption('root-dir', 'Root directory of the app', 'r', 'dir', 'create');
+
         // Controller command
         $options->registerCommand('controller', 'Manage controllers');
         // Controller options
@@ -65,139 +69,54 @@ class EmerailsGenerate extends ScriptCommand
         $verbose = $options->getOpt('verbose');
 
         switch ($options->getCmd()) {
-            case 'controller':
-                $controller = strtolower(first($options->getArgs()));
+            case 'create':
+                // This path is relative to the Composer bin directory if available
+                $basedir =
+                    $options->getOpt('root-dir') ?:
+                    sprintf('%s/../..', $GLOBALS['_composer_bin_dir'] ?? __DIR__ . '/../vendor/bin');
+                if (!file_exists($basedir)) {
+                    mkdir($basedir, 0755, true);
+                }
 
+                print "\tcreating an EmeRails app at $basedir\n";
+
+                $success =
+                    // Copy the .htaccess file
+                    copy(__DIR__ . '/../.htaccess.template', $basedir . '/.htaccess') &&
+                    // Copy the router.php file
+                    copy(__DIR__ . '/../router.template.php', $basedir . '/router.php') &&
+                    // Make the config directory
+                    $this->create_dir($basedir . '/config') &&
+                    // Copy db.conf.php file
+                    copy(__DIR__ . '/../config/db.conf.template.php', $basedir . '/config/db.conf.php') &&
+                    // Copy emerails.conf.php file
+                    copy(__DIR__ . '/../config/emerails.conf.template.php', $basedir . '/config/emerails.conf.php') &&
+                    // Make the controllers directory
+                    $this->create_dir($basedir . '/controllers') &&
+                    // Make the models directory
+                    $this->create_dir($basedir . '/models') &&
+                    // Make the helpers directory
+                    $this->create_dir($basedir . '/helpers') &&
+                    copy(
+                        __DIR__ . '/../helpers/application_helper.template.php',
+                        $basedir . '/helpers/application_helper.php'
+                    ) &&
+                    // Make the views directory
+                    $this->create_dir($basedir . '/views');
+                // TODO: views/default_layout.php
+
+                $this->create_or_update_controller($basedir, 'home');
+
+                break;
+            case 'controller':
                 // This path is relative to the Composer bin directory if available
                 $dir = sprintf('%s/../../controllers', $GLOBALS['_composer_bin_dir'] ?? __DIR__ . '/../vendor/bin');
-
-                $controller_class = table_name_to_class_name("{$controller}_controller");
-
+                // Name of the controller is an argument
+                $controller = strtolower(first($options->getArgs()));
+                // Optional actions from options
                 $actions = explode(',', $options->getOpt('actions'));
-
-                $controller_file_path = sprintf('%s/%s_controller.php', $dir, $controller);
-
-                if (file_exists($controller_file_path)) {
-                    require $controller_file_path;
-                    $rc = new ReflectionClass($controller_class);
-
-                    foreach ($actions as $action) {
-                        if ($rc->hasMethod($action)) {
-                            throw new Exception(sprintf('Method %s::%s exists already', $controller_class, $action));
-                        }
-                    }
-
-                    print "\tupdating controllers/{$controller}_controller.php\n";
-
-                    $controller_code = file_get_contents($controller_file_path);
-                    $insertion_point = strrpos($controller_code, '}');
-
-                    $updated_code = substr($controller_code, 0, $insertion_point);
-
-                    for ($i = 0; $i < count($actions); $i += 1) {
-                        $action = strtolower($actions[$i]);
-
-                        if ($action === 'index') {
-                            continue;
-                        }
-
-                        $this->create_view($controller, $action);
-
-                        $updated_code .= <<<EOT
-
-    /**
-     * @fn {$action}
-     * @short Edit this actions's short description
-     * @details Edit this actions's detailed description
-     */
-    public function {$action}()
-    {
-        // TODO: add your code here
-    }
-
-EOT;
-                    }
-                    $updated_code .= substr($controller_code, $insertion_point);
-
-                    file_put_contents($controller_file_path, $updated_code);
-                } else {
-                    print "\tcreating controllers/{$controller}_controller.php\n";
-
-                    $controller_code = <<<EOT
-<?php
-/**
- * @format
- */
-
-use Emeraldion\EmeRails\Controllers\BaseController;
-
-/**
- * @class {$controller_class}
- * @short Edit this controller's short description
- * @details Edit this controller's detailed description
- */
-class {$controller_class} extends BaseController
-{
-    /**
-     * @fn init
-     * @short Performs specialized initialization
-     * @details You should use this method to do your custom initialization.
-     */
-    protected function init()
-    {
-        parent::init();
-
-        // TODO: add your initialization code here
-    }
-
-    /**
-     * @fn index
-     * @short This is the default action
-     * @details This is the default action when the controller is invoked without an action
-     */
-    public function index()
-    {
-        // TODO: add your code here
-    }
-
-EOT;
-                    $this->create_view($controller, 'index');
-
-                    for ($i = 0; $i < count($actions); $i += 1) {
-                        $action = strtolower($actions[$i]);
-
-                        if ($action === 'index') {
-                            continue;
-                        }
-
-                        $this->create_view($controller, $action);
-
-                        $controller_code .= <<<EOT
-
-    /**
-     * @fn {$action}
-     * @short Edit this actions's short description
-     * @details Edit this actions's detailed description
-     */
-    public function {$action}()
-    {
-        // TODO: add your code here
-    }
-
-EOT;
-                    }
-                    $controller_code .= <<<EOT
-}
-
-?>
-
-EOT;
-
-                    if (!(file_exists($dir) && is_dir($dir))) {
-                        mkdir($dir, 0755, true);
-                    }
-                    file_put_contents($controller_file_path, $controller_code);
-                }
+                // Create or update controller
+                $this->create_or_update_controller($dir, $controller, $actions);
                 break;
             case 'model':
                 $model_class = joined_lower_to_camel_case(first($options->getArgs()));
@@ -277,17 +196,155 @@ EOT;
         Db::close_connection($conn);
     }
 
-    protected function create_view($controller, $action)
+    protected function create_view($basedir, $controller, $action)
     {
-        print "\tcreating views/$controller/$action.php\n";
+        $dir = sprintf('%s/../../views/%s', $basedir, $controller);
 
-        // This path is relative to the Composer bin directory if available
-        $dir = sprintf('%s/../../views/%s', $GLOBALS['_composer_bin_dir'] ?? __DIR__ . '/../vendor/bin', $controller);
+        print "\tcreating views/$controller/$action.php\n";
 
         if (!(file_exists($dir) && is_dir($dir))) {
             mkdir($dir, 0755, true);
         }
         file_put_contents(sprintf('%s/%s.php', $dir, $action), '<!-- TODO: add your code here -->');
+    }
+
+    protected function create_dir(string $dir)
+    {
+        if (!(file_exists($dir) && is_dir($dir))) {
+            return mkdir($dir, 0755, true);
+        }
+        return false;
+    }
+
+    protected function create_or_update_controller(string $basedir, string $controller, array $actions = array())
+    {
+        $dir = $basedir . '/controllers';
+
+        $controller_class = table_name_to_class_name("{$controller}_controller");
+
+        $controller_file_path = sprintf('%s/%s_controller.php', $dir, $controller);
+
+        if (file_exists($controller_file_path)) {
+            require $controller_file_path;
+            $rc = new ReflectionClass($controller_class);
+
+            foreach ($actions as $action) {
+                if ($rc->hasMethod($action)) {
+                    throw new Exception(sprintf('Method %s::%s exists already', $controller_class, $action));
+                }
+            }
+
+            print "\tupdating controllers/{$controller}_controller.php\n";
+
+            $controller_code = file_get_contents($controller_file_path);
+            $insertion_point = strrpos($controller_code, '}');
+
+            $updated_code = substr($controller_code, 0, $insertion_point);
+
+            for ($i = 0; $i < count($actions); $i += 1) {
+                $action = strtolower($actions[$i]);
+
+                if ($action === 'index') {
+                    continue;
+                }
+
+                $this->create_view($basedir, $controller, $action);
+
+                $updated_code .= <<<EOT
+
+    /**
+     * @fn {$action}
+     * @short Edit this actions's short description
+     * @details Edit this actions's detailed description
+     */
+    public function {$action}()
+    {
+        // TODO: add your code here
+    }
+
+EOT;
+            }
+            $updated_code .= substr($controller_code, $insertion_point);
+
+            file_put_contents($controller_file_path, $updated_code);
+        } else {
+            print "\tcreating controllers/{$controller}_controller.php\n";
+
+            $controller_code = <<<EOT
+<?php
+/**
+ * @format
+ */
+
+use Emeraldion\EmeRails\Controllers\BaseController;
+
+/**
+ * @class {$controller_class}
+ * @short Edit this controller's short description
+ * @details Edit this controller's detailed description
+ */
+class {$controller_class} extends BaseController
+{
+    /**
+     * @fn init
+     * @short Performs specialized initialization
+     * @details You should use this method to do your custom initialization.
+     */
+    protected function init()
+    {
+        parent::init();
+
+        // TODO: add your initialization code here
+    }
+
+    /**
+     * @fn index
+     * @short This is the default action
+     * @details This is the default action when the controller is invoked without an action
+     */
+    public function index()
+    {
+        // TODO: add your code here
+    }
+
+EOT;
+            $this->create_view($basedir, $controller, 'index');
+
+            for ($i = 0; $i < count($actions); $i += 1) {
+                $action = strtolower($actions[$i]);
+
+                if ($action === 'index') {
+                    continue;
+                }
+
+                $this->create_view($basedir, $controller, $action);
+
+                $controller_code .= <<<EOT
+
+    /**
+     * @fn {$action}
+     * @short Edit this actions's short description
+     * @details Edit this actions's detailed description
+     */
+    public function {$action}()
+    {
+        // TODO: add your code here
+    }
+
+EOT;
+            }
+            $controller_code .= <<<EOT
+}
+
+?>
+
+EOT;
+
+            if (!(file_exists($dir) && is_dir($dir))) {
+                mkdir($dir, 0755, true);
+            }
+            file_put_contents($controller_file_path, $controller_code);
+        }
     }
 }
 
