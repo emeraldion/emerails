@@ -68,12 +68,13 @@ class EmerailsGenerate extends ScriptCommand
         $dry_run = $options->getOpt('dry-run');
         $verbose = $options->getOpt('verbose');
 
+        // This path is relative to the Composer bin directory if available
+        $basedir = sprintf('%s/../..', $GLOBALS['_composer_bin_dir'] ?? __DIR__ . '/../vendor/bin');
+
         switch ($options->getCmd()) {
             case 'create':
-                // This path is relative to the Composer bin directory if available
-                $basedir =
-                    $options->getOpt('root-dir') ?:
-                    sprintf('%s/../..', $GLOBALS['_composer_bin_dir'] ?? __DIR__ . '/../vendor/bin');
+                // This command can operate on a different root directory
+                $basedir = $options->getOpt('root-dir') ?: $basedir;
                 if (!file_exists($basedir)) {
                     mkdir($basedir, 0755, true);
                 }
@@ -116,17 +117,25 @@ class EmerailsGenerate extends ScriptCommand
                 $this->create_or_update_controller($basedir, 'home');
 
                 break;
+
             case 'controller':
-                // This path is relative to the Composer bin directory if available
-                $dir = sprintf('%s/../../controllers', $GLOBALS['_composer_bin_dir'] ?? __DIR__ . '/../vendor/bin');
+                // Ensure controllers directory exists
+                $dir = sprintf('%s/controllers', $basedir);
+                $this->create_dir($dir);
+
                 // Name of the controller is an argument
                 $controller = strtolower(first($options->getArgs()));
                 // Optional actions from options
                 $actions = explode(',', $options->getOpt('actions'));
                 // Create or update controller
-                $this->create_or_update_controller($dir, $controller, $actions);
+                $this->create_or_update_controller($basedir, $controller, $actions);
                 break;
+
             case 'model':
+                // Ensure models directory exists
+                $dir = sprintf('%s/models', $basedir);
+                $this->create_dir($dir);
+
                 $model_class = joined_lower_to_camel_case(first($options->getArgs()));
                 $model_table = class_name_to_table_name($model_class);
                 $model = singularize($model_table);
@@ -154,12 +163,6 @@ class {$model_class} extends ActiveRecord
 
 EOT;
 
-                // This path is relative to the Composer bin directory if available
-                $dir = sprintf('%s/../../models', $GLOBALS['_composer_bin_dir'] ?? __DIR__ . '/../vendor/bin');
-
-                if (!(file_exists($dir) && is_dir($dir))) {
-                    mkdir($dir, 0755, true);
-                }
                 file_put_contents(sprintf('%s/%s.php', $dir, $model), $model_code);
 
                 $fields = array('id' => 'int(11)');
@@ -171,6 +174,7 @@ EOT;
 
                 $this->create_model($model_table, $fields);
                 break;
+
             default:
                 $options->useCompactHelp();
                 print $options->help();
@@ -210,9 +214,7 @@ EOT;
 
         print "\tcreating views/$controller/$action.php\n";
 
-        if (!(file_exists($dir) && is_dir($dir))) {
-            mkdir($dir, 0755, true);
-        }
+        $this->create_dir($dir);
         file_put_contents(sprintf('%s/%s.php', $dir, $action), '<!-- TODO: add your code here -->');
     }
 
@@ -348,9 +350,7 @@ EOT;
 
 EOT;
 
-            if (!(file_exists($dir) && is_dir($dir))) {
-                mkdir($dir, 0755, true);
-            }
+            $this->create_dir($dir);
             file_put_contents($controller_file_path, $controller_code);
         }
     }
