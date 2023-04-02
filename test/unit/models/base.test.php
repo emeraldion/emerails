@@ -128,6 +128,50 @@ class ActiveRecordTest extends UnitTest
         );
     }
 
+    public function test_get_primary_key()
+    {
+        $a = new Athlete();
+
+        $this->assertEquals('id', $a->get_primary_key());
+
+        $b = new Runner();
+
+        $this->assertEquals('id', $b->get_primary_key());
+    }
+
+    public function test_get_foreign_key_name()
+    {
+        $a = new Athlete();
+
+        $this->assertEquals('athlete_id', $a->get_foreign_key_name());
+
+        $b = new Runner();
+
+        $this->assertEquals('runner_id', $b->get_foreign_key_name());
+    }
+
+    public function test_get_table_name()
+    {
+        $a = new Athlete();
+
+        $this->assertEquals('athletes', $a->get_table_name());
+
+        $b = new Runner();
+
+        $this->assertEquals('athletes', $b->get_table_name());
+    }
+
+    public function test_get_relationship_table_half_name()
+    {
+        $a = new Athlete();
+
+        $this->assertEquals('athletes', $a->get_relationship_table_half_name());
+
+        $b = new Runner();
+
+        $this->assertEquals('runners', $b->get_relationship_table_half_name());
+    }
+
     public function test_save()
     {
         $instance = new TestModel(array(

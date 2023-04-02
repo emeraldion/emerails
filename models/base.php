@@ -204,6 +204,27 @@ abstract class ActiveRecord
     }
 
     /**
+     *  @fn get_relationship_table_half_name
+     *  @short Returns the half name of the relationship table for this class.
+     *  @details This method returns the half name of the table which represents
+     *  relationship data for objects of this class when in a many to many relationship with another
+     *  class. If the ActiveRecord subclass is called <tt>Dog</tt>, the table half name will be <tt>dogs</tt>.
+     *
+     *  When in a relationship with another class, e.g. <tt>Owner</tt>, the resulting relationship table will be obtained
+     *  by joining the two halves, sorted alphabetically, i.e. <tt>dogs_owners</tt>.
+     *
+     *  Subclassers can set a custom half name by setting explicitly the value of <tt>$relationship_table_half_name</tt>
+     *  in the declaration of the class. If not overridden, this defaults to the return value of <tt>get_table_name()</tt>
+     */
+    public function get_relationship_table_half_name()
+    {
+        if (isset($this->relationship_table_half_name)) {
+            return $this->relationship_table_half_name;
+        }
+        return $this->get_table_name();
+    }
+
+    /**
      *  @fn get_foreign_key_name
      *  @short Returns the name of the foreign key for this class.
      *  @details This method returns the name of the column to lookup when considering relations

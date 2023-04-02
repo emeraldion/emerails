@@ -29,6 +29,28 @@ class Engine extends ActiveRecord
 
 class CocheTest extends UnitTest
 {
+    public function test_get_table_name()
+    {
+        $e = new Engine();
+
+        $this->assertEquals('motores', $e->get_table_name());
+
+        $c = new Car();
+
+        $this->assertEquals('coches', $c->get_table_name());
+    }
+
+    public function test_get_relationship_table_half_name()
+    {
+        $e = new Engine();
+
+        $this->assertEquals('motores', $e->get_relationship_table_half_name());
+
+        $c = new Car();
+
+        $this->assertEquals('coches', $c->get_relationship_table_half_name());
+    }
+
     public function test_correct_member_names_by_class()
     {
         $car = new Car();

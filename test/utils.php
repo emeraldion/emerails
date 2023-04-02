@@ -66,4 +66,11 @@ class Athlete extends ActiveRecord
 {
 }
 
+class Runner extends Athlete
+{
+    protected $table_name = 'athletes';
+
+    protected $relationship_table_half_name = 'runners';
+}
+
 ?>
