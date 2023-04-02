@@ -255,8 +255,8 @@ class Relationship
                     $other_classname = $other_parts[count($other_parts) - 1];
 
                     $table_names = array(
-                        (new $classname())->get_table_name(),
-                        (new $other_classname())->get_table_name()
+                        (new $classname())->get_relationship_table_half_name(),
+                        (new $other_classname())->get_relationship_table_half_name()
                     );
                     sort($table_names);
 

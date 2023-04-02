@@ -442,9 +442,10 @@ abstract class ActiveRecord
             $peerclass = $class_or_table_name;
             $peer = new $peerclass();
             $table_name = $peer->get_table_name();
+            $relationship_table_half_name = $peer->get_relationship_table_half_name();
         } catch (Throwable $t) {
             // Assume table name and infer class name
-            $table_name = $class_or_table_name;
+            $relationship_table_half_name = $table_name = $class_or_table_name;
             $peerclass = table_name_to_class_name($table_name);
             $peer = new $peerclass();
             trigger_error(
@@ -465,9 +466,9 @@ abstract class ActiveRecord
         // By convention, relation table name is the union of
         // the two member tables' names joined by an underscore
         // in alphabetical order
-        $table_names = array($table_name, $this->get_table_name());
-        sort($table_names);
-        $relation_table = implode('_', $table_names);
+        $half_table_names = array($relationship_table_half_name, $this->get_relationship_table_half_name());
+        sort($half_table_names);
+        $relation_table = implode('_', $half_table_names);
 
         $conn->prepare(
             "SELECT `{2}`.*, `{1}`.* FROM `{1}` JOIN `{2}` ON `{1}`.`{3}` = `{2}`.`{4}` WHERE (`{1}`.`{5}` = '{6}' AND " .
