@@ -1106,6 +1106,30 @@ abstract class ActiveRecord
             );
     }
 
+    /**
+     * @fn as($superclass)
+     * @short Poses as one of the superclasses
+     * @details Call this method to pose an instance of this class as a superclass.
+     * The method throws if <tt>$superclass</tt> is not a valid superclass.
+     * @param $superclass The superclass
+     */
+    public function as($superclass)
+    {
+        if (is_subclass_of(get_class($this), $superclass)) {
+            return new $superclass($this->values);
+        }
+        trigger_error(
+            sprintf(
+                '[%s::%s] Attempted to cast an instance of %s to %s but it is not a valid superclass.',
+                get_class($this),
+                __FUNCTION__,
+                get_class($this),
+                $superclass
+            ),
+            E_USER_ERROR
+        );
+    }
+
     /*
         function __call($method, $args)
         {

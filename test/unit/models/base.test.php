@@ -1156,5 +1156,29 @@ EOT
 
         Config::set('OBJECT_POOL_ENABLED', $enabled);
     }
+
+    public function test_as_valid_superclass()
+    {
+        $r = new Runner();
+
+        $this->assertEquals('Runner', get_class($r));
+
+        $this->assertEquals('Athlete', get_class($r->as(Athlete::class)));
+    }
+
+    public function test_as_invalid_superclass()
+    {
+        $r = new Runner();
+
+        $this->assertEquals('Runner', get_class($r));
+
+        $this->expectError();
+        $this->expectErrorMessage(
+            '[Runner::as] Attempted to cast an instance of Runner to TestWidget but it is not a valid superclass.'
+        );
+
+        // Triggers
+        $r->as(TestWidget::class);
+    }
 }
 ?>
