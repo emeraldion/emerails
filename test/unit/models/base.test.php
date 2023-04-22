@@ -426,7 +426,6 @@ class ActiveRecordTest extends UnitTest
         $this->assertTrue(is_array($widgets));
         foreach ($widgets as $widget) {
             $this->assertNotNull($widget->test_model);
-            // var_dump($widget->test_model);
         }
     }
 

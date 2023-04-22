@@ -57,8 +57,6 @@ class JSLocalizationHelper
     {
         $strings_file = sprintf('%sassets/strings/js/localizable-%s.strings', self::$base_dir, $lang);
 
-        // print_r($strings_file);
-
         if (file_exists($strings_file)) {
             return file_get_contents($strings_file);
         } elseif ($lang != 'en') {

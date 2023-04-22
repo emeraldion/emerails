@@ -477,10 +477,8 @@ abstract class ActiveRecord
             $joined_obj = new $joined_classname();
 
             if ($joined_obj->has_column($peer_fkey)) {
-                // $query .= ' JOIN `{$joined_obj->get_table_name()}` ON `{$table_name}`.`{$peer_pk}` = `{$joined_obj->get_table_name()}`.`{$peer_fkey}`';
                 $query .= ' JOIN `{9}` ON `{2}`.`{4}` = `{9}`.`{3}`';
             } elseif ($peer->has_column($joined_obj->get_foreign_key_name())) {
-                // $query .= ' JOIN `{$joined_obj->get_table_name()}` ON `{$table_name}`.`{$joined_obj->get_foreign_key_name()}` = `{$joined_obj->get_table_name()}`.`{$joined_obj->get_primary_key()}`';
                 $query .= ' JOIN `{9}` ON `{2}`.`{11}` = `{9}`.`{10}`';
             }
         } else {
