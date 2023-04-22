@@ -470,21 +470,43 @@ abstract class ActiveRecord
         sort($half_table_names);
         $relation_table = implode('_', $half_table_names);
 
+        $query = 'SELECT `{2}`.*, `{1}`.* FROM `{1}` JOIN `{2}` ON `{1}`.`{3}` = `{2}`.`{4}`';
+        if (!empty($params['join'])) {
+            $has_join = true;
+            $joined_classname = $params['join'];
+            $joined_obj = new $joined_classname();
+
+            if ($joined_obj->has_column($peer_fkey)) {
+                // $query .= ' JOIN `{$joined_obj->get_table_name()}` ON `{$table_name}`.`{$peer_pk}` = `{$joined_obj->get_table_name()}`.`{$peer_fkey}`';
+                $query .= ' JOIN `{9}` ON `{2}`.`{4}` = `{9}`.`{3}`';
+            } elseif ($peer->has_column($joined_obj->get_foreign_key_name())) {
+                // $query .= ' JOIN `{$joined_obj->get_table_name()}` ON `{$table_name}`.`{$joined_obj->get_foreign_key_name()}` = `{$joined_obj->get_table_name()}`.`{$joined_obj->get_primary_key()}`';
+                $query .= ' JOIN `{9}` ON `{2}`.`{11}` = `{9}`.`{10}`';
+            }
+        } else {
+            $has_join = false;
+        }
+
+        $query .=
+            " WHERE (`{1}`.`{5}` = '{6}' AND " .
+            ($params['where_clause'] ?? '1') .
+            ') ' .
+            'ORDER BY ' .
+            ($params['order_by'] ?? '`{5}` ASC') .
+            ' LIMIT {7},{8}';
         $conn->prepare(
-            "SELECT `{2}`.*, `{1}`.* FROM `{1}` JOIN `{2}` ON `{1}`.`{3}` = `{2}`.`{4}` WHERE (`{1}`.`{5}` = '{6}' AND " .
-                ($params['where_clause'] ?? '1') .
-                ') ' .
-                'ORDER BY ' .
-                ($params['order_by'] ?? '`{5}` ASC') .
-                ' LIMIT {7},{8}',
-            $relation_table,
-            $table_name,
-            $peer_fkey,
-            $peer_pk,
-            $fkey,
-            $this->values[$pkey],
-            $params['start'] ?? 0,
-            $params['limit'] ?? 9999
+            $query,
+            $relation_table, // 1
+            $table_name, // 2
+            $peer_fkey, // 3
+            $peer_pk, // 4
+            $fkey, // 5
+            $this->values[$pkey], // 6
+            $params['start'] ?? 0, // 7
+            $params['limit'] ?? 9999, // 8
+            $has_join ? $joined_obj->get_table_name() : null, // 9
+            $has_join ? $joined_obj->get_primary_key() : null, // 10
+            $has_join ? $joined_obj->get_foreign_key_name() : null // 11
         );
         $conn->exec();
 
@@ -652,7 +674,6 @@ abstract class ActiveRecord
 
         if (!empty($params['join'])) {
             $has_join = true;
-            // var_dump($params);
             $joined_classname = $params['join'];
             $joined_obj = new $joined_classname();
             if ($joined_obj->has_column($this->get_foreign_key_name())) {
