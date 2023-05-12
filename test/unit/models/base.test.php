@@ -444,6 +444,68 @@ class ActiveRecordTest extends UnitTest
         }
     }
 
+    public function test_find_one_no_args()
+    {
+        $instance_factory = new TestModel();
+        $instance = $instance_factory->find_one();
+
+        $this->assertNotNull($instance);
+        $this->assertEquals('foo', $instance->name);
+    }
+
+    public function test_find_one_where_clause()
+    {
+        $instance_factory = new TestModel();
+        $instance = $instance_factory->find_one(array(
+            'where_clause' => "`name` = 'foo'"
+        ));
+
+        $this->assertNotNull($instance);
+        $this->assertEquals('foo', $instance->name);
+
+        $instance = $instance_factory->find_one(array(
+            'where_clause' => "`name` = 'bar'"
+        ));
+
+        $this->assertNotNull($instance);
+        $this->assertEquals('bar', $instance->name);
+    }
+
+    public function test_find_one_where_clause_limit_is_ignored()
+    {
+        $instance_factory = new TestModel();
+        $instance = $instance_factory->find_one(array(
+            'where_clause' => "`name` = 'foo'",
+            'limit' => 999
+        ));
+
+        $this->assertNotNull($instance);
+        $this->assertEquals('foo', $instance->name);
+    }
+
+    public function test_find_one_with_join()
+    {
+        $widget_factory = new TestWidget();
+        $widget = $widget_factory->find_one(array(
+            'join' => TestModel::class
+        ));
+        $this->assertNotNull($widget);
+        $this->assertNotNull($widget->test_model);
+    }
+
+    public function test_find_one_with_join_reverse()
+    {
+        $model_factory = new TestModel();
+        $model = $model_factory->find_one(array(
+            'join' => TestWidget::class
+        ));
+        $this->assertNotNull($model);
+        $this->assertNotNull($model->test_widget);
+        $this->assertTrue(isset($model->id));
+        $this->assertTrue(isset($model->name));
+        $this->assertTrue(isset($model->created_at));
+    }
+
     public function test_count_all_no_args()
     {
         $instance_factory = new TestModel();

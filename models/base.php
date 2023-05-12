@@ -649,6 +649,8 @@ abstract class ActiveRecord
      *  @li <tt>order_by</tt> You can express a custom SQL ORDER BY expression here (e.g. `date` DESC)
      *  @li <tt>limit</tt> You can express a custom limit for the returned results.
      *  @li <tt>start</tt> You can express a custom start for the returned results.
+     *  Additionally, the caller can pass a class name as value of the <tt>join</tt> key, in order to perform a JOIN query
+     *  to return an associated model object. Currently, only 1:1 relationships are supported.
      *  @param params An array of parameters for the underlying SQL query.
      */
     function find_all($params = array())
@@ -724,12 +726,36 @@ abstract class ActiveRecord
     }
 
     /**
+     *  @fn find_one($params)
+     *  @short Returns a single model object that satisfies the requirements expressed in the <tt>params</tt> argument.
+     *  @details This method lets you find a single object that satisfies a custom set of requirements, which you
+     *  can express by setting the following keys of the <tt>params</tt> argument:
+     *  @li <tt>where_clause</tt> You can express a custom SQL WHERE expression here (e.g. `date` < '2008-05-01')
+     *  @li <tt>order_by</tt> You can express a custom SQL ORDER BY expression here (e.g. `date` DESC)
+     *  @li <tt>start</tt> You can express a custom start for the returned results.
+     *  This method behaves like <tt>find_all()</tt>, except the return value is a single object instead of an array,
+     *  and the <tt>limit</tt> key of the <tt>params</tt> argument is implicitly set to 1.
+     *  If no model object satisfies the requirements, this method returns null.
+     *  @param params An array of parameters for the underlying SQL query.
+     *  @return ret Model object satisfying the requirements, or null
+     *  @see find_all
+     */
+    function find_one($params = array())
+    {
+        if ($ret = $this->find_all(array_merge($params, array('limit' => 1)))) {
+            return first($ret);
+        }
+        return null;
+    }
+
+    /**
      *  @fn find($id, $classname)
      *  @short Returns an object whose primary key value is <tt>id</tt>.
      *  @details This method historically accepts a second argument to explicitly reference the name of the ActiveRecord subclass in order to
      *  create the right object with older PHP versions. This is now deprecated as no longer necessary.
      *  @param id The value of the primary key.
      *  @param classname The name of the subclass to apply this static method to.
+     *  @return ret Model object with the requested primary key, or null
      */
     static function find($id, $classname = 'ActiveRecord')
     {
@@ -803,6 +829,7 @@ abstract class ActiveRecord
      *  can express by setting the following keys of the <tt>params</tt> argument:
      *  @li <tt>where_clause</tt> You can express a custom SQL WHERE expression here (e.g. `date` < '2008-05-01')
      *  @param params An array of parameters for the underlying SQL query.
+     *  @return ret Count of model objects satisfying the requirements
      */
     public function count_all($params = array())
     {
