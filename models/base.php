@@ -409,18 +409,19 @@ abstract class ActiveRecord
         }
         $children = $child->find_all($params);
         $child_pk = $child->get_primary_key();
+        $child_member_name = isset($params['as']) ? $params['as'] : pluralize(camel_case_to_joined_lower($childclass));
         if (is_array($children) && count($children) > 0) {
             $dict = array();
             foreach ($children as $child) {
                 $child->values[camel_case_to_joined_lower(get_class($this))] = $this;
                 $dict[$child->$child_pk] = $child;
             }
-            $this->values[pluralize(camel_case_to_joined_lower($childclass))] = $dict;
+            $this->values[$child_member_name] = $dict;
 
             return Relationship::one_to_many(get_called_class(), $childclass)->among(array($this), array_values($dict));
         } else {
             // Unset previously set value
-            unset($this->values[pluralize(camel_case_to_joined_lower($childclass))]);
+            unset($this->values[$child_member_name]);
         }
         return false;
     }
@@ -491,7 +492,7 @@ abstract class ActiveRecord
             ') ' .
             'ORDER BY ' .
             ($params['order_by'] ?? '`{5}` ASC') .
-            ' LIMIT {7},{8}';
+            ' LIMIT {7}, {8}';
         $conn->prepare(
             $query,
             $relation_table, // 1
@@ -509,8 +510,9 @@ abstract class ActiveRecord
         $conn->exec();
 
         $ret = false;
+        $peer_member_name = isset($params['as']) ? $params['as'] : pluralize(camel_case_to_joined_lower($peerclass));
         if ($conn->num_rows() > 0) {
-            $this->values[$table_name] = array();
+            $this->values[$peer_member_name] = array();
             $dict = array();
             while ($row = $conn->fetch_assoc()) {
                 $peer_row = $row;
@@ -518,7 +520,7 @@ abstract class ActiveRecord
                 $peer_row[$peer_pk] = $row[$peer_fkey];
 
                 $peer = new $peerclass($peer_row);
-                $this->values[pluralize(camel_case_to_joined_lower($peerclass))][$peer->$peer_pk] = $peer;
+                $this->values[$peer_member_name][$peer->$peer_pk] = $peer;
                 // FIXME: this is not reflecting the real relationship
                 $peer->values[pluralize(camel_case_to_joined_lower(get_class($this)))] = array($this->$pkey => $this);
 
@@ -538,12 +540,12 @@ abstract class ActiveRecord
 
             $ret = Relationship::many_to_many(get_called_class(), $peerclass)->among(
                 array($this),
-                array_values($this->values[pluralize(camel_case_to_joined_lower($peerclass))]),
+                array_values($this->values[$peer_member_name]),
                 array($this->values[$pkey] => $dict)
             );
         } else {
             // Unset previously set value
-            unset($this->values[pluralize(camel_case_to_joined_lower($peerclass))]);
+            unset($this->values[$peer_member_name]);
         }
         $conn->free_result();
 
