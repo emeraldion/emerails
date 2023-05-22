@@ -715,6 +715,25 @@ class ActiveRecordTest extends UnitTest
         $this->assertEquals(1, count($instance->test_versions));
     }
 
+    public function test_has_many_with_as_param()
+    {
+        $instance = new TestWidget();
+        $ret = $instance->find_by_id(1);
+        $this->assertTrue($ret);
+        $ret = $instance->has_many(TestVersion::class, array('as' => 'versions'));
+        $this->assertIsArray($ret);
+        $this->assertNotNull($instance->versions);
+        $this->assertEquals(4, count($instance->versions));
+
+        $instance = new TestWidget();
+        $ret = $instance->find_by_id(2);
+        $this->assertTrue($ret);
+        $ret = $instance->has_many(TestVersion::class, array('as' => 'versions'));
+        $this->assertIsArray($ret);
+        $this->assertNotNull($instance->versions);
+        $this->assertEquals(1, count($instance->versions));
+    }
+
     public function test_has_many_by_class_name()
     {
         $instance = new TestWidget();
@@ -829,6 +848,59 @@ class ActiveRecordTest extends UnitTest
         $this->assertNotNull($instance->test_groups);
         $this->assertEquals(2, count($instance->test_groups));
         foreach ($instance->test_groups as $test_group) {
+            $this->assertTrue(in_array($instance, $test_group->test_models));
+            $this->assertTrue(isset($test_group->count));
+            switch ($test_group->id) {
+                case 1:
+                    $this->assertEquals(3, $test_group->count);
+                    break;
+                case 2:
+                    $this->assertEquals(0, $test_group->count);
+                    break;
+            }
+        }
+    }
+
+    public function test_has_and_belongs_to_many_with_as_param()
+    {
+        /*
+         *  +----------+----------+-------+
+         *  | model_id | group_id | count |
+         *  +----------+----------+-------+
+         *  |        2 |        1 |     3 |
+         *  |        1 |        2 |     1 |
+         *  |        2 |        2 |     0 |
+         *  +----------+----------+-------+
+         */
+        $instance = new TestModel();
+        $ret = $instance->find_by_id(1);
+        $this->assertTrue($ret);
+        $ret = $instance->has_and_belongs_to_many(TestGroup::class, array(
+            'as' => 'groups'
+        ));
+        $this->assertIsArray($ret);
+        $this->assertNotNull($instance->groups);
+        $this->assertEquals(1, count($instance->groups));
+        foreach ($instance->groups as $test_group) {
+            $this->assertTrue(in_array($instance, $test_group->test_models));
+            $this->assertTrue(isset($test_group->count));
+            switch ($test_group->id) {
+                case 2:
+                    $this->assertEquals(1, $test_group->count);
+                    break;
+            }
+        }
+
+        $instance = new TestModel();
+        $ret = $instance->find_by_id(2);
+        $this->assertTrue($ret);
+        $ret = $instance->has_and_belongs_to_many(TestGroup::class, array(
+            'as' => 'groups'
+        ));
+        $this->assertIsArray($ret);
+        $this->assertNotNull($instance->groups);
+        $this->assertEquals(2, count($instance->groups));
+        foreach ($instance->groups as $test_group) {
             $this->assertTrue(in_array($instance, $test_group->test_models));
             $this->assertTrue(isset($test_group->count));
             switch ($test_group->id) {
