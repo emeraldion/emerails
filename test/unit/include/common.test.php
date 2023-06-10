@@ -16,6 +16,14 @@ require_once __DIR__ . '/../base_test.php';
 
 class CommonTest extends UnitTest
 {
+    /**
+     * @before
+     */
+    function setUp(): void
+    {
+        reset_irregular_nouns();
+    }
+
     public function test_pluralize()
     {
         $this->assertEquals('men', pluralize('man'));
@@ -56,6 +64,28 @@ class CommonTest extends UnitTest
         $this->assertEquals('zoo', singularize('zoos'));
         $this->assertEquals('video', singularize('videos'));
         $this->assertEquals('portfolio', singularize('portfolios'));
+    }
+
+    public function test_pluralize_extra()
+    {
+        $this->assertEquals('cedolas', pluralize('cedola'));
+        $this->assertEquals('uomoes', pluralize('uomo'));
+
+        add_irregular_nouns(array('cedola' => 'cedole', 'uomo' => 'uomini'));
+
+        $this->assertEquals('cedole', pluralize('cedola'));
+        $this->assertEquals('uomini', pluralize('uomo'));
+    }
+
+    public function test_singularize_extra()
+    {
+        $this->assertEquals('cedole', singularize('cedole'));
+        $this->assertEquals('uomini', singularize('uomini'));
+
+        add_irregular_nouns(array('cedola' => 'cedole', 'uomo' => 'uomini'));
+
+        $this->assertEquals('cedola', singularize('cedole'));
+        $this->assertEquals('uomo', singularize('uomini'));
     }
 
     public function test_ends_with()

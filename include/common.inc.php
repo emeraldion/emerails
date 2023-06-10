@@ -12,14 +12,17 @@
  */
 
 global $irregular_nouns;
+global $default_irregular_nouns;
 
-$irregular_nouns = array(
+$default_irregular_nouns = array(
     'person' => 'people',
     'child' => 'children',
     'man' => 'men',
     'woman' => 'women',
     'portfolio' => 'portfolios'
 );
+
+$irregular_nouns = $default_irregular_nouns;
 
 function default_to($value, $default)
 {
@@ -83,6 +86,23 @@ function singularize($term)
         return substr($term, 0, strlen($term) - 1);
     }
     return $term;
+}
+
+function add_irregular_nouns($values)
+{
+    global $irregular_nouns;
+
+    foreach ($values as $singular => $plural) {
+        $irregular_nouns[$singular] = $plural;
+    }
+}
+
+function reset_irregular_nouns()
+{
+    global $irregular_nouns;
+    global $default_irregular_nouns;
+
+    $irregular_nouns = $default_irregular_nouns;
 }
 
 function ends_with($term, $suffix)
