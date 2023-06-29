@@ -12,6 +12,7 @@ use Emeraldion\EmeRails\Config;
 Config::set('DEV_MODE', default_to(getenv('EMERAILS_DEV_MODE'), true));
 Config::set('ERROR_REPORTING', default_to(getenv('EMERAILS_ERROR_REPORTING'), true));
 Config::set('APPLICATION_ROOT', default_to(getenv('EMERAILS_APPLICATION_ROOT'), '/'));
+Config::set('LANGUAGE_COOKIE', default_to(getenv('EMERAILS_LANGUAGE_COOKIE'), 'hl'));
 Config::set('OBJECT_POOL_ENABLED', default_to(getenv('EMERAILS_OBJECT_POOL_ENABLED'), 'false'));
 
 ?>

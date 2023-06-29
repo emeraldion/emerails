@@ -11,6 +11,8 @@
  * @format
  */
 
+use Emeraldion\EmeRails\Config;
+
 class JSLocalizationHelper
 {
     /**
@@ -74,7 +76,7 @@ class JSLocalizationHelper
     {
         $table = array();
 
-        $js_strings = self::load_strings_file(@$_COOKIE['hl'] /* GLOBAL */);
+        $js_strings = self::load_strings_file(@$_COOKIE[Config::get('LANGUAGE_COOKIE')] /* GLOBAL */);
         $table = array_merge($table, eval("return {$js_strings}"));
 
         self::$strings_table = $table;

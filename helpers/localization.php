@@ -94,7 +94,7 @@ class Localization
     {
         $table = self::$strings_table;
 
-        $local_strings = self::load_strings_file(@$_COOKIE['hl'], $controller);
+        $local_strings = self::load_strings_file(@$_COOKIE[Config::get('LANGUAGE_COOKIE')], $controller);
         $table = array_merge(self::$strings_table ?? array(), eval("return {$local_strings};"));
 
         self::$strings_table = $table;
@@ -142,11 +142,11 @@ class Localization
     {
         $table = array();
 
-        $global_strings = self::load_strings_file(@$_COOKIE['hl'] /* GLOBAL */);
+        $global_strings = self::load_strings_file(@$_COOKIE[Config::get('LANGUAGE_COOKIE')] /* GLOBAL */);
         $table = array_merge($table, eval("return {$global_strings}"));
         if (isset($_REQUEST['controller'])) {
             $controller = $_REQUEST['controller'];
-            $local_strings = self::load_strings_file(@$_COOKIE['hl'], $controller);
+            $local_strings = self::load_strings_file(@$_COOKIE[Config::get('LANGUAGE_COOKIE')], $controller);
             $table = array_merge($table, eval("return {$local_strings}"));
         }
 
