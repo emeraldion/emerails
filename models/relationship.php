@@ -213,16 +213,55 @@ class Relationship
         return in_array($key, $columns);
     }
 
+    /**
+     *  @fn get_column_names()
+     *  @short Returns a list of column names in the bound table, equivalent to the object's fields
+     */
     public function get_column_names()
     {
         $relationship_name = 'r_' . $this->get_table_name();
         return self::_get_columns($relationship_name);
     }
 
+    /**
+     *  @fn get_column_names_for_query($with_prefix = false)
+     *  @short Returns the list of column names for a SELECT query
+     *  @details This method can be used to return a list of columns for a query. Additionally, the caller
+     *  can request the column names to be aliased for multiplexing in a multi-table query, e.g. a JOIN.
+     *  @param with_prefix Set to true to create aliases with the table name as a prefix
+     */
+    public function get_column_names_for_query($with_prefix = false)
+    {
+        $columns = array_map(function ($c) use ($with_prefix) {
+            return $with_prefix
+                ? sprintf('`%s`.`%s` AS `%s:%s`', $this->get_table_name(), $c, $this->get_table_name(), $c)
+                : sprintf('`%s`.`%s`', $this->get_table_name(), $c);
+        }, $this->get_column_names());
+        return $columns;
+    }
+
     public function get_column_info()
     {
         $relationship_name = 'r_' . $this->get_table_name();
         return self::_get_column_info($relationship_name);
+    }
+
+    /**
+     *  @fn demux_column_names($columns)
+     *  @short Demuxes a list of prefixed columns to intercept values of interest
+     *  @details This method can be used to filter a list of columns returned by a multi-table query, capturing
+     *  only those of interest to the receiving object.
+     *  @param columns The list of columns to filter
+     */
+    public function demux_column_names($columns)
+    {
+        $ret = array();
+        foreach ($columns as $key => $val) {
+            if (strpos($key, $this->get_table_name()) === 0) {
+                $ret[last(explode(':', $key))] = $val;
+            }
+        }
+        return $ret;
     }
 
     /**

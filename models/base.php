@@ -311,7 +311,7 @@ abstract class ActiveRecord
         $ret = array();
         foreach ($columns as $key => $val) {
             if (strpos($key, $this->get_table_name()) === 0) {
-                $ret[explode(':', $key)[1]] = $val;
+                $ret[last(explode(':', $key))] = $val;
             }
         }
         return $ret;
@@ -443,10 +443,9 @@ abstract class ActiveRecord
             $peerclass = $class_or_table_name;
             $peer = new $peerclass();
             $table_name = $peer->get_table_name();
-            $relationship_table_half_name = $peer->get_relationship_table_half_name();
         } catch (Throwable $t) {
             // Assume table name and infer class name
-            $relationship_table_half_name = $table_name = $class_or_table_name;
+            $table_name = $class_or_table_name;
             $peerclass = table_name_to_class_name($table_name);
             $peer = new $peerclass();
             trigger_error(
@@ -464,14 +463,10 @@ abstract class ActiveRecord
         $peer_pk = $peer->get_primary_key();
         $peer_fkey = $peer->get_foreign_key_name();
 
-        // By convention, relation table name is the union of
-        // the two member tables' names joined by an underscore
-        // in alphabetical order
-        $half_table_names = array($relationship_table_half_name, $this->get_relationship_table_half_name());
-        sort($half_table_names);
-        $relation_table = implode('_', $half_table_names);
+        $r = Relationship::many_to_many(get_called_class(), $peerclass);
+        $relation_table = $r->get_table_name();
 
-        $query = 'SELECT `{2}`.*, `{1}`.* FROM `{1}` JOIN `{2}` ON `{1}`.`{3}` = `{2}`.`{4}`';
+        $query = 'SELECT `{2}`.*, `{1}`.*, {12} FROM `{1}` JOIN `{2}` ON `{1}`.`{3}` = `{2}`.`{4}`';
         if (!empty($params['join'])) {
             $has_join = true;
             $joined_classname = $params['join'];
@@ -505,7 +500,8 @@ abstract class ActiveRecord
             $params['limit'] ?? 9999, // 8
             $has_join ? $joined_obj->get_table_name() : null, // 9
             $has_join ? $joined_obj->get_primary_key() : null, // 10
-            $has_join ? $joined_obj->get_foreign_key_name() : null // 11
+            $has_join ? $joined_obj->get_foreign_key_name() : null, // 11
+            implode(',', $r->get_column_names_for_query(true)) // 12
         );
         $conn->exec();
 
@@ -523,6 +519,9 @@ abstract class ActiveRecord
                 $this->values[$peer_member_name][$peer->$peer_pk] = $peer;
                 // FIXME: this is not reflecting the real relationship
                 $peer->values[pluralize(camel_case_to_joined_lower(get_class($this)))] = array($this->$pkey => $this);
+
+                // Demux relationship columns
+                $row = $r->demux_column_names($row);
 
                 // This is the new way to access relationship attributes
                 $dict[$row[$peer_fkey]] = $row;

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:8889
--- Generation Time: Dec 03, 2022 at 01:13 AM
+-- Generation Time: Jul 04, 2023 at 01:20 PM
 -- Server version: 5.7.34
 -- PHP Version: 7.4.21
 
@@ -88,10 +88,10 @@ CREATE TABLE `test_groups` (
 -- Dumping data for table `test_groups`
 --
 
-INSERT INTO `test_groups` (`id`) VALUES
-(1),
-(2),
-(3);
+INSERT INTO `test_groups` (`id`, `created_at`) VALUES
+(1, '2023-01-05 22:21:48'),
+(2, '2023-01-05 22:21:48'),
+(3, '2023-01-05 22:21:48');
 
 -- --------------------------------------------------------
 
@@ -101,6 +101,7 @@ INSERT INTO `test_groups` (`id`) VALUES
 
 DROP TABLE IF EXISTS `test_groups_test_models`;
 CREATE TABLE `test_groups_test_models` (
+  `id` int(11) NOT NULL,
   `test_model_id` int(11) NOT NULL,
   `test_group_id` int(11) NOT NULL,
   `count` int(11) NOT NULL DEFAULT '0',
@@ -112,10 +113,10 @@ CREATE TABLE `test_groups_test_models` (
 -- Dumping data for table `test_groups_test_models`
 --
 
-INSERT INTO `test_groups_test_models` (`test_model_id`, `test_group_id`, `count`) VALUES
-(2, 1, 3),
-(1, 2, 1),
-(2, 2, 0);
+INSERT INTO `test_groups_test_models` (`id`, `test_model_id`, `test_group_id`, `count`, `color`, `created_at`) VALUES
+(1, 2, 1, 3, NULL, '2023-01-05 22:21:48'),
+(2, 1, 2, 1, NULL, '2023-01-05 22:21:48'),
+(3, 2, 2, 0, NULL, '2023-01-05 22:21:48');
 
 -- --------------------------------------------------------
 
@@ -134,9 +135,9 @@ CREATE TABLE `test_models` (
 -- Dumping data for table `test_models`
 --
 
-INSERT INTO `test_models` (`id`, `name`) VALUES
-(1, 'foo'),
-(2, 'bar');
+INSERT INTO `test_models` (`id`, `name`, `created_at`) VALUES
+(1, 'foo', '2023-01-05 22:21:48'),
+(2, 'bar', '2023-01-05 22:21:48');
 
 -- --------------------------------------------------------
 
@@ -156,12 +157,12 @@ CREATE TABLE `test_versions` (
 -- Dumping data for table `test_versions`
 --
 
-INSERT INTO `test_versions` (`id`, `test_widget_id`, `version`) VALUES
-(1, 1, '1.0'),
-(2, 1, '1.1'),
-(3, 1, '1.2'),
-(4, 1, '2.0'),
-(5, 2, '0.1');
+INSERT INTO `test_versions` (`id`, `test_widget_id`, `version`, `created_at`) VALUES
+(1, 1, '1.0', '2023-01-05 22:21:48'),
+(2, 1, '1.1', '2023-01-05 22:21:48'),
+(3, 1, '1.2', '2023-01-05 22:21:48'),
+(4, 1, '2.0', '2023-01-05 22:21:48'),
+(5, 2, '0.1', '2023-01-05 22:21:48');
 
 -- --------------------------------------------------------
 
@@ -181,10 +182,10 @@ CREATE TABLE `test_widgets` (
 -- Dumping data for table `test_widgets`
 --
 
-INSERT INTO `test_widgets` (`id`, `test_model_id`, `color`) VALUES
-(1, 1, 'red'),
-(2, 2, 'blue'),
-(3, 2, 'green');
+INSERT INTO `test_widgets` (`id`, `test_model_id`, `color`, `created_at`) VALUES
+(1, 1, 'red', '2023-01-05 22:21:48'),
+(2, 2, 'blue', '2023-01-05 22:21:48'),
+(3, 2, 'green', '2023-01-05 22:21:48');
 
 -- --------------------------------------------------------
 
@@ -244,6 +245,7 @@ ALTER TABLE `test_groups`
 -- Indexes for table `test_groups_test_models`
 --
 ALTER TABLE `test_groups_test_models`
+  ADD PRIMARY KEY (`id`),
   ADD KEY `test_group_id` (`test_group_id`,`test_model_id`);
 
 --
@@ -288,7 +290,7 @@ ALTER TABLE `user_profiles`
 -- AUTO_INCREMENT for table `athletes`
 --
 ALTER TABLE `athletes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=63;
 
 --
 -- AUTO_INCREMENT for table `coches`
@@ -306,35 +308,41 @@ ALTER TABLE `motores`
 -- AUTO_INCREMENT for table `test_groups`
 --
 ALTER TABLE `test_groups`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=101;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=407;
+
+--
+-- AUTO_INCREMENT for table `test_groups_test_models`
+--
+ALTER TABLE `test_groups_test_models`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `test_models`
 --
 ALTER TABLE `test_models`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=964;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3785;
 
 --
 -- AUTO_INCREMENT for table `test_versions`
 --
 ALTER TABLE `test_versions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=78;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=285;
 
 --
 -- AUTO_INCREMENT for table `test_widgets`
 --
 ALTER TABLE `test_widgets`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=68;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=252;
 
 --
 -- AUTO_INCREMENT for table `user_accounts`
 --
 ALTER TABLE `user_accounts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT for table `user_profiles`
 --
 ALTER TABLE `user_profiles`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=125;
 COMMIT;

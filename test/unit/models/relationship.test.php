@@ -82,6 +82,53 @@ class RelationshipTest extends UnitTest
         $this->assertEquals('test_groups_test_models', $r->get_table_name());
     }
 
+    public function test_get_column_names_for_query()
+    {
+        $r = Relationship::many_to_many(TestGroup::class, TestModel::class);
+        $this->assertEquals(
+            array(
+                '`test_groups_test_models`.`id`',
+                '`test_groups_test_models`.`test_model_id`',
+                '`test_groups_test_models`.`test_group_id`',
+                '`test_groups_test_models`.`count`',
+                '`test_groups_test_models`.`color`',
+                '`test_groups_test_models`.`created_at`'
+            ),
+            $r->get_column_names_for_query()
+        );
+    }
+
+    public function test_get_column_names_for_query_with_prefix()
+    {
+        $r = Relationship::many_to_many(TestGroup::class, TestModel::class);
+        $this->assertEquals(
+            array(
+                '`test_groups_test_models`.`id` AS `test_groups_test_models:id`',
+                '`test_groups_test_models`.`test_model_id` AS `test_groups_test_models:test_model_id`',
+                '`test_groups_test_models`.`test_group_id` AS `test_groups_test_models:test_group_id`',
+                '`test_groups_test_models`.`count` AS `test_groups_test_models:count`',
+                '`test_groups_test_models`.`color` AS `test_groups_test_models:color`',
+                '`test_groups_test_models`.`created_at` AS `test_groups_test_models:created_at`'
+            ),
+            $r->get_column_names_for_query(true)
+        );
+    }
+
+    public function test_demux_column_names()
+    {
+        $row = array(
+            'test_groups_test_models:id' => 123
+        );
+        $r = Relationship::many_to_many(TestGroup::class, TestModel::class);
+
+        $this->assertEquals(
+            array(
+                'id' => 123
+            ),
+            $r->demux_column_names($row)
+        );
+    }
+
     public function test_between_wrong_class()
     {
         $this->expectException(Exception::class);
