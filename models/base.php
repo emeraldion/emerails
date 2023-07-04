@@ -466,7 +466,8 @@ abstract class ActiveRecord
         $r = Relationship::many_to_many(get_called_class(), $peerclass);
         $relation_table = $r->get_table_name();
 
-        $query = 'SELECT `{2}`.*, `{1}`.*, {12} FROM `{1}` JOIN `{2}` ON `{1}`.`{3}` = `{2}`.`{4}`';
+        // $query = 'SELECT `{2}`.*, `{1}`.*, {13} {12} FROM `{1}` JOIN `{2}` ON `{1}`.`{3}` = `{2}`.`{4}`';
+        $query = 'SELECT `{2}`.*, {13} {12} FROM `{1}` JOIN `{2}` ON `{1}`.`{3}` = `{2}`.`{4}`';
         if (!empty($params['join'])) {
             $has_join = true;
             $joined_classname = $params['join'];
@@ -501,7 +502,8 @@ abstract class ActiveRecord
             $has_join ? $joined_obj->get_table_name() : null, // 9
             $has_join ? $joined_obj->get_primary_key() : null, // 10
             $has_join ? $joined_obj->get_foreign_key_name() : null, // 11
-            implode(',', $r->get_column_names_for_query(true)) // 12
+            implode(',', $r->get_column_names_for_query(true)), // 12
+            $has_join ? implode(',', $joined_obj->get_column_names_for_query(true)) . ',' : '' // 13
         );
         $conn->exec();
 
@@ -511,14 +513,20 @@ abstract class ActiveRecord
             $this->values[$peer_member_name] = array();
             $dict = array();
             while ($row = $conn->fetch_assoc()) {
-                $peer_row = $row;
+                $peer_row = $r->demux_column_names($row);
                 // Fixup pkey from fkey
-                $peer_row[$peer_pk] = $row[$peer_fkey];
+                $peer_row[$peer_pk] = $peer_row[$peer_fkey];
 
                 $peer = new $peerclass($peer_row);
                 $this->values[$peer_member_name][$peer->$peer_pk] = $peer;
                 // FIXME: this is not reflecting the real relationship
                 $peer->values[pluralize(camel_case_to_joined_lower(get_class($this)))] = array($this->$pkey => $this);
+
+                if ($has_join) {
+                    $joined_obj = new $joined_classname($joined_obj->demux_column_names($row));
+                    $peer->values[camel_case_to_joined_lower($joined_classname)] = $joined_obj;
+                    $joined_obj->values[camel_case_to_joined_lower($peerclass)] = $peer;
+                }
 
                 // Demux relationship columns
                 $row = $r->demux_column_names($row);
