@@ -466,8 +466,7 @@ abstract class ActiveRecord
         $r = Relationship::many_to_many(get_called_class(), $peerclass);
         $relation_table = $r->get_table_name();
 
-        // $query = 'SELECT `{2}`.*, `{1}`.*, {13} {12} FROM `{1}` JOIN `{2}` ON `{1}`.`{3}` = `{2}`.`{4}`';
-        $query = 'SELECT `{2}`.*, {13} {12} FROM `{1}` JOIN `{2}` ON `{1}`.`{3}` = `{2}`.`{4}`';
+        $query = 'SELECT `{2}`.*, {12} {14} {13} FROM `{1}` JOIN `{2}` ON `{1}`.`{3}` = `{2}`.`{4}`';
         if (!empty($params['join'])) {
             $has_join = true;
             $joined_classname = $params['join'];
@@ -489,6 +488,7 @@ abstract class ActiveRecord
             'ORDER BY ' .
             ($params['order_by'] ?? '`{5}` ASC') .
             ' LIMIT {7}, {8}';
+
         $conn->prepare(
             $query,
             $relation_table, // 1
@@ -502,8 +502,9 @@ abstract class ActiveRecord
             $has_join ? $joined_obj->get_table_name() : null, // 9
             $has_join ? $joined_obj->get_primary_key() : null, // 10
             $has_join ? $joined_obj->get_foreign_key_name() : null, // 11
-            implode(',', $r->get_column_names_for_query(true)), // 12
-            $has_join ? implode(',', $joined_obj->get_column_names_for_query(true)) . ',' : '' // 13
+            implode(',', $peer->get_column_names_for_query(true)), // 12
+            ',' . implode(',', $r->get_column_names_for_query(true)), // 13
+            $has_join ? ',' . implode(',', $joined_obj->get_column_names_for_query(true)) : '' // 14
         );
         $conn->exec();
 

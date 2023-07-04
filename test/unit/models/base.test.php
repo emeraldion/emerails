@@ -1075,7 +1075,7 @@ class ActiveRecordTest extends UnitTest
                 case 2:
                     $this->assertEquals(0, $test_model->count);
                     $this->assertNotNull($test_model->test_widget);
-                    $this->assertEquals('green', $test_model->test_widget->color);
+                    $this->assertEquals('blue', $test_model->test_widget->color);
                     break;
             }
         }
