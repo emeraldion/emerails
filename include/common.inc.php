@@ -203,7 +203,15 @@ function limit_3($val, $a, $b)
  */
 function first(array $array)
 {
-    return count($array) > 0 ? $array[0] : null;
+    return count($array) > 0 ? $array[array_key_first($array)] : null;
+}
+
+/**
+ * @short Returns the last element of $array
+ */
+function last(array $array)
+{
+    return count($array) > 0 ? $array[array_key_last($array)] : null;
 }
 
 /**

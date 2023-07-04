@@ -148,5 +148,29 @@ class CommonTest extends UnitTest
         $this->assertEquals('puppy_id', table_name_to_foreign_key('puppies'));
         $this->assertEquals('tomato_id', table_name_to_foreign_key('tomatoes'));
     }
+
+    public function test_first()
+    {
+        $a = array(1, 2, 3);
+        $this->assertEquals(1, first($a));
+
+        $a = array('a' => 1, 'b' => 2, 'c' => 3);
+        $this->assertEquals(1, first($a));
+
+        $a = array();
+        $this->assertNull(first($a));
+    }
+
+    public function test_last()
+    {
+        $a = array(1, 2, 3);
+        $this->assertEquals(3, last($a));
+
+        $a = array('a' => 1, 'b' => 2, 'c' => 3);
+        $this->assertEquals(3, last($a));
+
+        $a = array();
+        $this->assertNull(last($a));
+    }
 }
 ?>
