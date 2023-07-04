@@ -206,12 +206,15 @@ function first(array $array)
     return count($array) > 0 ? $array[array_key_first($array)] : null;
 }
 
-/**
- * @short Returns the last element of $array
- */
-function last(array $array)
-{
-    return count($array) > 0 ? $array[array_key_last($array)] : null;
+// Prevents a conflict with illuminate/collections/helpers:last()
+if (!function_exists('last')) {
+    /**
+     * @short Returns the last element of $array
+     */
+    function last(array $array)
+    {
+        return count($array) > 0 ? $array[array_key_last($array)] : null;
+    }
 }
 
 /**
