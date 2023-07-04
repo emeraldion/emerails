@@ -514,9 +514,10 @@ abstract class ActiveRecord
             $this->values[$peer_member_name] = array();
             $dict = array();
             while ($row = $conn->fetch_assoc()) {
-                $peer_row = $r->demux_column_names($row);
+                $peer_row = $peer->demux_column_names($row);
                 // Fixup pkey from fkey
-                $peer_row[$peer_pk] = $peer_row[$peer_fkey];
+                $r_row = $r->demux_column_names($row);
+                $peer_row[$peer_pk] = $r_row[$peer_fkey];
 
                 $peer = new $peerclass($peer_row);
                 $this->values[$peer_member_name][$peer->$peer_pk] = $peer;
@@ -529,19 +530,16 @@ abstract class ActiveRecord
                     $joined_obj->values[camel_case_to_joined_lower($peerclass)] = $peer;
                 }
 
-                // Demux relationship columns
-                $row = $r->demux_column_names($row);
-
                 // This is the new way to access relationship attributes
-                $dict[$row[$peer_fkey]] = $row;
+                $dict[$r_row[$peer_fkey]] = $r_row;
 
                 // Remove known id columns to prevent clobbering relationship attributes
-                unset($row['id']);
-                unset($row[$fkey]);
-                unset($row[$peer_fkey]);
+                unset($r_row['id']);
+                unset($r_row[$fkey]);
+                unset($r_row[$peer_fkey]);
 
                 // Deprecated: store relationship attributes in the peer
-                foreach ($row as $key => $value) {
+                foreach ($r_row as $key => $value) {
                     $peer->values[$key] = $value;
                 }
             }
