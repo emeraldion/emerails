@@ -586,6 +586,40 @@ class ActiveRecordTest extends UnitTest
         $this->assertEquals('blue', $instance->test_widget->color);
     }
 
+    public function test_has_one_with_as_param()
+    {
+        $instance = new TestModel();
+        $ret = $instance->find_by_id(1);
+        $this->assertTrue($ret);
+        $ret = $instance->has_one('test_widgets', array('as' => 'widget'));
+        $this->assertIsObject($ret);
+        $this->assertNotNull($instance->widget);
+        $this->assertEquals('red', $instance->widget->color);
+
+        $instance = $instance->find_all(array(
+            'where_clause' => "`name` = 'foo'"
+        ))[0];
+        $ret = $instance->has_one('test_widgets', array('as' => 'widget'));
+        $this->assertIsObject($ret);
+        $this->assertNotNull($instance->widget);
+        $this->assertEquals('red', $instance->widget->color);
+
+        $instance = new TestModel();
+        $ret = $instance->find_by_id(2);
+        $this->assertTrue($ret);
+        $ret = $instance->has_one('test_widgets', array('as' => 'widget'));
+        $this->assertIsObject($ret);
+        $this->assertNotNull($instance->widget);
+        $this->assertEquals('blue', $instance->widget->color);
+
+        $instance = $instance->find_all(array(
+            'where_clause' => "`name` = 'bar'"
+        ))[0];
+        $instance->has_one('test_widgets', array('as' => 'widget'));
+        $this->assertNotNull($instance->widget);
+        $this->assertEquals('blue', $instance->widget->color);
+    }
+
     public function test_has_one_by_class_name()
     {
         $instance = new TestModel();
@@ -618,6 +652,64 @@ class ActiveRecordTest extends UnitTest
         $instance->has_one(TestWidget::class);
         $this->assertNotNull($instance->test_widget);
         $this->assertEquals('blue', $instance->test_widget->color);
+    }
+
+    public function test_has_one_by_class_name_with_as_param()
+    {
+        $instance = new TestModel();
+        $ret = $instance->find_by_id(1);
+        $this->assertTrue($ret);
+        $ret = $instance->has_one(TestWidget::class, array('as' => 'widget'));
+        $this->assertIsObject($ret);
+        $this->assertNotNull($instance->widget);
+        $this->assertEquals('red', $instance->widget->color);
+
+        $instance = $instance->find_all(array(
+            'where_clause' => "`name` = 'foo'"
+        ))[0];
+        $ret = $instance->has_one(TestWidget::class, array('as' => 'widget'));
+        $this->assertIsObject($ret);
+        $this->assertNotNull($instance->widget);
+        $this->assertEquals('red', $instance->widget->color);
+
+        $instance = new TestModel();
+        $ret = $instance->find_by_id(2);
+        $this->assertTrue($ret);
+        $ret = $instance->has_one(TestWidget::class, array('as' => 'widget'));
+        $this->assertIsObject($ret);
+        $this->assertNotNull($instance->widget);
+        $this->assertEquals('blue', $instance->widget->color);
+
+        $instance = $instance->find_all(array(
+            'where_clause' => "`name` = 'bar'"
+        ))[0];
+        $instance->has_one(TestWidget::class, array('as' => 'widget'));
+        $this->assertNotNull($instance->widget);
+        $this->assertEquals('blue', $instance->widget->color);
+    }
+
+    public function test_has_one_with_strict_param()
+    {
+        // These scenarios use data from the has_many relationship
+        // in order to ensure we have more than one match
+        $instance = new TestWidget();
+        $ret = $instance->find_by_id(1);
+        $this->assertTrue($ret);
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('Only one child expected, but found 4');
+        $ret = $instance->has_one('test_versions', array('strict' => true));
+    }
+
+    public function test_has_one_by_class_name_with_strict_param()
+    {
+        // These scenarios use data from the has_many relationship
+        // in order to ensure we have more than one match
+        $instance = new TestWidget();
+        $ret = $instance->find_by_id(1);
+        $this->assertTrue($ret);
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('Only one child expected, but found 4');
+        $ret = $instance->has_one(TestVersion::class, array('strict' => true));
     }
 
     public function test_has_one_no_matches()

@@ -34,6 +34,7 @@ abstract class ActiveRecord
     const PARAM_JOIN = 'join';
     const PARAM_ORDER_BY = 'order_by';
     const PARAM_START = 'start';
+    const PARAM_STRICT = 'strict';
     const PARAM_LIMIT = 'limit';
     const PARAM_WHERE_CLAUSE = 'where_clause';
 
@@ -581,11 +582,10 @@ abstract class ActiveRecord
      *  @short Loads the child of the receiver in a one-to-one relationship.
      *  @param class_or_table_name The name of the child class or table.
      *  @param params An array of conditions. For the semantics, see find_all
-     *  @param strict Set to <tt>true</tt> if should raise when more than one child is found
      *  @return ret Handle to the relationship between the receiver class and the child class
      *  @see find_all
      */
-    public function has_one($class_or_table_name, $strict = false)
+    public function has_one($class_or_table_name, $params = array())
     {
         try {
             // Assume class name and obtain table name
@@ -610,15 +610,19 @@ abstract class ActiveRecord
         $fkey = $this->get_foreign_key_name();
         $children = $child->find_all(array(
             self::PARAM_WHERE_CLAUSE => "`{$fkey}` = '{$this->values[$this->primary_key]}'",
-            'limit' => 1
+            // Do not limit results in strict mode, so we can raise if we get more than one
+            'limit' => isset($params[self::PARAM_STRICT]) ? null : 1
         ));
         if (is_array($children) && count($children) > 0) {
-            if ($strict && count($children) > 1) {
-                throw new Exception('Only one child expected, but found %d', count($children));
+            if (isset($params[self::PARAM_STRICT]) && count($children) > 1) {
+                throw new Exception(sprintf('Only one child expected, but found %d', count($children)));
             }
             $child = first($children);
             $child->values[camel_case_to_joined_lower(get_class($this))] = $this;
-            $this->values[camel_case_to_joined_lower($childclass)] = $child;
+            $child_member_name = isset($params[self::PARAM_AS])
+                ? $params[self::PARAM_AS]
+                : camel_case_to_joined_lower($childclass);
+            $this->values[$child_member_name] = $child;
 
             return Relationship::one_to_one(get_called_class(), $childclass)->between($this, $child);
         } else {
