@@ -696,6 +696,72 @@ class ActiveRecordTest extends UnitTest
         $this->assertEquals('bar', $instance->test_model->name);
     }
 
+    public function test_belongs_to_with_as_param()
+    {
+        $instance = new TestWidget();
+        $ret = $instance->find_by_id(1);
+        $this->assertTrue($ret);
+        $ret = $instance->belongs_to('test_models', array('as' => 'model'));
+        $this->assertIsObject($ret);
+        $this->assertNotNull($instance->model);
+        $this->assertEquals('foo', $instance->model->name);
+
+        $instance = $instance->find_all(array(
+            'where_clause' => "`color` = 'red'"
+        ))[0];
+        $ret = $instance->belongs_to('test_models', array('as' => 'model'));
+        $this->assertIsObject($ret);
+        $this->assertNotNull($instance->model);
+        $this->assertEquals('foo', $instance->model->name);
+
+        $instance = new TestWidget();
+        $ret = $instance->find_by_id(2);
+        $this->assertTrue($ret);
+        $ret = $instance->belongs_to('test_models', array('as' => 'model'));
+        $this->assertIsObject($ret);
+        $this->assertNotNull($instance->model);
+        $this->assertEquals('bar', $instance->model->name);
+
+        $instance = $instance->find_all(array(
+            'where_clause' => "`color` = 'blue'"
+        ))[0];
+        $ret = $instance->belongs_to('test_models', array('as' => 'model'));
+        $this->assertIsObject($ret);
+        $this->assertNotNull($instance->model);
+        $this->assertEquals('bar', $instance->model->name);
+    }
+
+    public function test_belongs_to_by_class_name_with_as_param()
+    {
+        $instance = new TestWidget();
+        $ret = $instance->find_by_id(1);
+        $this->assertTrue($ret);
+        $instance->belongs_to(TestModel::class, array('as' => 'model'));
+        $this->assertNotNull($instance->model);
+        $this->assertEquals('foo', $instance->model->name);
+
+        $instance = $instance->find_all(array(
+            'where_clause' => "`color` = 'red'"
+        ))[0];
+        $instance->belongs_to(TestModel::class, array('as' => 'model'));
+        $this->assertNotNull($instance->model);
+        $this->assertEquals('foo', $instance->model->name);
+
+        $instance = new TestWidget();
+        $ret = $instance->find_by_id(2);
+        $this->assertTrue($ret);
+        $instance->belongs_to(TestModel::class, array('as' => 'model'));
+        $this->assertNotNull($instance->model);
+        $this->assertEquals('bar', $instance->model->name);
+
+        $instance = $instance->find_all(array(
+            'where_clause' => "`color` = 'blue'"
+        ))[0];
+        $instance->belongs_to(TestModel::class, array('as' => 'model'));
+        $this->assertNotNull($instance->model);
+        $this->assertEquals('bar', $instance->model->name);
+    }
+
     public function test_has_many()
     {
         $instance = new TestWidget();

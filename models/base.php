@@ -29,6 +29,14 @@ use Emeraldion\EmeRails\Models\Relationship;
  */
 abstract class ActiveRecord
 {
+    const DEFAULT_PK_COLUMN_NAME = 'id';
+    const PARAM_AS = 'as';
+    const PARAM_JOIN = 'join';
+    const PARAM_ORDER_BY = 'order_by';
+    const PARAM_START = 'start';
+    const PARAM_LIMIT = 'limit';
+    const PARAM_WHERE_CLAUSE = 'where_clause';
+
     /**
      *  @const READONLY_COLUMNS
      *  @short Array of read-only columns that must not be written by us.
@@ -92,7 +100,7 @@ abstract class ActiveRecord
      *  @short Name of the primary key column for the bound table.
      *  @details Set this attribute only when the primary key of the bound table is not the canonical <tt>id</tt>.
      */
-    protected $primary_key = 'id';
+    protected $primary_key = self::DEFAULT_PK_COLUMN_NAME;
 
     /**
      *  @attr primary_key_name
@@ -323,9 +331,10 @@ abstract class ActiveRecord
      *  @details This method tries to find the owner of the current object via its foreign key. The method
      *  returns early if the fk column is null.
      *  @param class_or_table_name The name of the parent class or table.
+     *  @param params An array of conditions. For the semantics, see find_all
      *  @return ret Handle to the relationship between the receiver class and the parent class
      */
-    public function belongs_to($class_or_table_name)
+    public function belongs_to($class_or_table_name, $params = array())
     {
         $classname = get_class($this);
         $columns = self::_get_columns($classname);
@@ -358,14 +367,17 @@ abstract class ActiveRecord
         if ($fk) {
             $ret = $owner->find_by_id($fk);
         }
+        $owner_member_name = isset($params[self::PARAM_AS])
+            ? $params[self::PARAM_AS]
+            : camel_case_to_joined_lower($ownerclass);
         if ($ret) {
-            $this->values[camel_case_to_joined_lower($ownerclass)] = $owner;
+            $this->values[$owner_member_name] = $owner;
             $owner->values[camel_case_to_joined_lower(get_class($this))] = $this;
 
             return Relationship::one_to_one(get_called_class(), $ownerclass)->between($this, $owner);
         }
         // Unset previously set value
-        unset($this->values[camel_case_to_joined_lower($ownerclass)]);
+        unset($this->values[$owner_member_name]);
 
         return $ret;
     }
@@ -400,16 +412,18 @@ abstract class ActiveRecord
             );
         }
         $fkey = $this->get_foreign_key_name();
-        if (isset($params['where_clause'])) {
+        if (isset($params[self::PARAM_WHERE_CLAUSE])) {
             $params[
-                'where_clause'
-            ] = "({$params['where_clause']}) AND `{$fkey}` = '{$this->values[$this->get_primary_key()]}' ";
+                self::PARAM_WHERE_CLAUSE
+            ] = "({$params[self::PARAM_WHERE_CLAUSE]}) AND `{$fkey}` = '{$this->values[$this->get_primary_key()]}' ";
         } else {
-            $params['where_clause'] = "`{$fkey}` = '{$this->values[$this->get_primary_key()]}' ";
+            $params[self::PARAM_WHERE_CLAUSE] = "`{$fkey}` = '{$this->values[$this->get_primary_key()]}' ";
         }
         $children = $child->find_all($params);
         $child_pk = $child->get_primary_key();
-        $child_member_name = isset($params['as']) ? $params['as'] : pluralize(camel_case_to_joined_lower($childclass));
+        $child_member_name = isset($params[self::PARAM_AS])
+            ? $params[self::PARAM_AS]
+            : pluralize(camel_case_to_joined_lower($childclass));
         if (is_array($children) && count($children) > 0) {
             $dict = array();
             foreach ($children as $child) {
@@ -467,9 +481,9 @@ abstract class ActiveRecord
         $relation_table = $r->get_table_name();
 
         $query = 'SELECT `{2}`.*, {12} {14} {13} FROM `{1}` JOIN `{2}` ON `{1}`.`{3}` = `{2}`.`{4}`';
-        if (!empty($params['join'])) {
+        if (!empty($params[self::PARAM_JOIN])) {
             $has_join = true;
-            $joined_classname = $params['join'];
+            $joined_classname = $params[self::PARAM_JOIN];
             $joined_obj = new $joined_classname();
 
             if ($joined_obj->has_column($peer_fkey)) {
@@ -483,10 +497,10 @@ abstract class ActiveRecord
 
         $query .=
             " WHERE (`{1}`.`{5}` = '{6}' AND " .
-            ($params['where_clause'] ?? '1') .
+            ($params[self::PARAM_WHERE_CLAUSE] ?? '1') .
             ') ' .
             'ORDER BY ' .
-            ($params['order_by'] ?? '`{5}` ASC') .
+            ($params[self::PARAM_ORDER_BY] ?? '`{5}` ASC') .
             ' LIMIT {7}, {8}';
 
         $conn->prepare(
@@ -497,8 +511,8 @@ abstract class ActiveRecord
             $peer_pk, // 4
             $fkey, // 5
             $this->values[$pkey], // 6
-            $params['start'] ?? 0, // 7
-            $params['limit'] ?? 9999, // 8
+            $params[self::PARAM_START] ?? 0, // 7
+            $params[self::PARAM_LIMIT] ?? 9999, // 8
             $has_join ? $joined_obj->get_table_name() : null, // 9
             $has_join ? $joined_obj->get_primary_key() : null, // 10
             $has_join ? $joined_obj->get_foreign_key_name() : null, // 11
@@ -509,7 +523,9 @@ abstract class ActiveRecord
         $conn->exec();
 
         $ret = false;
-        $peer_member_name = isset($params['as']) ? $params['as'] : pluralize(camel_case_to_joined_lower($peerclass));
+        $peer_member_name = isset($params[self::PARAM_AS])
+            ? $params[self::PARAM_AS]
+            : pluralize(camel_case_to_joined_lower($peerclass));
         if ($conn->num_rows() > 0) {
             $this->values[$peer_member_name] = array();
             $dict = array();
@@ -534,7 +550,7 @@ abstract class ActiveRecord
                 $dict[$r_row[$peer_fkey]] = $r_row;
 
                 // Remove known id columns to prevent clobbering relationship attributes
-                unset($r_row['id']);
+                unset($r_row[self::DEFAULT_PK_COLUMN_NAME]);
                 unset($r_row[$fkey]);
                 unset($r_row[$peer_fkey]);
 
@@ -593,7 +609,7 @@ abstract class ActiveRecord
 
         $fkey = $this->get_foreign_key_name();
         $children = $child->find_all(array(
-            'where_clause' => "`{$fkey}` = '{$this->values[$this->primary_key]}'",
+            self::PARAM_WHERE_CLAUSE => "`{$fkey}` = '{$this->values[$this->primary_key]}'",
             'limit' => 1
         ));
         if (is_array($children) && count($children) > 0) {
@@ -665,31 +681,31 @@ abstract class ActiveRecord
     {
         $conn = Db::get_connection();
 
-        if (empty($params['where_clause'])) {
-            $params['where_clause'] = '1';
+        if (empty($params[self::PARAM_WHERE_CLAUSE])) {
+            $params[self::PARAM_WHERE_CLAUSE] = '1';
         }
-        if (empty($params['order_by'])) {
-            $params['order_by'] = "`{$this->get_table_name()}`.`{$this->get_primary_key()}` ASC";
+        if (empty($params[self::PARAM_ORDER_BY])) {
+            $params[self::PARAM_ORDER_BY] = "`{$this->get_table_name()}`.`{$this->get_primary_key()}` ASC";
         }
-        if (empty($params['limit'])) {
-            $params['limit'] = 999;
+        if (empty($params[self::PARAM_LIMIT])) {
+            $params[self::PARAM_LIMIT] = 999;
         }
-        if (empty($params['start'])) {
-            $params['start'] = 0;
+        if (empty($params[self::PARAM_START])) {
+            $params[self::PARAM_START] = 0;
         }
 
         $ret = null;
 
-        if (!empty($params['join'])) {
+        if (!empty($params[self::PARAM_JOIN])) {
             $has_join = true;
-            $joined_classname = $params['join'];
+            $joined_classname = $params[self::PARAM_JOIN];
             $joined_obj = new $joined_classname();
             if ($joined_obj->has_column($this->get_foreign_key_name())) {
                 $query = 'SELECT {7} FROM `{1}` JOIN `{4}` ON `{1}`.`{2}` = `{4}`.`{3}`';
             } elseif ($this->has_column($joined_obj->get_foreign_key_name())) {
                 $query = 'SELECT {7} FROM `{1}` JOIN `{4}` ON `{1}`.`{6}` = `{4}`.`{5}`';
             }
-            $query .= " WHERE (1 AND ({$params['where_clause']})) ORDER BY {$params['order_by']} LIMIT {$params['start']}, {$params['limit']}";
+            $query .= " WHERE (1 AND ({$params[self::PARAM_WHERE_CLAUSE]})) ORDER BY {$params[self::PARAM_ORDER_BY]} LIMIT {$params[self::PARAM_START]}, {$params[self::PARAM_LIMIT]}";
             $conn->prepare(
                 $query,
                 $this->get_table_name(), // 1
@@ -706,7 +722,7 @@ abstract class ActiveRecord
         } else {
             $has_join = false;
             $conn->prepare(
-                "SELECT * FROM `{1}` WHERE (1 AND ({$params['where_clause']})) ORDER BY {$params['order_by']} LIMIT {$params['start']}, {$params['limit']}",
+                "SELECT * FROM `{1}` WHERE (1 AND ({$params[self::PARAM_WHERE_CLAUSE]})) ORDER BY {$params[self::PARAM_ORDER_BY]} LIMIT {$params[self::PARAM_START]}, {$params[self::PARAM_LIMIT]}",
                 $this->get_table_name()
             );
         }
@@ -845,10 +861,13 @@ abstract class ActiveRecord
 
         $ret = 0;
 
-        if (empty($params['where_clause'])) {
-            $params['where_clause'] = '1';
+        if (empty($params[self::PARAM_WHERE_CLAUSE])) {
+            $params[self::PARAM_WHERE_CLAUSE] = '1';
         }
-        $conn->prepare("SELECT COUNT(*) FROM `{1}` WHERE (1 AND ({$params['where_clause']}))", $this->get_table_name());
+        $conn->prepare(
+            "SELECT COUNT(*) FROM `{1}` WHERE (1 AND ({$params[self::PARAM_WHERE_CLAUSE]}))",
+            $this->get_table_name()
+        );
         $result = $conn->exec();
 
         $ret = (int) $conn->fetch_array()[0];
