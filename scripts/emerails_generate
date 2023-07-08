@@ -47,7 +47,7 @@ class EmerailsGenerate extends ScriptCommand
             'controller'
         );
 
-        // Model options
+        // Model command
         $options->registerCommand('model', 'Manage models');
         // Model options
         $options->registerArgument('model', 'Name of the model', true, 'model');
@@ -57,6 +57,46 @@ class EmerailsGenerate extends ScriptCommand
             'f',
             'field1:type1,field2:type2,...',
             'model'
+        );
+
+        // Relationship command
+        $options->registerCommand('relationship', 'Manage relationships');
+        // Relationship options
+        $options->registerArgument('model', 'Name of the first model in the relationship', true, 'relationship');
+        $options->registerOption(
+            'belongs-to',
+            'Name of the parent model in a one-to-one relationship with the first',
+            null,
+            'parent-model',
+            'relationship'
+        );
+        $options->registerOption(
+            'has-one',
+            'Name of the child model in a one-to-one relationship with the first',
+            null,
+            'child-model',
+            'relationship'
+        );
+        $options->registerOption(
+            'has-many',
+            'Name of the child model in a one-to-many relationship with the first',
+            null,
+            'child-model',
+            'relationship'
+        );
+        $options->registerOption(
+            'has-and-belongs-to-many',
+            'Name of the peer model in a many-to-many relationship with the first',
+            null,
+            'peer-model',
+            'relationship'
+        );
+        $options->registerOption(
+            'fields',
+            'Fields of the relationship, with types',
+            'f',
+            'field1:type1,field2:type2,...',
+            'relationship'
         );
 
         // View command
@@ -165,20 +205,137 @@ EOT;
 
                 file_put_contents(sprintf('%s/%s.php', $dir, $model), $model_code);
 
-                $fields = array('id' => 'int(11)');
+                $fields = array();
                 $fields_opt = explode(',', $options->getOpt('fields'));
-                for ($i = 0; $i < count($fields_opt); $i += 1) {
+                for ($i = 0; $i < count($fields_opt) - 1; $i += 1) {
                     list($name, $type) = explode(':', $fields_opt[$i]);
                     $fields[$name] = $type;
                 }
+                // var_dump($fields);
 
                 $this->create_model($model_table, $fields);
+                break;
+
+            case 'relationship':
+                $this->relationship($options);
+                break;
+
+            case 'view':
+                $this->view($options);
                 break;
 
             default:
                 $options->useCompactHelp();
                 print $options->help();
         }
+    }
+
+    protected function relationship(Options $options)
+    {
+        $dry_run = $options->getOpt('dry-run');
+        $verbose = $options->getOpt('verbose');
+
+        // printf("Relationships are go!\n");
+
+        $model_class = joined_lower_to_camel_case(strtolower(first($options->getArgs())));
+        // var_dump($model_class);
+        $model_table = class_name_to_table_name($model_class);
+        // var_dump($model_table);
+        $model = singularize($model_table);
+        // var_dump($model);
+
+        $relationship_signature = array_reduce(
+            array('has-one', 'has-many', 'has-and-belongs-to-many', 'belongs-to'),
+            function ($carry, $key) use ($options) {
+                $o = $options->getOpt($key);
+                if ($o) {
+                    $carry[$key] = $o;
+                }
+                return $carry;
+            },
+            array()
+        );
+
+        if (count($relationship_signature) > 1) {
+            throw new Exception(
+                sprintf(
+                    "Only one of --has-one, --has-many, --has-and-belongs-to-many, and --belongs-to can be used at once, while %s were provided.\n",
+                    implode(
+                        ', ',
+                        array_map(function ($key) {
+                            return sprintf('--%s', $key);
+                        }, array_keys($relationship_signature))
+                    )
+                )
+            );
+        }
+
+        $conn = Db::get_connection();
+
+        foreach ($relationship_signature as $cardinality => $other) {
+            // var_dump($cardinality);
+            // var_dump($other);
+
+            $other_model_class = joined_lower_to_camel_case(strtolower($other));
+            // var_dump($other_model_class);
+            $other_model_table = class_name_to_table_name($other_model_class);
+            // var_dump($other_model_table);
+            $other_model = singularize($other_model_table);
+            // var_dump($other_model);
+
+            switch ($cardinality) {
+                case 'has-one':
+                case 'has-many':
+                    // Add a fk column to the other_model table
+                    $model_fk_name = sprintf('%s_id', $model);
+                    // var_dump($model_fk_name);
+                    $conn->prepare(
+                        <<<EOT
+ALTER TABLE `{1}` ADD `{2}` int(11) NULL DEFAULT NULL AFTER `id`, ADD INDEX (`{2}`);
+ALTER TABLE `{1}` ADD FOREIGN KEY (`{2}`) REFERENCES `{3}`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+EOT
+                        ,
+                        $other_model_table,
+                        $model_fk_name,
+                        $model_table
+                    );
+                    $conn->exec_multiline();
+                    break;
+                case 'has-and-belongs-to-many':
+                    // This is the only case where we have to create a new table
+                    $model_fk_name = sprintf('%s_id', $model);
+                    // var_dump($model_fk_name);
+                    $other_model_fk_name = sprintf('%s_id', $other_model);
+                    // var_dump($other_model_fk_name);
+                    break;
+                case 'belongs-to':
+                    // Add a fk column to the model table
+                    $other_model_fk_name = sprintf('%s_id', $other_model);
+                    // var_dump($other_model_fk_name);
+                    $conn->prepare(
+                        <<<EOT
+ALTER TABLE `{1}` ADD `{2}` int(11) NULL DEFAULT NULL AFTER `id`, ADD INDEX (`{2}`);
+ALTER TABLE `{1}` ADD FOREIGN KEY (`{2}`) REFERENCES `{3}`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+EOT
+                        ,
+                        $model_table,
+                        $other_model_fk_name,
+                        $other_model_table
+                    );
+                    $conn->exec_multiline();
+                    break;
+            }
+        }
+
+        Db::close_connection($conn);
+    }
+
+    protected function view(Options $options)
+    {
+        $dry_run = $options->getOpt('dry-run');
+        $verbose = $options->getOpt('verbose');
+
+        printf("Views are go!\n");
     }
 
     protected function create_model($tablename, $fields)
@@ -190,7 +347,11 @@ EOT;
         $conn->exec();
 
         if (!$conn->result()) {
-            $query = "CREATE TABLE `{$conn->escape($tablename)}` (\n";
+            $query = <<<EOT
+CREATE TABLE `{1}` (
+    `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY
+
+EOT;
 
             $i = 0;
             foreach ($fields as $name => $type) {
@@ -199,9 +360,17 @@ EOT;
                 $i += 1;
             }
 
+            // Add default fields
+            $query .= <<<EOT
+    ,`created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+    ,`updated_at` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP
+    , INDEX `created_at` (`created_at`)
+    , INDEX `updated_at` (`updated_at`)
+
+EOT;
             $query .= ');';
 
-            $conn->prepare($query);
+            $conn->prepare($query, $conn->escape($tablename));
             $conn->exec();
         }
 
