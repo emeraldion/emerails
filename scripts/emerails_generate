@@ -229,10 +229,12 @@ EOT;
                 file_put_contents(sprintf('%s/%s.php', $dir, $model), $model_code);
 
                 $fields = array();
-                $fields_opt = explode(',', $options->getOpt(self::OPT_FIELDS));
-                for ($i = 0; $i < count($fields_opt); $i += 1) {
-                    list($name, $type) = explode(':', $fields_opt[$i]);
-                    $fields[$name] = $type;
+                if ($options->getOpt(self::OPT_FIELDS)) {
+                    $fields_opt = explode(',', $options->getOpt(self::OPT_FIELDS));
+                    for ($i = 0; $i < count($fields_opt); $i += 1) {
+                        list($name, $type) = explode(':', $fields_opt[$i]);
+                        $fields[$name] = $type;
+                    }
                 }
 
                 $this->create_model($model_table, $fields);
@@ -325,10 +327,12 @@ EOT
                     $relationship_table_name = implode('_', $table_names);
 
                     $fields = array();
-                    $fields_opt = explode(',', $options->getOpt(self::OPT_FIELDS));
-                    for ($i = 0; $i < count($fields_opt); $i += 1) {
-                        list($name, $type) = explode(':', $fields_opt[$i]);
-                        $fields[$name] = $type;
+                    if ($options->getOpt(self::OPT_FIELDS)) {
+                        $fields_opt = explode(',', $options->getOpt(self::OPT_FIELDS));
+                        for ($i = 0; $i < count($fields_opt); $i += 1) {
+                            list($name, $type) = explode(':', $fields_opt[$i]);
+                            $fields[$name] = $type;
+                        }
                     }
 
                     $this->create_relationship(
@@ -371,7 +375,7 @@ EOT
     }
 
     protected function create_relationship(
-        $tablename,
+        $relationship_table_name,
         $model_table,
         $model_fk_name,
         $other_model_table,
@@ -380,7 +384,7 @@ EOT
     ) {
         $conn = Db::get_connection();
 
-        $query = "SHOW TABLES LIKE '{$conn->escape($tablename)}'";
+        $query = "SHOW TABLES LIKE '{$conn->escape($relationship_table_name)}'";
         $conn->prepare($query);
         $conn->exec();
 
