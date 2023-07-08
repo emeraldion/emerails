@@ -34,12 +34,15 @@ class EmerailsGenerate extends ScriptCommand
     const OPT_HAS_AND_BELONGS_TO_MANY = 'has-and-belongs-to-many';
     const OPT_BELONGS_TO = 'belongs-to';
 
+    const COMMAND_CREATE = 'create';
     const COMMAND_MODEL = 'model';
     const COMMAND_CONTROLLER = 'controller';
     const COMMAND_RELATIONSHIP = 'relationship';
     const COMMAND_VIEW = 'view';
 
-    const ARGUMENT_MODEL = self::COMMAND_VIEW;
+    const ARGUMENT_CONTROLLER = 'controller';
+    const ARGUMENT_MODEL = 'model';
+    const ARGUMENT_ACTION = 'action';
 
     protected function setup(Options $options)
     {
@@ -50,13 +53,13 @@ class EmerailsGenerate extends ScriptCommand
         $options->registerOption(self::OPT_DRY_RUN, 'Do not commit changes');
 
         // Create command
-        $options->registerCommand('create', 'Create an EmeRails app');
-        $options->registerOption('root-dir', 'Root directory of the app', 'r', 'dir', 'create');
+        $options->registerCommand(self::COMMAND_CREATE, 'Create an EmeRails app');
+        $options->registerOption(self::OPT_ROOT_DIR, 'Root directory of the app', 'r', 'dir', 'create');
 
         // Controller command
         $options->registerCommand(self::COMMAND_CONTROLLER, 'Manage controllers');
-        // Controller options
-        $options->registerArgument('controller', 'Name of the controller', true, self::COMMAND_CONTROLLER);
+        // Controller command options
+        $options->registerArgument(self::ARGUMENT_CONTROLLER, 'Name of the controller', true, self::COMMAND_CONTROLLER);
         $options->registerOption(
             self::OPT_ACTIONS,
             'Action methods, comma separated',
@@ -67,7 +70,7 @@ class EmerailsGenerate extends ScriptCommand
 
         // Model command
         $options->registerCommand(self::COMMAND_MODEL, 'Manage models');
-        // Model options
+        // Model command options
         $options->registerArgument(self::ARGUMENT_MODEL, 'Name of the model', true, self::COMMAND_MODEL);
         $options->registerOption(
             self::OPT_FIELDS,
@@ -79,7 +82,7 @@ class EmerailsGenerate extends ScriptCommand
 
         // Relationship command
         $options->registerCommand(self::COMMAND_RELATIONSHIP, 'Manage relationships');
-        // Relationship options
+        // Relationship command options
         $options->registerArgument(
             self::ARGUMENT_MODEL,
             'Name of the first model in the relationship',
@@ -124,6 +127,13 @@ class EmerailsGenerate extends ScriptCommand
 
         // View command
         $options->registerCommand(self::COMMAND_VIEW, 'Manage views');
+        // View command options
+        $options->registerArgument(
+            self::ARGUMENT_ACTION,
+            'Name of the action reflecting this view',
+            true,
+            self::COMMAND_VIEW
+        );
     }
 
     protected function main(Options $options)
@@ -135,7 +145,7 @@ class EmerailsGenerate extends ScriptCommand
         $basedir = sprintf('%s/../..', $GLOBALS['_composer_bin_dir'] ?? __DIR__ . '/../vendor/bin');
 
         switch ($options->getCmd()) {
-            case 'create':
+            case self::COMMAND_CREATE:
                 // This command can operate on a different root directory
                 $basedir = $options->getOpt(self::OPT_ROOT_DIR) ?: $basedir;
                 if (!file_exists($basedir)) {
