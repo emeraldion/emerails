@@ -207,7 +207,7 @@ EOT;
 
                 $fields = array();
                 $fields_opt = explode(',', $options->getOpt('fields'));
-                for ($i = 0; $i < count($fields_opt) - 1; $i += 1) {
+                for ($i = 0; $i < count($fields_opt); $i += 1) {
                     list($name, $type) = explode(':', $fields_opt[$i]);
                     $fields[$name] = $type;
                 }
@@ -301,18 +301,25 @@ EOT
                     sort($table_names);
                     $relationship_table_name = implode('_', $table_names);
 
+                    $fields = array();
+                    $fields_opt = explode(',', $options->getOpt('fields'));
+                    for ($i = 0; $i < count($fields_opt); $i += 1) {
+                        list($name, $type) = explode(':', $fields_opt[$i]);
+                        $fields[$name] = $type;
+                    }
+
                     $query = <<<EOT
 CREATE TABLE `{1}` (
     `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY
 
 EOT;
 
-                    // $i = 0;
-                    // foreach ($fields as $name => $type) {
-                    //     $comma = $i > 0 ? ',' : '';
-                    //     $query .= "{$comma}`{$name}` {$type}\n";
-                    //     $i += 1;
-                    // }
+                    foreach ($fields as $name => $type) {
+                        $query .= <<<EOT
+    ,`{$name}` {$type}
+
+EOT;
+                    }
 
                     // Add default fields
                     $query .= <<<EOT
@@ -395,11 +402,11 @@ CREATE TABLE `{1}` (
 
 EOT;
 
-            $i = 0;
             foreach ($fields as $name => $type) {
-                $comma = $i > 0 ? ',' : '';
-                $query .= "{$comma}`{$name}` {$type}\n";
-                $i += 1;
+                $query .= <<<EOT
+    ,`{$name}` {$type}
+
+EOT;
             }
 
             // Add default fields
