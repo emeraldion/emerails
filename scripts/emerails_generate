@@ -211,7 +211,6 @@ EOT;
                     list($name, $type) = explode(':', $fields_opt[$i]);
                     $fields[$name] = $type;
                 }
-                // var_dump($fields);
 
                 $this->create_model($model_table, $fields);
                 break;
@@ -235,14 +234,9 @@ EOT;
         $dry_run = $options->getOpt('dry-run');
         $verbose = $options->getOpt('verbose');
 
-        // printf("Relationships are go!\n");
-
         $model_class = joined_lower_to_camel_case(strtolower(first($options->getArgs())));
-        // var_dump($model_class);
         $model_table = class_name_to_table_name($model_class);
-        // var_dump($model_table);
         $model = singularize($model_table);
-        // var_dump($model);
 
         $relationship_signature = array_reduce(
             array('has-one', 'has-many', 'has-and-belongs-to-many', 'belongs-to'),
@@ -273,22 +267,15 @@ EOT;
         $conn = Db::get_connection();
 
         foreach ($relationship_signature as $cardinality => $other) {
-            // var_dump($cardinality);
-            // var_dump($other);
-
             $other_model_class = joined_lower_to_camel_case(strtolower($other));
-            // var_dump($other_model_class);
             $other_model_table = class_name_to_table_name($other_model_class);
-            // var_dump($other_model_table);
             $other_model = singularize($other_model_table);
-            // var_dump($other_model);
 
             switch ($cardinality) {
                 case 'has-one':
                 case 'has-many':
                     // Add a fk column to the other_model table
                     $model_fk_name = sprintf('%s_id', $model);
-                    // var_dump($model_fk_name);
                     $conn->prepare(
                         <<<EOT
 ALTER TABLE `{1}` ADD `{2}` int(11) NULL DEFAULT NULL AFTER `id`, ADD INDEX (`{2}`);
@@ -304,14 +291,69 @@ EOT
                 case 'has-and-belongs-to-many':
                     // This is the only case where we have to create a new table
                     $model_fk_name = sprintf('%s_id', $model);
-                    // var_dump($model_fk_name);
                     $other_model_fk_name = sprintf('%s_id', $other_model);
-                    // var_dump($other_model_fk_name);
+
+                    $fk_names = array($model_fk_name, $other_model_fk_name);
+                    sort($fk_names);
+                    $unique_key_name = implode('_', $fk_names);
+
+                    $table_names = array($model_table, $other_model_table);
+                    sort($table_names);
+                    $relationship_table_name = implode('_', $table_names);
+
+                    $query = <<<EOT
+CREATE TABLE `{1}` (
+    `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY
+
+EOT;
+
+                    // $i = 0;
+                    // foreach ($fields as $name => $type) {
+                    //     $comma = $i > 0 ? ',' : '';
+                    //     $query .= "{$comma}`{$name}` {$type}\n";
+                    //     $i += 1;
+                    // }
+
+                    // Add default fields
+                    $query .= <<<EOT
+    ,`{3}` int(11) NOT NULL
+    ,`{4}` int(11) NOT NULL
+    ,`created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+    ,`updated_at` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP
+    , INDEX `{3}` (`{3}`)
+    , INDEX `{4}` (`{4}`)
+    , UNIQUE KEY `{2}` (`{3}`, `{4}`)
+    , INDEX `created_at` (`created_at`)
+    , INDEX `updated_at` (`updated_at`)
+
+EOT;
+                    $query .= ');';
+                    $conn->prepare(
+                        $query,
+                        $relationship_table_name,
+                        $unique_key_name,
+                        $model_fk_name,
+                        $other_model_fk_name
+                    );
+                    $conn->exec();
+
+                    $conn->prepare(
+                        <<<EOT
+ALTER TABLE `{1}` ADD FOREIGN KEY (`{2}`) REFERENCES `{3}`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE `{1}` ADD FOREIGN KEY (`{4}`) REFERENCES `{5}`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+EOT
+                        ,
+                        $relationship_table_name,
+                        $model_fk_name,
+                        $model_table,
+                        $other_model_fk_name,
+                        $other_model_table
+                    );
+                    $conn->exec_multiline();
                     break;
                 case 'belongs-to':
                     // Add a fk column to the model table
                     $other_model_fk_name = sprintf('%s_id', $other_model);
-                    // var_dump($other_model_fk_name);
                     $conn->prepare(
                         <<<EOT
 ALTER TABLE `{1}` ADD `{2}` int(11) NULL DEFAULT NULL AFTER `id`, ADD INDEX (`{2}`);
@@ -335,7 +377,7 @@ EOT
         $dry_run = $options->getOpt('dry-run');
         $verbose = $options->getOpt('verbose');
 
-        printf("Views are go!\n");
+        // TODO:
     }
 
     protected function create_model($tablename, $fields)
