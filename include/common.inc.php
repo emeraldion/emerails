@@ -55,6 +55,7 @@ function pluralize($term)
         ends_with($term, 's') ||
         ends_with($term, 'x') ||
         ends_with($term, 'z') ||
+        ends_with($term, 'sh') ||
         (ends_with($term, 'o') && !ends_with($term, 'oo') && !ends_with($term, 'eo'))
     ) {
         return $term . 'es';
@@ -77,7 +78,13 @@ function singularize($term)
     if (in_array($term, $irregular_nouns)) {
         return array_search($term, $irregular_nouns);
     }
-    if (ends_with($term, 'ses') || ends_with($term, 'xes') || ends_with($term, 'zes') || ends_with($term, 'oes')) {
+    if (
+        ends_with($term, 'ses') ||
+        ends_with($term, 'xes') ||
+        ends_with($term, 'zes') ||
+        ends_with($term, 'oes') ||
+        ends_with($term, 'shes')
+    ) {
         return substr($term, 0, strlen($term) - 2);
     }
     if (ends_with($term, 'ies')) {

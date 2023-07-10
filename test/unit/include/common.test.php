@@ -43,6 +43,8 @@ class CommonTest extends UnitTest
         $this->assertEquals('zoos', pluralize('zoo'));
         $this->assertEquals('videos', pluralize('video'));
         $this->assertEquals('portfolios', pluralize('portfolio'));
+        $this->assertEquals('mashes', pluralize('mash'));
+        $this->assertEquals('marshes', pluralize('marsh'));
     }
 
     public function test_singularize()
@@ -64,6 +66,8 @@ class CommonTest extends UnitTest
         $this->assertEquals('zoo', singularize('zoos'));
         $this->assertEquals('video', singularize('videos'));
         $this->assertEquals('portfolio', singularize('portfolios'));
+        $this->assertEquals('mash', singularize('mashes'));
+        $this->assertEquals('marsh', singularize('marshes'));
     }
 
     public function test_pluralize_extra()
