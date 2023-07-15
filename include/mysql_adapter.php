@@ -127,6 +127,11 @@ class MysqlAdapter implements DbAdapter
 
         self::$queries_count++;
 
+        if (Config::get('DB_DEBUG')) {
+            $num_rows = mysql_num_rows($this->result);
+            printf($num_rows == 1 ? "1 result\n" : "%d results\n", $num_rows);
+        }
+
         return $this->result;
     }
 

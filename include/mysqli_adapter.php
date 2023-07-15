@@ -133,6 +133,11 @@ class MysqliAdapter implements DbAdapter
 
         self::$queries_count++;
 
+        if (Config::get('DB_DEBUG')) {
+            $num_rows = $this->result->num_rows;
+            printf($num_rows == 1 ? "1 result\n" : "%d results\n", $num_rows);
+        }
+
         return $this->result;
     }
 
@@ -155,6 +160,11 @@ class MysqliAdapter implements DbAdapter
             $this->result[] = $this->link->store_result();
             self::$queries_count++;
         } while ($this->link->more_results());
+
+        if (Config::get('DB_DEBUG')) {
+            $num_rows = count($this->results);
+            printf($num_rows == 1 ? "1 result\n" : "%d results\n", $num_rows);
+        }
 
         return $this->result;
     }
