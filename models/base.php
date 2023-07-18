@@ -708,6 +708,19 @@ abstract class ActiveRecord
                 $query = 'SELECT {7} FROM `{1}` JOIN `{4}` ON `{1}`.`{2}` = `{4}`.`{3}`';
             } elseif ($this->has_column($joined_obj->get_foreign_key_name())) {
                 $query = 'SELECT {7} FROM `{1}` JOIN `{4}` ON `{1}`.`{6}` = `{4}`.`{5}`';
+            } else {
+                trigger_error(
+                    sprintf(
+                        '[%s::%s] Failed to find a foreign key column `%s` in table `%s` or `%s` in table `%s`.',
+                        get_class($this),
+                        __FUNCTION__,
+                        $this->get_foreign_key_name(),
+                        $joined_obj->get_table_name(),
+                        $joined_obj->get_foreign_key_name(),
+                        $this->get_table_name()
+                    ),
+                    E_USER_ERROR
+                );
             }
             $query .= " WHERE (1 AND ({$params[self::PARAM_WHERE_CLAUSE]})) ORDER BY {$params[self::PARAM_ORDER_BY]} LIMIT {$params[self::PARAM_START]}, {$params[self::PARAM_LIMIT]}";
             $conn->prepare(

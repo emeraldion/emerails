@@ -429,6 +429,21 @@ class ActiveRecordTest extends UnitTest
         }
     }
 
+    public function test_find_all_with_join_missing_fk()
+    {
+        $widget_factory = new TestWidget();
+
+        $this->expectError();
+        $this->expectErrorMessage(
+            '[TestWidget::find_all] Failed to find a foreign key column `test_widget_id` in table `athletes` or `athlete_id` in table `test_widgets`.'
+        );
+
+        // These two models are not in a relationship so this call will trigger an error
+        $widgets = $widget_factory->find_all(array(
+            'join' => Athlete::class
+        ));
+    }
+
     public function test_find_all_with_join_reverse()
     {
         $model_factory = new TestModel();
