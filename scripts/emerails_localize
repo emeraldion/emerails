@@ -26,6 +26,23 @@ class EmerailsLocalize extends ScriptCommand
     const DEFAULT_BASE_DIR = '/../../assets/strings';
     const STRINGS_FILE_EXTENSION = '.strings';
 
+    const COMMAND_CHECK = 'check';
+    const COMMAND_CREATE = 'create';
+    const COMMAND_EXTRACT = 'extract';
+    const COMMAND_FORMAT = 'format';
+
+    const OPTION_BASE_DIR = 'base-dir';
+    const OPTION_CONTROLLER = 'controller';
+    const OPTION_DRY_RUN = 'dry-run';
+    const OPTION_GLOBAL = 'global';
+    const OPTION_LANGUAGES = 'languages';
+    const OPTION_PURGE = 'purge';
+    const OPTION_RECURSIVE = 'recursive';
+    const OPTION_STRICT = 'strict';
+    const OPTION_VERBOSE = 'verbose';
+
+    const DEFAULT_LANGUAGE = 'en';
+
     private $thesaurus = array();
 
     protected function setup(Options $options)
@@ -33,74 +50,103 @@ class EmerailsLocalize extends ScriptCommand
         $options->setHelp('EmeRails script to manage localization resources');
 
         // General options
-        $options->registerOption('dry-run', 'Do not save anything');
-        $options->registerOption('verbose', 'Print additional information', 'v');
-        $options->registerOption('base-dir', 'Base directory of strings files', 'd');
+        $options->registerOption(self::OPTION_DRY_RUN, 'Do not save anything');
+        $options->registerOption(self::OPTION_VERBOSE, 'Print additional information', 'v');
+        $options->registerOption(self::OPTION_BASE_DIR, 'Base directory of strings files', 'd', 'base-dir');
 
         // Check command
-        $options->registerCommand('check', 'Check localizations');
-        // Check options
-        $options->registerOption('recursive', 'Recursively descend into subdirectories', 'r', false, 'check');
-        $options->registerOption('strict', 'Fail in presence of warnings', null, false, 'check');
-
-        // Create command
-        $options->registerCommand('create', 'Create localizations');
+        $options->registerCommand(self::COMMAND_CHECK, 'Check localizations');
         // Check options
         $options->registerOption(
-            'global',
+            self::OPTION_RECURSIVE,
+            'Recursively descend into subdirectories',
+            'r',
+            false,
+            self::COMMAND_CHECK
+        );
+        $options->registerOption(self::OPTION_STRICT, 'Fail in presence of warnings', null, false, self::COMMAND_CHECK);
+
+        // Extract command
+        $options->registerCommand(self::COMMAND_EXTRACT, 'Extract localization keys from source');
+        // Extract options
+        $options->registerOption(self::OPTION_PURGE, 'Purges unused strings', 'P', false, self::COMMAND_EXTRACT);
+
+        // Format command
+        $options->registerCommand(self::COMMAND_FORMAT, 'Formats localization files');
+
+        // Create command
+        $options->registerCommand(self::COMMAND_CREATE, 'Create localizations');
+        // Check options
+        $options->registerOption(
+            self::OPTION_GLOBAL,
             sprintf(
                 'Create global localizations. When provided, the %s option will be ignored.',
-                ANSIColorWriter::colorize('--controller', 'cyan')
+                ANSIColorWriter::colorize(sprintf('--%s', self::OPTION_CONTROLLER), 'cyan')
             ),
             'g',
             false,
-            'create'
+            self::COMMAND_CREATE
         );
-        $options->registerOption('controller', 'Create localizations for a controller', 'c', 'controller', 'create');
         $options->registerOption(
-            'languages',
+            self::OPTION_CONTROLLER,
+            'Create localizations for a controller',
+            'c',
+            'controller',
+            self::COMMAND_CREATE
+        );
+        $options->registerOption(
+            self::OPTION_LANGUAGES,
             'Comma-separated list of languages for localizations',
             'l',
             'languages',
-            'create'
+            self::COMMAND_CREATE
         );
     }
 
-    protected function main(Options $options)
+    protected function check(Options $options)
     {
-        $dry_run = $options->getOpt('dry-run');
-        $verbose = $options->getOpt('verbose');
+        $dry_run = $options->getOpt(self::OPTION_DRY_RUN);
+        $verbose = $options->getOpt(self::OPTION_VERBOSE);
         // This path is relative to the Composer bin directory if available
         $base_dir =
-            $options->getOpt('base-dir') ?:
+            $options->getOpt(self::OPTION_BASE_DIR) ?:
             ($GLOBALS['_composer_bin_dir'] ?? __DIR__ . '/../vendor/bin') . self::DEFAULT_BASE_DIR;
 
-        switch ($options->getCmd()) {
-            case 'check':
-                if (!(file_exists($base_dir) && is_dir($base_dir))) {
-                    printf("No such directory: %s.\n", $base_dir);
-                    ANSIColorWriter::printf("\n%s\n", 'green', ANSIColorWriter::bold('Done'));
-                    exit(0);
-                }
+        if (!(file_exists($base_dir) && is_dir($base_dir))) {
+            printf("No such directory: %s.\n", $base_dir);
+            ANSIColorWriter::printf("\n%s\n", 'green', ANSIColorWriter::bold('Done'));
+            exit(0);
+        }
 
-                if ($this->scandir($base_dir, $options->getOpt('recursive'), $options->getOpt('strict'))) {
-                    print "All strings files correctly formed.\n";
-                    ANSIColorWriter::printf("\n%s\n", 'green', ANSIColorWriter::bold('Done'));
-                } else {
-                    ANSIColorWriter::printf("\n%s\n", 'red', ANSIColorWriter::bold('Failure'));
-                    exit(1);
-                }
-                break;
-            case 'create':
-                if ($options->getOpt('global')) {
-                    $dir = $base_dir;
-                } else {
-                    $controller = $options->getOpt('controller');
-                    $dir = $base_dir . '/' . $controller;
-                }
-                echo "\tcreating localizations under $dir\n";
+        if (
+            $this->scandir($base_dir, $options->getOpt(self::OPTION_RECURSIVE), $options->getOpt(self::OPTION_STRICT))
+        ) {
+            print "All strings files correctly formed.\n";
+            ANSIColorWriter::printf("\n%s\n", 'green', ANSIColorWriter::bold('Done'));
+        } else {
+            ANSIColorWriter::printf("\n%s\n", 'red', ANSIColorWriter::bold('Failure'));
+            exit(1);
+        }
+    }
 
-                $template = <<<EOT
+    protected function create(Options $options)
+    {
+        $dry_run = $options->getOpt(self::OPTION_DRY_RUN);
+        $verbose = $options->getOpt(self::OPTION_VERBOSE);
+        // This path is relative to the Composer bin directory if available
+        $base_dir =
+            $options->getOpt(self::OPTION_BASE_DIR) ?:
+            ($GLOBALS['_composer_bin_dir'] ?? __DIR__ . '/../vendor/bin') . self::DEFAULT_BASE_DIR;
+
+        if ($options->getOpt(self::OPTION_GLOBAL)) {
+            $dir = $base_dir;
+        } else {
+            $controller = $options->getOpt(self::OPTION_CONTROLLER);
+            $dir = $base_dir . '/' . $controller;
+        }
+        echo "\tcreating localizations under $dir\n";
+
+        $template = <<<EOT
 array(
     // Add your keys below:
     // 'key-of-your-string' => 'This is the user visible text',
@@ -108,14 +154,24 @@ array(
 
 EOT;
 
-                if (!(file_exists($dir) && is_dir($dir))) {
-                    if (!mkdir($dir, 0755, true)) {
-                        exit(1);
-                    }
-                }
-                foreach (explode(',', $options->getOpt('languages')) as $language) {
-                    file_put_contents(sprintf('%s/localizable-%s.strings', $dir, $language), $template);
-                }
+        if (!(file_exists($dir) && is_dir($dir))) {
+            if (!mkdir($dir, 0755, true)) {
+                exit(1);
+            }
+        }
+        foreach (explode(',', $options->getOpt(self::OPTION_LANGUAGES)) as $language) {
+            file_put_contents(sprintf('%s/localizable-%s.strings', $dir, $language), $template);
+        }
+    }
+
+    protected function main(Options $options)
+    {
+        switch ($options->getCmd()) {
+            case self::COMMAND_CHECK:
+                $this->check($options);
+                break;
+            case self::COMMAND_CREATE:
+                $this->create($options);
                 break;
             default:
                 $options->useCompactHelp();
@@ -149,11 +205,11 @@ EOT;
         $dir = $this->get_string_file($dir);
         if (isset($this->thesaurus[$dir])) {
             foreach ($this->thesaurus[$dir] as $language => $strings) {
-                if ($language == 'en') {
+                if ($language == self::DEFAULT_LANGUAGE) {
                     continue;
                 }
                 $common_strings = array_intersect_key(
-                    $this->thesaurus[$dir]['en'] ?? array(),
+                    $this->thesaurus[$dir][self::DEFAULT_LANGUAGE] ?? array(),
                     $this->thesaurus[$dir][$language] ?? array()
                 );
                 if (count($strings) > count($common_strings)) {
@@ -161,7 +217,7 @@ EOT;
                     foreach (
                         array_diff_key(
                             $this->thesaurus[$dir][$language] ?? array(),
-                            $this->thesaurus[$dir]['en'] ?? array()
+                            $this->thesaurus[$dir][self::DEFAULT_LANGUAGE] ?? array()
                         )
                         as $key => $value
                     ) {
@@ -170,12 +226,15 @@ EOT;
                         ANSIColorWriter::printf(
                             "Language: %s\n",
                             'bright-black',
-                            ANSIColorWriter::colorize('en', 'white')
+                            ANSIColorWriter::colorize(self::DEFAULT_LANGUAGE, 'white')
                         );
                         ANSIColorWriter::printf(
                             "    File: %s\n",
                             'bright-black',
-                            ANSIColorWriter::colorize(sprintf('%s/localizable-%s.strings', $dir, 'en'), 'white')
+                            ANSIColorWriter::colorize(
+                                sprintf('%s/localizable-%s.strings', $dir, self::DEFAULT_LANGUAGE),
+                                'white'
+                            )
                         );
                         ANSIColorWriter::printf(
                             "     Key: %s\n\n",
@@ -183,10 +242,13 @@ EOT;
                             ANSIColorWriter::colorize($key, 'white')
                         );
                     }
-                } elseif (count($this->thesaurus[$dir]['en']) > count($common_strings)) {
+                } elseif (count($this->thesaurus[$dir][self::DEFAULT_LANGUAGE]) > count($common_strings)) {
                     $success = !$strict;
                     foreach (
-                        array_diff_key($this->thesaurus[$dir]['en'], $this->thesaurus[$dir][$language])
+                        array_diff_key(
+                            $this->thesaurus[$dir][self::DEFAULT_LANGUAGE],
+                            $this->thesaurus[$dir][$language]
+                        )
                         as $key => $value
                     ) {
                         ANSIColorWriter::printf("Warning: missing key in strings file\n", 'yellow');
