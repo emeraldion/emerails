@@ -390,7 +390,7 @@ EOT;
                     $sorted_strings .= "\n";
                 }
                 $sorted_strings .= sprintf(
-                    "\t%s => %s,\n",
+                    "    %s => %s,\n",
                     var_export($key, true),
                     $this->export_string($strings[$key])
                 );
