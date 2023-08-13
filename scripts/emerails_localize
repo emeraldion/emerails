@@ -73,10 +73,18 @@ class EmerailsLocalize extends ScriptCommand
 
         // Format command
         $options->registerCommand(self::COMMAND_FORMAT, 'Formats localization files');
+        // Format options
+        $options->registerOption(
+            self::OPTION_RECURSIVE,
+            'Recursively descend into subdirectories',
+            'r',
+            false,
+            self::COMMAND_FORMAT
+        );
 
         // Create command
         $options->registerCommand(self::COMMAND_CREATE, 'Create localizations');
-        // Check options
+        // Create options
         $options->registerOption(
             self::OPTION_GLOBAL,
             sprintf(
@@ -112,6 +120,8 @@ class EmerailsLocalize extends ScriptCommand
             $options->getOpt(self::OPTION_BASE_DIR) ?:
             ($GLOBALS['_composer_bin_dir'] ?? __DIR__ . '/../vendor/bin') . self::DEFAULT_BASE_DIR;
 
+        unset($this->thesaurus);
+
         if (!(file_exists($base_dir) && is_dir($base_dir))) {
             printf("No such directory: %s.\n", $base_dir);
             ANSIColorWriter::printf("\n%s\n", 'green', ANSIColorWriter::bold('Done'));
@@ -119,7 +129,7 @@ class EmerailsLocalize extends ScriptCommand
         }
 
         if (
-            $this->scandir($base_dir, $options->getOpt(self::OPTION_RECURSIVE), $options->getOpt(self::OPTION_STRICT))
+            $this->check_dir($base_dir, $options->getOpt(self::OPTION_RECURSIVE), $options->getOpt(self::OPTION_STRICT))
         ) {
             print "All strings files correctly formed.\n";
             ANSIColorWriter::printf("\n%s\n", 'green', ANSIColorWriter::bold('Done'));
@@ -164,22 +174,7 @@ EOT;
         }
     }
 
-    protected function main(Options $options)
-    {
-        switch ($options->getCmd()) {
-            case self::COMMAND_CHECK:
-                $this->check($options);
-                break;
-            case self::COMMAND_CREATE:
-                $this->create($options);
-                break;
-            default:
-                $options->useCompactHelp();
-                print $options->help();
-        }
-    }
-
-    protected function scandir($dir, $recursive = false, $strict = false)
+    protected function format_dir($dir, $write = false, $recursive = false)
     {
         $success = true;
 
@@ -194,7 +189,96 @@ EOT;
                 }
                 $path = $dir . '/' . $filename;
                 if ($recursive && is_dir($path)) {
-                    $success = $success && $this->scandir($path, $recursive, $strict);
+                    $success = $success && $this->format_dir($path, $write, $recursive);
+                }
+                if (str_ends_with($filename, self::STRINGS_FILE_EXTENSION)) {
+                    $success = $success && $this->format_file($dir, $filename, $write);
+                }
+            }
+        }
+
+        return $success;
+    }
+
+    protected function format(Options $options)
+    {
+        $dry_run = $options->getOpt(self::OPTION_DRY_RUN);
+        $verbose = $options->getOpt(self::OPTION_VERBOSE);
+        // This path is relative to the Composer bin directory if available
+        $base_dir =
+            $options->getOpt(self::OPTION_BASE_DIR) ?:
+            ($GLOBALS['_composer_bin_dir'] ?? __DIR__ . '/../vendor/bin') . self::DEFAULT_BASE_DIR;
+
+        if (!(file_exists($base_dir) && is_dir($base_dir))) {
+            printf("No such directory: %s.\n", $base_dir);
+            ANSIColorWriter::printf("\n%s\n", 'green', ANSIColorWriter::bold('Done'));
+            exit(0);
+        }
+
+        if ($this->format_dir($base_dir, !$dry_run, $options->getOpt(self::OPTION_RECURSIVE))) {
+            print "All strings files correctly formatted.\n";
+            ANSIColorWriter::printf("\n%s\n", 'green', ANSIColorWriter::bold('Done'));
+        } else {
+            ANSIColorWriter::printf("\n%s\n", 'red', ANSIColorWriter::bold('Failure'));
+            exit(1);
+        }
+    }
+
+    /**
+     * @fn export_strings($str)
+     * @short Slightly better var_export for strings with control on quotes and escape sequences
+     */
+    protected function export_string($str)
+    {
+        $has_newlines = strpos($str, "\n") !== false;
+        $has_quotes = strpos($str, "'") !== false;
+
+        $ret = addcslashes(var_export($str, true), "\n");
+
+        if ($has_newlines || $has_quotes) {
+            $ret = '"' . substr($ret, 1, strlen($ret) - 2) . '"';
+            if ($has_quotes) {
+                $ret = str_replace("\\'", "'", $ret);
+            }
+        }
+
+        return $ret;
+    }
+
+    protected function main(Options $options)
+    {
+        switch ($options->getCmd()) {
+            case self::COMMAND_CHECK:
+                $this->check($options);
+                break;
+            case self::COMMAND_CREATE:
+                $this->create($options);
+                break;
+            case self::COMMAND_FORMAT:
+                $this->format($options);
+                break;
+            default:
+                $options->useCompactHelp();
+                print $options->help();
+        }
+    }
+
+    protected function check_dir($dir, $recursive = false, $strict = false)
+    {
+        $success = true;
+
+        if (!(file_exists($dir) && is_dir($dir))) {
+            return false;
+        }
+        $handle = opendir($dir);
+        if ($handle) {
+            while (($filename = readdir($handle)) !== false) {
+                if ($filename === '.' || $filename === '..') {
+                    continue;
+                }
+                $path = $dir . '/' . $filename;
+                if ($recursive && is_dir($path)) {
+                    $success = $success && $this->check_dir($path, $recursive, $strict);
                 }
                 if (str_ends_with($filename, self::STRINGS_FILE_EXTENSION)) {
                     $success = $success && $this->check_file($dir, $filename);
@@ -276,6 +360,74 @@ EOT;
         return $success;
     }
 
+    protected function get_key_prefix(string $key)
+    {
+        $prefix = implode('-', array_slice(explode('-', $key), 0, 2));
+        return $prefix;
+    }
+
+    protected function format_file($dir, $filename, $write = false)
+    {
+        $success = true;
+
+        $path = $dir . '/' . $filename;
+
+        $handle = fopen($path, 'r');
+        $contents = fread($handle, filesize($path));
+        fclose($handle);
+
+        try {
+            eval("\$strings = $contents;");
+
+            $keys = array_keys($strings);
+            sort($keys);
+
+            $sorted_strings = '';
+            $last_prefix = null;
+            foreach ($keys as $key) {
+                $key_prefix = $this->get_key_prefix($key);
+                if (!is_null($last_prefix) && $key_prefix != $last_prefix) {
+                    $sorted_strings .= "\n";
+                }
+                $sorted_strings .= sprintf(
+                    "\t%s => %s,\n",
+                    var_export($key, true),
+                    $this->export_string($strings[$key])
+                );
+                $last_prefix = $key_prefix;
+            }
+
+            if ($write) {
+                $template = <<<EOT
+array(
+%s);
+
+EOT;
+
+                file_put_contents($path, sprintf($template, $sorted_strings));
+            }
+        } catch (Throwable $t) {
+            $success = false;
+            printf(
+                "[%s] Malformed strings file: %s\n\t%s\n\n",
+                ANSIColorWriter::colorize('Error', 'red'),
+                $path,
+                $t->getMessage()
+            );
+            $lines = explode("\n", $contents);
+            foreach (range($t->getLine() - 2, $t->getLine() + 2) as $i) {
+                if ($i === $t->getLine()) {
+                    ANSIColorWriter::printf("%4d | %s\n", 'red', $i, $lines[$i - 1]);
+                } else {
+                    printf("%4d | %s\n", $i, $lines[$i - 1]);
+                }
+            }
+            printf("\n");
+        } finally {
+            return $success;
+        }
+    }
+
     protected function check_file($dir, $filename)
     {
         $success = true;
@@ -334,7 +486,7 @@ EOT;
         // This path is relative to the Composer bin directory if available
         $base_dir = ($GLOBALS['_composer_bin_dir'] ?? __DIR__ . '/../vendor/bin') . self::DEFAULT_BASE_DIR;
         if (strpos($dir, $base_dir) === 0) {
-            $dir = substr($dir, strlen($base_dir) + 1);
+            $dir = substr($dir, strlen($base_dir) + 1) ?: '';
         }
         return $dir;
     }
