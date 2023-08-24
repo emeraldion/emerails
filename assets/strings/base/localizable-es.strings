@@ -1,6 +1,4 @@
 array(
-    'loading' => 'Cargando...',
-
     'base-index-discussion-group-link' => 'Grupo de Discusi&oacute;n',
     'base-index-docs-link' => 'Documentaci&oacute;n',
     'base-index-heading' => '¡Enhorabuena!',
@@ -8,4 +6,6 @@ array(
     'base-index-para-2-@2' => 'Ahora ¡vamos a añadir alguna nueva funcionalidad e este maravilloso marco para aplicaciones web! Puedes empezar siguiendo la %s, leyendo la %s, o agreg&aacute;ndote al %s.',
     'base-index-title' => '¡Enhorabuena! &mdash; EmeRails',
     'base-index-tutorial-link' => 'Gu&iacute;a',
+
+    'loading' => 'Cargando...',
 );
