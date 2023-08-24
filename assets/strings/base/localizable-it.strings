@@ -1,0 +1,11 @@
+array(
+    'loading' => 'Caricando...',
+
+    'base-index-discussion-group-link' => 'gruppo di discussione',
+    'base-index-docs-link' => 'documentazione',
+    'base-index-heading' => 'Congratulazioni!',
+    'base-index-para-1' => 'La tua installazione di EmeRails ha avuto successo.',
+    'base-index-para-2-@2' => 'Adesso puoi cominciare ad aggiungere nuove funzionalit&agrave; a questo meraviglioso framework per le applicazioni web! Puoi iniziare seguendo la %s, leggendo la %s, o unendoti al %s.',
+    'base-index-title' => 'Congratulazioni! &mdash; EmeRails',
+    'base-index-tutorial-link' => 'guida',
+);

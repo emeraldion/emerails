@@ -69,6 +69,20 @@ class EmerailsLocalize extends ScriptCommand
         // Extract command
         $options->registerCommand(self::COMMAND_EXTRACT, 'Extract localization keys from source');
         // Extract options
+        $options->registerOption(
+            self::OPTION_CONTROLLER,
+            'Extract localization keys for this controller',
+            'c',
+            'controller',
+            self::COMMAND_EXTRACT
+        );
+        $options->registerOption(
+            self::OPTION_LANGUAGES,
+            'Comma-separated list of languages for localizations',
+            'l',
+            'languages',
+            self::COMMAND_EXTRACT
+        );
         $options->registerOption(self::OPTION_PURGE, 'Purges unused strings', 'P', false, self::COMMAND_EXTRACT);
 
         // Format command
@@ -143,6 +157,8 @@ class EmerailsLocalize extends ScriptCommand
     {
         $dry_run = $options->getOpt(self::OPTION_DRY_RUN);
         $verbose = $options->getOpt(self::OPTION_VERBOSE);
+        $languages = $options->getOpt(self::OPTION_LANGUAGES) ?: self::DEFAULT_LANGUAGE;
+
         // This path is relative to the Composer bin directory if available
         $base_dir =
             $options->getOpt(self::OPTION_BASE_DIR) ?:
@@ -169,7 +185,7 @@ EOT;
                 exit(1);
             }
         }
-        foreach (explode(',', $options->getOpt(self::OPTION_LANGUAGES)) as $language) {
+        foreach (explode(',', $languages) as $language) {
             file_put_contents(sprintf('%s/localizable-%s.strings', $dir, $language), $template);
         }
     }
@@ -245,6 +261,123 @@ EOT;
         return $ret;
     }
 
+    protected function extract_keys_from_file($filename)
+    {
+        $handle = fopen($filename, 'r');
+        $contents = fread($handle, filesize($filename));
+        fclose($handle);
+
+        preg_match_all("/l\('([^']+)'\)/", $contents, $matches, PREG_PATTERN_ORDER);
+
+        $extracted_keys = array();
+        foreach ($matches[1] as $key) {
+            $extracted_keys[] = $key;
+        }
+        if ($extracted_keys) {
+            ksort($extracted_keys);
+        }
+
+        return $extracted_keys;
+    }
+
+    protected function extract(Options $options)
+    {
+        $dry_run = $options->getOpt(self::OPTION_DRY_RUN);
+        $verbose = $options->getOpt(self::OPTION_VERBOSE);
+        $controller = $options->getOpt(self::OPTION_CONTROLLER);
+        $languages = $options->getOpt(self::OPTION_LANGUAGES) ?: self::DEFAULT_LANGUAGE;
+
+        $base_dir =
+            $options->getOpt(self::OPTION_BASE_DIR) ?: $GLOBALS['_composer_bin_dir'] ?? __DIR__ . '/../vendor/bin';
+
+        $success = true;
+
+        // 1. Extract strings from controller file
+        // TODO: this is not sufficient to extract all strings from controllers spread across various traits
+        $controller_filename = sprintf('%s/../../controllers/%s_controller.php', $base_dir, $controller);
+        $extracted_keys = $this->extract_keys_from_file($controller_filename);
+
+        // 2. Extract strings from controller views
+        $controller_views_dir = sprintf('%s/../../views/%s', $base_dir, $controller);
+        $handle = opendir($controller_views_dir);
+        if ($handle) {
+            while (($filename = readdir($handle)) !== false) {
+                if ($filename === '.' || $filename === '..') {
+                    continue;
+                }
+                $view_filename = $controller_views_dir . '/' . $filename;
+
+                $extracted_keys = array_merge($extracted_keys, $this->extract_keys_from_file($view_filename));
+            }
+        }
+
+        foreach (explode(',', $languages) as $language) {
+            // 3. Read in existing strings if available
+            $path = sprintf($base_dir . self::DEFAULT_BASE_DIR . '/%s/localizable-%s.strings', $controller, $language);
+            if (file_exists($path)) {
+                $handle = fopen($path, 'r');
+                $contents = fread($handle, filesize($path));
+                fclose($handle);
+
+                list($strings, $success) = $this->evaluate_strings_callback($contents);
+            } else {
+                $strings = array();
+            }
+
+            // 4. Layer existing strings on top of extracted strings
+            $combined_strings = array();
+            foreach ($extracted_keys as $key) {
+                $combined_strings[$key] = $key;
+            }
+            foreach ($strings as $key => $value) {
+                $combined_strings[$key] = $value;
+            }
+            ksort($combined_strings);
+
+            if ($dry_run) {
+                print "Extracted strings:\n";
+                var_dump($combined_strings);
+            } else {
+                $dir = sprintf('%s/../../assets/strings/%s', $base_dir, $controller);
+                if (!(file_exists($dir) && is_dir($dir))) {
+                    if (!mkdir($dir, 0755, true)) {
+                        exit(1);
+                    }
+                }
+
+                // TODO: should we rename the old file as .bak ?
+                $this->write_sorted_strings($combined_strings, $path, !$dry_run);
+            }
+        }
+    }
+
+    protected function write_sorted_strings($strings = array(), $path, $write = false)
+    {
+        $keys = array_keys($strings);
+        sort($keys);
+
+        $sorted_strings = '';
+        $last_prefix = null;
+        foreach ($keys as $key) {
+            $key_prefix = $this->get_key_prefix($key);
+            if (!is_null($last_prefix) && $key_prefix != $last_prefix) {
+                $sorted_strings .= "\n";
+            }
+            $sorted_strings .= sprintf("    %s => %s,\n", var_export($key, true), $this->export_string($strings[$key]));
+            $last_prefix = $key_prefix;
+        }
+
+        if ($write) {
+            $template = <<<EOT
+array(
+%s);
+
+EOT;
+
+            file_put_contents($path, sprintf($template, $sorted_strings));
+        }
+    }
+
     protected function main(Options $options)
     {
         switch ($options->getCmd()) {
@@ -253,6 +386,9 @@ EOT;
                 break;
             case self::COMMAND_CREATE:
                 $this->create($options);
+                break;
+            case self::COMMAND_EXTRACT:
+                $this->extract($options);
                 break;
             case self::COMMAND_FORMAT:
                 $this->format($options);
@@ -376,56 +512,9 @@ EOT;
         $contents = fread($handle, filesize($path));
         fclose($handle);
 
-        try {
-            eval("\$strings = $contents;");
-
-            $keys = array_keys($strings);
-            sort($keys);
-
-            $sorted_strings = '';
-            $last_prefix = null;
-            foreach ($keys as $key) {
-                $key_prefix = $this->get_key_prefix($key);
-                if (!is_null($last_prefix) && $key_prefix != $last_prefix) {
-                    $sorted_strings .= "\n";
-                }
-                $sorted_strings .= sprintf(
-                    "    %s => %s,\n",
-                    var_export($key, true),
-                    $this->export_string($strings[$key])
-                );
-                $last_prefix = $key_prefix;
-            }
-
-            if ($write) {
-                $template = <<<EOT
-array(
-%s);
-
-EOT;
-
-                file_put_contents($path, sprintf($template, $sorted_strings));
-            }
-        } catch (Throwable $t) {
-            $success = false;
-            printf(
-                "[%s] Malformed strings file: %s\n\t%s\n\n",
-                ANSIColorWriter::colorize('Error', 'red'),
-                $path,
-                $t->getMessage()
-            );
-            $lines = explode("\n", $contents);
-            foreach (range($t->getLine() - 2, $t->getLine() + 2) as $i) {
-                if ($i === $t->getLine()) {
-                    ANSIColorWriter::printf("%4d | %s\n", 'red', $i, $lines[$i - 1]);
-                } else {
-                    printf("%4d | %s\n", $i, $lines[$i - 1]);
-                }
-            }
-            printf("\n");
-        } finally {
-            return $success;
-        }
+        list($strings, $success) = $this->evaluate_strings_callback($contents, function ($strings) use ($path, $write) {
+            $this->write_sorted_strings($strings, $path, $write);
+        });
     }
 
     protected function check_file($dir, $filename)
@@ -441,11 +530,27 @@ EOT;
         preg_match('/-([a-z]{2})\.strings$/', $filename, $matches);
         list(, $language) = $matches;
 
+        list($strings, $success) = $this->evaluate_strings_callback($contents, function ($strings) use (
+            $dir,
+            $language
+        ) {
+            foreach ($strings as $key => $value) {
+                $this->set_string($dir, $language, $key, $value);
+            }
+        });
+
+        return $success;
+    }
+
+    protected function evaluate_strings_callback($contents, $callback_fn = null)
+    {
+        $success = true;
+        $strings = null;
         try {
             eval("\$strings = $contents;");
 
-            foreach ($strings as $key => $value) {
-                $this->set_string($dir, $language, $key, $value);
+            if (is_callable($callback_fn)) {
+                $callback_fn($strings);
             }
         } catch (Throwable $t) {
             $success = false;
@@ -465,7 +570,7 @@ EOT;
             }
             printf("\n");
         } finally {
-            return $success;
+            return array($strings, $success);
         }
     }
 

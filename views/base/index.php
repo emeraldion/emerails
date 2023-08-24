@@ -11,16 +11,16 @@
  * @format
  */
 
-$this->set_title('Congratulations! &mdash; EmeRails'); ?>
-<h1>Congratulations!</h1>
+$this->set_title(l('base-index-title')); ?>
+<h1><?php print l('base-index-heading'); ?></h1>
 <p>
-	Your installation of EmeRails was apparently successful.
+	<?php print l('base-index-para-1'); ?>
 </p>
 <p>
-	Now let&rsquo;s add some unique functionality to this wonderful web application framework!
-	You can start off by following the
-	<a href="https://emerails.emeraldion.it/tutorial.html">Tutorial</a>,
-	reading the
-	<a href="https://emerails.emeraldion.it/docs.html">Documentation</a>,
-	or joining the <a href="https://emerails.emeraldion.it/discuss.html">Discussion Group</a>.
+	<?php printf(
+     l('base-index-para-2-@2'),
+     sprintf('<a href="https://emerails.emeraldion.it/tutorial.html">%s</a>', l('base-index-tutorial-link')),
+     sprintf('<a href="https://emerails.emeraldion.it/docs.html">%s</a>', l('base-index-docs-link')),
+     sprintf('<a href="https://emerails.emeraldion.it/discuss.html">%s</a>', l('base-index-discussion-group-link'))
+ ); ?>
 </p>

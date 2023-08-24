@@ -493,7 +493,7 @@ class BaseController
         // Ajax magic
         $params['onclick'] =
             "$('#{$params['target']}').html('<div class=\"loading\"><span>" .
-            l('Loading...') .
+            l('loading') .
             "</span></div>').load('{$params['remote_url']}'); return false";
 
         unset($params['action']);
