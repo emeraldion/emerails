@@ -349,6 +349,15 @@ EOT;
                 $this->write_sorted_strings($combined_strings, $path, !$dry_run);
             }
         }
+
+        if ($success) {
+            print "Strings successfully extracted.\n";
+            // TODO: break down by language and controller
+            ANSIColorWriter::printf("\n%s\n", 'green', ANSIColorWriter::bold('Done'));
+        } else {
+            ANSIColorWriter::printf("\n%s\n", 'red', ANSIColorWriter::bold('Failure'));
+            exit(1);
+        }
     }
 
     protected function write_sorted_strings($strings = array(), $path, $write = false)
@@ -515,6 +524,8 @@ EOT;
         list($strings, $success) = $this->evaluate_strings_callback($contents, function ($strings) use ($path, $write) {
             $this->write_sorted_strings($strings, $path, $write);
         });
+
+        return $success;
     }
 
     protected function check_file($dir, $filename)
