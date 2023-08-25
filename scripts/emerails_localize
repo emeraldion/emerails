@@ -324,9 +324,25 @@ EOT;
                 $strings = array();
             }
 
-            // 4. Layer existing strings on top of extracted strings
+            // 4. Load global strings, unset duplicate keys, and emit a warning
+            $path = sprintf($base_dir . self::DEFAULT_BASE_DIR . '/localizable-%s.strings', $language);
+            if (file_exists($path)) {
+                $handle = fopen($path, 'r');
+                $contents = fread($handle, filesize($path));
+                fclose($handle);
+
+                list($global_strings, $success) = $this->evaluate_strings_callback($contents);
+            } else {
+                $global_strings = array();
+            }
+
+            // 5. Layer existing strings on top of extracted strings
             $combined_strings = array();
             foreach ($extracted_keys as $key) {
+                if (array_key_exists($key, $global_strings)) {
+                    // TODO: warn if verbose
+                    continue;
+                }
                 $combined_strings[$key] = $key;
             }
             foreach ($strings as $key => $value) {
