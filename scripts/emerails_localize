@@ -379,6 +379,13 @@ EOT;
             foreach ($strings as $key => $value) {
                 $combined_strings[$key] = $value;
             }
+
+            // No strings for this language, skipping...
+            if (!$combined_strings) {
+                // TODO: warn if verbose
+                continue;
+            }
+
             ksort($combined_strings);
 
             if ($dry_run) {
