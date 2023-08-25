@@ -313,10 +313,14 @@ EOT;
 
         foreach (explode(',', $languages) as $language) {
             // 3. Read in existing strings if available
-            $path = sprintf($base_dir . self::DEFAULT_BASE_DIR . '/%s/localizable-%s.strings', $controller, $language);
-            if (file_exists($path)) {
-                $handle = fopen($path, 'r');
-                $contents = fread($handle, filesize($path));
+            $controller_path = sprintf(
+                $base_dir . self::DEFAULT_BASE_DIR . '/%s/localizable-%s.strings',
+                $controller,
+                $language
+            );
+            if (file_exists($controller_path)) {
+                $handle = fopen($controller_path, 'r');
+                $contents = fread($handle, filesize($controller_path));
                 fclose($handle);
 
                 list($strings, $success) = $this->evaluate_strings_callback($contents);
@@ -325,10 +329,10 @@ EOT;
             }
 
             // 4. Load global strings, unset duplicate keys, and emit a warning
-            $path = sprintf($base_dir . self::DEFAULT_BASE_DIR . '/localizable-%s.strings', $language);
-            if (file_exists($path)) {
-                $handle = fopen($path, 'r');
-                $contents = fread($handle, filesize($path));
+            $global_path = sprintf($base_dir . self::DEFAULT_BASE_DIR . '/localizable-%s.strings', $language);
+            if (file_exists($global_path)) {
+                $handle = fopen($global_path, 'r');
+                $contents = fread($handle, filesize($global_path));
                 fclose($handle);
 
                 list($global_strings, $success) = $this->evaluate_strings_callback($contents);
@@ -362,7 +366,7 @@ EOT;
                 }
 
                 // TODO: should we rename the old file as .bak ?
-                $this->write_sorted_strings($combined_strings, $path, !$dry_run);
+                $this->write_sorted_strings($combined_strings, $controller_path, !$dry_run);
             }
         }
 
