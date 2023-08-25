@@ -39,6 +39,7 @@ class EmerailsLocalize extends ScriptCommand
     const OPTION_PURGE = 'purge';
     const OPTION_RECURSIVE = 'recursive';
     const OPTION_STRICT = 'strict';
+    const OPTION_TRAITS = 'traits';
     const OPTION_VERBOSE = 'verbose';
 
     const DEFAULT_LANGUAGE = 'en';
@@ -83,7 +84,14 @@ class EmerailsLocalize extends ScriptCommand
             'languages',
             self::COMMAND_EXTRACT
         );
-        $options->registerOption(self::OPTION_PURGE, 'Purges unused strings', 'P', false, self::COMMAND_EXTRACT);
+        // $options->registerOption(self::OPTION_PURGE, 'Purges unused strings', 'P', false, self::COMMAND_EXTRACT);
+        $options->registerOption(
+            self::OPTION_TRAITS,
+            'Extract from controller traits',
+            't',
+            false,
+            self::COMMAND_EXTRACT
+        );
 
         // Format command
         $options->registerCommand(self::COMMAND_FORMAT, 'Formats localization files');
@@ -297,7 +305,26 @@ EOT;
         $controller_filename = sprintf('%s/../../controllers/%s_controller.php', $base_dir, $controller);
         $extracted_keys = $this->extract_keys_from_file($controller_filename);
 
-        // 2. Extract strings from controller views
+        // 2. Extract strings from controller traits
+        // TODO: this is not sufficient to extract all strings from controllers spread across various traits
+        if ($options->getOpt('traits')) {
+            $controllers_dir = sprintf('%s/../../controllers', $base_dir);
+            $handle = opendir($controllers_dir);
+            if ($handle) {
+                while (($filename = readdir($handle)) !== false) {
+                    if ($filename === '.' || $filename === '..') {
+                        continue;
+                    }
+                    if (stripos($filename, sprintf('%s_controller_', $controller)) !== 0) {
+                        continue;
+                    }
+                    $trait_filename = $controllers_dir . '/' . $filename;
+                    $extracted_keys = array_merge($extracted_keys, $this->extract_keys_from_file($trait_filename));
+                }
+            }
+        }
+
+        // 3. Extract strings from controller views
         $controller_views_dir = sprintf('%s/../../views/%s', $base_dir, $controller);
         $handle = opendir($controller_views_dir);
         if ($handle) {
@@ -312,7 +339,7 @@ EOT;
         }
 
         foreach (explode(',', $languages) as $language) {
-            // 3. Read in existing strings if available
+            // 4. Read in existing strings if available
             $controller_path = sprintf(
                 $base_dir . self::DEFAULT_BASE_DIR . '/%s/localizable-%s.strings',
                 $controller,
@@ -328,7 +355,7 @@ EOT;
                 $strings = array();
             }
 
-            // 4. Load global strings, unset duplicate keys, and emit a warning
+            // 5. Load global strings, unset duplicate keys, and emit a warning
             $global_path = sprintf($base_dir . self::DEFAULT_BASE_DIR . '/localizable-%s.strings', $language);
             if (file_exists($global_path)) {
                 $handle = fopen($global_path, 'r');
@@ -340,7 +367,7 @@ EOT;
                 $global_strings = array();
             }
 
-            // 5. Layer existing strings on top of extracted strings
+            // 6. Layer existing strings on top of extracted strings
             $combined_strings = array();
             foreach ($extracted_keys as $key) {
                 if (array_key_exists($key, $global_strings)) {
