@@ -58,6 +58,15 @@ class ErrorController extends BaseController
     }
 
     /**
+     *	@fn _409
+     *	@short Handles 409 Conflict HTTP errors.
+     */
+    public function _409()
+    {
+        $this->error();
+    }
+
+    /**
      *	@fn _418
      *	@short Handles 418 I'm a Teapot HTTP errors.
      */
