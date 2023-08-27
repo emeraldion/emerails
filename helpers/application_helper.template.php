@@ -3,19 +3,18 @@
  * @format
  */
 
+require_once __DIR__ . '/../config/db.conf.php';
+require_once __DIR__ . '/../config/emerails.conf.php';
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use Emeraldion\EmeRails\Db;
-use Emeraldion\EmeRails\DbAdapters\MysqliAdapter;
 use Emeraldion\EmeRails\DbAdapters\MysqlAdapter;
-use Emeraldion\EmeRails\Helpers\Localization;
+use Emeraldion\EmeRails\DbAdapters\MysqliAdapter;
 use Emeraldion\EmeRails\Helpers\JSLocalizationHelper;
+use Emeraldion\EmeRails\Helpers\Localization;
 
 Db::register_adapter(new MysqliAdapter(), MysqliAdapter::NAME);
 Db::register_adapter(new MysqlAdapter(), MysqlAdapter::NAME);
-
-require_once __DIR__ . '/../config/db.conf.php';
-require_once __DIR__ . '/../config/emerails.conf.php';
 
 ini_set('display_errors', 'On');
 date_default_timezone_set('Europe/Rome');
