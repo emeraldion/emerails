@@ -134,6 +134,14 @@ abstract class ActiveRecord
     private $values;
 
     /**
+     *  @attr volatile
+     *  @short Marks the object as a volatile model
+     *  @details Volatile model objects cannot be persisted, i.e. saving and deleting won't
+     *  work, and will trigger an <tt>E_USER_NOTICE</tt> error.
+     */
+    public $volatile = false;
+
+    /**
      *  @fn __construct($_values)
      *  @short Constructs and initializes an ActiveRecord object.
      *  @details Due to the lack of a static class initialization method,
@@ -929,6 +937,18 @@ abstract class ActiveRecord
      */
     public function save()
     {
+        if ($this->volatile) {
+            trigger_error(
+                sprintf(
+                    '[%s::%s] This model object is volatile and cannot be saved.',
+                    get_called_class(),
+                    __FUNCTION__
+                ),
+                E_USER_NOTICE
+            );
+            return;
+        }
+
         $conn = Db::get_connection();
 
         $classname = get_class($this);
@@ -1012,9 +1032,21 @@ abstract class ActiveRecord
      */
     public function delete($optimize = false)
     {
-        $conn = Db::get_connection();
+        if ($this->volatile) {
+            trigger_error(
+                sprintf(
+                    '[%s::%s] This model object is volatile and cannot be deleted.',
+                    get_called_class(),
+                    __FUNCTION__
+                ),
+                E_USER_NOTICE
+            );
+            return;
+        }
 
         if (!empty($this->values[$this->primary_key])) {
+            $conn = Db::get_connection();
+
             $conn->prepare(
                 "DELETE FROM `{1}` WHERE `{$this->primary_key}` = '{2}' LIMIT 1",
                 $this->get_table_name(),
@@ -1029,9 +1061,9 @@ abstract class ActiveRecord
                 $conn->prepare('OPTIMIZE TABLE `{1}`', $this->get_table_name());
                 $conn->exec();
             }
-        }
 
-        Db::close_connection($conn);
+            Db::close_connection($conn);
+        }
     }
 
     protected function validate($raise = false)

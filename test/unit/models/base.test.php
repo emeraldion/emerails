@@ -301,6 +301,19 @@ class ActiveRecordTest extends UnitTest
         $this->assertFalse($ret, 'Duplicate model was saved and not rejected');
     }
 
+    public function test_save_volatile()
+    {
+        $instance = new TestModel(array(
+            'name' => 'baz'
+        ));
+        $instance->volatile = true;
+
+        $this->expectError();
+        $this->expectErrorMessage('[TestModel::save] This model object is volatile and cannot be saved.');
+
+        $instance->save();
+    }
+
     public function test_delete()
     {
         create_test_model(array('blip'));
@@ -319,6 +332,26 @@ class ActiveRecordTest extends UnitTest
             'where_clause' => "`name`= 'blip'"
         ));
         $this->assertNull($other_instances);
+    }
+
+    public function test_delete_unsaved()
+    {
+        $instance = new TestModel();
+        $this->assertNotNull($instance);
+        $instance->delete();
+    }
+
+    public function test_delete_volatile()
+    {
+        $instance = new TestModel(array(
+            'name' => 'baz'
+        ));
+        $instance->volatile = true;
+
+        $this->expectError();
+        $this->expectErrorMessage('[TestModel::delete] This model object is volatile and cannot be deleted.');
+
+        $instance->delete();
     }
 
     public function test_static_find()
