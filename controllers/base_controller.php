@@ -78,6 +78,15 @@ class BaseController
     private $rendered = false;
 
     /**
+     *  @attr allowed_methods
+     *  @short Array of allowed request methods accepted by actions.
+     *  @details Contains a list of allow rules for methods accepted by actions. These are checked before anything else.
+     *  When the request method is <tt>GET</tt>, <tt>HEAD</tt> or <tt>OPTIONS</tt>, the request is allowed unless explicitly
+     *  blocked. For other methods, the request is blocked by default unless explicitly allowed.
+     */
+    private $allowed_methods = array();
+
+    /**
      *  @attr before_filters
      *  @short Array of filters that should be called before the response has been rendered.
      */
@@ -274,6 +283,127 @@ class BaseController
             return in_array($this->action, $conditions);
         }
         return true;
+    }
+
+    /**
+     *  @fn allow_method($method, $params)
+     *  @short Adds a rule to control allowed methods for action methods
+     *  @details EmeRails allows the developer to customize what methods are allowed for an action. By default,
+     *  all read-only methods (GET, HEAD, OPTIONS) are allowed, while the others are blocked. By invoking
+     *  this method, the default behavior can be altered.
+     *
+     *  The controller keeps a map of allow rules that are looked up before the action method is invoked.
+     *  You can customize the way the rule is applied by passing the optional parameter <tt>params</tt>.
+     *
+     *  - If <tt>params</tt> is not provided, the method or methods are allowed on all actions of the controller.
+     *  - If set to a string, the method or methods are allowed on the action of that name.
+     *  - If passing an array:
+     *      - If the <tt>'only'</tt> key is set, the method or methods will be allowed only on the listed action name,
+     *        or names if the value is an array.
+     *      - If the <tt>'except'</tt> key is passed, the method or methods will be allowed on all actions except the
+     *        listed action name, or names if the value is an array.
+     *      - If <tt>params</tt> is an array of strings, the method behaves the same as when setting the <tt>'only'</tt> key.
+     *
+     *  Examples:
+     *
+     *  <tt>$this->allow_method('POST', 'create');</tt>
+     *
+     *  Allows the <tt>POST</tt> method on the <tt>create</tt> action.
+     *
+     *  <tt>$this->allow_method(array('PUT', 'DELETE'), 'widget');</tt>
+     *
+     *  Allows the <tt>PUT</tt> and <tt>DELETE</tt> methods on the <tt>widget</tt> action.
+     *
+     *  <tt>$this->allow_method('GET', array('except' => array('delete')));</tt>
+     *
+     *  Blocks the <tt>GET</tt> method on the <tt>delete</tt> action.
+     *
+     *  @param method The name (or an array of names) of the method
+     *  Check the <tt>Request</tt> object for a list of supported methods.
+     *  @param params Optional parameters that define how to handle the method
+     */
+    protected function allow_method($method, $params = null)
+    {
+        if (is_array($method)) {
+            foreach ($method as $m) {
+                $this->allow_method($m, $params);
+            }
+            return;
+        }
+        if (is_array($params)) {
+            if (array_key_exists('except', $params)) {
+                $except = $params['except'];
+                if (is_array($except)) {
+                    // Block this method for all actions in the 'except' clause
+                    foreach ($except as $action) {
+                        $this->allowed_methods[$action][$method] = false;
+                    }
+                } else {
+                    // Block this method for the single action in the 'except' clause
+                    $this->allowed_methods[$except][$method] = false;
+                }
+                // Allow this method for all other actions
+                $this->allowed_methods['*'][$method] = true;
+            } elseif (array_key_exists('only', $params)) {
+                $only = $params['only'];
+                if (is_array($only)) {
+                    // Allow this method for all actions in the 'only' clause
+                    foreach ($only as $action) {
+                        $this->allowed_methods[$action][$method] = true;
+                    }
+                } else {
+                    // Allow this method for the single action in the 'only' clause
+                    $this->allowed_methods[$only][$method] = true;
+                }
+                // Block this method for all other actions
+                $this->allowed_methods['*'][$method] = false;
+            } else {
+                // Allow this method for all listed actions
+                foreach ($params as $action) {
+                    $this->allowed_methods[$action][$method] = true;
+                }
+            }
+        } elseif (!is_null($params)) {
+            // Allow this method for the named action
+            $this->allowed_methods[$params][$method] = true;
+        } else {
+            // Blanket allow
+            $this->allowed_methods['*'][$method] = true;
+        }
+    }
+
+    /**
+     *  @fn is_method_allowed
+     *  @short Checks if the request method is allowed for the requested action
+     *  @details Since the introduction of method allow rules, you can specify which HTTP methods are allowed by controllers.
+     *  By default, "dangerous" methods (<tt>PUT</tt>, <tt>POST</tt>, <tt>DELETE</tt>) are blocked by controllers. This is
+     *  controlled by the <tt>DEFAULT_ALLOWED_METHODS</tt> config setting, which accepts a list of method names accepted by default.
+     *
+     *  You can customize this behavior by editing the config setting <tt>DEFAULT_ALLOWED_METHODS</tt> to tweak the default
+     *  list of allowed methods, or set its value to <tt>'*'</tt> to restore the legacy behavior of allowing all methods unless
+     *  explicitly blocked.
+     *
+     */
+    private function is_method_allowed()
+    {
+        $default_allowed = in_array($this->request->method, Config::get('DEFAULT_ALLOWED_METHODS'));
+
+        // If a key with the name of the action exists, check if the method is mentioned
+        if (array_key_exists($this->action, $this->allowed_methods)) {
+            $rules = $this->allowed_methods[$this->action];
+            if (array_key_exists($this->request->method, $rules)) {
+                return $rules[$this->request->method];
+            }
+        } elseif (array_key_exists('*', $this->allowed_methods)) {
+            // If there's a blanket rule, check that instead
+            $rules = $this->allowed_methods['*'];
+            if (array_key_exists($this->request->method, $rules)) {
+                return $rules[$this->request->method];
+            }
+        }
+
+        // Fall back to default behavior
+        return $default_allowed;
     }
 
     /**
@@ -803,6 +933,11 @@ class BaseController
      */
     public function render_page()
     {
+        // Check if method is allowed for this action
+        if (!$this->is_method_allowed()) {
+            $this->send_error(405);
+        }
+
         // Process before filters queue
         foreach ($this->before_filters as $before_filter) {
             list($filter, $conditions) = $before_filter;

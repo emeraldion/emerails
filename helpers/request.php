@@ -19,6 +19,55 @@
 class Request
 {
     /**
+     * @const METHOD_GET
+     * @short Name of the GET method
+     */
+    const METHOD_GET = 'GET';
+
+    /**
+     * @const METHOD_POST
+     * @short Name of the POST method
+     */
+    const METHOD_POST = 'POST';
+
+    /**
+     * @const METHOD_PUT
+     * @short Name of the PUT method
+     */
+    const METHOD_PUT = 'PUT';
+
+    /**
+     * @const METHOD_HEAD
+     * @short Name of the HEAD method
+     */
+    const METHOD_HEAD = 'HEAD';
+
+    /**
+     * @const METHOD_OPTIONS
+     * @short Name of the OPTIONS method
+     */
+    const METHOD_OPTIONS = 'OPTIONS';
+
+    /**
+     * @const METHOD_DELETE
+     * @short Name of the DELETE method
+     */
+    const METHOD_DELETE = 'DELETE';
+
+    /**
+     * @const METHODS
+     * @short Names of all supported methods
+     */
+    const METHODS = array(
+        self::METHOD_GET,
+        self::METHOD_POST,
+        self::METHOD_PUT,
+        self::METHOD_HEAD,
+        self::METHOD_OPTIONS,
+        self::METHOD_DELETE
+    );
+
+    /**
      *	@short The query string used in the HTTP request.
      */
     public $querystring;
@@ -44,7 +93,7 @@ class Request
      */
     public function is_get()
     {
-        return self::is_method('GET');
+        return self::is_method(self::METHOD_GET);
     }
 
     /**
@@ -53,7 +102,7 @@ class Request
      */
     public function is_post()
     {
-        return self::is_method('POST');
+        return self::is_method(self::METHOD_POST);
     }
 
     /**
@@ -62,7 +111,7 @@ class Request
      */
     public function is_delete()
     {
-        return self::is_method('DELETE');
+        return self::is_method(self::METHOD_DELETE);
     }
 
     /**
@@ -71,7 +120,7 @@ class Request
      */
     public function is_put()
     {
-        return self::is_method('PUT');
+        return self::is_method(self::METHOD_PUT);
     }
 
     /**
@@ -80,7 +129,16 @@ class Request
      */
     public function is_head()
     {
-        return self::is_method('HEAD');
+        return self::is_method(self::METHOD_HEAD);
+    }
+
+    /**
+     *	@fn is_options
+     *	@short Returns <tt>TRUE</tt> if the request method is <tt>OPTIONS</tt>.
+     */
+    public function is_options()
+    {
+        return self::is_method(self::METHOD_OPTIONS);
     }
 
     /**
