@@ -316,8 +316,8 @@ class BaseController
     protected function accept_parameter($action, string $name, array $params = array())
     {
         if (is_array($action)) {
-            foreach ($actions as $action) {
-                $this->accept_parameter($action, $name, $params);
+            foreach ($action as $a) {
+                $this->accept_parameter($a, $name, $params);
             }
         } else {
             $this->accepted_parameters[$action][$name] = $params;
