@@ -11,6 +11,8 @@
  * @format
  */
 
+use Emeraldion\EmeRails\Helpers\Localization;
+
 global $irregular_nouns;
 global $default_irregular_nouns;
 

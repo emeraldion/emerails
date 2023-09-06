@@ -11,15 +11,14 @@
  * @format
  */
 
-require_once __DIR__ . '/../helpers/http.php';
-require_once __DIR__ . '/../helpers/localization.php';
-require_once __DIR__ . '/../helpers/query_string.php';
-require_once __DIR__ . '/../helpers/request.php';
-require_once __DIR__ . '/../helpers/response.php';
 require_once __DIR__ . '/../include/common.inc.php';
 require_once __DIR__ . '/../include/tag_support.inc.php';
 
 use Emeraldion\EmeRails\Config;
+use Emeraldion\EmeRails\Helpers\HTTP;
+use Emeraldion\EmeRails\Helpers\Localization;
+use Emeraldion\EmeRails\Helpers\Request;
+use Emeraldion\EmeRails\Helpers\Response;
 
 /**
  *  @class BaseController
@@ -85,6 +84,31 @@ class BaseController
      *  blocked. For other methods, the request is blocked by default unless explicitly allowed.
      */
     private $allowed_methods = array();
+
+    /**
+     *  @attr accepted_parameters
+     *  @short Map of accepted request parameters expected by actions.
+     *  @details Contains a map of maps of accepted request parameters keyed by action and parameter name. The value is a
+     *  dictionary with details about the type and acceptable values.
+     */
+    private $accepted_parameters = array();
+
+    /**
+     * @attr parameters
+     * @short Hub for accepted request parameters
+     * @details All parameters declared with <tt>accept_parameter</tt> will be hoisted as properties of this object, e.g.
+     *
+     * // GET /controller/action/1
+     * protected function init() {
+     *   $this->accept_parameter('index', 'id', array('required' => true, 'type' => 'int'));
+     * }
+     *
+     * public function action() {
+     *   var_dump($this->parameters->id);
+     *   // => int(1)
+     * }
+     */
+    private $parameters;
 
     /**
      *  @attr before_filters
@@ -283,6 +307,116 @@ class BaseController
             return in_array($this->action, $conditions);
         }
         return true;
+    }
+
+    /**
+     * @fn accept_parameter($action, $name, $params)
+     * @short Declares an accepted parameter
+     */
+    protected function accept_parameter($action, string $name, array $params = array())
+    {
+        if (is_array($action)) {
+            foreach ($actions as $action) {
+                $this->accept_parameter($action, $name, $params);
+            }
+        } else {
+            $this->accepted_parameters[$action][$name] = $params;
+        }
+    }
+
+    /**
+     * @fn populate_accepted_parameters()
+     * @short Populates and validates accepted parameters
+     */
+    private function populate_accepted_parameters()
+    {
+        $action = $this->action;
+        if (array_key_exists($action, $this->accepted_parameters)) {
+            foreach ($this->accepted_parameters[$action] as $name => $params) {
+                $value = null;
+                switch ($this->request->method) {
+                    case Request::METHOD_GET:
+                    case Request::METHOD_HEAD:
+                    case Request::METHOD_OPTIONS:
+                        if ($this->request->get_parameter($name)) {
+                            $value = $this->request->get_parameter($name);
+                        }
+                    case Request::METHOD_POST:
+                    case Request::METHOD_PUT:
+                    case Request::METHOD_DELETE:
+                        if (isset($_POST[$name])) {
+                            $value = $this->parameters->$name = $_POST[$name];
+                        }
+                        break;
+                }
+                if (!$this->parameters) {
+                    $this->parameters = new stdClass();
+                }
+                $this->parameters->$name = $this->validate_parameter($name, $value, $params);
+            }
+        }
+    }
+
+    /**
+     * @fn validate_parameter($name, $value, $params)
+     * @short Validates an accepted parameter
+     */
+    protected function validate_parameter(string $name, $value, array $params = array())
+    {
+        if (array_key_exists('required', $params)) {
+            if (($required = $params['required']) && empty($value)) {
+                // TODO: delegate the subclass to present this error
+                trigger_error(
+                    sprintf("[%s::%s] Missing required parameter '%s'.", get_called_class(), __FUNCTION__, $name),
+                    E_USER_ERROR
+                );
+            }
+        }
+        // Check type
+        if (array_key_exists('type', $params)) {
+            $type = $params['type'];
+            switch ($type) {
+                case 'string':
+                    if ($valid = is_string($value)) {
+                        $value = (string) $value;
+                    }
+                    break;
+                case 'int':
+                    if ($valid = is_numeric($value) && ((int) $value) == $value) {
+                        $value = (int) $value;
+                    }
+                    break;
+                case 'float':
+                    if ($valid = is_numeric($value) && ((float) $value) == $value) {
+                        $value = (float) $value;
+                    }
+                    break;
+                case 'enum':
+                    $valid = in_array($value, $params['values']);
+                    break;
+            }
+            if (!$valid) {
+                // TODO: delegate the subclass to present this error
+                trigger_error(
+                    sprintf(
+                        "[%s::%s] Type mismatch for parameter '%s'. Expected '%s', but found: '%s'",
+                        get_called_class(),
+                        __FUNCTION__,
+                        $name,
+                        $type,
+                        $value
+                    ),
+                    E_USER_ERROR
+                );
+            }
+            // TODO: check if required
+        } else {
+            trigger_error(
+                sprintf("[%s::%s] Missing type annotation for parameter '%s'", get_called_class(), __FUNCTION__, $name),
+                E_USER_NOTICE
+            );
+        }
+        return $value;
     }
 
     /**
@@ -937,6 +1071,9 @@ class BaseController
         if (!$this->is_method_allowed()) {
             $this->send_error(405);
         }
+
+        // Populate accepted parameters
+        $this->populate_accepted_parameters();
 
         // Process before filters queue
         foreach ($this->before_filters as $before_filter) {
