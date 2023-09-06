@@ -108,7 +108,7 @@ class BaseController
      *   // => int(1)
      * }
      */
-    private $parameters;
+    protected $parameters;
 
     /**
      *  @attr before_filters
