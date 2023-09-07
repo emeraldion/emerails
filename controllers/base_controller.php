@@ -540,8 +540,10 @@ class BaseController
                             }
                         } else {
                             if (!($valid = in_array($value, $possible_values))) {
-                                if (empty($value) && $has_default) {
-                                    $value = $default_value;
+                                if ($valid = empty($value) && ($has_default || !$is_required)) {
+                                    if ($has_default) {
+                                        $value = $default_value;
+                                    }
                                 }
                             }
                         }

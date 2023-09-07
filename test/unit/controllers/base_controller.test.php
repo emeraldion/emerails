@@ -361,8 +361,7 @@ EOT
 
     public function test_validate_parameter_float_null_valid()
     {
-        $this->assertEquals(
-            null,
+        $this->assertNull(
             $this->controller->do_validate_parameter('ratio', null, array(
                 'type' => 'float'
             ))
@@ -491,6 +490,53 @@ EOT
         );
     }
 
+    public function test_validate_parameter_enum_valid()
+    {
+        $this->assertEquals(
+            'apples',
+            $this->controller->do_validate_parameter('fruit', 'apples', array(
+                'type' => 'enum',
+                'values' => array('oranges', 'apples', 'nectarines', 'kiwis')
+            ))
+        );
+    }
+
+    public function test_validate_parameter_enum_null_valid()
+    {
+        $this->assertNull(
+            $this->controller->do_validate_parameter('fruit', null, array(
+                'type' => 'enum',
+                'values' => array('oranges', 'apples', 'nectarines', 'kiwis')
+            ))
+        );
+    }
+
+    public function test_validate_parameter_enum_default_null_valid()
+    {
+        $this->assertEquals(
+            'nectarines',
+            $this->controller->do_validate_parameter('fruit', null, array(
+                'type' => 'enum',
+                'values' => array('oranges', 'apples', 'nectarines', 'kiwis'),
+                'default' => 'nectarines'
+            ))
+        );
+    }
+
+    public function test_validate_parameter_enum_required_null_invalid()
+    {
+        $this->expectError();
+        $this->expectErrorMessage(
+            "[BaseControllerWrapper::validate_parameter] Missing required enum parameter 'fruit'"
+        );
+
+        $this->controller->do_validate_parameter('fruit', null, array(
+            'type' => 'enum',
+            'values' => array('oranges', 'apples', 'nectarines', 'kiwis'),
+            'required' => true
+        ));
+    }
+
     public function test_validate_parameter_enum_required_valid()
     {
         $this->assertEquals(
@@ -507,6 +553,20 @@ EOT
     {
         $this->expectError();
         $this->expectErrorMessage(
+            "[BaseControllerWrapper::validate_parameter] Missing required enum parameter 'fruit'"
+        );
+
+        $this->controller->do_validate_parameter('fruit', '', array(
+            'type' => 'enum',
+            'values' => array('oranges', 'apples', 'nectarines', 'kiwis'),
+            'required' => true
+        ));
+    }
+
+    public function test_validate_parameter_enum_required_string_invalid()
+    {
+        $this->expectError();
+        $this->expectErrorMessage(
             "[BaseControllerWrapper::validate_parameter] Type mismatch for parameter 'fruit'. Expected 'enum', but found: 'foobar'"
         );
 
@@ -515,6 +575,33 @@ EOT
             'values' => array('oranges', 'apples', 'nectarines', 'kiwis'),
             'required' => true
         ));
+    }
+
+    public function test_validate_parameter_enum_array_valid()
+    {
+        $this->assertEquals(
+            array('apples', 'kiwis'),
+            $this->controller->do_validate_parameter(
+                'fruit',
+                array('apples', 'kiwis'),
+                array(
+                    'type' => 'enum[]',
+                    'values' => array('oranges', 'apples', 'nectarines', 'kiwis')
+                )
+            )
+        );
+    }
+
+    public function test_validate_parameter_enum_array_default_valid()
+    {
+        $this->assertEquals(
+            array('nectarines', 'kiwis'),
+            $this->controller->do_validate_parameter('fruit', null, array(
+                'type' => 'enum[]',
+                'values' => array('oranges', 'apples', 'nectarines', 'kiwis'),
+                'default' => array('nectarines', 'kiwis')
+            ))
+        );
     }
 
     public function test_validate_parameter_enum_array_required_valid()
