@@ -341,11 +341,15 @@ class BaseController
                         if ($this->request->get_parameter($name)) {
                             $value = $this->request->get_parameter($name);
                         }
+                        break;
                     case Request::METHOD_POST:
                     case Request::METHOD_PUT:
                     case Request::METHOD_DELETE:
+                        if ($this->request->get_parameter($name)) {
+                            $value = $this->request->get_parameter($name);
+                        }
                         if (isset($_POST[$name])) {
-                            $value = $this->parameters->$name = $_POST[$name];
+                            $value = $_POST[$name];
                         }
                         break;
                 }
@@ -377,7 +381,7 @@ class BaseController
             $type = $params['type'];
             switch ($type) {
                 case 'string':
-                    if ($valid = is_string($value)) {
+                    if ($valid = is_string($value) || empty($value)) {
                         $value = (string) $value;
                     }
                     break;
