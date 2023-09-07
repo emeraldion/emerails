@@ -404,8 +404,13 @@ class BaseController
             preg_match('/([^\[\]]+)(\[\])?$/', $params['type'], $matches);
             @list(, $type, $multi) = $matches;
 
-            if (array_key_exists('required', $params)) {
-                if (($required = $params['required']) && empty($value)) {
+            $is_required = array_key_exists('required', $params);
+            if ($has_default = array_key_exists('default', $params)) {
+                $default_value = $params['default'];
+            }
+
+            if ($is_required) {
+                if (empty($value)) {
                     // TODO: delegate the subclass to present this error
                     trigger_error(
                         sprintf(
@@ -436,10 +441,15 @@ class BaseController
                             if ($valid) {
                                 $value = $outval;
                             }
+                        } elseif ($has_default) {
+                            $value = $default_value;
                         }
                     } else {
                         if ($valid = is_string($value) || empty($value)) {
                             $value = (string) $value;
+                        }
+                        if (empty($value) && $has_default) {
+                            $value = $default_value;
                         }
                     }
                     break;
@@ -453,20 +463,24 @@ class BaseController
                             foreach ($value as $val) {
                                 if ($v = is_numeric($val) && ((int) $val) == $val) {
                                     $outval[] = (int) $val;
-                                } elseif ($v = empty($val) && array_key_exists('default', $params)) {
-                                    $outval[] = (int) $params['default'];
+                                } elseif ($v = empty($val) && $has_default) {
+                                    $outval[] = (int) $default_value;
                                 }
                                 $valid = $valid && $v;
                             }
                             if ($valid) {
                                 $value = $outval;
                             }
+                        } elseif ($has_default) {
+                            $value = $default_value;
                         }
                     } else {
                         if ($valid = is_numeric($value) && ((int) $value) == $value) {
                             $value = (int) $value;
-                        } elseif ($valid = empty($value) && array_key_exists('default', $params)) {
-                            $value = (int) $params['default'];
+                        } elseif ($valid = empty($value) && ($has_default || !$is_required)) {
+                            if ($has_default) {
+                                $value = (int) $default_value;
+                            }
                         }
                     }
                     break;
@@ -478,48 +492,57 @@ class BaseController
                             foreach ($value as $val) {
                                 if ($v = is_numeric($val) && ((float) $val) == $val) {
                                     $outval[] = (float) $val;
-                                } elseif ($v = empty($val) && array_key_exists('default', $params)) {
-                                    $outval[] = (float) $params['default'];
+                                } elseif ($v = empty($val) && $has_default) {
+                                    $outval[] = (float) $default_value;
                                 }
                                 $valid = $valid && $v;
                             }
                             if ($valid) {
                                 $value = $outval;
                             }
+                        } elseif ($has_default) {
+                            $value = $default_value;
                         }
                     } else {
                         if ($valid = is_numeric($value) && ((float) $value) == $value) {
                             $value = (float) $value;
-                        } elseif ($valid = empty($value) && array_key_exists('default', $params)) {
-                            $value = (float) $params['default'];
+                        } elseif ($valid = empty($value) && ($has_default || !$is_required)) {
+                            if ($has_default) {
+                                $value = (float) $default_value;
+                            }
                         }
                     }
                     break;
                 case self::PARAM_TYPE_ENUM:
                     if (!array_key_exists('values', $params)) {
                         $valid = false;
-                    } elseif ($multi) {
-                        $outval = array();
-                        $valid = true;
-                        if ($value) {
-                            foreach ($value as $val) {
-                                if (!($v = in_array($val, $params['values']))) {
-                                    if (empty($val) && array_key_exists('default', $params)) {
-                                        $outval[] = $params['default'];
-                                    }
-                                } else {
-                                    $outval[] = $v;
-                                }
-                                $valid = $valid && $v;
-                            }
-                            if ($valid) {
-                                $value = $outval;
-                            }
-                        }
                     } else {
-                        if (!($valid = in_array($value, $params['values']))) {
-                            if (empty($value) && array_key_exists('default', $params)) {
-                                $value = $params['default'];
+                        $possible_values = $params['values'];
+                        if ($multi) {
+                            $outval = array();
+                            $valid = true;
+                            if ($value) {
+                                foreach ($value as $val) {
+                                    if (!($v = in_array($val, $possible_values))) {
+                                        if (empty($val) && $has_default) {
+                                            $outval[] = $default_value;
+                                        }
+                                    } else {
+                                        $outval[] = $v;
+                                    }
+                                    $valid = $valid && $v;
+                                }
+                                if ($valid) {
+                                    $value = $outval;
+                                }
+                            } elseif ($has_default) {
+                                $value = $default_value;
+                            }
+                        } else {
+                            if (!($valid = in_array($value, $possible_values))) {
+                                if (empty($value) && $has_default) {
+                                    $value = $default_value;
+                                }
                             }
                         }
                     }

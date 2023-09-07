@@ -73,6 +73,48 @@ EOT
         );
     }
 
+    public function test_validate_parameter_int_valid()
+    {
+        $this->assertEquals(
+            123,
+            $this->controller->do_validate_parameter('id', '123', array(
+                'type' => 'int'
+            ))
+        );
+    }
+
+    public function test_validate_parameter_int_null_valid()
+    {
+        $this->assertEquals(
+            null,
+            $this->controller->do_validate_parameter('id', null, array(
+                'type' => 'int'
+            ))
+        );
+    }
+
+    public function test_validate_parameter_int_default_null_valid()
+    {
+        $this->assertEquals(
+            456,
+            $this->controller->do_validate_parameter('id', null, array(
+                'type' => 'int',
+                'default' => 456
+            ))
+        );
+    }
+
+    public function test_validate_parameter_int_required_null_invalid()
+    {
+        $this->expectError();
+        $this->expectErrorMessage("[BaseControllerWrapper::validate_parameter] Missing required int parameter 'id'");
+
+        $this->controller->do_validate_parameter('id', null, array(
+            'type' => 'int',
+            'required' => true
+        ));
+    }
+
     public function test_validate_parameter_int_required_valid()
     {
         $this->assertEquals(
@@ -93,6 +135,44 @@ EOT
             'type' => 'int',
             'required' => true
         ));
+    }
+
+    public function test_validate_parameter_int_required_string_invalid()
+    {
+        $this->expectError();
+        $this->expectErrorMessage(
+            "[BaseControllerWrapper::validate_parameter] Type mismatch for parameter 'id'. Expected 'int', but found: 'abc'"
+        );
+
+        $this->controller->do_validate_parameter('id', 'abc', array(
+            'type' => 'int',
+            'required' => true
+        ));
+    }
+
+    public function test_validate_parameter_int_array_valid()
+    {
+        $this->assertEquals(
+            array(1, 2, 3),
+            $this->controller->do_validate_parameter(
+                'id',
+                array('1', '2', '3'),
+                array(
+                    'type' => 'int[]'
+                )
+            )
+        );
+    }
+
+    public function test_validate_parameter_int_array_default_valid()
+    {
+        $this->assertEquals(
+            array(3, 4, 5),
+            $this->controller->do_validate_parameter('id', null, array(
+                'type' => 'int[]',
+                'default' => array(3, 4, 5)
+            ))
+        );
     }
 
     public function test_validate_parameter_int_array_required_valid()
@@ -129,6 +209,50 @@ EOT
         );
     }
 
+    public function test_validate_parameter_string_valid()
+    {
+        $this->assertEquals(
+            'abc',
+            $this->controller->do_validate_parameter('query', 'abc', array(
+                'type' => 'string'
+            ))
+        );
+    }
+
+    public function test_validate_parameter_string_null_valid()
+    {
+        $this->assertEquals(
+            '',
+            $this->controller->do_validate_parameter('query', null, array(
+                'type' => 'string'
+            ))
+        );
+    }
+
+    public function test_validate_parameter_string_default_null_valid()
+    {
+        $this->assertEquals(
+            '*',
+            $this->controller->do_validate_parameter('query', null, array(
+                'type' => 'string',
+                'default' => '*'
+            ))
+        );
+    }
+
+    public function test_validate_parameter_string_required_null_invalid()
+    {
+        $this->expectError();
+        $this->expectErrorMessage(
+            "[BaseControllerWrapper::validate_parameter] Missing required string parameter 'query'"
+        );
+
+        $this->controller->do_validate_parameter('query', null, array(
+            'type' => 'string',
+            'required' => true
+        ));
+    }
+
     public function test_validate_parameter_string_required_valid()
     {
         $this->assertEquals(
@@ -144,6 +268,19 @@ EOT
     {
         $this->expectError();
         $this->expectErrorMessage(
+            "[BaseControllerWrapper::validate_parameter] Missing required string parameter 'query'"
+        );
+
+        $this->controller->do_validate_parameter('query', '', array(
+            'type' => 'string',
+            'required' => true
+        ));
+    }
+
+    public function test_validate_parameter_string_required_int_invalid()
+    {
+        $this->expectError();
+        $this->expectErrorMessage(
             "[BaseControllerWrapper::validate_parameter] Type mismatch for parameter 'query'. Expected 'string', but found: 123"
         );
 
@@ -151,6 +288,31 @@ EOT
             'type' => 'string',
             'required' => true
         ));
+    }
+
+    public function test_validate_parameter_string_array_valid()
+    {
+        $this->assertEquals(
+            array('a', 'b', 'c'),
+            $this->controller->do_validate_parameter(
+                'query',
+                array('a', 'b', 'c'),
+                array(
+                    'type' => 'string[]'
+                )
+            )
+        );
+    }
+
+    public function test_validate_parameter_string_array_default_valid()
+    {
+        $this->assertEquals(
+            array('a', 'b', 'c'),
+            $this->controller->do_validate_parameter('query', null, array(
+                'type' => 'string[]',
+                'default' => array('a', 'b', 'c')
+            ))
+        );
     }
 
     public function test_validate_parameter_string_array_required_valid()
@@ -187,6 +349,50 @@ EOT
         );
     }
 
+    public function test_validate_parameter_float_valid()
+    {
+        $this->assertEquals(
+            0.123,
+            $this->controller->do_validate_parameter('ratio', '0.123', array(
+                'type' => 'float'
+            ))
+        );
+    }
+
+    public function test_validate_parameter_float_null_valid()
+    {
+        $this->assertEquals(
+            null,
+            $this->controller->do_validate_parameter('ratio', null, array(
+                'type' => 'float'
+            ))
+        );
+    }
+
+    public function test_validate_parameter_float_default_null_valid()
+    {
+        $this->assertEquals(
+            1.234,
+            $this->controller->do_validate_parameter('ratio', null, array(
+                'type' => 'float',
+                'default' => 1.234
+            ))
+        );
+    }
+
+    public function test_validate_parameter_float_required_null_invalid()
+    {
+        $this->expectError();
+        $this->expectErrorMessage(
+            "[BaseControllerWrapper::validate_parameter] Missing required float parameter 'ratio'"
+        );
+
+        $this->controller->do_validate_parameter('ratio', null, array(
+            'type' => 'float',
+            'required' => true
+        ));
+    }
+
     public function test_validate_parameter_float_required_valid()
     {
         $this->assertEquals(
@@ -202,6 +408,19 @@ EOT
     {
         $this->expectError();
         $this->expectErrorMessage(
+            "[BaseControllerWrapper::validate_parameter] Missing required float parameter 'ratio'"
+        );
+
+        $this->controller->do_validate_parameter('ratio', '', array(
+            'type' => 'float',
+            'required' => true
+        ));
+    }
+
+    public function test_validate_parameter_float_required_string_invalid()
+    {
+        $this->expectError();
+        $this->expectErrorMessage(
             "[BaseControllerWrapper::validate_parameter] Type mismatch for parameter 'ratio'. Expected 'float', but found: 'abc'"
         );
 
@@ -209,6 +428,31 @@ EOT
             'type' => 'float',
             'required' => true
         ));
+    }
+
+    public function test_validate_parameter_float_array_valid()
+    {
+        $this->assertEquals(
+            array(1.1, 2.2, 3.3),
+            $this->controller->do_validate_parameter(
+                'ratio',
+                array('1.1', '2.2', '3.3'),
+                array(
+                    'type' => 'float[]'
+                )
+            )
+        );
+    }
+
+    public function test_validate_parameter_float_array_default_valid()
+    {
+        $this->assertEquals(
+            array(1.1, 2.2, 3.3),
+            $this->controller->do_validate_parameter('ratio', null, array(
+                'type' => 'float[]',
+                'default' => array('1.1', '2.2', '3.3')
+            ))
+        );
     }
 
     public function test_validate_parameter_float_array_required_valid()
