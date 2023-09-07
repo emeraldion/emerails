@@ -110,6 +110,34 @@ class BaseController
      */
     protected $parameters;
 
+    const PARAM_TYPE_BOOL = 'bool';
+    const PARAM_TYPE_BOOL_ARRAY = 'bool[]';
+    const PARAM_TYPE_ENUM = 'enum';
+    const PARAM_TYPE_ENUM_ARRAY = 'enum[]';
+    const PARAM_TYPE_FLOAT = 'float';
+    const PARAM_TYPE_FLOAT_ARRAY = 'float[]';
+    const PARAM_TYPE_INT = 'int';
+    const PARAM_TYPE_INT_ARRAY = 'int[]';
+    const PARAM_TYPE_STRING = 'string';
+    const PARAM_TYPE_STRING_ARRAY = 'string[]';
+    const PARAM_TYPE_TINYINT = 'tinyint';
+    const PARAM_TYPE_TINYINT_ARRAY = 'tinyint[]';
+
+    const PARAM_TYPES = array(
+        self::PARAM_TYPE_BOOL,
+        self::PARAM_TYPE_BOOL_ARRAY,
+        self::PARAM_TYPE_ENUM,
+        self::PARAM_TYPE_ENUM_ARRAY,
+        self::PARAM_TYPE_FLOAT,
+        self::PARAM_TYPE_FLOAT_ARRAY,
+        self::PARAM_TYPE_INT,
+        self::PARAM_TYPE_INT_ARRAY,
+        self::PARAM_TYPE_STRING,
+        self::PARAM_TYPE_STRING_ARRAY,
+        self::PARAM_TYPE_TINYINT,
+        self::PARAM_TYPE_TINYINT_ARRAY
+    );
+
     /**
      *  @attr before_filters
      *  @short Array of filters that should be called before the response has been rendered.
@@ -367,44 +395,132 @@ class BaseController
      */
     protected function validate_parameter(string $name, $value, array $params = array())
     {
-        if (array_key_exists('required', $params)) {
-            if (($required = $params['required']) && empty($value)) {
-                // TODO: delegate the subclass to present this error
-                trigger_error(
-                    sprintf("[%s::%s] Missing required parameter '%s'.", get_called_class(), __FUNCTION__, $name),
-                    E_USER_ERROR
-                );
+        if (!array_key_exists('type', $params)) {
+            trigger_error(
+                sprintf("[%s::%s] Missing type annotation for parameter '%s'", get_called_class(), __FUNCTION__, $name),
+                E_USER_NOTICE
+            );
+        } else {
+            preg_match('/([^\[\]]+)(\[\])?$/', $params['type'], $matches);
+            @list(, $type, $multi) = $matches;
+
+            if (array_key_exists('required', $params)) {
+                if (($required = $params['required']) && empty($value)) {
+                    // TODO: delegate the subclass to present this error
+                    trigger_error(
+                        sprintf(
+                            "[%s::%s] Missing required %s parameter '%s'",
+                            get_called_class(),
+                            __FUNCTION__,
+                            $type . $multi,
+                            $name
+                        ),
+                        E_USER_ERROR
+                    );
+                }
             }
-        }
-        // Check type
-        if (array_key_exists('type', $params)) {
-            $type = $params['type'];
+
+            // Check type
             switch ($type) {
-                case 'string':
-                    if ($valid = is_string($value) || empty($value)) {
-                        $value = (string) $value;
+                case self::PARAM_TYPE_STRING:
+                    if ($multi) {
+                        $outval = array();
+                        $valid = true;
+                        if ($value) {
+                            foreach ($value as $val) {
+                                if ($v = is_string($val) || empty($val)) {
+                                    $outval[] = (string) $val;
+                                }
+                                $valid = $valid && $v;
+                            }
+                            if ($valid) {
+                                $value = $outval;
+                            }
+                        }
+                    } else {
+                        if ($valid = is_string($value) || empty($value)) {
+                            $value = (string) $value;
+                        }
                     }
                     break;
-                case 'int':
-                case 'tinyint':
-                case 'bool':
-                    if ($valid = is_numeric($value) && ((int) $value) == $value) {
-                        $value = (int) $value;
-                    } elseif ($valid = empty($value) && array_key_exists('default', $params)) {
-                        $value = (int) $params['default'];
+                case self::PARAM_TYPE_INT:
+                case self::PARAM_TYPE_TINYINT:
+                case self::PARAM_TYPE_BOOL:
+                    if ($multi) {
+                        $outval = array();
+                        $valid = true;
+                        if ($value) {
+                            foreach ($value as $val) {
+                                if ($v = is_numeric($val) && ((int) $val) == $val) {
+                                    $outval[] = (int) $val;
+                                } elseif ($v = empty($val) && array_key_exists('default', $params)) {
+                                    $outval[] = (int) $params['default'];
+                                }
+                                $valid = $valid && $v;
+                            }
+                            if ($valid) {
+                                $value = $outval;
+                            }
+                        }
+                    } else {
+                        if ($valid = is_numeric($value) && ((int) $value) == $value) {
+                            $value = (int) $value;
+                        } elseif ($valid = empty($value) && array_key_exists('default', $params)) {
+                            $value = (int) $params['default'];
+                        }
                     }
                     break;
-                case 'float':
-                    if ($valid = is_numeric($value) && ((float) $value) == $value) {
-                        $value = (float) $value;
-                    } elseif ($valid = empty($value) && array_key_exists('default', $params)) {
-                        $value = (float) $params['default'];
+                case self::PARAM_TYPE_FLOAT:
+                    if ($multi) {
+                        $outval = array();
+                        $valid = true;
+                        if ($value) {
+                            foreach ($value as $val) {
+                                if ($v = is_numeric($val) && ((float) $val) == $val) {
+                                    $outval[] = (float) $val;
+                                } elseif ($v = empty($val) && array_key_exists('default', $params)) {
+                                    $outval[] = (float) $params['default'];
+                                }
+                                $valid = $valid && $v;
+                            }
+                            if ($valid) {
+                                $value = $outval;
+                            }
+                        }
+                    } else {
+                        if ($valid = is_numeric($value) && ((float) $value) == $value) {
+                            $value = (float) $value;
+                        } elseif ($valid = empty($value) && array_key_exists('default', $params)) {
+                            $value = (float) $params['default'];
+                        }
                     }
                     break;
-                case 'enum':
-                    if (!($valid = in_array($value, $params['values']))) {
-                        if (empty($value) && array_key_exists('default', $params)) {
-                            $value = $params['default'];
+                case self::PARAM_TYPE_ENUM:
+                    if (!array_key_exists('values', $params)) {
+                        $valid = false;
+                    } elseif ($multi) {
+                        $outval = array();
+                        $valid = true;
+                        if ($value) {
+                            foreach ($value as $val) {
+                                if (!($v = in_array($val, $params['values']))) {
+                                    if (empty($val) && array_key_exists('default', $params)) {
+                                        $outval[] = $params['default'];
+                                    }
+                                } else {
+                                    $outval[] = $v;
+                                }
+                                $valid = $valid && $v;
+                            }
+                            if ($valid) {
+                                $value = $outval;
+                            }
+                        }
+                    } else {
+                        if (!($valid = in_array($value, $params['values']))) {
+                            if (empty($value) && array_key_exists('default', $params)) {
+                                $value = $params['default'];
+                            }
                         }
                     }
                     break;
@@ -415,22 +531,16 @@ class BaseController
                 // TODO: delegate the subclass to present this error
                 trigger_error(
                     sprintf(
-                        "[%s::%s] Type mismatch for parameter '%s'. Expected '%s', but found: '%s'",
+                        "[%s::%s] Type mismatch for parameter '%s'. Expected '%s', but found: %s",
                         get_called_class(),
                         __FUNCTION__,
                         $name,
-                        $type,
-                        $value
+                        $type . $multi,
+                        var_export($value, true)
                     ),
                     E_USER_ERROR
                 );
             }
-            // TODO: check if required
-        } else {
-            trigger_error(
-                sprintf("[%s::%s] Missing type annotation for parameter '%s'", get_called_class(), __FUNCTION__, $name),
-                E_USER_NOTICE
-            );
         }
         return $value;
     }
