@@ -386,18 +386,30 @@ class BaseController
                     }
                     break;
                 case 'int':
+                case 'tinyint':
+                case 'bool':
                     if ($valid = is_numeric($value) && ((int) $value) == $value) {
                         $value = (int) $value;
+                    } elseif ($valid = empty($value) && array_key_exists('default', $params)) {
+                        $value = (int) $params['default'];
                     }
                     break;
                 case 'float':
                     if ($valid = is_numeric($value) && ((float) $value) == $value) {
                         $value = (float) $value;
+                    } elseif ($valid = empty($value) && array_key_exists('default', $params)) {
+                        $value = (float) $params['default'];
                     }
                     break;
                 case 'enum':
-                    $valid = in_array($value, $params['values']);
+                    if (!($valid = in_array($value, $params['values']))) {
+                        if (empty($value) && array_key_exists('default', $params)) {
+                            $value = $params['default'];
+                        }
+                    }
                     break;
+                default:
+                    $valid = true;
             }
             if (!$valid) {
                 // TODO: delegate the subclass to present this error
