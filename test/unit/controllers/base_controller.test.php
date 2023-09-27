@@ -209,6 +209,130 @@ EOT
         );
     }
 
+    public function test_validate_parameter_bool_valid()
+    {
+        $this->assertTrue(
+            $this->controller->do_validate_parameter('enabled', 'true', array(
+                'type' => 'bool'
+            ))
+        );
+    }
+
+    public function test_validate_parameter_bool_null_valid()
+    {
+        $this->assertEquals(
+            null,
+            $this->controller->do_validate_parameter('enabled', null, array(
+                'type' => 'bool'
+            ))
+        );
+    }
+
+    public function test_validate_parameter_bool_default_null_valid()
+    {
+        $this->assertFalse(
+            $this->controller->do_validate_parameter('enabled', null, array(
+                'type' => 'bool',
+                'default' => false
+            ))
+        );
+    }
+
+    public function test_validate_parameter_bool_required_null_invalid()
+    {
+        $this->expectError();
+        $this->expectErrorMessage(
+            "[BaseControllerWrapper::validate_parameter] Missing required bool parameter 'enabled'"
+        );
+
+        $this->controller->do_validate_parameter('enabled', null, array(
+            'type' => 'bool',
+            'required' => true
+        ));
+    }
+
+    public function test_validate_parameter_bool_required_valid()
+    {
+        $this->assertFalse(
+            $this->controller->do_validate_parameter('enabled', 'false', array(
+                'type' => 'bool',
+                'required' => true
+            ))
+        );
+    }
+
+    public function test_validate_parameter_bool_required_invalid()
+    {
+        $this->expectError();
+        $this->expectErrorMessage(
+            "[BaseControllerWrapper::validate_parameter] Type mismatch for parameter 'enabled'. Expected 'bool', but found: 'bogus'"
+        );
+
+        $this->controller->do_validate_parameter('enabled', 'bogus', array(
+            'type' => 'bool',
+            'required' => true
+        ));
+    }
+
+    public function test_validate_parameter_bool_array_valid()
+    {
+        $this->assertEquals(
+            array(true, true, true),
+            $this->controller->do_validate_parameter(
+                'enabled',
+                array('1', 'on', 'true'),
+                array(
+                    'type' => 'bool[]'
+                )
+            )
+        );
+    }
+
+    public function test_validate_parameter_bool_array_default_valid()
+    {
+        $this->assertEquals(
+            array(false, true, false),
+            $this->controller->do_validate_parameter('enabled', null, array(
+                'type' => 'bool[]',
+                'default' => array(false, true, false)
+            ))
+        );
+    }
+
+    public function test_validate_parameter_bool_array_required_valid()
+    {
+        $this->assertEquals(
+            array(false, true, false),
+            $this->controller->do_validate_parameter(
+                'enabled',
+                array('0', '1', 'false'),
+                array(
+                    'type' => 'bool[]',
+                    'required' => true
+                )
+            )
+        );
+    }
+
+    public function test_validate_parameter_bool_array_required_invalid()
+    {
+        $this->expectError();
+        $this->expectErrorMessage("[BaseControllerWrapper::validate_parameter] Type mismatch for parameter 'enabled'. Expected 'bool[]', but found: array (
+  0 => 'a',
+  1 => 'b',
+  2 => 'c',
+)");
+
+        $this->controller->do_validate_parameter(
+            'enabled',
+            array('a', 'b', 'c'),
+            array(
+                'type' => 'bool[]',
+                'required' => true
+            )
+        );
+    }
+
     public function test_validate_parameter_string_valid()
     {
         $this->assertEquals(

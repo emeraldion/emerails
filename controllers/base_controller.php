@@ -453,9 +453,35 @@ class BaseController
                         }
                     }
                     break;
+                case self::PARAM_TYPE_BOOL:
+                    if ($multi) {
+                        $outval = array();
+                        $valid = true;
+                        if ($value) {
+                            foreach ($value as $val) {
+                                if ($v = !is_null(filter_var($val, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE))) {
+                                    $outval[] = filter_var($val, FILTER_VALIDATE_BOOLEAN);
+                                }
+                                $valid = $valid && $v;
+                            }
+                            if ($valid) {
+                                $value = $outval;
+                            }
+                        } elseif ($has_default) {
+                            $value = $default_value;
+                        }
+                    } else {
+                        if ($valid = !is_null(filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE))) {
+                            $value = filter_var($value, FILTER_VALIDATE_BOOLEAN);
+                        } elseif ($valid = empty($value) && ($has_default || !$is_required)) {
+                            if ($has_default) {
+                                $value = (bool) $default_value;
+                            }
+                        }
+                    }
+                    break;
                 case self::PARAM_TYPE_INT:
                 case self::PARAM_TYPE_TINYINT:
-                case self::PARAM_TYPE_BOOL:
                     if ($multi) {
                         $outval = array();
                         $valid = true;
