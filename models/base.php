@@ -889,13 +889,50 @@ abstract class ActiveRecord
         if (empty($params[self::PARAM_WHERE_CLAUSE])) {
             $params[self::PARAM_WHERE_CLAUSE] = '1';
         }
-        $conn->prepare(
-            "SELECT COUNT(*) FROM `{1}` WHERE (1 AND ({$params[self::PARAM_WHERE_CLAUSE]}))",
-            $this->get_table_name()
-        );
+        if (!empty($params[self::PARAM_JOIN])) {
+            $joined_classname = $params[self::PARAM_JOIN];
+            $joined_obj = new $joined_classname();
+            if ($joined_obj->has_column($this->get_foreign_key_name())) {
+                $query = 'SELECT COUNT(*) FROM `{1}` JOIN `{4}` ON `{1}`.`{2}` = `{4}`.`{3}`';
+            } elseif ($this->has_column($joined_obj->get_foreign_key_name())) {
+                $query = 'SELECT COUNT(*) FROM `{1}` JOIN `{4}` ON `{1}`.`{6}` = `{4}`.`{5}`';
+            } else {
+                trigger_error(
+                    sprintf(
+                        '[%s::%s] Failed to find a foreign key column `%s` in table `%s` or `%s` in table `%s`.',
+                        get_class($this),
+                        __FUNCTION__,
+                        $this->get_foreign_key_name(),
+                        $joined_obj->get_table_name(),
+                        $joined_obj->get_foreign_key_name(),
+                        $this->get_table_name()
+                    ),
+                    E_USER_ERROR
+                );
+            }
+            $query .= " WHERE (1 AND ({$params[self::PARAM_WHERE_CLAUSE]}))";
+            $conn->prepare(
+                $query,
+                $this->get_table_name(), // 1
+                $this->get_primary_key(), // 2
+                $this->get_foreign_key_name(), // 3
+                $joined_obj->get_table_name(), // 4
+                $joined_obj->get_primary_key(), // 5
+                $joined_obj->get_foreign_key_name(), // 6,
+                implode(
+                    ',',
+                    array_merge($this->get_column_names_for_query(true), $joined_obj->get_column_names_for_query(true))
+                ) // 7
+            );
+        } else {
+            $conn->prepare(
+                "SELECT COUNT(*) FROM `{1}` WHERE (1 AND ({$params[self::PARAM_WHERE_CLAUSE]}))",
+                $this->get_table_name()
+            );
+        }
         $result = $conn->exec();
 
-        $ret = (int) $conn->fetch_array()[0];
+        $ret = (int) first($conn->fetch_array());
 
         $conn->free_result();
 
