@@ -58,14 +58,13 @@ class QueryString
      */
     public static function to_assoc($string)
     {
-        $parts = explode(QueryString::SEPARATOR, $string);
         $ret = array();
-
-        foreach ($parts as $part) {
-            $p = QueryString_explode_item($part);
-            $ret[$p[0]] = $p[1];
+        if ($string && ($parts = explode(QueryString::SEPARATOR, $string))) {
+            foreach ($parts as $part) {
+                $p = QueryString_explode_item($part);
+                $ret[$p[0]] = $p[1];
+            }
         }
-
         return $ret;
     }
 
