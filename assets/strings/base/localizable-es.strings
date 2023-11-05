@@ -7,5 +7,7 @@ array(
     'base-index-title' => '¡Enhorabuena! &mdash; EmeRails',
     'base-index-tutorial-link' => 'Gu&iacute;a',
 
+    'error' => 'Error',
+
     'loading' => 'Cargando...',
 );

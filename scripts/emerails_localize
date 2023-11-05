@@ -34,10 +34,13 @@ class EmerailsLocalize extends ScriptCommand
     const OPTION_BASE_DIR = 'base-dir';
     const OPTION_CONTROLLER = 'controller';
     const OPTION_DRY_RUN = 'dry-run';
+    // TODO:
+    // const OPTION_FIX = 'fix';
     const OPTION_GLOBAL = 'global';
     const OPTION_LANGUAGES = 'languages';
     const OPTION_PURGE = 'purge';
     const OPTION_RECURSIVE = 'recursive';
+    const OPTION_STRIP_INLINED = 'strip-inlined';
     const OPTION_STRICT = 'strict';
     const OPTION_TRAITS = 'traits';
     const OPTION_VERBOSE = 'verbose';
@@ -66,6 +69,8 @@ class EmerailsLocalize extends ScriptCommand
             self::COMMAND_CHECK
         );
         $options->registerOption(self::OPTION_STRICT, 'Fail in presence of warnings', null, false, self::COMMAND_CHECK);
+        // TODO:
+        // $options->registerOption(self::OPTION_FIX, 'Fixes recoverable issues', null, false, self::COMMAND_CHECK);
 
         // Extract command
         $options->registerCommand(self::COMMAND_EXTRACT, 'Extract localization keys from source');
@@ -89,6 +94,13 @@ class EmerailsLocalize extends ScriptCommand
             self::OPTION_TRAITS,
             'Extract from controller traits',
             't',
+            false,
+            self::COMMAND_EXTRACT
+        );
+        $options->registerOption(
+            self::OPTION_STRIP_INLINED,
+            'Strips inlined strings from sources',
+            'S',
             false,
             self::COMMAND_EXTRACT
         );
@@ -269,20 +281,30 @@ EOT;
         return $ret;
     }
 
-    protected function extract_keys_from_file($filename)
+    protected function extract_keys_from_file($filename, $strip_inlined = false)
     {
         $handle = fopen($filename, 'r');
-        $contents = fread($handle, filesize($filename));
+        $contents = $original_contents = fread($handle, filesize($filename));
         fclose($handle);
 
-        preg_match_all("/\bl\(\s*'([^']+)'\s*\)/", $contents, $matches, PREG_PATTERN_ORDER);
+        preg_match_all("/\bl\(\s*'([^']+)'(,\s*'([^']+)')?\s*\)/", $contents, $matches, PREG_SET_ORDER);
 
         $extracted_keys = array();
-        foreach ($matches[1] as $key) {
-            $extracted_keys[] = $key;
+        foreach ($matches as $match) {
+            $extracted_keys[$match[1]] = $match[3];
+            if ($strip_inlined) {
+                $replace = "l('" . $match[1] . "')";
+                // printf("Replacing: '%s'\nWith: '%s'\n", $match[0], $replace);
+                $contents = str_replace($match[0], $replace, $contents);
+            }
         }
         if ($extracted_keys) {
             ksort($extracted_keys);
+        }
+
+        if ($strip_inlined && $contents != $original_contents) {
+            $handle = fopen($filename, 'w');
+            fwrite($handle, $contents);
         }
 
         return $extracted_keys;
@@ -293,6 +315,8 @@ EOT;
         $dry_run = $options->getOpt(self::OPTION_DRY_RUN);
         $verbose = $options->getOpt(self::OPTION_VERBOSE);
         $controller = $options->getOpt(self::OPTION_CONTROLLER);
+        $extract_from_traits = $options->getOpt(self::OPTION_TRAITS);
+        $strip_inlined = $options->getOpt(self::OPTION_STRIP_INLINED);
         $languages = $options->getOpt(self::OPTION_LANGUAGES) ?: self::DEFAULT_LANGUAGE;
 
         $base_dir =
@@ -303,11 +327,11 @@ EOT;
         // 1. Extract strings from controller file
         // TODO: this is not sufficient to extract all strings from controllers spread across various traits
         $controller_filename = sprintf('%s/../../controllers/%s_controller.php', $base_dir, $controller);
-        $extracted_keys = $this->extract_keys_from_file($controller_filename);
+        $extracted_keys = $this->extract_keys_from_file($controller_filename, $strip_inlined);
 
         // 2. Extract strings from controller traits
         // TODO: this is not sufficient to extract all strings from controllers spread across various traits
-        if ($options->getOpt('traits')) {
+        if ($extract_from_traits) {
             $controllers_dir = sprintf('%s/../../controllers', $base_dir);
             $handle = opendir($controllers_dir);
             if ($handle) {
@@ -319,7 +343,10 @@ EOT;
                         continue;
                     }
                     $trait_filename = $controllers_dir . '/' . $filename;
-                    $extracted_keys = array_merge($extracted_keys, $this->extract_keys_from_file($trait_filename));
+                    $extracted_keys = array_merge(
+                        $extracted_keys,
+                        $this->extract_keys_from_file($trait_filename, $strip_inlined)
+                    );
                 }
             }
         }
@@ -334,7 +361,10 @@ EOT;
                 }
                 $view_filename = $controller_views_dir . '/' . $filename;
 
-                $extracted_keys = array_merge($extracted_keys, $this->extract_keys_from_file($view_filename));
+                $extracted_keys = array_merge(
+                    $extracted_keys,
+                    $this->extract_keys_from_file($view_filename, $strip_inlined)
+                );
             }
         }
 
@@ -369,12 +399,12 @@ EOT;
 
             // 6. Layer existing strings on top of extracted strings
             $combined_strings = array();
-            foreach ($extracted_keys as $key) {
+            foreach ($extracted_keys as $key => $inlined_value) {
                 if (array_key_exists($key, $global_strings)) {
                     // TODO: warn if verbose
                     continue;
                 }
-                $combined_strings[$key] = $key;
+                $combined_strings[$key] = $inlined_value;
             }
             foreach ($strings as $key => $value) {
                 $combined_strings[$key] = $value;

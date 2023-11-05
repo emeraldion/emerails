@@ -805,8 +805,10 @@ class BaseController
         $langs = Localization::$languages;
 
         foreach ($langs as $lang) {
-            $cachefile = __DIR__ . "/../caches/{$controller}/{$action}{$id}-{$lang}.cached";
-            @unlink($cachefile);
+            $cachefile = sprintf('%s/caches/%s/%s%s-%s.cached', $this->base_path, $controller, $action, $id, $lang);
+            if (file_exists($cachefile)) {
+                unlink($cachefile);
+            }
         }
     }
 
@@ -1412,7 +1414,7 @@ class BaseController
                     block_tag(
                         'div',
                         implode("\n", array(
-                            h3('Error', null),
+                            h3(l('error'), null),
                             block_tag('p', sprintf('Missing part file: %s', $file), null)
                         )),
                         array('class' => 'msg error')
@@ -1460,7 +1462,7 @@ class BaseController
                 $ret = block_tag(
                     'div',
                     implode("\n", array(
-                        h3('Error', null),
+                        h3(l('error'), null),
                         block_tag(
                             'p',
                             sprintf('[%d] %s, at: %s:%d', $t->getCode(), $t->getMessage(), $file, $t->getLine()),
