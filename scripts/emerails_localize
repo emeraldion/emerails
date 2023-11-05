@@ -291,8 +291,8 @@ EOT;
 
         $extracted_keys = array();
         foreach ($matches as $match) {
-            $extracted_keys[$match[1]] = $match[3];
-            if ($strip_inlined) {
+            $extracted_keys[$match[1]] = $match[3] ?? $match[1];
+            if ($match[3] && $strip_inlined) {
                 $replace = "l('" . $match[1] . "')";
                 // printf("Replacing: '%s'\nWith: '%s'\n", $match[0], $replace);
                 $contents = str_replace($match[0], $replace, $contents);
@@ -407,7 +407,7 @@ EOT;
                 $combined_strings[$key] = $inlined_value;
             }
             foreach ($strings as $key => $value) {
-                $combined_strings[$key] = $value;
+                $combined_strings[$key] = $value ?? $key;
             }
             ksort($combined_strings);
 
