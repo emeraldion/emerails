@@ -324,15 +324,24 @@ EOT;
 
         $success = true;
 
+        $controllers_dir = sprintf('%s/../../controllers', $base_dir);
+        if (!(file_exists($controllers_dir) && is_dir($controllers_dir))) {
+            printf(
+                "[%s] Unable to locate controllers directory: %s\n",
+                ANSIColorWriter::colorize('Error', 'red'),
+                $controllers_dir
+            );
+            exit(1);
+        }
+
         // 1. Extract strings from controller file
         // TODO: this is not sufficient to extract all strings from controllers spread across various traits
-        $controller_filename = sprintf('%s/../../controllers/%s_controller.php', $base_dir, $controller);
+        $controller_filename = sprintf('%s/%s_controller.php', $controllers_dir, $controller);
         $extracted_keys = $this->extract_keys_from_file($controller_filename, $strip_inlined);
 
         // 2. Extract strings from controller traits
         // TODO: this is not sufficient to extract all strings from controllers spread across various traits
         if ($extract_from_traits) {
-            $controllers_dir = sprintf('%s/../../controllers', $base_dir);
             $handle = opendir($controllers_dir);
             if ($handle) {
                 while (($filename = readdir($handle)) !== false) {
@@ -353,18 +362,20 @@ EOT;
 
         // 3. Extract strings from controller views
         $controller_views_dir = sprintf('%s/../../views/%s', $base_dir, $controller);
-        $handle = opendir($controller_views_dir);
-        if ($handle) {
-            while (($filename = readdir($handle)) !== false) {
-                if ($filename === '.' || $filename === '..') {
-                    continue;
-                }
-                $view_filename = $controller_views_dir . '/' . $filename;
+        if (file_exists($controller_views_dir) && is_dir($controller_views_dir)) {
+            $handle = opendir($controller_views_dir);
+            if ($handle) {
+                while (($filename = readdir($handle)) !== false) {
+                    if ($filename === '.' || $filename === '..') {
+                        continue;
+                    }
+                    $view_filename = $controller_views_dir . '/' . $filename;
 
-                $extracted_keys = array_merge(
-                    $extracted_keys,
-                    $this->extract_keys_from_file($view_filename, $strip_inlined)
-                );
+                    $extracted_keys = array_merge(
+                        $extracted_keys,
+                        $this->extract_keys_from_file($view_filename, $strip_inlined)
+                    );
+                }
             }
         }
 
