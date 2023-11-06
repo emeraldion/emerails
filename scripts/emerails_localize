@@ -40,6 +40,7 @@ class EmerailsLocalize extends ScriptCommand
     const OPTION_LANGUAGES = 'languages';
     const OPTION_PURGE = 'purge';
     const OPTION_RECURSIVE = 'recursive';
+    const OPTION_SKIP_EMPTY = 'skip-empty';
     const OPTION_STRIP_INLINED = 'strip-inlined';
     const OPTION_STRICT = 'strict';
     const OPTION_TRAITS = 'traits';
@@ -94,6 +95,13 @@ class EmerailsLocalize extends ScriptCommand
             self::OPTION_TRAITS,
             'Extract from controller traits',
             't',
+            false,
+            self::COMMAND_EXTRACT
+        );
+        $options->registerOption(
+            self::OPTION_SKIP_EMPTY,
+            'Skips writing empty localization files',
+            'E',
             false,
             self::COMMAND_EXTRACT
         );
@@ -434,7 +442,12 @@ EOT;
                 }
 
                 // TODO: should we rename the old file as .bak ?
-                $this->write_sorted_strings($combined_strings, $controller_path, !$dry_run);
+                $this->write_sorted_strings(
+                    $combined_strings,
+                    $controller_path,
+                    !$dry_run,
+                    $options->getOpt(self::OPTION_SKIP_EMPTY)
+                );
             }
         }
 
@@ -448,8 +461,13 @@ EOT;
         }
     }
 
-    protected function write_sorted_strings($strings = array(), $path, $write = false)
+    protected function write_sorted_strings($strings = array(), $path, $write = false, $skip_empty = false)
     {
+        if (!$strings && $skip_empty) {
+            // Nothing to do here
+            return;
+        }
+
         $keys = array_keys($strings);
         sort($keys);
 
