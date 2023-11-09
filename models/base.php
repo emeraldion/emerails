@@ -712,7 +712,11 @@ abstract class ActiveRecord
             $has_join = true;
             $joined_classname = $params[self::PARAM_JOIN];
             $joined_obj = new $joined_classname();
-            if ($joined_obj->has_column($this->get_foreign_key_name())) {
+            if (
+                $joined_obj->has_column($this->get_foreign_key_name()) &&
+                // Edge case: this model's foreign key name is the joined object's primary key
+                $this->get_foreign_key_name() != $joined_obj->get_primary_key()
+            ) {
                 $query = 'SELECT {7} FROM `{1}` JOIN `{4}` ON `{1}`.`{2}` = `{4}`.`{3}`';
             } elseif ($this->has_column($joined_obj->get_foreign_key_name())) {
                 $query = 'SELECT {7} FROM `{1}` JOIN `{4}` ON `{1}`.`{6}` = `{4}`.`{5}`';
