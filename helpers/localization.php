@@ -72,16 +72,27 @@ class Localization
     }
 
     /**
-     *	@fn localize($term)
-     *	@short Localizes a string according to the current language settings.
-     *	@param term The string to be translated.
+     *	@fn localize($key)
+     *	@short Returns a localized string according to the current language settings.
+     *  @details This method tries to resolve the key in the localized strings table for
+     *  the current language settings. If the string is not found, the <tt>$fallback</tt>
+     *  will be returned. This is useful during development and for string extraction using
+     *  the <tt>emerails_localize</tt> command. If no fallback is provided, the key will be
+     *  returned as-is. Note that when the config setting <tt>LOCALIZATION_DEBUG</tt> is set
+     *  to a truthy value, this method will return strings wrapped for better visual
+     *  identification and troubleshooting.
+     *	@param key The key of the strings table.
+     *	@param fallback The fallback string to return when the key can't be resolved.
+     *  @see wrap($term)
      */
-    public static function localize($term)
+    public static function localize($key, $fallback = null)
     {
         if (!self::$strings_table) {
             self::load_strings_table();
         }
-        return self::wrap(array_key_exists($term, self::$strings_table) ? self::$strings_table[$term] : $term);
+        return self::wrap(
+            array_key_exists($key, self::$strings_table) ? self::$strings_table[$key] : $fallback ?? $key
+        );
     }
 
     /**
