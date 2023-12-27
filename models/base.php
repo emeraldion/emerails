@@ -1073,6 +1073,8 @@ abstract class ActiveRecord
      */
     public function delete($optimize = false)
     {
+        $ret = false;
+
         if ($this->volatile) {
             trigger_error(
                 sprintf(
@@ -1082,7 +1084,7 @@ abstract class ActiveRecord
                 ),
                 E_USER_NOTICE
             );
-            return;
+            return $ret;
         }
 
         if (!empty($this->values[$this->primary_key])) {
@@ -1094,6 +1096,9 @@ abstract class ActiveRecord
                 $this->values[$this->primary_key]
             );
             $conn->exec();
+            if ($conn->affected_rows() > 0) {
+                $ret = true;
+            }
 
             self::_delete_from_pool(get_called_class(), $this->values[$this->primary_key]);
 
@@ -1105,6 +1110,8 @@ abstract class ActiveRecord
 
             Db::close_connection($conn);
         }
+
+        return $ret;
     }
 
     protected function validate($raise = false)

@@ -134,8 +134,10 @@ class MysqliAdapter implements DbAdapter
         self::$queries_count++;
 
         if (Config::get('DB_DEBUG')) {
-            $num_rows = $this->result->num_rows;
-            printf($num_rows == 1 ? "1 result\n" : "%d results\n", $num_rows);
+            if (is_object($this->result) && property_exists($this->result, 'num_rows')) {
+                $num_rows = $this->result->num_rows;
+                printf($num_rows == 1 ? "1 result\n" : "%d results\n", $num_rows);
+            }
         }
 
         return $this->result;

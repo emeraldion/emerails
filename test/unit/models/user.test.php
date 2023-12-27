@@ -143,7 +143,8 @@ EOT
         $this->assertNotNull($this->user->id, 'User id field is null');
 
         $this->account = new Account(array(
-            'username' => 'croydon'
+            'username' => 'croydon',
+            'password' => 'croydon'
         ));
 
         $this->assertNull($this->account->id, 'Account id field is null');

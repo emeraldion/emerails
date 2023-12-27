@@ -209,7 +209,7 @@ class ActiveRecordTest extends UnitTest
         $this->assertEquals('test_save_sets_id', $result['name']);
         $this->assertEquals($instance->id, $result['id']);
 
-        $instance->delete();
+        $this->assertTrue($instance->delete());
     }
 
     public function test_save_nullable_field_varchar_set()
@@ -320,25 +320,29 @@ class ActiveRecordTest extends UnitTest
 
         $instance = new TestModel();
         $this->assertNotNull($instance);
-        $instances = $instance->find_all(array(
+        $instance = $instance->find_one(array(
             'where_clause' => "`name`= 'blip'"
         ));
-        $this->assertEquals(1, count($instances));
-        $instances[0]->delete();
+        $this->assertNotNull($instance);
+        // Ensure the call to <tt>delete</tt> returns true
+        $this->assertTrue($instance->delete());
+        // Ensure subsequent calls to <tt>delete</tt> return false
+        $this->assertFalse($instance->delete());
 
         $other_instance = new TestModel();
         $this->assertNotNull($other_instance);
-        $other_instances = $other_instance->find_all(array(
+        $other_instance = $other_instance->find_one(array(
             'where_clause' => "`name`= 'blip'"
         ));
-        $this->assertNull($other_instances);
+        $this->assertNull($other_instance);
     }
 
     public function test_delete_unsaved()
     {
         $instance = new TestModel();
         $this->assertNotNull($instance);
-        $instance->delete();
+        // The <tt>DELETE</tt> query will not have effect therefore <tt>delete()</tt> will do nothing
+        $this->assertFalse($instance->delete());
     }
 
     public function test_delete_volatile()
@@ -351,7 +355,7 @@ class ActiveRecordTest extends UnitTest
         $this->expectError();
         $this->expectErrorMessage('[TestModel::delete] This model object is volatile and cannot be deleted.');
 
-        $instance->delete();
+        $this->assertTrue($instance->delete());
     }
 
     public function test_static_find()
@@ -767,7 +771,7 @@ class ActiveRecordTest extends UnitTest
         $ret = $instance->has_one('test_widgets');
         $this->assertFalse($ret);
         $this->assertNull($instance->test_widget);
-        $instance->delete();
+        $this->assertTrue($instance->delete());
     }
 
     public function test_belongs_to()
@@ -1556,7 +1560,7 @@ EOT
         $this->assertEquals(count($models), TestModel::get_pool_stats(TestModel::class)['count']);
 
         foreach ($models as $model) {
-            $model->delete();
+            $this->assertTrue($model->delete());
         }
 
         // Pool is empty again

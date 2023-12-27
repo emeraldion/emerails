@@ -709,7 +709,7 @@ class RelationshipTest extends UnitTest
         $this->assertEquals($model->test_widget->id, $widget->id);
         $this->assertEquals($model->test_widget->color, $widget->color);
 
-        $ret->delete();
+        $this->assertTrue($ret->delete());
 
         $ret = $model->has_one(TestWidget::class);
         $this->assertNull($model->test_widget);
@@ -738,7 +738,7 @@ class RelationshipTest extends UnitTest
         $this->assertNotNull($widget->test_model);
         $this->assertEquals($widget->test_model->id, $model->id);
 
-        $ret->delete();
+        $this->assertTrue($ret->delete());
 
         $ret = $widget->belongs_to(TestModel::class);
         $this->assertFalse($ret);
@@ -782,7 +782,7 @@ class RelationshipTest extends UnitTest
         $this->assertTrue(array_key_exists($w2->id, $model->test_widgets));
 
         array_walk($ret[$model->id], function ($r) {
-            $r->delete();
+            $this->assertTrue($r->delete());
         });
 
         $ret = $model->has_many(TestWidget::class);
@@ -836,7 +836,7 @@ class RelationshipTest extends UnitTest
             );
         }
 
-        first(array_values($ret[$widget->id]))->delete();
+        $this->assertTrue(first(array_values($ret[$widget->id]))->delete());
 
         // The relationship has lost one member
         $ret = $widget->has_many(TestVersion::class);
@@ -891,7 +891,7 @@ class RelationshipTest extends UnitTest
         }
 
         foreach ($ret[$widget->id] as $r) {
-            $r->delete();
+            $this->assertTrue($r->delete());
         }
         // The relationship has been eliminated entirely
         $this->assertFalse($widget->has_many(TestVersion::class));

@@ -634,6 +634,10 @@ class RelationshipInstance
                 $conn->exec();
                 // TODO: $child->reload() ?
                 $child->find_by_id($child->$child_pk);
+
+                if ($conn->affected_rows() > 0) {
+                    $ret = true;
+                }
                 break;
 
             case Relationship::MANY_TO_MANY:
@@ -647,7 +651,9 @@ class RelationshipInstance
                 );
                 $conn->exec();
 
-                $ret = true;
+                if ($conn->affected_rows() > 0) {
+                    $ret = true;
+                }
                 break;
         }
 
