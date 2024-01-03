@@ -6,7 +6,7 @@
  * /  __/ / / / / /  __/ /  / /_/ / / (__  )
  * \___/_/ /_/ /_/\___/_/   \__,_/_/_/____/
  *
- * (c) Claudio Procida 2008-2023
+ * (c) Claudio Procida 2008-2024
  *
  * @format
  */
@@ -52,7 +52,7 @@ EOT
         );
         printf(
             <<<EOT
-(c) Claudio Procida 2008-2023
+(c) Claudio Procida 2008-2024
 
 %s %s
 
