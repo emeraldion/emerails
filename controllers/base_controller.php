@@ -1496,9 +1496,10 @@ class BaseController
         }
         if (($end = strrpos($php_code, '?>')) === strlen($php_code) - strlen('?>')) {
             $php_code = substr($php_code, 0, strrpos($php_code, '?>'));
-        } else {
-            $php_code = $php_code . "\n<?php\n";
         }
+        // else {
+        //     $php_code = $php_code . "\n<?php\n";
+        // }
         return $php_code;
     }
 
