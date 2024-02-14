@@ -35,8 +35,9 @@ class BaseControllerTest extends UnitTest
         $this->controller = new BaseControllerWrapper();
     }
 
-    public function test_strip_external_php_tags()
+    public function test_strip_external_php_tags_pure_html()
     {
+        // Case 1: simple HTML should be wrapped in tags in order to escape from PHP to HTML
         $html = $this->controller->strip_tags('<p>Simple paragraph</p>');
         $this->assertEquals(
             <<<EOT
@@ -48,24 +49,77 @@ EOT
             ,
             $html
         );
+    }
 
+    public function test_strip_external_php_tags_html_with_php_block()
+    {
+        // Case 2: an HTML snippet containing a PHP block should be wrapped in tags in
+        // order to escape from PHP to HTML
+        $html = $this->controller->strip_tags(
+            <<<EOT
+<h1><?php print 'Hello there!'; ?></h1>
+
+EOT
+        );
+        $this->assertEquals(
+            <<<EOT
+?>
+<h1><?php print 'Hello there!'; ?></h1>
+
+<?php
+
+EOT
+            ,
+            $html
+        );
+    }
+
+    public function test_strip_external_php_tags_php_file_with_closing_tag()
+    {
+        // Case 3: a PHP file beginning with an opening tag and ending with a closing tag
+        // should be unwrapped correctly
         $html = $this->controller->strip_tags(
             <<<EOT
 <?php
-
+  class Cat {
+    private \$meow;
+  }
 ?>
-<h1>Title</h1>
 
 EOT
         );
         $this->assertEquals(
             <<<EOT
 
+  class Cat {
+    private \$meow;
+  }
 
-?>
-<h1>Title</h1>
+EOT
+            ,
+            $html
+        );
+    }
 
+    public function test_strip_external_php_tags_php_file_without_closing_tag()
+    {
+        // Case 4: a PHP file beginning with an opening tag but without a closing tag
+        // should be unwrapped correctly
+        $html = $this->controller->strip_tags(
+            <<<EOT
 <?php
+  class Cat {
+    private \$meow;
+  }
+
+EOT
+        );
+        $this->assertEquals(
+            <<<EOT
+
+  class Cat {
+    private \$meow;
+  }
 
 EOT
             ,
