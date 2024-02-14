@@ -22,15 +22,15 @@ use Emeraldion\EmeRails\Config;
 class Localization
 {
     /**
-     *	@attr base_dir
-     *	@short The base directory for localization files.
-     *  @details Defaults to the parent directory of this file.
+     * @attr base_dir
+     * @short The base directory for localization files.
+     * @details Defaults to the parent directory of this file.
      */
     private static $base_dir = __DIR__ . '/../';
 
     /**
-     *	@attr languages
-     *	@short Array of supported languages.
+     * @attr languages
+     * @short Array of supported languages.
      */
     public static $languages = array(
         'it',
@@ -56,15 +56,15 @@ class Localization
     );
 
     /**
-     *	@attr strings_table
-     *	@short Table of translated strings.
+     * @attr strings_table
+     * @short Table of translated strings.
      */
     private static $strings_table;
 
     /**
-     *	@fn set_base_dir($base_dir)
-     *	@short Initializes the base directory for localization files.
-     *	@param base_dir The base directory. Defaults to the parent directory of this file.
+     * @fn set_base_dir($base_dir)
+     * @short Initializes the base directory for localization files.
+     * @param base_dir The base directory. Defaults to the parent directory of this file.
      */
     public static function set_base_dir($base_dir = __DIR__ . '/../')
     {
@@ -72,18 +72,27 @@ class Localization
     }
 
     /**
-     *	@fn localize($key)
-     *	@short Returns a localized string according to the current language settings.
-     *  @details This method tries to resolve the key in the localized strings table for
-     *  the current language settings. If the string is not found, the <tt>$fallback</tt>
-     *  will be returned. This is useful during development and for string extraction using
-     *  the <tt>emerails_localize</tt> command. If no fallback is provided, the key will be
-     *  returned as-is. Note that when the config setting <tt>LOCALIZATION_DEBUG</tt> is set
-     *  to a truthy value, this method will return strings wrapped for better visual
-     *  identification and troubleshooting.
-     *	@param key The key of the strings table.
-     *	@param fallback The fallback string to return when the key can't be resolved.
-     *  @see wrap($term)
+     * @fn reset()
+     * @short Resets the localization helper.
+     */
+    public static function reset()
+    {
+        self::$strings_table = null;
+    }
+
+    /**
+     * @fn localize($key)
+     * @short Returns a localized string according to the current language settings.
+     * @details This method tries to resolve the key in the localized strings table for
+     * the current language settings. If the string is not found, the <tt>$fallback</tt>
+     * will be returned. This is useful during development and for string extraction using
+     * the <tt>emerails_localize</tt> command. If no fallback is provided, the key will be
+     * returned as-is. Note that when the config setting <tt>LOCALIZATION_DEBUG</tt> is set
+     * to a truthy value, this method will return strings wrapped for better visual
+     * identification and troubleshooting.
+     * @param key The key of the strings table.
+     * @param fallback The fallback string to return when the key can't be resolved.
+     * @see wrap($term)
      */
     public static function localize($key, $fallback = null)
     {
@@ -96,10 +105,10 @@ class Localization
     }
 
     /**
-     *	@fn add_strings_table
-     *	@short Adds another strings table for a desired controller.
-     *	@details Language is obtained by the request parameters.
-     *	@param controller The name of the controller.
+     * @fn add_strings_table
+     * @short Adds another strings table for a desired controller.
+     * @details Language is obtained by the request parameters.
+     * @param controller The name of the controller.
      */
     public static function add_strings_table($controller)
     {
@@ -112,9 +121,9 @@ class Localization
     }
 
     /**
-     *	@fn wrap($term)
-     *	@short Wraps a string in a parent HTML element to add debug style selectors.
-     *	@param term The string to be wrapped.
+     * @fn wrap($term)
+     * @short Wraps a string in a parent HTML element to add debug style selectors.
+     * @param term The string to be wrapped.
      */
     private static function wrap($term)
     {
@@ -125,10 +134,10 @@ class Localization
     }
 
     /**
-     *	@fn load_strings_file($lang, $controller)
-     *	@short Loads the string file for the desired controller and language.
-     *	@param lang The language for the strings file.
-     *	@param controller The name of the controller.
+     * @fn load_strings_file($lang, $controller)
+     * @short Loads the string file for the desired controller and language.
+     * @param lang The language for the strings file.
+     * @param controller The name of the controller.
      */
     private static function load_strings_file($lang = 'en', $controller = null)
     {
@@ -145,9 +154,9 @@ class Localization
     }
 
     /**
-     *	@fn load_strings_table
-     *	@short Loads the string table for the current controller and language.
-     *	@details Controller and language are obtained by the request parameters.
+     * @fn load_strings_table
+     * @short Loads the string table for the current controller and language.
+     * @details Controller and language are obtained by the request parameters.
      */
     private static function load_strings_table()
     {
