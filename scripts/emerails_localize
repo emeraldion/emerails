@@ -295,7 +295,12 @@ EOT;
         $contents = $original_contents = fread($handle, filesize($filename));
         fclose($handle);
 
-        preg_match_all("/\bl\(\s*'([^']+)'(,\s*'([^']+)')?\s*\)/", $contents, $matches, PREG_SET_ORDER);
+        preg_match_all(
+            "/\bl\(\s*'([^']+)'(,\s*'([^']+)')?\s*\)/",
+            $contents,
+            $matches,
+            PREG_SET_ORDER | PREG_UNMATCHED_AS_NULL
+        );
 
         $extracted_keys = array();
         foreach ($matches as $match) {
