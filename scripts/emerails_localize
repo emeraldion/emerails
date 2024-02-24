@@ -304,11 +304,13 @@ EOT;
 
         $extracted_keys = array();
         foreach ($matches as $match) {
-            $extracted_keys[$match[1]] = $match[3] ?? $match[1];
-            if ($match[3] && $strip_inlined) {
-                $replace = "l('" . $match[1] . "')";
-                // printf("Replacing: '%s'\nWith: '%s'\n", $match[0], $replace);
-                $contents = str_replace($match[0], $replace, $contents);
+            list($localized_string, $key) = $match;
+            $default_value = array_key_exists(3, $match) ? $match[3] : null;
+            $extracted_keys[$key] = $default_value ?? $key;
+            if ($default_value && $strip_inlined) {
+                $replace = "l('" . $key . "')";
+                // printf("Replacing: '%s'\nWith: '%s'\n", $localized_string, $replace);
+                $contents = str_replace($localized_string, $replace, $contents);
             }
         }
         if ($extracted_keys) {
