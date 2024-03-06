@@ -112,6 +112,9 @@ class AssetController extends BaseController
         if (Config::get('APPLICATION_ROOT') !== '/') {
             return preg_replace('/\/assets\//i', Config::get('APPLICATION_ROOT') . 'assets/', $body);
         }
+        if (!str_ends_with($body, "\n")) {
+            $body .= "\n";
+        }
         return $body;
     }
 
