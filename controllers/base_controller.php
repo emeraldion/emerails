@@ -828,6 +828,10 @@ class BaseController
     protected function redirect_to($params)
     {
         if (is_array($params)) {
+            // Redirect to the current action if not specified
+            if (!array_key_exists('action', $params)) {
+                $params['action'] = $this->action;
+            }
             $URL = sprintf(
                 '%s://%s%s',
                 isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS']) ? 'https' : 'http',
