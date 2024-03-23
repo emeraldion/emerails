@@ -1,7 +1,6 @@
 .git
 .gitignore
 .DS_Store
-.travis.yml
 Makefile
 Doxyfile
 Dockerfile
