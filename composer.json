@@ -14,7 +14,7 @@
     {
       "name": "Claudio Procida",
       "email": "claudio.procida@gmail.com",
-      "homepage": "http://www.emeraldion.it",
+      "homepage": "https://www.emeraldion.it",
       "role": "Developer"
     }
   ],
@@ -24,7 +24,7 @@
     "source": "https://github.com/emeraldion/emerails"
   },
   "require": {
-    "php": ">=5.6.0",
+    "php": ">=7.3.0",
     "composer-runtime-api": "^2.2.2",
     "tedivm/jshrink": "^1.4.0",
     "tubalmartin/cssmin": "^4.1.1",
