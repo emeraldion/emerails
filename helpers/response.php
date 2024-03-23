@@ -21,7 +21,7 @@ class Response
      *	@attr headers
      *	@short Array of headers to send to the client.
      */
-    public $headers = array();
+    public $headers = [];
 
     /**
      *	@attr body
@@ -54,7 +54,7 @@ class Response
      */
     public function add_header($name, $value)
     {
-        $this->headers[] = array($name, $value);
+        $this->headers[] = [$name, $value];
     }
 }
 

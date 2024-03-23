@@ -75,7 +75,7 @@ class CommonTest extends UnitTest
         $this->assertEquals('cedolas', pluralize('cedola'));
         $this->assertEquals('uomoes', pluralize('uomo'));
 
-        add_irregular_nouns(array('cedola' => 'cedole', 'uomo' => 'uomini'));
+        add_irregular_nouns(['cedola' => 'cedole', 'uomo' => 'uomini']);
 
         $this->assertEquals('cedole', pluralize('cedola'));
         $this->assertEquals('uomini', pluralize('uomo'));
@@ -86,7 +86,7 @@ class CommonTest extends UnitTest
         $this->assertEquals('cedole', singularize('cedole'));
         $this->assertEquals('uomini', singularize('uomini'));
 
-        add_irregular_nouns(array('cedola' => 'cedole', 'uomo' => 'uomini'));
+        add_irregular_nouns(['cedola' => 'cedole', 'uomo' => 'uomini']);
 
         $this->assertEquals('cedola', singularize('cedole'));
         $this->assertEquals('uomo', singularize('uomini'));
@@ -155,25 +155,25 @@ class CommonTest extends UnitTest
 
     public function test_first()
     {
-        $a = array(1, 2, 3);
+        $a = [1, 2, 3];
         $this->assertEquals(1, first($a));
 
-        $a = array('a' => 1, 'b' => 2, 'c' => 3);
+        $a = ['a' => 1, 'b' => 2, 'c' => 3];
         $this->assertEquals(1, first($a));
 
-        $a = array();
+        $a = [];
         $this->assertNull(first($a));
     }
 
     public function test_last()
     {
-        $a = array(1, 2, 3);
+        $a = [1, 2, 3];
         $this->assertEquals(3, last($a));
 
-        $a = array('a' => 1, 'b' => 2, 'c' => 3);
+        $a = ['a' => 1, 'b' => 2, 'c' => 3];
         $this->assertEquals(3, last($a));
 
-        $a = array();
+        $a = [];
         $this->assertNull(last($a));
     }
 }

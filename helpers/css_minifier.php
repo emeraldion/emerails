@@ -26,7 +26,7 @@ class CSSMinifier implements Minifier
         $this->cssmin = new CSSMin();
     }
 
-    public static function get_instance($options = array())
+    public static function get_instance($options = [])
     {
         if (!self::$instance) {
             self::$instance = new self();
@@ -34,7 +34,7 @@ class CSSMinifier implements Minifier
         return self::$instance;
     }
 
-    public function minify($text, $options = array())
+    public function minify($text, $options = [])
     {
         return $this->cssmin->run($text);
     }

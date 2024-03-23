@@ -83,7 +83,7 @@ class BaseController
      * When the request method is <tt>GET</tt>, <tt>HEAD</tt> or <tt>OPTIONS</tt>, the request is allowed unless explicitly
      * blocked. For other methods, the request is blocked by default unless explicitly allowed.
      */
-    private $allowed_methods = array();
+    private $allowed_methods = [];
 
     /**
      * @attr accepted_parameters
@@ -91,7 +91,7 @@ class BaseController
      * @details Contains a map of maps of accepted request parameters keyed by action and parameter name. The value is a
      * dictionary with details about the type and acceptable values.
      */
-    private $accepted_parameters = array();
+    private $accepted_parameters = [];
 
     /**
      * @attr parameters
@@ -123,7 +123,7 @@ class BaseController
     const PARAM_TYPE_TINYINT = 'tinyint';
     const PARAM_TYPE_TINYINT_ARRAY = 'tinyint[]';
 
-    const PARAM_TYPES = array(
+    const PARAM_TYPES = [
         self::PARAM_TYPE_BOOL,
         self::PARAM_TYPE_BOOL_ARRAY,
         self::PARAM_TYPE_ENUM,
@@ -136,31 +136,31 @@ class BaseController
         self::PARAM_TYPE_STRING_ARRAY,
         self::PARAM_TYPE_TINYINT,
         self::PARAM_TYPE_TINYINT_ARRAY
-    );
+    ];
 
     /**
      * @attr before_filters
      * @short Array of filters that should be called before the response has been rendered.
      */
-    private $before_filters = array();
+    private $before_filters = [];
 
     /**
      * @attr after_filters
      * @short Array of filters that should be called after the response has been rendered.
      */
-    private $after_filters = array();
+    private $after_filters = [];
 
     /**
      * @attr pages_cached
      * @short Array of pages that should be cached.
      */
-    private $pages_cached = array();
+    private $pages_cached = [];
 
     /**
      * @attr actions_cached
      * @short Array of actions that should be cached.
      */
-    private $actions_cached = array();
+    private $actions_cached = [];
 
     /**
      * @fn __construct
@@ -191,7 +191,7 @@ class BaseController
         if (isset($_REQUEST['action']) && !empty($_REQUEST['action'])) {
             $action = basename($_REQUEST['action']);
 
-            if (is_callable(array($this, $action))) {
+            if (is_callable([$this, $action])) {
                 $this->action = $action;
             } else {
                 $this->unknown_action();
@@ -257,7 +257,7 @@ class BaseController
             }
             return;
         }
-        $this->before_filters[] = array($filter, $params);
+        $this->before_filters[] = [$filter, $params];
     }
 
     /**
@@ -298,7 +298,7 @@ class BaseController
             }
             return;
         }
-        $this->after_filters[] = array($filter, $params);
+        $this->after_filters[] = [$filter, $params];
     }
 
     /**
@@ -341,7 +341,7 @@ class BaseController
      * @fn accept_parameter($action, $name, $params)
      * @short Declares an accepted parameter
      */
-    protected function accept_parameter($action, string $name, array $params = array())
+    protected function accept_parameter($action, string $name, array $params = [])
     {
         if (is_array($action)) {
             foreach ($action as $a) {
@@ -393,7 +393,7 @@ class BaseController
      * @fn validate_parameter($name, $value, $params)
      * @short Validates an accepted parameter
      */
-    protected function validate_parameter(string $name, $value, array $params = array())
+    protected function validate_parameter(string $name, $value, array $params = [])
     {
         if (!array_key_exists('type', $params)) {
             trigger_error(
@@ -402,7 +402,7 @@ class BaseController
             );
         } else {
             preg_match('/([^\[\]]+)(\[\])?$/', $params['type'], $matches);
-            @list(, $type, $multi) = $matches;
+            @[, $type, $multi] = $matches;
 
             $is_required = array_key_exists('required', $params);
             if ($has_default = array_key_exists('default', $params)) {
@@ -429,7 +429,7 @@ class BaseController
             switch ($type) {
                 case self::PARAM_TYPE_STRING:
                     if ($multi) {
-                        $outval = array();
+                        $outval = [];
                         $valid = true;
                         if ($value) {
                             foreach ($value as $val) {
@@ -455,7 +455,7 @@ class BaseController
                     break;
                 case self::PARAM_TYPE_BOOL:
                     if ($multi) {
-                        $outval = array();
+                        $outval = [];
                         $valid = true;
                         if ($value) {
                             foreach ($value as $val) {
@@ -483,7 +483,7 @@ class BaseController
                 case self::PARAM_TYPE_INT:
                 case self::PARAM_TYPE_TINYINT:
                     if ($multi) {
-                        $outval = array();
+                        $outval = [];
                         $valid = true;
                         if ($value) {
                             foreach ($value as $val) {
@@ -512,7 +512,7 @@ class BaseController
                     break;
                 case self::PARAM_TYPE_FLOAT:
                     if ($multi) {
-                        $outval = array();
+                        $outval = [];
                         $valid = true;
                         if ($value) {
                             foreach ($value as $val) {
@@ -545,7 +545,7 @@ class BaseController
                     } else {
                         $possible_values = $params['values'];
                         if ($multi) {
-                            $outval = array();
+                            $outval = [];
                             $valid = true;
                             if ($value) {
                                 foreach ($value as $val) {
@@ -858,7 +858,7 @@ class BaseController
      */
     protected function refresh($amount)
     {
-        $this->redirect_to(array('after' => $amount));
+        $this->redirect_to(['after' => $amount]);
     }
 
     /**
@@ -901,7 +901,7 @@ class BaseController
      * @param text A text label for the hyperlink.
      * @param params Array of key value pairs defining the hyperlink.
      */
-    public function link_to($text, $params = array())
+    public function link_to($text, $params = [])
     {
         $params['href'] = isset($params['href']) ? $params['href'] : $this->make_relative_url($params);
 
@@ -931,7 +931,7 @@ class BaseController
      * @param text A text label for the hyperlink.
      * @param params Array of key value pairs defining the hyperlink.
      */
-    public function link_to_remote($text, $params = array())
+    public function link_to_remote($text, $params = [])
     {
         $params['href'] = !empty($params['href']) ? $params['href'] : $this->make_relative_url($params);
         $params['remote_url'] = !empty($params['remote_url'])
@@ -968,7 +968,7 @@ class BaseController
      * @param text A text label for the button.
      * @param params Array of key value pairs defining the hyperlink.
      */
-    public function button_to($text, $params = array())
+    public function button_to($text, $params = [])
     {
         $params['href'] = isset($params['href']) ? $params['href'] : $this->make_relative_url($params);
 
@@ -1033,11 +1033,11 @@ class BaseController
      */
     function url_to_myself($relative = true)
     {
-        $url = $this->url_to(array(
+        $url = $this->url_to([
             'action' => $this->action,
             'type' => $this->type,
             'id' => @$_REQUEST['id']
-        ));
+        ]);
         return $relative
             ? $url
             : sprintf(
@@ -1260,7 +1260,7 @@ class BaseController
 
         // Process before filters queue
         foreach ($this->before_filters as $before_filter) {
-            list($filter, $conditions) = $before_filter;
+            [$filter, $conditions] = $before_filter;
             if ($this->filter_applicable($conditions)) {
                 $this->$filter();
             }
@@ -1279,7 +1279,7 @@ class BaseController
             ob_start();
 
             // Call eventual controller action
-            if (is_callable(array($this, $this->action))) {
+            if (is_callable([$this, $this->action])) {
                 $this->invoke_action();
             } else {
                 $this->send_error(500);
@@ -1303,7 +1303,7 @@ class BaseController
 
         // Process after filters queue
         foreach ($this->after_filters as $after_filter) {
-            list($filter, $conditions) = $after_filter;
+            [$filter, $conditions] = $after_filter;
             if ($this->filter_applicable($conditions)) {
                 $this->$filter();
             }
@@ -1417,11 +1417,11 @@ class BaseController
                 return $this->strip_external_php_tags(
                     block_tag(
                         'div',
-                        implode("\n", array(
+                        implode("\n", [
                             h3(l('error'), null),
                             block_tag('p', sprintf('Missing part file: %s', $file), null)
-                        )),
-                        array('class' => 'msg error')
+                        ]),
+                        ['class' => 'msg error']
                     )
                 );
             } else {
@@ -1440,7 +1440,7 @@ class BaseController
      * @param partfile The name of the part file to load and evaluate.
      * @param params Parameters defining how the rendering should be realized.
      */
-    protected function evaluate_part($partfile, $params = array())
+    protected function evaluate_part($partfile, $params = [])
     {
         $GLOBALS['__PART__'] = $partfile;
         try {
@@ -1465,15 +1465,15 @@ class BaseController
                 );
                 $ret = block_tag(
                     'div',
-                    implode("\n", array(
+                    implode("\n", [
                         h3(l('error'), null),
                         block_tag(
                             'p',
                             sprintf('[%d] %s, at: %s:%d', $t->getCode(), $t->getMessage(), $file, $t->getLine()),
                             null
                         )
-                    )),
-                    array('class' => 'msg error')
+                    ]),
+                    ['class' => 'msg error']
                 );
             } else {
                 throw $t;
@@ -1565,7 +1565,7 @@ class BaseController
      */
     public function flash($message, $type = 'error')
     {
-        $_SESSION['flash'] = array('message' => $message, 'type' => $type);
+        $_SESSION['flash'] = ['message' => $message, 'type' => $type];
     }
 
     /**
@@ -1578,7 +1578,7 @@ class BaseController
      */
     public function index()
     {
-        $this->render(array('layout' => 'default'));
+        $this->render(['layout' => 'default']);
     }
 
     /**

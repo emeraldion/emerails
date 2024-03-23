@@ -27,7 +27,7 @@ class SortDependencies extends ScriptCommand
 
     protected function main(Options $options)
     {
-        foreach (array('helpers', 'controllers', 'models') as $category) {
+        foreach (['helpers', 'controllers', 'models'] as $category) {
             $dirname = sprintf('%s/../%s', __DIR__, $category);
             $dir_handle = opendir($dirname);
             if ($dir_handle) {
@@ -71,10 +71,10 @@ class SortDependencies extends ScriptCommand
                     $rest = ltrim(substr($rest, $comment_end_pos));
 
                     $formatted = <<<EOT
-{$preamble}
+                    {$preamble}
 
-{$imports}{$separator}{$uses}{$terminator}{$rest}
-EOT;
+                    {$imports}{$separator}{$uses}{$terminator}{$rest}
+                    EOT;
 
                     $handle = fopen($filepath, 'w');
                     fwrite($handle, $formatted, strlen($formatted));

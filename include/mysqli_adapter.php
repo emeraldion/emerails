@@ -156,7 +156,7 @@ class MysqliAdapter implements DbAdapter
             );
         }
 
-        $this->result = array();
+        $this->result = [];
         do {
             $this->link->next_result();
             $this->result[] = $this->link->store_result();
@@ -268,9 +268,9 @@ class MysqliAdapter implements DbAdapter
     public function print_query()
     {
         echo <<<EOT
-<pre class="db-debug">{$this->query}</pre>
+        <pre class="db-debug">{$this->query}</pre>
 
-EOT;
+        EOT;
     }
 }
 

@@ -58,7 +58,7 @@ class QueryString
      */
     public static function to_assoc($string)
     {
-        $ret = array();
+        $ret = [];
         if ($string && ($parts = explode(QueryString::SEPARATOR, $string))) {
             foreach ($parts as $part) {
                 $p = QueryString_explode_item($part);
@@ -75,7 +75,7 @@ class QueryString
             $query_string = substr($_SERVER['REQUEST_URI'], strpos($_SERVER['REQUEST_URI'], '?') + 1);
             $params = self::to_assoc($query_string);
         } else {
-            $params = array();
+            $params = [];
         }
         $params[$key] = $val;
         return self::from_assoc($params);

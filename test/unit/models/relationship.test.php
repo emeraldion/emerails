@@ -18,7 +18,7 @@ use Emeraldion\EmeRails\Models\Relationship;
 
 class RelationshipTest extends UnitTest
 {
-    private $models = array();
+    private $models = [];
 
     function setUp(): void
     {
@@ -86,14 +86,14 @@ class RelationshipTest extends UnitTest
     {
         $r = Relationship::many_to_many(TestGroup::class, TestModel::class);
         $this->assertEquals(
-            array(
+            [
                 '`test_groups_test_models`.`id`',
                 '`test_groups_test_models`.`test_model_id`',
                 '`test_groups_test_models`.`test_group_id`',
                 '`test_groups_test_models`.`count`',
                 '`test_groups_test_models`.`color`',
                 '`test_groups_test_models`.`created_at`'
-            ),
+            ],
             $r->get_column_names_for_query()
         );
     }
@@ -102,29 +102,29 @@ class RelationshipTest extends UnitTest
     {
         $r = Relationship::many_to_many(TestGroup::class, TestModel::class);
         $this->assertEquals(
-            array(
+            [
                 '`test_groups_test_models`.`id` AS `test_groups_test_models:id`',
                 '`test_groups_test_models`.`test_model_id` AS `test_groups_test_models:test_model_id`',
                 '`test_groups_test_models`.`test_group_id` AS `test_groups_test_models:test_group_id`',
                 '`test_groups_test_models`.`count` AS `test_groups_test_models:count`',
                 '`test_groups_test_models`.`color` AS `test_groups_test_models:color`',
                 '`test_groups_test_models`.`created_at` AS `test_groups_test_models:created_at`'
-            ),
+            ],
             $r->get_column_names_for_query(true)
         );
     }
 
     public function test_demux_column_names()
     {
-        $row = array(
+        $row = [
             'test_groups_test_models:id' => 123
-        );
+        ];
         $r = Relationship::many_to_many(TestGroup::class, TestModel::class);
 
         $this->assertEquals(
-            array(
+            [
                 'id' => 123
-            ),
+            ],
             $r->demux_column_names($row)
         );
     }
@@ -161,9 +161,9 @@ class RelationshipTest extends UnitTest
         $group->save();
 
         $r = Relationship::many_to_many(TestModel::class, TestGroup::class)->among(
-            array($model),
-            array($group),
-            array($model->id => array($group->id => array('count' => 100)))
+            [$model],
+            [$group],
+            [$model->id => [$group->id => ['count' => 100]]]
         );
 
         foreach ($r as $model_id => $s) {
@@ -194,9 +194,9 @@ class RelationshipTest extends UnitTest
         $group->save();
 
         $r = Relationship::many_to_many(TestModel::class, TestGroup::class)->among(
-            array($model),
-            array($group),
-            array($model->id => array($group->id => array('color' => null)))
+            [$model],
+            [$group],
+            [$model->id => [$group->id => ['color' => null]]]
         );
 
         foreach ($r as $model_id => $s) {
@@ -229,9 +229,9 @@ class RelationshipTest extends UnitTest
         $g2->save();
 
         $r = Relationship::many_to_many(TestModel::class, TestGroup::class)->among(
-            array($model),
-            array($g1, $g2),
-            array($model->id => array($g1->id => array('count' => 100), $g2->id => array('count' => 200)))
+            [$model],
+            [$g1, $g2],
+            [$model->id => [$g1->id => ['count' => 100], $g2->id => ['count' => 200]]]
         );
 
         foreach ($r as $model_id => $s) {
@@ -292,9 +292,9 @@ class RelationshipTest extends UnitTest
         $group->save();
 
         $r = Relationship::many_to_many(TestModel::class, TestGroup::class)->among(
-            array($model),
-            array($group),
-            array($model->id => array($group->id => array('color' => 'red')))
+            [$model],
+            [$group],
+            [$model->id => [$group->id => ['color' => 'red']]]
         );
 
         foreach ($r as $model_id => $s) {
@@ -344,7 +344,7 @@ class RelationshipTest extends UnitTest
         $this->models[] = $group = new TestGroup();
         $group->save();
 
-        $r = Relationship::many_to_many(TestModel::class, TestGroup::class)->among(array($model), array($group));
+        $r = Relationship::many_to_many(TestModel::class, TestGroup::class)->among([$model], [$group]);
 
         foreach ($r as $model_id => $s) {
             foreach ($s as $group_id => $t) {
@@ -374,7 +374,7 @@ class RelationshipTest extends UnitTest
         $this->models[] = $group = new TestGroup();
         $group->save();
 
-        $r = Relationship::many_to_many(TestModel::class, TestGroup::class)->among(array($model), array($group));
+        $r = Relationship::many_to_many(TestModel::class, TestGroup::class)->among([$model], [$group]);
 
         foreach ($r as $model_id => $s) {
             foreach ($s as $group_id => $t) {
@@ -402,8 +402,8 @@ class RelationshipTest extends UnitTest
             "Argument 1 expected of class 'TestModel' or 'TestWidget', but got 'TestGroup' instead."
         );
         $r = Relationship::one_to_many(TestModel::class, TestWidget::class);
-        $models = array(new TestModel(), new TestModel());
-        $groups = array(new TestGroup(), new TestGroup(), new TestGroup());
+        $models = [new TestModel(), new TestModel()];
+        $groups = [new TestGroup(), new TestGroup(), new TestGroup()];
         $r->among($groups, $models);
     }
 
@@ -414,8 +414,8 @@ class RelationshipTest extends UnitTest
             "Argument 2 expected of class 'TestModel' or 'TestWidget', but got 'TestGroup' instead."
         );
         $r = Relationship::one_to_many(TestModel::class, TestWidget::class);
-        $models = array(new TestModel(), new TestModel());
-        $groups = array(new TestGroup(), new TestGroup(), new TestGroup());
+        $models = [new TestModel(), new TestModel()];
+        $groups = [new TestGroup(), new TestGroup(), new TestGroup()];
         $r->among($models, $groups);
     }
 
@@ -430,12 +430,12 @@ class RelationshipTest extends UnitTest
     {
         $r = Relationship::one_to_one(TestWidget::class, TestVersion::class);
 
-        $version = new TestVersion(array('version' => '0.0.1'));
+        $version = new TestVersion(['version' => '0.0.1']);
         $version->save();
 
-        $widget = new TestWidget(array(
+        $widget = new TestWidget([
             'color' => 'khaki'
-        ));
+        ]);
         $widget->save();
 
         $this->models[] = $version;
@@ -483,15 +483,15 @@ class RelationshipTest extends UnitTest
     {
         $r = Relationship::one_to_one(TestWidget::class, TestVersion::class);
 
-        $v1 = new TestVersion(array('version' => '1'));
+        $v1 = new TestVersion(['version' => '1']);
         $v1->save();
 
-        $v2 = new TestVersion(array('version' => '2'));
+        $v2 = new TestVersion(['version' => '2']);
         $v2->save();
 
-        $widget = new TestWidget(array(
+        $widget = new TestWidget([
             'color' => 'mauve'
-        ));
+        ]);
         $widget->save();
 
         $this->models[] = $v1;
@@ -505,7 +505,7 @@ class RelationshipTest extends UnitTest
         $i1->save();
         $i2->save();
 
-        $versions = array($v1, $v2);
+        $versions = [$v1, $v2];
 
         $widget->has_many(TestVersion::class);
         $this->assertNotNull($widget->test_versions);
@@ -538,7 +538,7 @@ class RelationshipTest extends UnitTest
         $model = new TestModel();
         $model->save();
 
-        $version = new TestVersion(array('version' => '1.2.3'));
+        $version = new TestVersion(['version' => '1.2.3']);
         $version->save();
 
         $this->models[] = $model;
@@ -576,7 +576,7 @@ class RelationshipTest extends UnitTest
         $this->assertNotNull($model->test_groups);
         $this->assertEquals(1, count($model->test_groups));
 
-        list($tg) = array_values($model->test_groups);
+        [$tg] = array_values($model->test_groups);
         $this->assertEquals($group->name, $tg->name);
         $this->assertTrue(array_key_exists($group->id, $model->test_groups));
         $this->assertEquals($group->name, $model->test_groups[$group->id]->name);
@@ -585,7 +585,7 @@ class RelationshipTest extends UnitTest
         $this->assertNotNull($group->test_models);
         $this->assertEquals(1, count($group->test_models));
 
-        list($tm) = array_values($group->test_models);
+        [$tm] = array_values($group->test_models);
         $this->assertEquals($model->name, $tm->name);
         $this->assertTrue(array_key_exists($model->id, $group->test_models));
         $this->assertEquals($model->name, $group->test_models[$model->id]->name);
@@ -595,7 +595,7 @@ class RelationshipTest extends UnitTest
     {
         $r = Relationship::many_to_many(TestGroup::class, TestModel::class);
 
-        $models = array();
+        $models = [];
         for ($i = 0; $i < 2; $i++) {
             $m = new TestModel();
             $m->save();
@@ -603,7 +603,7 @@ class RelationshipTest extends UnitTest
             $this->models[] = $m;
         }
 
-        $groups = array();
+        $groups = [];
         for ($j = 0; $j < 3; $j++) {
             $g = new TestGroup();
             $g->save();
@@ -656,7 +656,7 @@ class RelationshipTest extends UnitTest
         $this->models[] = $group;
 
         // These are both valid
-        $instance = $r->between($group, $model, array('count' => 12));
+        $instance = $r->between($group, $model, ['count' => 12]);
         // $instance = $r->between($model, $group);
 
         // Save
@@ -668,7 +668,7 @@ class RelationshipTest extends UnitTest
         $this->assertNotNull($model->test_groups);
         $this->assertEquals(1, count($model->test_groups));
 
-        list($tg) = array_values($model->test_groups);
+        [$tg] = array_values($model->test_groups);
         $this->assertEquals($group->name, $tg->name);
         $this->assertTrue(array_key_exists($group->id, $model->test_groups));
         $this->assertEquals($group->name, $model->test_groups[$group->id]->name);
@@ -678,7 +678,7 @@ class RelationshipTest extends UnitTest
         $this->assertNotNull($group->test_models);
         $this->assertEquals(1, count($group->test_models));
 
-        list($tm) = array_values($group->test_models);
+        [$tm] = array_values($group->test_models);
         $this->assertEquals($model->name, $tm->name);
         $this->assertTrue(array_key_exists($model->id, $group->test_models));
         $this->assertEquals($model->name, $group->test_models[$model->id]->name);
@@ -693,9 +693,9 @@ class RelationshipTest extends UnitTest
         $model->save();
         $this->models[] = $model;
 
-        $widget = new TestWidget(array(
+        $widget = new TestWidget([
             'color' => 'pink'
-        ));
+        ]);
         $widget->save();
         $this->models[] = $widget;
 
@@ -723,9 +723,9 @@ class RelationshipTest extends UnitTest
         $model->save();
         $this->models[] = $model;
 
-        $widget = new TestWidget(array(
+        $widget = new TestWidget([
             'color' => 'pink'
-        ));
+        ]);
         $widget->save();
         $this->models[] = $widget;
 
@@ -753,15 +753,15 @@ class RelationshipTest extends UnitTest
         $model->save();
         $this->models[] = $model;
 
-        $w1 = new TestWidget(array(
+        $w1 = new TestWidget([
             'color' => 'pink'
-        ));
+        ]);
         $w1->save();
         $this->models[] = $w1;
 
-        $w2 = new TestWidget(array(
+        $w2 = new TestWidget([
             'color' => 'maroon'
-        ));
+        ]);
         $w2->save();
         $this->models[] = $w2;
 
@@ -793,18 +793,18 @@ class RelationshipTest extends UnitTest
     {
         $r = Relationship::one_to_many(TestWidget::class, TestVersion::class);
 
-        $v1 = new TestVersion(array('version' => '1.2.1'));
+        $v1 = new TestVersion(['version' => '1.2.1']);
         $v1->save();
 
-        $v2 = new TestVersion(array('version' => '2.0.1'));
+        $v2 = new TestVersion(['version' => '2.0.1']);
         $v2->save();
 
-        $v3 = new TestVersion(array('version' => '2.0.1'));
+        $v3 = new TestVersion(['version' => '2.0.1']);
         $v3->save();
 
-        $widget = new TestWidget(array(
+        $widget = new TestWidget([
             'color' => 'fuchsia'
-        ));
+        ]);
         $widget->save();
 
         $this->models[] = $v1;
@@ -821,7 +821,7 @@ class RelationshipTest extends UnitTest
         $i2->save();
         $i3->save();
 
-        $versions = array($v1->id => $v1, $v2->id => $v2, $v3->id => $v3);
+        $versions = [$v1->id => $v1, $v2->id => $v2, $v3->id => $v3];
 
         $ret = $widget->has_many(TestVersion::class);
         $this->assertIsArray($ret);
@@ -856,15 +856,15 @@ class RelationshipTest extends UnitTest
     {
         $r = Relationship::one_to_many(TestWidget::class, TestVersion::class);
 
-        $v1 = new TestVersion(array('version' => '1.2.1'));
+        $v1 = new TestVersion(['version' => '1.2.1']);
         $v1->save();
 
-        $v2 = new TestVersion(array('version' => '2.0.1'));
+        $v2 = new TestVersion(['version' => '2.0.1']);
         $v2->save();
 
-        $widget = new TestWidget(array(
+        $widget = new TestWidget([
             'color' => 'fuchsia'
-        ));
+        ]);
         $widget->save();
 
         $this->models[] = $v1;
@@ -878,7 +878,7 @@ class RelationshipTest extends UnitTest
         $i1->save();
         $i2->save();
 
-        $versions = array($v1, $v2);
+        $versions = [$v1, $v2];
 
         $ret = $widget->has_many(TestVersion::class);
         $this->assertIsArray($ret);

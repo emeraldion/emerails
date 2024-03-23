@@ -32,7 +32,7 @@ class Localization
      * @attr languages
      * @short Array of supported languages.
      */
-    public static $languages = array(
+    public static $languages = [
         'it',
         'en',
         'es',
@@ -53,7 +53,7 @@ class Localization
         'hu',
         'hr',
         'ko'
-    );
+    ];
 
     /**
      * @attr strings_table
@@ -115,7 +115,7 @@ class Localization
         $table = self::$strings_table;
 
         $local_strings = self::load_strings_file(@$_COOKIE[Config::get('LANGUAGE_COOKIE')], $controller);
-        $table = array_merge(self::$strings_table ?? array(), eval("return {$local_strings};"));
+        $table = array_merge(self::$strings_table ?? [], eval("return {$local_strings};"));
 
         self::$strings_table = $table;
     }
@@ -130,7 +130,7 @@ class Localization
         if (!Config::get('LOCALIZATION_DEBUG')) {
             return $term;
         }
-        return span($term, array('class' => 'localization-debug'));
+        return span($term, ['class' => 'localization-debug']);
     }
 
     /**
@@ -160,7 +160,7 @@ class Localization
      */
     private static function load_strings_table()
     {
-        $table = array();
+        $table = [];
 
         $global_strings = self::load_strings_file(@$_COOKIE[Config::get('LANGUAGE_COOKIE')] /* GLOBAL */);
         $table = array_merge($table, eval("return {$global_strings}"));

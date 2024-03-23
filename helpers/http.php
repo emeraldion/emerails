@@ -27,7 +27,7 @@ class HTTP
      *	@param code The HTTP error code.
      *	@param headers An optional set of HTTP headers to send to the client.
      */
-    public static function error($code = 500, $headers = array())
+    public static function error($code = 500, $headers = [])
     {
         if ($code < 400 || $code > 599) {
             throw new Exception(sprintf('Not an HTTP error response status code: %d', $code));

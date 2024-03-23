@@ -44,7 +44,7 @@ abstract class ActiveRecord
      *  @details This is a list of columns that must not be written by models, cause
      *  they're typically set or updated by DB triggers.
      */
-    const READONLY_COLUMNS = array('created_at', 'updated_at');
+    const READONLY_COLUMNS = ['created_at', 'updated_at'];
 
     /**
      *  @const WRITEONLY_COLUMNS
@@ -52,43 +52,43 @@ abstract class ActiveRecord
      *  @details This is a list of columns representing potentially sensitive data,
      *  e.g. password hashes, that must never be printed.
      */
-    const WRITEONLY_COLUMNS = array('password');
+    const WRITEONLY_COLUMNS = ['password'];
 
     /**
      *  @attr columns
      *  @short Array of columns for the model object.
      */
-    static $columns = array();
+    static $columns = [];
 
     /**
      *  @attr column_info
      *  @short Array of column info for the model object.
      */
-    static $column_info = array();
+    static $column_info = [];
 
     /**
      *  @attr class_initialized
      *  @short Array containing initialization information for subclasses.
      */
-    static $class_initialized = array();
+    static $class_initialized = [];
 
     /**
      *  @attr belongs_to_classes
      *  @short Array containing information on parent tables for subclasses.
      */
-    static $belongs_to_classes = array();
+    static $belongs_to_classes = [];
 
     /**
      *  @attr has_many_classes
      *  @short Array containing information on child tables for subclasses.
      */
-    static $has_many_classes = array();
+    static $has_many_classes = [];
 
     /**
      *  @attr object_pool
      *  @short Pool of objects already fetched from database.
      */
-    static $object_pool = array();
+    static $object_pool = [];
 
     /**
      *  @attr table_name
@@ -117,7 +117,7 @@ abstract class ActiveRecord
      *  The class property is read-only and it is set to the actual primary key of the
      *  ActiveRecord subclass when introspecting columns of the bound table.
      */
-    protected static $actual_primary_key_names = array();
+    protected static $actual_primary_key_names = [];
 
     /**
      *  @attr foreign_key_name
@@ -161,8 +161,8 @@ abstract class ActiveRecord
         if (!$initialized) {
             $conn->prepare('DESCRIBE `{1}`', $this->get_table_name());
             $conn->exec();
-            $columns = array();
-            $column_info = array();
+            $columns = [];
+            $column_info = [];
             while ($row = $conn->fetch_assoc()) {
                 $columns[] = $row['Field'];
                 $column_info[] = $row;
@@ -176,7 +176,7 @@ abstract class ActiveRecord
         }
         $columns = self::_get_columns($classname);
         if (!empty($_values)) {
-            $this->values = array();
+            $this->values = [];
             foreach ($_values as $key => $val) {
                 if (in_array($key, $columns)) {
                     // We can't be strict here as the data read from DB is untyped :(
@@ -325,7 +325,7 @@ abstract class ActiveRecord
      */
     public function demux_column_names($columns)
     {
-        $ret = array();
+        $ret = [];
         foreach ($columns as $key => $val) {
             if (strpos($key, $this->get_table_name()) === 0) {
                 $ret[last(explode(':', $key))] = $val;
@@ -343,7 +343,7 @@ abstract class ActiveRecord
      *  @param params An array of conditions. For the semantics, see find_all
      *  @return ret Handle to the relationship between the receiver class and the parent class
      */
-    public function belongs_to($class_or_table_name, $params = array())
+    public function belongs_to($class_or_table_name, $params = [])
     {
         $classname = get_class($this);
         $columns = self::_get_columns($classname);
@@ -399,7 +399,7 @@ abstract class ActiveRecord
      *  @return ret Handle to the relationship between the receiver class and the child class
      *  @see find_all
      */
-    public function has_many($class_or_table_name, $params = array())
+    public function has_many($class_or_table_name, $params = [])
     {
         try {
             // Assume class name and obtain table name
@@ -434,14 +434,14 @@ abstract class ActiveRecord
             ? $params[self::PARAM_AS]
             : pluralize(camel_case_to_joined_lower($childclass));
         if (is_array($children) && count($children) > 0) {
-            $dict = array();
+            $dict = [];
             foreach ($children as $child) {
                 $child->values[camel_case_to_joined_lower(get_class($this))] = $this;
                 $dict[$child->$child_pk] = $child;
             }
             $this->values[$child_member_name] = $dict;
 
-            return Relationship::one_to_many(get_called_class(), $childclass)->among(array($this), array_values($dict));
+            return Relationship::one_to_many(get_called_class(), $childclass)->among([$this], array_values($dict));
         } else {
             // Unset previously set value
             unset($this->values[$child_member_name]);
@@ -457,7 +457,7 @@ abstract class ActiveRecord
      *  @return ret Handle to the relationship between the receiver class and the peer class
      *  @see find_all
      */
-    public function has_and_belongs_to_many($class_or_table_name, $params = array())
+    public function has_and_belongs_to_many($class_or_table_name, $params = [])
     {
         $conn = Db::get_connection();
 
@@ -536,8 +536,8 @@ abstract class ActiveRecord
             ? $params[self::PARAM_AS]
             : pluralize(camel_case_to_joined_lower($peerclass));
         if ($conn->num_rows() > 0) {
-            $this->values[$peer_member_name] = array();
-            $dict = array();
+            $this->values[$peer_member_name] = [];
+            $dict = [];
             while ($row = $conn->fetch_assoc()) {
                 $peer_row = $peer->demux_column_names($row);
                 // Fixup pkey from fkey
@@ -547,7 +547,7 @@ abstract class ActiveRecord
                 $peer = new $peerclass($peer_row);
                 $this->values[$peer_member_name][$peer->$peer_pk] = $peer;
                 // FIXME: this is not reflecting the real relationship
-                $peer->values[pluralize(camel_case_to_joined_lower(get_class($this)))] = array($this->$pkey => $this);
+                $peer->values[pluralize(camel_case_to_joined_lower(get_class($this)))] = [$this->$pkey => $this];
 
                 if ($has_join) {
                     $joined_obj = new $joined_classname($joined_obj->demux_column_names($row));
@@ -570,9 +570,9 @@ abstract class ActiveRecord
             }
 
             $ret = Relationship::many_to_many(get_called_class(), $peerclass)->among(
-                array($this),
+                [$this],
                 array_values($this->values[$peer_member_name]),
-                array($this->values[$pkey] => $dict)
+                [$this->values[$pkey] => $dict]
             );
         } else {
             // Unset previously set value
@@ -593,7 +593,7 @@ abstract class ActiveRecord
      *  @return ret Handle to the relationship between the receiver class and the child class
      *  @see find_all
      */
-    public function has_one($class_or_table_name, $params = array())
+    public function has_one($class_or_table_name, $params = [])
     {
         try {
             // Assume class name and obtain table name
@@ -616,11 +616,11 @@ abstract class ActiveRecord
         }
 
         $fkey = $this->get_foreign_key_name();
-        $children = $child->find_all(array(
+        $children = $child->find_all([
             self::PARAM_WHERE_CLAUSE => "`{$fkey}` = '{$this->values[$this->primary_key]}'",
             // Do not limit results in strict mode, so we can raise if we get more than one
             'limit' => isset($params[self::PARAM_STRICT]) ? null : 1
-        ));
+        ]);
         if (is_array($children) && count($children) > 0) {
             if (isset($params[self::PARAM_STRICT]) && count($children) > 1) {
                 throw new Exception(sprintf('Only one child expected, but found %d', count($children)));
@@ -661,7 +661,7 @@ abstract class ActiveRecord
         $conn->exec();
         if ($conn->num_rows() > 0) {
             $classname = get_class($this);
-            $results = array();
+            $results = [];
             while ($row = $conn->fetch_assoc()) {
                 $obj = new $classname();
                 $obj->find_by_id($row[$this->primary_key]);
@@ -689,7 +689,7 @@ abstract class ActiveRecord
      *  to return an associated model object. Currently, only 1:1 relationships are supported.
      *  @param params An array of parameters for the underlying SQL query.
      */
-    function find_all($params = array())
+    function find_all($params = [])
     {
         $conn = Db::get_connection();
 
@@ -758,7 +758,7 @@ abstract class ActiveRecord
         $conn->exec();
         if ($conn->num_rows() > 0) {
             $classname = get_class($this);
-            $results = array();
+            $results = [];
             while ($row = $conn->fetch_assoc()) {
                 $obj = new $classname($has_join ? $this->demux_column_names($row) : $row);
                 $results[] = $obj;
@@ -793,9 +793,9 @@ abstract class ActiveRecord
      *  @return ret Model object satisfying the requirements, or null
      *  @see find_all
      */
-    function find_one($params = array())
+    function find_one($params = [])
     {
-        if ($ret = $this->find_all(array_merge($params, array('limit' => 1)))) {
+        if ($ret = $this->find_all(array_merge($params, ['limit' => 1]))) {
             return first($ret);
         }
         return null;
@@ -884,7 +884,7 @@ abstract class ActiveRecord
      *  @param params An array of parameters for the underlying SQL query.
      *  @return ret Count of model objects satisfying the requirements
      */
-    public function count_all($params = array())
+    public function count_all($params = [])
     {
         $conn = Db::get_connection();
 
@@ -956,7 +956,7 @@ abstract class ActiveRecord
             return $info['Field'] === $key;
         });
         preg_match('/([a-z]+)(\((\d+)\))?/', $info['Type'], $matches);
-        list(, $type) = $matches;
+        [, $type] = $matches;
         switch ($type) {
             case 'int':
             case 'tinyint':
@@ -995,7 +995,7 @@ abstract class ActiveRecord
         $classname = get_class($this);
         $columns = self::_get_columns($classname);
         $ret = false;
-        $nonempty = array();
+        $nonempty = [];
 
         $this->validate(true);
 
@@ -1164,7 +1164,7 @@ abstract class ActiveRecord
                 $ret = null;
             } else {
                 preg_match('/([a-z]+)(\((.+)\))?/', $info['Type'], $matches);
-                list(, $type) = $matches;
+                [, $type] = $matches;
 
                 switch ($type) {
                     case 'enum':
@@ -1385,7 +1385,7 @@ abstract class ActiveRecord
      */
     public function __debugInfo()
     {
-        $debug_info = array();
+        $debug_info = [];
         foreach ($this->get_column_names() as $column) {
             if (in_array($column, self::WRITEONLY_COLUMNS)) {
                 $debug_info[$column] = '***';
@@ -1485,7 +1485,7 @@ abstract class ActiveRecord
             return;
         }
         if (!isset(self::$object_pool[$classname])) {
-            self::$object_pool[$classname] = array();
+            self::$object_pool[$classname] = [];
         }
         self::$object_pool[$classname][$id] = $obj;
     }
@@ -1531,7 +1531,7 @@ abstract class ActiveRecord
     public static function get_pool_stats($classname)
     {
         $count = isset(self::$object_pool[$classname]) ? count(self::$object_pool[$classname]) : 0;
-        return array('count' => $count);
+        return ['count' => $count];
     }
 }
 

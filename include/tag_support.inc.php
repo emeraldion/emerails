@@ -11,7 +11,7 @@
  * @format
  */
 
-function select($name, $values, $default_value, $params = array())
+function select($name, $values, $default_value, $params = [])
 {
     $params_serialized = '';
     foreach ($params as $key => $value) {
@@ -22,15 +22,15 @@ function select($name, $values, $default_value, $params = array())
         $value = htmlentities($value);
         $selected = $value == $default_value ? ' selected="selected"' : '';
         $options .= <<<EOT
-		<option value="{$value}"{$selected}>{$title}</option>
+        		<option value="{$value}"{$selected}>{$title}</option>
 
-EOT;
+        EOT;
     }
     $html = <<<EOT
-	<select name="{$name}"{$params_serialized}>
-	{$options}
-	</select>
-EOT;
+    	<select name="{$name}"{$params_serialized}>
+    	{$options}
+    	</select>
+    EOT;
     return $html;
 }
 
@@ -46,11 +46,11 @@ function block_tag($tagname, $content, $params = null)
         }
     }
     $html = <<<EOT
-<{$tagname}{$params_serialized}>
-	{$content}
-</{$tagname}>
+    <{$tagname}{$params_serialized}>
+    	{$content}
+    </{$tagname}>
 
-EOT;
+    EOT;
     return $html;
 }
 
@@ -63,8 +63,8 @@ function inline_tag($tagname, $content, $params = null)
         }
     }
     $html = <<<EOT
-<{$tagname}{$params_serialized}>{$content}</{$tagname}>
-EOT;
+    <{$tagname}{$params_serialized}>{$content}</{$tagname}>
+    EOT;
     return $html;
 }
 
@@ -77,8 +77,8 @@ function leaf_tag($tagname, $params = null)
         }
     }
     $html = <<<EOT
-<{$tagname}{$params_serialized} />
-EOT;
+    <{$tagname}{$params_serialized} />
+    EOT;
     return $html;
 }
 
@@ -153,7 +153,7 @@ function h6($content, $params)
  *	Form elements
  */
 
-function button($name, $value, $params = array(), $enabled = true)
+function button($name, $value, $params = [], $enabled = true)
 {
     $params['name'] = $name;
     $params['value'] = $value;
@@ -164,7 +164,7 @@ function button($name, $value, $params = array(), $enabled = true)
     return leaf_tag('input', $params);
 }
 
-function checkbox($name, $checked, $params = array(), $enabled = true)
+function checkbox($name, $checked, $params = [], $enabled = true)
 {
     $params['name'] = $name;
     $params['type'] = 'checkbox';

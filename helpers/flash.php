@@ -23,7 +23,7 @@ class Flash
 
     public function get_css_class()
     {
-        $cls = array('flash', 'msg');
+        $cls = ['flash', 'msg'];
         switch ($this->type) {
             case 'info':
                 $cls[] = 'info';

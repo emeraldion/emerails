@@ -27,12 +27,8 @@ class QueryStringUnitTest extends UnitTest
      */
     public function test_from_assoc()
     {
-        $this->assertEquals('a=1', QueryString::from_assoc(array('a' => 1)), 'Unable to create query string');
-        $this->assertEquals(
-            'a=1&b=2',
-            QueryString::from_assoc(array('a' => 1, 'b' => 2)),
-            'Unable to create query string'
-        );
+        $this->assertEquals('a=1', QueryString::from_assoc(['a' => 1]), 'Unable to create query string');
+        $this->assertEquals('a=1&b=2', QueryString::from_assoc(['a' => 1, 'b' => 2]), 'Unable to create query string');
     }
 
     /**
@@ -41,12 +37,8 @@ class QueryStringUnitTest extends UnitTest
      */
     public function test_to_assoc()
     {
-        $this->assertEquals(array('a' => '1'), QueryString::to_assoc('a=1'), 'Unable to parse query string');
-        $this->assertEquals(
-            array('a' => '1', 'b' => '2'),
-            QueryString::to_assoc('a=1&b=2'),
-            'Unable to parse query string'
-        );
+        $this->assertEquals(['a' => '1'], QueryString::to_assoc('a=1'), 'Unable to parse query string');
+        $this->assertEquals(['a' => '1', 'b' => '2'], QueryString::to_assoc('a=1&b=2'), 'Unable to parse query string');
     }
 
     /**

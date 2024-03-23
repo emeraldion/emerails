@@ -155,7 +155,7 @@ class AssetController extends BaseController
      */
     protected static function get_aggregate_files($bundle = null)
     {
-        return array();
+        return [];
     }
 }
 ?>

@@ -16,13 +16,13 @@ use Emeraldion\EmeRails\Helpers\Localization;
 global $irregular_nouns;
 global $default_irregular_nouns;
 
-$default_irregular_nouns = array(
+$default_irregular_nouns = [
     'person' => 'people',
     'child' => 'children',
     'man' => 'men',
     'woman' => 'women',
     'portfolio' => 'portfolios'
-);
+];
 
 $irregular_nouns = $default_irregular_nouns;
 

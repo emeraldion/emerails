@@ -216,33 +216,33 @@ class EmerailsGenerate extends ScriptCommand
                 print "\tcreating models/$model.php\n";
 
                 $model_code = <<<EOT
-<?php
-/**
- * @format
- */
+                <?php
+                /**
+                 * @format
+                 */
 
-use Emeraldion\EmeRails\Models\ActiveRecord;
+                use Emeraldion\EmeRails\Models\ActiveRecord;
 
-/**
- * @class {$model_class}
- * @short Edit this model's short description
- * @details Edit this model's detailed description
- */
-class {$model_class} extends ActiveRecord
-{
-    // TODO: add your code here
-}
-?>
+                /**
+                 * @class {$model_class}
+                 * @short Edit this model's short description
+                 * @details Edit this model's detailed description
+                 */
+                class {$model_class} extends ActiveRecord
+                {
+                    // TODO: add your code here
+                }
+                ?>
 
-EOT;
+                EOT;
 
                 file_put_contents(sprintf('%s/%s.php', $dir, $model), $model_code);
 
-                $fields = array();
+                $fields = [];
                 if ($options->getOpt(self::OPT_FIELDS)) {
                     $fields_opt = explode(',', $options->getOpt(self::OPT_FIELDS));
                     for ($i = 0; $i < count($fields_opt); $i += 1) {
-                        list($name, $type) = explode(':', $fields_opt[$i]);
+                        [$name, $type] = explode(':', $fields_opt[$i]);
                         $fields[$name] = $type;
                     }
                 }
@@ -274,7 +274,7 @@ EOT;
         $model = singularize($model_table);
 
         $relationship_signature = array_reduce(
-            array(self::OPT_HAS_ONE, self::OPT_HAS_MANY, self::OPT_HAS_AND_BELONGS_TO_MANY, self::OPT_BELONGS_TO),
+            [self::OPT_HAS_ONE, self::OPT_HAS_MANY, self::OPT_HAS_AND_BELONGS_TO_MANY, self::OPT_BELONGS_TO],
             function ($carry, $key) use ($options) {
                 $o = $options->getOpt($key);
                 if ($o) {
@@ -282,7 +282,7 @@ EOT;
                 }
                 return $carry;
             },
-            array()
+            []
         );
 
         if (count($relationship_signature) > 1) {
@@ -317,9 +317,9 @@ EOT;
                     $model_fk_name = sprintf('%s_id', $model);
                     $conn->prepare(
                         <<<EOT
-ALTER TABLE `{1}` ADD `{2}` int(11) NULL DEFAULT NULL AFTER `id`, ADD INDEX (`{2}`);
-ALTER TABLE `{1}` ADD FOREIGN KEY (`{2}`) REFERENCES `{3}`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
-EOT
+                        ALTER TABLE `{1}` ADD `{2}` int(11) NULL DEFAULT NULL AFTER `id`, ADD INDEX (`{2}`);
+                        ALTER TABLE `{1}` ADD FOREIGN KEY (`{2}`) REFERENCES `{3}`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+                        EOT
                         ,
                         $other_model_table,
                         $model_fk_name,
@@ -332,15 +332,15 @@ EOT
                     $model_fk_name = sprintf('%s_id', $model);
                     $other_model_fk_name = sprintf('%s_id', $other_model);
 
-                    $table_names = array($model_table, $other_model_table);
+                    $table_names = [$model_table, $other_model_table];
                     sort($table_names);
                     $relationship_table_name = implode('_', $table_names);
 
-                    $fields = array();
+                    $fields = [];
                     if ($options->getOpt(self::OPT_FIELDS)) {
                         $fields_opt = explode(',', $options->getOpt(self::OPT_FIELDS));
                         for ($i = 0; $i < count($fields_opt); $i += 1) {
-                            list($name, $type) = explode(':', $fields_opt[$i]);
+                            [$name, $type] = explode(':', $fields_opt[$i]);
                             $fields[$name] = $type;
                         }
                     }
@@ -360,9 +360,9 @@ EOT
                     $other_model_fk_name = sprintf('%s_id', $other_model);
                     $conn->prepare(
                         <<<EOT
-ALTER TABLE `{1}` ADD `{2}` int(11) NULL DEFAULT NULL AFTER `id`, ADD INDEX (`{2}`);
-ALTER TABLE `{1}` ADD FOREIGN KEY (`{2}`) REFERENCES `{3}`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
-EOT
+                        ALTER TABLE `{1}` ADD `{2}` int(11) NULL DEFAULT NULL AFTER `id`, ADD INDEX (`{2}`);
+                        ALTER TABLE `{1}` ADD FOREIGN KEY (`{2}`) REFERENCES `{3}`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+                        EOT
                         ,
                         $model_table,
                         $other_model_fk_name,
@@ -399,45 +399,45 @@ EOT
         $conn->exec();
 
         if (!$conn->result()) {
-            $fk_names = array($model_fk_name, $other_model_fk_name);
+            $fk_names = [$model_fk_name, $other_model_fk_name];
             sort($fk_names);
             $unique_key_name = implode('_', $fk_names);
 
             $query = <<<EOT
-CREATE TABLE `{1}` (
-    `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY
+            CREATE TABLE `{1}` (
+                `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY
 
-EOT;
+            EOT;
 
             foreach ($fields as $name => $type) {
                 $query .= <<<EOT
-    ,`{$name}` {$type}
+                    ,`{$name}` {$type}
 
-EOT;
+                EOT;
             }
 
             // Add default fields
             $query .= <<<EOT
-    ,`{3}` int(11) NOT NULL
-    ,`{4}` int(11) NOT NULL
-    ,`created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
-    ,`updated_at` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP
-    , INDEX `{3}` (`{3}`)
-    , INDEX `{4}` (`{4}`)
-    , UNIQUE KEY `{2}` (`{3}`, `{4}`)
-    , INDEX `created_at` (`created_at`)
-    , INDEX `updated_at` (`updated_at`)
+                ,`{3}` int(11) NOT NULL
+                ,`{4}` int(11) NOT NULL
+                ,`created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+                ,`updated_at` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP
+                , INDEX `{3}` (`{3}`)
+                , INDEX `{4}` (`{4}`)
+                , UNIQUE KEY `{2}` (`{3}`, `{4}`)
+                , INDEX `created_at` (`created_at`)
+                , INDEX `updated_at` (`updated_at`)
 
-EOT;
+            EOT;
             $query .= ');';
             $conn->prepare($query, $relationship_table_name, $unique_key_name, $model_fk_name, $other_model_fk_name);
             $conn->exec();
 
             $conn->prepare(
                 <<<EOT
-ALTER TABLE `{1}` ADD FOREIGN KEY (`{2}`) REFERENCES `{3}`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
-ALTER TABLE `{1}` ADD FOREIGN KEY (`{4}`) REFERENCES `{5}`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
-EOT
+                ALTER TABLE `{1}` ADD FOREIGN KEY (`{2}`) REFERENCES `{3}`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+                ALTER TABLE `{1}` ADD FOREIGN KEY (`{4}`) REFERENCES `{5}`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+                EOT
                 ,
                 $relationship_table_name,
                 $model_fk_name,
@@ -463,26 +463,26 @@ EOT
 
         if (!$conn->result()) {
             $query = <<<EOT
-CREATE TABLE `{1}` (
-    `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY
+            CREATE TABLE `{1}` (
+                `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY
 
-EOT;
+            EOT;
 
             foreach ($fields as $name => $type) {
                 $query .= <<<EOT
-    ,`{$name}` {$type}
+                    ,`{$name}` {$type}
 
-EOT;
+                EOT;
             }
 
             // Add default fields
             $query .= <<<EOT
-    ,`created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
-    ,`updated_at` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP
-    , INDEX `created_at` (`created_at`)
-    , INDEX `updated_at` (`updated_at`)
+                ,`created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+                ,`updated_at` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP
+                , INDEX `created_at` (`created_at`)
+                , INDEX `updated_at` (`updated_at`)
 
-EOT;
+            EOT;
             $query .= ');';
 
             $conn->prepare($query, $conn->escape($tablename));
@@ -512,7 +512,7 @@ EOT;
         return false;
     }
 
-    protected function create_or_update_controller(string $basedir, string $controller, array $actions = array())
+    protected function create_or_update_controller(string $basedir, string $controller, array $actions = [])
     {
         $dir = $basedir . '/controllers';
 
@@ -548,17 +548,17 @@ EOT;
 
                 $updated_code .= <<<EOT
 
-    /**
-     * @fn {$action}
-     * @short Edit this actions's short description
-     * @details Edit this actions's detailed description
-     */
-    public function {$action}()
-    {
-        // TODO: add your code here
-    }
+                    /**
+                     * @fn {$action}
+                     * @short Edit this actions's short description
+                     * @details Edit this actions's detailed description
+                     */
+                    public function {$action}()
+                    {
+                        // TODO: add your code here
+                    }
 
-EOT;
+                EOT;
             }
             $updated_code .= substr($controller_code, $insertion_point);
 
@@ -567,43 +567,43 @@ EOT;
             print "\tcreating controllers/{$controller}_controller.php\n";
 
             $controller_code = <<<EOT
-<?php
-/**
- * @format
- */
+            <?php
+            /**
+             * @format
+             */
 
-use Emeraldion\EmeRails\Controllers\BaseController;
+            use Emeraldion\EmeRails\Controllers\BaseController;
 
-/**
- * @class {$controller_class}
- * @short Edit this controller's short description
- * @details Edit this controller's detailed description
- */
-class {$controller_class} extends BaseController
-{
-    /**
-     * @fn init
-     * @short Performs specialized initialization
-     * @details You should use this method to do your custom initialization.
-     */
-    protected function init()
-    {
-        parent::init();
+            /**
+             * @class {$controller_class}
+             * @short Edit this controller's short description
+             * @details Edit this controller's detailed description
+             */
+            class {$controller_class} extends BaseController
+            {
+                /**
+                 * @fn init
+                 * @short Performs specialized initialization
+                 * @details You should use this method to do your custom initialization.
+                 */
+                protected function init()
+                {
+                    parent::init();
 
-        // TODO: add your initialization code here
-    }
+                    // TODO: add your initialization code here
+                }
 
-    /**
-     * @fn index
-     * @short This is the default action
-     * @details This is the default action when the controller is invoked without an action
-     */
-    public function index()
-    {
-        // TODO: add your code here
-    }
+                /**
+                 * @fn index
+                 * @short This is the default action
+                 * @details This is the default action when the controller is invoked without an action
+                 */
+                public function index()
+                {
+                    // TODO: add your code here
+                }
 
-EOT;
+            EOT;
             $this->create_view($basedir, $controller, 'index');
 
             for ($i = 0; $i < count($actions); $i += 1) {
@@ -617,24 +617,24 @@ EOT;
 
                 $controller_code .= <<<EOT
 
-    /**
-     * @fn {$action}
-     * @short Edit this actions's short description
-     * @details Edit this actions's detailed description
-     */
-    public function {$action}()
-    {
-        // TODO: add your code here
-    }
+                    /**
+                     * @fn {$action}
+                     * @short Edit this actions's short description
+                     * @details Edit this actions's detailed description
+                     */
+                    public function {$action}()
+                    {
+                        // TODO: add your code here
+                    }
 
-EOT;
+                EOT;
             }
             $controller_code .= <<<EOT
-}
+            }
 
-?>
+            ?>
 
-EOT;
+            EOT;
 
             $this->create_dir($dir);
             file_put_contents($controller_file_path, $controller_code);

@@ -11,27 +11,27 @@
  */
 
 html {
-  padding: 0;
-  margin: 0;
-  height: 100%;
   background: #fff url('/assets/images/gradient_azure.png') repeat-x 0 0;
+  height: 100%;
+  margin: 0;
+  padding: 0;
 }
 body {
-  padding: 0;
-  margin: 0;
+  background: transparent url('/assets/images/emerails_logo.png') no-repeat bottom right;
   font-family: 'Lucida Grande', 'Trebuchet MS', sans-serif;
   height: 100%;
-  background: transparent url('/assets/images/emerails_logo.png') no-repeat bottom right;
+  margin: 0;
+  padding: 0;
 }
 #main_content {
-  width: 800px;
-  padding: 50px 0 0;
   margin: auto;
+  padding: 50px 0 0;
+  width: 800px;
 }
 h1 {
+  border-bottom: 1px solid #eee;
   color: #333;
   padding-bottom: 0.25em;
-  border-bottom: 1px solid #eee;
 }
 #footer {
   margin: 150px auto 0;

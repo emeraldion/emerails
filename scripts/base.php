@@ -39,25 +39,25 @@ abstract class ScriptCommand extends CLI
     {
         ANSIColorWriter::print(
             <<<EOT
-                                   _ __
-   ___  ____ ___  ___  _________ _(_) /____
-  / _ \/ __ `__ \/ _ \/ ___/ __ `/ / / ___/
- /  __/ / / / / /  __/ /  / /_/ / / (__  )
- \___/_/ /_/ /_/\___/_/   \__,_/_/_/____/
+                                               _ __
+               ___  ____ ___  ___  _________ _(_) /____
+              / _ \/ __ `__ \/ _ \/ ___/ __ `/ / / ___/
+             /  __/ / / / / /  __/ /  / /_/ / / (__  )
+             \___/_/ /_/ /_/\___/_/   \__,_/_/_/____/
 
 
-EOT
+            EOT
             ,
             'bright-green'
         );
         printf(
             <<<EOT
-(c) Claudio Procida 2008-2024
+            (c) Claudio Procida 2008-2024
 
-%s %s
+            %s %s
 
 
-EOT
+            EOT
             ,
             $this->name,
             $this->version

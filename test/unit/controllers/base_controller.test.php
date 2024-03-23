@@ -22,7 +22,7 @@ class BaseControllerWrapper extends BaseController
         return $this->strip_external_php_tags($php_code);
     }
 
-    public function do_validate_parameter(string $name, $value, array $params = array())
+    public function do_validate_parameter(string $name, $value, array $params = [])
     {
         return $this->validate_parameter($name, $value, $params);
     }
@@ -41,11 +41,11 @@ class BaseControllerTest extends UnitTest
         $html = $this->controller->strip_tags('<p>Simple paragraph</p>');
         $this->assertEquals(
             <<<EOT
-?>
-<p>Simple paragraph</p>
-<?php
+            ?>
+            <p>Simple paragraph</p>
+            <?php
 
-EOT
+            EOT
             ,
             $html
         );
@@ -57,18 +57,18 @@ EOT
         // order to escape from PHP to HTML
         $html = $this->controller->strip_tags(
             <<<EOT
-<h1><?php print 'Hello there!'; ?></h1>
+            <h1><?php print 'Hello there!'; ?></h1>
 
-EOT
+            EOT
         );
         $this->assertEquals(
             <<<EOT
-?>
-<h1><?php print 'Hello there!'; ?></h1>
+            ?>
+            <h1><?php print 'Hello there!'; ?></h1>
 
-<?php
+            <?php
 
-EOT
+            EOT
             ,
             $html
         );
@@ -80,22 +80,22 @@ EOT
         // should be unwrapped correctly
         $html = $this->controller->strip_tags(
             <<<EOT
-<?php
-  class Cat {
-    private \$meow;
-  }
-?>
+            <?php
+              class Cat {
+                private \$meow;
+              }
+            ?>
 
-EOT
+            EOT
         );
         $this->assertEquals(
             <<<EOT
 
-  class Cat {
-    private \$meow;
-  }
+              class Cat {
+                private \$meow;
+              }
 
-EOT
+            EOT
             ,
             $html
         );
@@ -107,21 +107,21 @@ EOT
         // should be unwrapped correctly
         $html = $this->controller->strip_tags(
             <<<EOT
-<?php
-  class Cat {
-    private \$meow;
-  }
+            <?php
+              class Cat {
+                private \$meow;
+              }
 
-EOT
+            EOT
         );
         $this->assertEquals(
             <<<EOT
 
-  class Cat {
-    private \$meow;
-  }
+              class Cat {
+                private \$meow;
+              }
 
-EOT
+            EOT
             ,
             $html
         );
@@ -131,9 +131,9 @@ EOT
     {
         $this->assertEquals(
             123,
-            $this->controller->do_validate_parameter('id', '123', array(
+            $this->controller->do_validate_parameter('id', '123', [
                 'type' => 'int'
-            ))
+            ])
         );
     }
 
@@ -141,9 +141,9 @@ EOT
     {
         $this->assertEquals(
             null,
-            $this->controller->do_validate_parameter('id', null, array(
+            $this->controller->do_validate_parameter('id', null, [
                 'type' => 'int'
-            ))
+            ])
         );
     }
 
@@ -151,10 +151,10 @@ EOT
     {
         $this->assertEquals(
             456,
-            $this->controller->do_validate_parameter('id', null, array(
+            $this->controller->do_validate_parameter('id', null, [
                 'type' => 'int',
                 'default' => 456
-            ))
+            ])
         );
     }
 
@@ -163,20 +163,20 @@ EOT
         $this->expectError();
         $this->expectErrorMessage("[BaseControllerWrapper::validate_parameter] Missing required int parameter 'id'");
 
-        $this->controller->do_validate_parameter('id', null, array(
+        $this->controller->do_validate_parameter('id', null, [
             'type' => 'int',
             'required' => true
-        ));
+        ]);
     }
 
     public function test_validate_parameter_int_required_valid()
     {
         $this->assertEquals(
             123,
-            $this->controller->do_validate_parameter('id', '123', array(
+            $this->controller->do_validate_parameter('id', '123', [
                 'type' => 'int',
                 'required' => true
-            ))
+            ])
         );
     }
 
@@ -185,10 +185,10 @@ EOT
         $this->expectError();
         $this->expectErrorMessage("[BaseControllerWrapper::validate_parameter] Missing required int parameter 'id'");
 
-        $this->controller->do_validate_parameter('id', '', array(
+        $this->controller->do_validate_parameter('id', '', [
             'type' => 'int',
             'required' => true
-        ));
+        ]);
     }
 
     public function test_validate_parameter_int_required_string_invalid()
@@ -198,22 +198,22 @@ EOT
             "[BaseControllerWrapper::validate_parameter] Type mismatch for parameter 'id'. Expected 'int', but found: 'abc'"
         );
 
-        $this->controller->do_validate_parameter('id', 'abc', array(
+        $this->controller->do_validate_parameter('id', 'abc', [
             'type' => 'int',
             'required' => true
-        ));
+        ]);
     }
 
     public function test_validate_parameter_int_array_valid()
     {
         $this->assertEquals(
-            array(1, 2, 3),
+            [1, 2, 3],
             $this->controller->do_validate_parameter(
                 'id',
-                array('1', '2', '3'),
-                array(
+                ['1', '2', '3'],
+                [
                     'type' => 'int[]'
-                )
+                ]
             )
         );
     }
@@ -221,25 +221,25 @@ EOT
     public function test_validate_parameter_int_array_default_valid()
     {
         $this->assertEquals(
-            array(3, 4, 5),
-            $this->controller->do_validate_parameter('id', null, array(
+            [3, 4, 5],
+            $this->controller->do_validate_parameter('id', null, [
                 'type' => 'int[]',
-                'default' => array(3, 4, 5)
-            ))
+                'default' => [3, 4, 5]
+            ])
         );
     }
 
     public function test_validate_parameter_int_array_required_valid()
     {
         $this->assertEquals(
-            array(1, 2, 3),
+            [1, 2, 3],
             $this->controller->do_validate_parameter(
                 'id',
-                array('1', '2', '3'),
-                array(
+                ['1', '2', '3'],
+                [
                     'type' => 'int[]',
                     'required' => true
-                )
+                ]
             )
         );
     }
@@ -255,20 +255,20 @@ EOT
 
         $this->controller->do_validate_parameter(
             'id',
-            array('a', 'b', 'c'),
-            array(
+            ['a', 'b', 'c'],
+            [
                 'type' => 'int[]',
                 'required' => true
-            )
+            ]
         );
     }
 
     public function test_validate_parameter_bool_valid()
     {
         $this->assertTrue(
-            $this->controller->do_validate_parameter('enabled', 'true', array(
+            $this->controller->do_validate_parameter('enabled', 'true', [
                 'type' => 'bool'
-            ))
+            ])
         );
     }
 
@@ -276,19 +276,19 @@ EOT
     {
         $this->assertEquals(
             null,
-            $this->controller->do_validate_parameter('enabled', null, array(
+            $this->controller->do_validate_parameter('enabled', null, [
                 'type' => 'bool'
-            ))
+            ])
         );
     }
 
     public function test_validate_parameter_bool_default_null_valid()
     {
         $this->assertFalse(
-            $this->controller->do_validate_parameter('enabled', null, array(
+            $this->controller->do_validate_parameter('enabled', null, [
                 'type' => 'bool',
                 'default' => false
-            ))
+            ])
         );
     }
 
@@ -299,19 +299,19 @@ EOT
             "[BaseControllerWrapper::validate_parameter] Missing required bool parameter 'enabled'"
         );
 
-        $this->controller->do_validate_parameter('enabled', null, array(
+        $this->controller->do_validate_parameter('enabled', null, [
             'type' => 'bool',
             'required' => true
-        ));
+        ]);
     }
 
     public function test_validate_parameter_bool_required_valid()
     {
         $this->assertFalse(
-            $this->controller->do_validate_parameter('enabled', 'false', array(
+            $this->controller->do_validate_parameter('enabled', 'false', [
                 'type' => 'bool',
                 'required' => true
-            ))
+            ])
         );
     }
 
@@ -322,22 +322,22 @@ EOT
             "[BaseControllerWrapper::validate_parameter] Type mismatch for parameter 'enabled'. Expected 'bool', but found: 'bogus'"
         );
 
-        $this->controller->do_validate_parameter('enabled', 'bogus', array(
+        $this->controller->do_validate_parameter('enabled', 'bogus', [
             'type' => 'bool',
             'required' => true
-        ));
+        ]);
     }
 
     public function test_validate_parameter_bool_array_valid()
     {
         $this->assertEquals(
-            array(true, true, true),
+            [true, true, true],
             $this->controller->do_validate_parameter(
                 'enabled',
-                array('1', 'on', 'true'),
-                array(
+                ['1', 'on', 'true'],
+                [
                     'type' => 'bool[]'
-                )
+                ]
             )
         );
     }
@@ -345,25 +345,25 @@ EOT
     public function test_validate_parameter_bool_array_default_valid()
     {
         $this->assertEquals(
-            array(false, true, false),
-            $this->controller->do_validate_parameter('enabled', null, array(
+            [false, true, false],
+            $this->controller->do_validate_parameter('enabled', null, [
                 'type' => 'bool[]',
-                'default' => array(false, true, false)
-            ))
+                'default' => [false, true, false]
+            ])
         );
     }
 
     public function test_validate_parameter_bool_array_required_valid()
     {
         $this->assertEquals(
-            array(false, true, false),
+            [false, true, false],
             $this->controller->do_validate_parameter(
                 'enabled',
-                array('0', '1', 'false'),
-                array(
+                ['0', '1', 'false'],
+                [
                     'type' => 'bool[]',
                     'required' => true
-                )
+                ]
             )
         );
     }
@@ -379,11 +379,11 @@ EOT
 
         $this->controller->do_validate_parameter(
             'enabled',
-            array('a', 'b', 'c'),
-            array(
+            ['a', 'b', 'c'],
+            [
                 'type' => 'bool[]',
                 'required' => true
-            )
+            ]
         );
     }
 
@@ -391,9 +391,9 @@ EOT
     {
         $this->assertEquals(
             'abc',
-            $this->controller->do_validate_parameter('query', 'abc', array(
+            $this->controller->do_validate_parameter('query', 'abc', [
                 'type' => 'string'
-            ))
+            ])
         );
     }
 
@@ -401,9 +401,9 @@ EOT
     {
         $this->assertEquals(
             '',
-            $this->controller->do_validate_parameter('query', null, array(
+            $this->controller->do_validate_parameter('query', null, [
                 'type' => 'string'
-            ))
+            ])
         );
     }
 
@@ -411,10 +411,10 @@ EOT
     {
         $this->assertEquals(
             '*',
-            $this->controller->do_validate_parameter('query', null, array(
+            $this->controller->do_validate_parameter('query', null, [
                 'type' => 'string',
                 'default' => '*'
-            ))
+            ])
         );
     }
 
@@ -425,20 +425,20 @@ EOT
             "[BaseControllerWrapper::validate_parameter] Missing required string parameter 'query'"
         );
 
-        $this->controller->do_validate_parameter('query', null, array(
+        $this->controller->do_validate_parameter('query', null, [
             'type' => 'string',
             'required' => true
-        ));
+        ]);
     }
 
     public function test_validate_parameter_string_required_valid()
     {
         $this->assertEquals(
             'abc',
-            $this->controller->do_validate_parameter('query', 'abc', array(
+            $this->controller->do_validate_parameter('query', 'abc', [
                 'type' => 'string',
                 'required' => true
-            ))
+            ])
         );
     }
 
@@ -449,10 +449,10 @@ EOT
             "[BaseControllerWrapper::validate_parameter] Missing required string parameter 'query'"
         );
 
-        $this->controller->do_validate_parameter('query', '', array(
+        $this->controller->do_validate_parameter('query', '', [
             'type' => 'string',
             'required' => true
-        ));
+        ]);
     }
 
     public function test_validate_parameter_string_required_int_invalid()
@@ -462,22 +462,22 @@ EOT
             "[BaseControllerWrapper::validate_parameter] Type mismatch for parameter 'query'. Expected 'string', but found: 123"
         );
 
-        $this->controller->do_validate_parameter('query', 123, array(
+        $this->controller->do_validate_parameter('query', 123, [
             'type' => 'string',
             'required' => true
-        ));
+        ]);
     }
 
     public function test_validate_parameter_string_array_valid()
     {
         $this->assertEquals(
-            array('a', 'b', 'c'),
+            ['a', 'b', 'c'],
             $this->controller->do_validate_parameter(
                 'query',
-                array('a', 'b', 'c'),
-                array(
+                ['a', 'b', 'c'],
+                [
                     'type' => 'string[]'
-                )
+                ]
             )
         );
     }
@@ -485,25 +485,25 @@ EOT
     public function test_validate_parameter_string_array_default_valid()
     {
         $this->assertEquals(
-            array('a', 'b', 'c'),
-            $this->controller->do_validate_parameter('query', null, array(
+            ['a', 'b', 'c'],
+            $this->controller->do_validate_parameter('query', null, [
                 'type' => 'string[]',
-                'default' => array('a', 'b', 'c')
-            ))
+                'default' => ['a', 'b', 'c']
+            ])
         );
     }
 
     public function test_validate_parameter_string_array_required_valid()
     {
         $this->assertEquals(
-            array('a', 'b', 'c'),
+            ['a', 'b', 'c'],
             $this->controller->do_validate_parameter(
                 'query',
-                array('a', 'b', 'c'),
-                array(
+                ['a', 'b', 'c'],
+                [
                     'type' => 'string[]',
                     'required' => true
-                )
+                ]
             )
         );
     }
@@ -519,11 +519,11 @@ EOT
 
         $this->controller->do_validate_parameter(
             'query',
-            array(1, 2, 3),
-            array(
+            [1, 2, 3],
+            [
                 'type' => 'string[]',
                 'required' => true
-            )
+            ]
         );
     }
 
@@ -531,18 +531,18 @@ EOT
     {
         $this->assertEquals(
             0.123,
-            $this->controller->do_validate_parameter('ratio', '0.123', array(
+            $this->controller->do_validate_parameter('ratio', '0.123', [
                 'type' => 'float'
-            ))
+            ])
         );
     }
 
     public function test_validate_parameter_float_null_valid()
     {
         $this->assertNull(
-            $this->controller->do_validate_parameter('ratio', null, array(
+            $this->controller->do_validate_parameter('ratio', null, [
                 'type' => 'float'
-            ))
+            ])
         );
     }
 
@@ -550,10 +550,10 @@ EOT
     {
         $this->assertEquals(
             1.234,
-            $this->controller->do_validate_parameter('ratio', null, array(
+            $this->controller->do_validate_parameter('ratio', null, [
                 'type' => 'float',
                 'default' => 1.234
-            ))
+            ])
         );
     }
 
@@ -564,20 +564,20 @@ EOT
             "[BaseControllerWrapper::validate_parameter] Missing required float parameter 'ratio'"
         );
 
-        $this->controller->do_validate_parameter('ratio', null, array(
+        $this->controller->do_validate_parameter('ratio', null, [
             'type' => 'float',
             'required' => true
-        ));
+        ]);
     }
 
     public function test_validate_parameter_float_required_valid()
     {
         $this->assertEquals(
             0.123,
-            $this->controller->do_validate_parameter('ratio', '0.123', array(
+            $this->controller->do_validate_parameter('ratio', '0.123', [
                 'type' => 'float',
                 'required' => true
-            ))
+            ])
         );
     }
 
@@ -588,10 +588,10 @@ EOT
             "[BaseControllerWrapper::validate_parameter] Missing required float parameter 'ratio'"
         );
 
-        $this->controller->do_validate_parameter('ratio', '', array(
+        $this->controller->do_validate_parameter('ratio', '', [
             'type' => 'float',
             'required' => true
-        ));
+        ]);
     }
 
     public function test_validate_parameter_float_required_string_invalid()
@@ -601,22 +601,22 @@ EOT
             "[BaseControllerWrapper::validate_parameter] Type mismatch for parameter 'ratio'. Expected 'float', but found: 'abc'"
         );
 
-        $this->controller->do_validate_parameter('ratio', 'abc', array(
+        $this->controller->do_validate_parameter('ratio', 'abc', [
             'type' => 'float',
             'required' => true
-        ));
+        ]);
     }
 
     public function test_validate_parameter_float_array_valid()
     {
         $this->assertEquals(
-            array(1.1, 2.2, 3.3),
+            [1.1, 2.2, 3.3],
             $this->controller->do_validate_parameter(
                 'ratio',
-                array('1.1', '2.2', '3.3'),
-                array(
+                ['1.1', '2.2', '3.3'],
+                [
                     'type' => 'float[]'
-                )
+                ]
             )
         );
     }
@@ -624,25 +624,25 @@ EOT
     public function test_validate_parameter_float_array_default_valid()
     {
         $this->assertEquals(
-            array(1.1, 2.2, 3.3),
-            $this->controller->do_validate_parameter('ratio', null, array(
+            [1.1, 2.2, 3.3],
+            $this->controller->do_validate_parameter('ratio', null, [
                 'type' => 'float[]',
-                'default' => array('1.1', '2.2', '3.3')
-            ))
+                'default' => ['1.1', '2.2', '3.3']
+            ])
         );
     }
 
     public function test_validate_parameter_float_array_required_valid()
     {
         $this->assertEquals(
-            array(1.1, 2.2, 3.3),
+            [1.1, 2.2, 3.3],
             $this->controller->do_validate_parameter(
                 'ratio',
-                array('1.1', '2.2', '3.3'),
-                array(
+                ['1.1', '2.2', '3.3'],
+                [
                     'type' => 'float[]',
                     'required' => true
-                )
+                ]
             )
         );
     }
@@ -660,11 +660,11 @@ EOT
 
         $this->controller->do_validate_parameter(
             'ratio',
-            array('a', 'b', '1.23'),
-            array(
+            ['a', 'b', '1.23'],
+            [
                 'type' => 'float[]',
                 'required' => true
-            )
+            ]
         );
     }
 
@@ -672,20 +672,20 @@ EOT
     {
         $this->assertEquals(
             'apples',
-            $this->controller->do_validate_parameter('fruit', 'apples', array(
+            $this->controller->do_validate_parameter('fruit', 'apples', [
                 'type' => 'enum',
-                'values' => array('oranges', 'apples', 'nectarines', 'kiwis')
-            ))
+                'values' => ['oranges', 'apples', 'nectarines', 'kiwis']
+            ])
         );
     }
 
     public function test_validate_parameter_enum_null_valid()
     {
         $this->assertNull(
-            $this->controller->do_validate_parameter('fruit', null, array(
+            $this->controller->do_validate_parameter('fruit', null, [
                 'type' => 'enum',
-                'values' => array('oranges', 'apples', 'nectarines', 'kiwis')
-            ))
+                'values' => ['oranges', 'apples', 'nectarines', 'kiwis']
+            ])
         );
     }
 
@@ -693,11 +693,11 @@ EOT
     {
         $this->assertEquals(
             'nectarines',
-            $this->controller->do_validate_parameter('fruit', null, array(
+            $this->controller->do_validate_parameter('fruit', null, [
                 'type' => 'enum',
-                'values' => array('oranges', 'apples', 'nectarines', 'kiwis'),
+                'values' => ['oranges', 'apples', 'nectarines', 'kiwis'],
                 'default' => 'nectarines'
-            ))
+            ])
         );
     }
 
@@ -708,22 +708,22 @@ EOT
             "[BaseControllerWrapper::validate_parameter] Missing required enum parameter 'fruit'"
         );
 
-        $this->controller->do_validate_parameter('fruit', null, array(
+        $this->controller->do_validate_parameter('fruit', null, [
             'type' => 'enum',
-            'values' => array('oranges', 'apples', 'nectarines', 'kiwis'),
+            'values' => ['oranges', 'apples', 'nectarines', 'kiwis'],
             'required' => true
-        ));
+        ]);
     }
 
     public function test_validate_parameter_enum_required_valid()
     {
         $this->assertEquals(
             'apples',
-            $this->controller->do_validate_parameter('fruit', 'apples', array(
+            $this->controller->do_validate_parameter('fruit', 'apples', [
                 'type' => 'enum',
-                'values' => array('oranges', 'apples', 'nectarines', 'kiwis'),
+                'values' => ['oranges', 'apples', 'nectarines', 'kiwis'],
                 'required' => true
-            ))
+            ])
         );
     }
 
@@ -734,11 +734,11 @@ EOT
             "[BaseControllerWrapper::validate_parameter] Missing required enum parameter 'fruit'"
         );
 
-        $this->controller->do_validate_parameter('fruit', '', array(
+        $this->controller->do_validate_parameter('fruit', '', [
             'type' => 'enum',
-            'values' => array('oranges', 'apples', 'nectarines', 'kiwis'),
+            'values' => ['oranges', 'apples', 'nectarines', 'kiwis'],
             'required' => true
-        ));
+        ]);
     }
 
     public function test_validate_parameter_enum_required_string_invalid()
@@ -748,24 +748,24 @@ EOT
             "[BaseControllerWrapper::validate_parameter] Type mismatch for parameter 'fruit'. Expected 'enum', but found: 'foobar'"
         );
 
-        $this->controller->do_validate_parameter('fruit', 'foobar', array(
+        $this->controller->do_validate_parameter('fruit', 'foobar', [
             'type' => 'enum',
-            'values' => array('oranges', 'apples', 'nectarines', 'kiwis'),
+            'values' => ['oranges', 'apples', 'nectarines', 'kiwis'],
             'required' => true
-        ));
+        ]);
     }
 
     public function test_validate_parameter_enum_array_valid()
     {
         $this->assertEquals(
-            array('apples', 'kiwis'),
+            ['apples', 'kiwis'],
             $this->controller->do_validate_parameter(
                 'fruit',
-                array('apples', 'kiwis'),
-                array(
+                ['apples', 'kiwis'],
+                [
                     'type' => 'enum[]',
-                    'values' => array('oranges', 'apples', 'nectarines', 'kiwis')
-                )
+                    'values' => ['oranges', 'apples', 'nectarines', 'kiwis']
+                ]
             )
         );
     }
@@ -773,27 +773,27 @@ EOT
     public function test_validate_parameter_enum_array_default_valid()
     {
         $this->assertEquals(
-            array('nectarines', 'kiwis'),
-            $this->controller->do_validate_parameter('fruit', null, array(
+            ['nectarines', 'kiwis'],
+            $this->controller->do_validate_parameter('fruit', null, [
                 'type' => 'enum[]',
-                'values' => array('oranges', 'apples', 'nectarines', 'kiwis'),
-                'default' => array('nectarines', 'kiwis')
-            ))
+                'values' => ['oranges', 'apples', 'nectarines', 'kiwis'],
+                'default' => ['nectarines', 'kiwis']
+            ])
         );
     }
 
     public function test_validate_parameter_enum_array_required_valid()
     {
         $this->assertEquals(
-            array('apples', 'kiwis'),
+            ['apples', 'kiwis'],
             $this->controller->do_validate_parameter(
                 'fruit',
-                array('apples', 'kiwis'),
-                array(
+                ['apples', 'kiwis'],
+                [
                     'type' => 'enum[]',
-                    'values' => array('oranges', 'apples', 'nectarines', 'kiwis'),
+                    'values' => ['oranges', 'apples', 'nectarines', 'kiwis'],
                     'required' => true
-                )
+                ]
             )
         );
     }
@@ -809,12 +809,12 @@ EOT
 
         $this->controller->do_validate_parameter(
             'fruit',
-            array(1, 2, 3),
-            array(
+            [1, 2, 3],
+            [
                 'type' => 'enum[]',
-                'values' => array('oranges', 'apples', 'nectarines', 'kiwis'),
+                'values' => ['oranges', 'apples', 'nectarines', 'kiwis'],
                 'required' => true
-            )
+            ]
         );
     }
 }

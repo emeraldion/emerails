@@ -48,7 +48,7 @@ class EmerailsLocalize extends ScriptCommand
 
     const DEFAULT_LANGUAGE = 'en';
 
-    private $thesaurus = array();
+    private $thesaurus = [];
 
     protected function setup(Options $options)
     {
@@ -201,12 +201,12 @@ class EmerailsLocalize extends ScriptCommand
         echo "\tcreating localizations under $dir\n";
 
         $template = <<<EOT
-array(
-    // Add your keys below:
-    // 'key-of-your-string' => 'This is the user visible text',
-);
+        array(
+            // Add your keys below:
+            // 'key-of-your-string' => 'This is the user visible text',
+        );
 
-EOT;
+        EOT;
 
         if (!(file_exists($dir) && is_dir($dir))) {
             if (!mkdir($dir, 0755, true)) {
@@ -302,9 +302,9 @@ EOT;
             PREG_SET_ORDER | PREG_UNMATCHED_AS_NULL
         );
 
-        $extracted_keys = array();
+        $extracted_keys = [];
         foreach ($matches as $match) {
-            list($localized_string, $key) = $match;
+            [$localized_string, $key] = $match;
             $default_value = array_key_exists(3, $match) ? $match[3] : null;
             $extracted_keys[$key] = $default_value ?? $key;
             if ($default_value && $strip_inlined) {
@@ -406,9 +406,9 @@ EOT;
                 $contents = fread($handle, filesize($controller_path));
                 fclose($handle);
 
-                list($strings, $success) = $this->evaluate_strings_callback($contents);
+                [$strings, $success] = $this->evaluate_strings_callback($contents);
             } else {
-                $strings = array();
+                $strings = [];
             }
 
             // 5. Load global strings, unset duplicate keys, and emit a warning
@@ -418,13 +418,13 @@ EOT;
                 $contents = fread($handle, filesize($global_path));
                 fclose($handle);
 
-                list($global_strings, $success) = $this->evaluate_strings_callback($contents);
+                [$global_strings, $success] = $this->evaluate_strings_callback($contents);
             } else {
-                $global_strings = array();
+                $global_strings = [];
             }
 
             // 6. Layer existing strings on top of extracted strings
-            $combined_strings = array();
+            $combined_strings = [];
             foreach ($extracted_keys as $key => $inlined_value) {
                 if (array_key_exists($key, $global_strings)) {
                     // TODO: warn if verbose
@@ -468,7 +468,7 @@ EOT;
         }
     }
 
-    protected function write_sorted_strings($strings = array(), $path, $write = false, $skip_empty = false)
+    protected function write_sorted_strings($strings = [], $path, $write = false, $skip_empty = false)
     {
         if (!$strings && $skip_empty) {
             // Nothing to do here
@@ -491,10 +491,10 @@ EOT;
 
         if ($write) {
             $template = <<<EOT
-array(
-%s);
+            array(
+            %s);
 
-EOT;
+            EOT;
 
             file_put_contents($path, sprintf($template, $sorted_strings));
         }
@@ -551,15 +551,15 @@ EOT;
                     continue;
                 }
                 $common_strings = array_intersect_key(
-                    $this->thesaurus[$dir][self::DEFAULT_LANGUAGE] ?? array(),
-                    $this->thesaurus[$dir][$language] ?? array()
+                    $this->thesaurus[$dir][self::DEFAULT_LANGUAGE] ?? [],
+                    $this->thesaurus[$dir][$language] ?? []
                 );
                 if (count($strings) > count($common_strings)) {
                     $success = !$strict;
                     foreach (
                         array_diff_key(
-                            $this->thesaurus[$dir][$language] ?? array(),
-                            $this->thesaurus[$dir][self::DEFAULT_LANGUAGE] ?? array()
+                            $this->thesaurus[$dir][$language] ?? [],
+                            $this->thesaurus[$dir][self::DEFAULT_LANGUAGE] ?? []
                         )
                         as $key => $value
                     ) {
@@ -634,7 +634,7 @@ EOT;
         $contents = fread($handle, filesize($path));
         fclose($handle);
 
-        list($strings, $success) = $this->evaluate_strings_callback($contents, function ($strings) use ($path, $write) {
+        [$strings, $success] = $this->evaluate_strings_callback($contents, function ($strings) use ($path, $write) {
             $this->write_sorted_strings($strings, $path, $write);
         });
 
@@ -652,12 +652,9 @@ EOT;
         fclose($handle);
 
         preg_match('/-([a-z]{2})\.strings$/', $filename, $matches);
-        list(, $language) = $matches;
+        [, $language] = $matches;
 
-        list($strings, $success) = $this->evaluate_strings_callback($contents, function ($strings) use (
-            $dir,
-            $language
-        ) {
+        [$strings, $success] = $this->evaluate_strings_callback($contents, function ($strings) use ($dir, $language) {
             foreach ($strings as $key => $value) {
                 $this->set_string($dir, $language, $key, $value);
             }
@@ -694,7 +691,7 @@ EOT;
             }
             printf("\n");
         } finally {
-            return array($strings, $success);
+            return [$strings, $success];
         }
     }
 
@@ -702,10 +699,10 @@ EOT;
     {
         $dir = $this->get_string_file($dir);
         if (!isset($this->thesaurus[$dir])) {
-            $this->thesaurus[$dir] = array();
+            $this->thesaurus[$dir] = [];
         }
         if (!isset($this->thesaurus[$dir][$language])) {
-            $this->thesaurus[$dir][$language] = array();
+            $this->thesaurus[$dir][$language] = [];
         }
         $this->thesaurus[$dir][$language][$key] = $value;
     }

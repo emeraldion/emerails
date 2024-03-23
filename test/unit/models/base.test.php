@@ -21,7 +21,7 @@ error_reporting(E_ALL & ~E_USER_DEPRECATED);
 
 class ActiveRecordTest extends UnitTest
 {
-    private $models = array();
+    private $models = [];
 
     function setUp(): void
     {
@@ -29,11 +29,11 @@ class ActiveRecordTest extends UnitTest
 
     function teardown(): void
     {
-        delete_test_models(array('blip', 'baz'));
+        delete_test_models(['blip', 'baz']);
         foreach ($this->models as $model) {
             $model->delete();
         }
-        $this->models = array();
+        $this->models = [];
     }
 
     public function test_construct()
@@ -45,28 +45,28 @@ class ActiveRecordTest extends UnitTest
     public function test_get_column_names()
     {
         $instance = new TestModel();
-        $this->assertEquals(array('id', 'name', 'created_at'), $instance->get_column_names());
+        $this->assertEquals(['id', 'name', 'created_at'], $instance->get_column_names());
 
         $instance = new TestWidget();
-        $this->assertEquals(array('id', 'test_model_id', 'color', 'created_at'), $instance->get_column_names());
+        $this->assertEquals(['id', 'test_model_id', 'color', 'created_at'], $instance->get_column_names());
     }
 
     public function test_get_column_names_for_query()
     {
         $instance = new TestModel();
         $this->assertEquals(
-            array('`test_models`.`id`', '`test_models`.`name`', '`test_models`.`created_at`'),
+            ['`test_models`.`id`', '`test_models`.`name`', '`test_models`.`created_at`'],
             $instance->get_column_names_for_query()
         );
 
         $instance = new TestWidget();
         $this->assertEquals(
-            array(
+            [
                 '`test_widgets`.`id`',
                 '`test_widgets`.`test_model_id`',
                 '`test_widgets`.`color`',
                 '`test_widgets`.`created_at`'
-            ),
+            ],
             $instance->get_column_names_for_query()
         );
     }
@@ -75,29 +75,29 @@ class ActiveRecordTest extends UnitTest
     {
         $instance = new TestModel();
         $this->assertEquals(
-            array(
+            [
                 '`test_models`.`id` AS `test_models:id`',
                 '`test_models`.`name` AS `test_models:name`',
                 '`test_models`.`created_at` AS `test_models:created_at`'
-            ),
+            ],
             $instance->get_column_names_for_query(true)
         );
 
         $instance = new TestWidget();
         $this->assertEquals(
-            array(
+            [
                 '`test_widgets`.`id` AS `test_widgets:id`',
                 '`test_widgets`.`test_model_id` AS `test_widgets:test_model_id`',
                 '`test_widgets`.`color` AS `test_widgets:color`',
                 '`test_widgets`.`created_at` AS `test_widgets:created_at`'
-            ),
+            ],
             $instance->get_column_names_for_query(true)
         );
     }
 
     public function test_demux_column_names()
     {
-        $row = array(
+        $row = [
             'test_models:id' => 123,
             'test_models:name' => 'Heidi',
             'test_models:created_at' => '2023-02-26 16:11:02',
@@ -105,25 +105,25 @@ class ActiveRecordTest extends UnitTest
             'test_widgets:test_model_id' => 123,
             'test_widgets:color' => 'white',
             'test_widgets:created_at' => '1970-01-01 12:00:00'
-        );
+        ];
         $instance = new TestModel();
         $this->assertEquals(
-            array(
+            [
                 'id' => 123,
                 'name' => 'Heidi',
                 'created_at' => '2023-02-26 16:11:02'
-            ),
+            ],
             $instance->demux_column_names($row)
         );
 
         $instance = new TestWidget();
         $this->assertEquals(
-            array(
+            [
                 'id' => 456,
                 'test_model_id' => 123,
                 'color' => 'white',
                 'created_at' => '1970-01-01 12:00:00'
-            ),
+            ],
             $instance->demux_column_names($row)
         );
     }
@@ -174,9 +174,9 @@ class ActiveRecordTest extends UnitTest
 
     public function test_save()
     {
-        $instance = new TestModel(array(
+        $instance = new TestModel([
             'name' => 'baz'
-        ));
+        ]);
         $this->assertNotNull($instance);
         $ret = $instance->save();
         $this->assertTrue($ret);
@@ -191,9 +191,9 @@ class ActiveRecordTest extends UnitTest
 
     public function test_save_sets_id()
     {
-        $instance = new TestModel(array(
+        $instance = new TestModel([
             'name' => 'test_save_sets_id'
-        ));
+        ]);
         $this->assertNotNull($instance);
         $ret = $instance->save();
         $this->assertTrue($ret);
@@ -214,7 +214,7 @@ class ActiveRecordTest extends UnitTest
 
     public function test_save_nullable_field_varchar_set()
     {
-        $this->models[] = $model = new TestModel(array('name' => 'foo'));
+        $this->models[] = $model = new TestModel(['name' => 'foo']);
         $model->save();
 
         $this->assertNotNull($model->name);
@@ -234,7 +234,7 @@ class ActiveRecordTest extends UnitTest
 
     public function test_save_nullable_field_varchar_construct()
     {
-        $this->models[] = $model = new TestModel(array('name' => null));
+        $this->models[] = $model = new TestModel(['name' => null]);
         $model->save();
 
         $this->assertNull($model->name);
@@ -248,7 +248,7 @@ class ActiveRecordTest extends UnitTest
 
     public function test_save_nullable_field_enum_set()
     {
-        $this->models[] = $athlete = new Athlete(array('name' => 'Alfonso', 'shirt_color' => 'red'));
+        $this->models[] = $athlete = new Athlete(['name' => 'Alfonso', 'shirt_color' => 'red']);
         $athlete->save();
 
         $this->assertNotNull($athlete->shirt_color);
@@ -268,7 +268,7 @@ class ActiveRecordTest extends UnitTest
 
     public function test_save_nullable_field_enum_construct()
     {
-        $this->models[] = $athlete = new Athlete(array('name' => 'Alfonso', 'shirt_color' => null));
+        $this->models[] = $athlete = new Athlete(['name' => 'Alfonso', 'shirt_color' => null]);
         $athlete->save();
 
         $this->assertNull($athlete->shirt_color);
@@ -282,18 +282,18 @@ class ActiveRecordTest extends UnitTest
 
     public function test_save_dupe()
     {
-        $instance = new TestModel(array(
+        $instance = new TestModel([
             'name' => 'baz'
-        ));
+        ]);
         $this->assertNotNull($instance, 'Model was not instantiated');
         $ret = $instance->save();
         $this->assertTrue($ret, 'Model was not saved');
         $this->assertNotNull($instance->id, 'Model id was not set');
 
-        $other_instance = new TestModel(array(
+        $other_instance = new TestModel([
             'id' => $instance->id,
             'name' => 'baz'
-        ));
+        ]);
         $this->assertNotNull($other_instance, 'Duplicate model was not instantiated');
         $other_instance->_force_create = true;
         $other_instance->_ignore = true;
@@ -303,9 +303,9 @@ class ActiveRecordTest extends UnitTest
 
     public function test_save_volatile()
     {
-        $instance = new TestModel(array(
+        $instance = new TestModel([
             'name' => 'baz'
-        ));
+        ]);
         $instance->volatile = true;
 
         $this->expectError();
@@ -316,13 +316,13 @@ class ActiveRecordTest extends UnitTest
 
     public function test_delete()
     {
-        create_test_model(array('blip'));
+        create_test_model(['blip']);
 
         $instance = new TestModel();
         $this->assertNotNull($instance);
-        $instance = $instance->find_one(array(
+        $instance = $instance->find_one([
             'where_clause' => "`name`= 'blip'"
-        ));
+        ]);
         $this->assertNotNull($instance);
         // Ensure the call to <tt>delete</tt> returns true
         $this->assertTrue($instance->delete());
@@ -331,9 +331,9 @@ class ActiveRecordTest extends UnitTest
 
         $other_instance = new TestModel();
         $this->assertNotNull($other_instance);
-        $other_instance = $other_instance->find_one(array(
+        $other_instance = $other_instance->find_one([
             'where_clause' => "`name`= 'blip'"
-        ));
+        ]);
         $this->assertNull($other_instance);
     }
 
@@ -347,9 +347,9 @@ class ActiveRecordTest extends UnitTest
 
     public function test_delete_volatile()
     {
-        $instance = new TestModel(array(
+        $instance = new TestModel([
             'name' => 'baz'
-        ));
+        ]);
         $instance->volatile = true;
 
         $this->expectError();
@@ -431,9 +431,9 @@ class ActiveRecordTest extends UnitTest
     public function test_find_all_where_clause()
     {
         $instance_factory = new TestModel();
-        $instances = $instance_factory->find_all(array(
+        $instances = $instance_factory->find_all([
             'where_clause' => "`name` = 'foo'"
-        ));
+        ]);
 
         $this->assertNotNull($instances);
         $this->assertEquals(1, count($instances));
@@ -442,9 +442,9 @@ class ActiveRecordTest extends UnitTest
         $this->assertNotNull($instance);
         $this->assertEquals('foo', $instance->name);
 
-        $instances = $instance_factory->find_all(array(
+        $instances = $instance_factory->find_all([
             'where_clause' => "`name` = 'bar'"
-        ));
+        ]);
 
         $this->assertNotNull($instances);
         $this->assertEquals(1, count($instances));
@@ -457,9 +457,9 @@ class ActiveRecordTest extends UnitTest
     public function test_find_all_with_join()
     {
         $widget_factory = new TestWidget();
-        $widgets = $widget_factory->find_all(array(
+        $widgets = $widget_factory->find_all([
             'join' => TestModel::class
-        ));
+        ]);
         $this->assertTrue(is_array($widgets));
         foreach ($widgets as $widget) {
             $this->assertNotNull($widget->test_model);
@@ -476,17 +476,17 @@ class ActiveRecordTest extends UnitTest
         );
 
         // These two models are not in a relationship so this call will trigger an error
-        $widgets = $widget_factory->find_all(array(
+        $widgets = $widget_factory->find_all([
             'join' => Athlete::class
-        ));
+        ]);
     }
 
     public function test_find_all_with_join_reverse()
     {
         $model_factory = new TestModel();
-        $models = $model_factory->find_all(array(
+        $models = $model_factory->find_all([
             'join' => TestWidget::class
-        ));
+        ]);
         $this->assertTrue(is_array($models));
         foreach ($models as $model) {
             $this->assertNotNull($model->test_widget);
@@ -508,16 +508,16 @@ class ActiveRecordTest extends UnitTest
     public function test_find_one_where_clause()
     {
         $instance_factory = new TestModel();
-        $instance = $instance_factory->find_one(array(
+        $instance = $instance_factory->find_one([
             'where_clause' => "`name` = 'foo'"
-        ));
+        ]);
 
         $this->assertNotNull($instance);
         $this->assertEquals('foo', $instance->name);
 
-        $instance = $instance_factory->find_one(array(
+        $instance = $instance_factory->find_one([
             'where_clause' => "`name` = 'bar'"
-        ));
+        ]);
 
         $this->assertNotNull($instance);
         $this->assertEquals('bar', $instance->name);
@@ -526,10 +526,10 @@ class ActiveRecordTest extends UnitTest
     public function test_find_one_where_clause_limit_is_ignored()
     {
         $instance_factory = new TestModel();
-        $instance = $instance_factory->find_one(array(
+        $instance = $instance_factory->find_one([
             'where_clause' => "`name` = 'foo'",
             'limit' => 999
-        ));
+        ]);
 
         $this->assertNotNull($instance);
         $this->assertEquals('foo', $instance->name);
@@ -538,9 +538,9 @@ class ActiveRecordTest extends UnitTest
     public function test_find_one_with_join()
     {
         $widget_factory = new TestWidget();
-        $widget = $widget_factory->find_one(array(
+        $widget = $widget_factory->find_one([
             'join' => TestModel::class
-        ));
+        ]);
         $this->assertNotNull($widget);
         $this->assertNotNull($widget->test_model);
     }
@@ -548,9 +548,9 @@ class ActiveRecordTest extends UnitTest
     public function test_find_one_with_join_reverse()
     {
         $model_factory = new TestModel();
-        $model = $model_factory->find_one(array(
+        $model = $model_factory->find_one([
             'join' => TestWidget::class
-        ));
+        ]);
         $this->assertNotNull($model);
         $this->assertNotNull($model->test_widget);
         $this->assertTrue(isset($model->id));
@@ -569,15 +569,15 @@ class ActiveRecordTest extends UnitTest
     public function test_count_all_where_clause()
     {
         $instance_factory = new TestModel();
-        $count = $instance_factory->count_all(array(
+        $count = $instance_factory->count_all([
             'where_clause' => "`name` = 'foo'"
-        ));
+        ]);
 
         $this->assertEquals(1, $count);
 
-        $count = $instance_factory->count_all(array(
+        $count = $instance_factory->count_all([
             'where_clause' => "`name` = 'bar'"
-        ));
+        ]);
 
         $this->assertEquals(1, $count);
     }
@@ -614,9 +614,9 @@ class ActiveRecordTest extends UnitTest
         $this->assertNotNull($instance->test_widget);
         $this->assertEquals('red', $instance->test_widget->color);
 
-        $instance = $instance->find_all(array(
+        $instance = $instance->find_all([
             'where_clause' => "`name` = 'foo'"
-        ))[0];
+        ])[0];
         $ret = $instance->has_one('test_widgets');
         $this->assertIsObject($ret);
         $this->assertNotNull($instance->test_widget);
@@ -630,9 +630,9 @@ class ActiveRecordTest extends UnitTest
         $this->assertNotNull($instance->test_widget);
         $this->assertEquals('blue', $instance->test_widget->color);
 
-        $instance = $instance->find_all(array(
+        $instance = $instance->find_all([
             'where_clause' => "`name` = 'bar'"
-        ))[0];
+        ])[0];
         $instance->has_one('test_widgets');
         $this->assertNotNull($instance->test_widget);
         $this->assertEquals('blue', $instance->test_widget->color);
@@ -643,15 +643,15 @@ class ActiveRecordTest extends UnitTest
         $instance = new TestModel();
         $ret = $instance->find_by_id(1);
         $this->assertTrue($ret);
-        $ret = $instance->has_one('test_widgets', array('as' => 'widget'));
+        $ret = $instance->has_one('test_widgets', ['as' => 'widget']);
         $this->assertIsObject($ret);
         $this->assertNotNull($instance->widget);
         $this->assertEquals('red', $instance->widget->color);
 
-        $instance = $instance->find_all(array(
+        $instance = $instance->find_all([
             'where_clause' => "`name` = 'foo'"
-        ))[0];
-        $ret = $instance->has_one('test_widgets', array('as' => 'widget'));
+        ])[0];
+        $ret = $instance->has_one('test_widgets', ['as' => 'widget']);
         $this->assertIsObject($ret);
         $this->assertNotNull($instance->widget);
         $this->assertEquals('red', $instance->widget->color);
@@ -659,15 +659,15 @@ class ActiveRecordTest extends UnitTest
         $instance = new TestModel();
         $ret = $instance->find_by_id(2);
         $this->assertTrue($ret);
-        $ret = $instance->has_one('test_widgets', array('as' => 'widget'));
+        $ret = $instance->has_one('test_widgets', ['as' => 'widget']);
         $this->assertIsObject($ret);
         $this->assertNotNull($instance->widget);
         $this->assertEquals('blue', $instance->widget->color);
 
-        $instance = $instance->find_all(array(
+        $instance = $instance->find_all([
             'where_clause' => "`name` = 'bar'"
-        ))[0];
-        $instance->has_one('test_widgets', array('as' => 'widget'));
+        ])[0];
+        $instance->has_one('test_widgets', ['as' => 'widget']);
         $this->assertNotNull($instance->widget);
         $this->assertEquals('blue', $instance->widget->color);
     }
@@ -682,9 +682,9 @@ class ActiveRecordTest extends UnitTest
         $this->assertNotNull($instance->test_widget);
         $this->assertEquals('red', $instance->test_widget->color);
 
-        $instance = $instance->find_all(array(
+        $instance = $instance->find_all([
             'where_clause' => "`name` = 'foo'"
-        ))[0];
+        ])[0];
         $ret = $instance->has_one(TestWidget::class);
         $this->assertIsObject($ret);
         $this->assertNotNull($instance->test_widget);
@@ -698,9 +698,9 @@ class ActiveRecordTest extends UnitTest
         $this->assertNotNull($instance->test_widget);
         $this->assertEquals('blue', $instance->test_widget->color);
 
-        $instance = $instance->find_all(array(
+        $instance = $instance->find_all([
             'where_clause' => "`name` = 'bar'"
-        ))[0];
+        ])[0];
         $instance->has_one(TestWidget::class);
         $this->assertNotNull($instance->test_widget);
         $this->assertEquals('blue', $instance->test_widget->color);
@@ -711,15 +711,15 @@ class ActiveRecordTest extends UnitTest
         $instance = new TestModel();
         $ret = $instance->find_by_id(1);
         $this->assertTrue($ret);
-        $ret = $instance->has_one(TestWidget::class, array('as' => 'widget'));
+        $ret = $instance->has_one(TestWidget::class, ['as' => 'widget']);
         $this->assertIsObject($ret);
         $this->assertNotNull($instance->widget);
         $this->assertEquals('red', $instance->widget->color);
 
-        $instance = $instance->find_all(array(
+        $instance = $instance->find_all([
             'where_clause' => "`name` = 'foo'"
-        ))[0];
-        $ret = $instance->has_one(TestWidget::class, array('as' => 'widget'));
+        ])[0];
+        $ret = $instance->has_one(TestWidget::class, ['as' => 'widget']);
         $this->assertIsObject($ret);
         $this->assertNotNull($instance->widget);
         $this->assertEquals('red', $instance->widget->color);
@@ -727,15 +727,15 @@ class ActiveRecordTest extends UnitTest
         $instance = new TestModel();
         $ret = $instance->find_by_id(2);
         $this->assertTrue($ret);
-        $ret = $instance->has_one(TestWidget::class, array('as' => 'widget'));
+        $ret = $instance->has_one(TestWidget::class, ['as' => 'widget']);
         $this->assertIsObject($ret);
         $this->assertNotNull($instance->widget);
         $this->assertEquals('blue', $instance->widget->color);
 
-        $instance = $instance->find_all(array(
+        $instance = $instance->find_all([
             'where_clause' => "`name` = 'bar'"
-        ))[0];
-        $instance->has_one(TestWidget::class, array('as' => 'widget'));
+        ])[0];
+        $instance->has_one(TestWidget::class, ['as' => 'widget']);
         $this->assertNotNull($instance->widget);
         $this->assertEquals('blue', $instance->widget->color);
     }
@@ -749,7 +749,7 @@ class ActiveRecordTest extends UnitTest
         $this->assertTrue($ret);
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('Only one child expected, but found 4');
-        $ret = $instance->has_one('test_versions', array('strict' => true));
+        $ret = $instance->has_one('test_versions', ['strict' => true]);
     }
 
     public function test_has_one_by_class_name_with_strict_param()
@@ -761,7 +761,7 @@ class ActiveRecordTest extends UnitTest
         $this->assertTrue($ret);
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('Only one child expected, but found 4');
-        $ret = $instance->has_one(TestVersion::class, array('strict' => true));
+        $ret = $instance->has_one(TestVersion::class, ['strict' => true]);
     }
 
     public function test_has_one_no_matches()
@@ -784,9 +784,9 @@ class ActiveRecordTest extends UnitTest
         $this->assertNotNull($instance->test_model);
         $this->assertEquals('foo', $instance->test_model->name);
 
-        $instance = $instance->find_all(array(
+        $instance = $instance->find_all([
             'where_clause' => "`color` = 'red'"
-        ))[0];
+        ])[0];
         $ret = $instance->belongs_to('test_models');
         $this->assertIsObject($ret);
         $this->assertNotNull($instance->test_model);
@@ -800,9 +800,9 @@ class ActiveRecordTest extends UnitTest
         $this->assertNotNull($instance->test_model);
         $this->assertEquals('bar', $instance->test_model->name);
 
-        $instance = $instance->find_all(array(
+        $instance = $instance->find_all([
             'where_clause' => "`color` = 'blue'"
-        ))[0];
+        ])[0];
         $ret = $instance->belongs_to('test_models');
         $this->assertIsObject($ret);
         $this->assertNotNull($instance->test_model);
@@ -818,9 +818,9 @@ class ActiveRecordTest extends UnitTest
         $this->assertNotNull($instance->test_model);
         $this->assertEquals('foo', $instance->test_model->name);
 
-        $instance = $instance->find_all(array(
+        $instance = $instance->find_all([
             'where_clause' => "`color` = 'red'"
-        ))[0];
+        ])[0];
         $instance->belongs_to(TestModel::class);
         $this->assertNotNull($instance->test_model);
         $this->assertEquals('foo', $instance->test_model->name);
@@ -832,9 +832,9 @@ class ActiveRecordTest extends UnitTest
         $this->assertNotNull($instance->test_model);
         $this->assertEquals('bar', $instance->test_model->name);
 
-        $instance = $instance->find_all(array(
+        $instance = $instance->find_all([
             'where_clause' => "`color` = 'blue'"
-        ))[0];
+        ])[0];
         $instance->belongs_to(TestModel::class);
         $this->assertNotNull($instance->test_model);
         $this->assertEquals('bar', $instance->test_model->name);
@@ -845,15 +845,15 @@ class ActiveRecordTest extends UnitTest
         $instance = new TestWidget();
         $ret = $instance->find_by_id(1);
         $this->assertTrue($ret);
-        $ret = $instance->belongs_to('test_models', array('as' => 'model'));
+        $ret = $instance->belongs_to('test_models', ['as' => 'model']);
         $this->assertIsObject($ret);
         $this->assertNotNull($instance->model);
         $this->assertEquals('foo', $instance->model->name);
 
-        $instance = $instance->find_all(array(
+        $instance = $instance->find_all([
             'where_clause' => "`color` = 'red'"
-        ))[0];
-        $ret = $instance->belongs_to('test_models', array('as' => 'model'));
+        ])[0];
+        $ret = $instance->belongs_to('test_models', ['as' => 'model']);
         $this->assertIsObject($ret);
         $this->assertNotNull($instance->model);
         $this->assertEquals('foo', $instance->model->name);
@@ -861,15 +861,15 @@ class ActiveRecordTest extends UnitTest
         $instance = new TestWidget();
         $ret = $instance->find_by_id(2);
         $this->assertTrue($ret);
-        $ret = $instance->belongs_to('test_models', array('as' => 'model'));
+        $ret = $instance->belongs_to('test_models', ['as' => 'model']);
         $this->assertIsObject($ret);
         $this->assertNotNull($instance->model);
         $this->assertEquals('bar', $instance->model->name);
 
-        $instance = $instance->find_all(array(
+        $instance = $instance->find_all([
             'where_clause' => "`color` = 'blue'"
-        ))[0];
-        $ret = $instance->belongs_to('test_models', array('as' => 'model'));
+        ])[0];
+        $ret = $instance->belongs_to('test_models', ['as' => 'model']);
         $this->assertIsObject($ret);
         $this->assertNotNull($instance->model);
         $this->assertEquals('bar', $instance->model->name);
@@ -880,28 +880,28 @@ class ActiveRecordTest extends UnitTest
         $instance = new TestWidget();
         $ret = $instance->find_by_id(1);
         $this->assertTrue($ret);
-        $instance->belongs_to(TestModel::class, array('as' => 'model'));
+        $instance->belongs_to(TestModel::class, ['as' => 'model']);
         $this->assertNotNull($instance->model);
         $this->assertEquals('foo', $instance->model->name);
 
-        $instance = $instance->find_all(array(
+        $instance = $instance->find_all([
             'where_clause' => "`color` = 'red'"
-        ))[0];
-        $instance->belongs_to(TestModel::class, array('as' => 'model'));
+        ])[0];
+        $instance->belongs_to(TestModel::class, ['as' => 'model']);
         $this->assertNotNull($instance->model);
         $this->assertEquals('foo', $instance->model->name);
 
         $instance = new TestWidget();
         $ret = $instance->find_by_id(2);
         $this->assertTrue($ret);
-        $instance->belongs_to(TestModel::class, array('as' => 'model'));
+        $instance->belongs_to(TestModel::class, ['as' => 'model']);
         $this->assertNotNull($instance->model);
         $this->assertEquals('bar', $instance->model->name);
 
-        $instance = $instance->find_all(array(
+        $instance = $instance->find_all([
             'where_clause' => "`color` = 'blue'"
-        ))[0];
-        $instance->belongs_to(TestModel::class, array('as' => 'model'));
+        ])[0];
+        $instance->belongs_to(TestModel::class, ['as' => 'model']);
         $this->assertNotNull($instance->model);
         $this->assertEquals('bar', $instance->model->name);
     }
@@ -930,7 +930,7 @@ class ActiveRecordTest extends UnitTest
         $instance = new TestWidget();
         $ret = $instance->find_by_id(1);
         $this->assertTrue($ret);
-        $ret = $instance->has_many(TestVersion::class, array('as' => 'versions'));
+        $ret = $instance->has_many(TestVersion::class, ['as' => 'versions']);
         $this->assertIsArray($ret);
         $this->assertNotNull($instance->versions);
         $this->assertEquals(4, count($instance->versions));
@@ -938,7 +938,7 @@ class ActiveRecordTest extends UnitTest
         $instance = new TestWidget();
         $ret = $instance->find_by_id(2);
         $this->assertTrue($ret);
-        $ret = $instance->has_many(TestVersion::class, array('as' => 'versions'));
+        $ret = $instance->has_many(TestVersion::class, ['as' => 'versions']);
         $this->assertIsArray($ret);
         $this->assertNotNull($instance->versions);
         $this->assertEquals(1, count($instance->versions));
@@ -1085,9 +1085,9 @@ class ActiveRecordTest extends UnitTest
         $instance = new TestModel();
         $ret = $instance->find_by_id(1);
         $this->assertTrue($ret);
-        $ret = $instance->has_and_belongs_to_many(TestGroup::class, array(
+        $ret = $instance->has_and_belongs_to_many(TestGroup::class, [
             'as' => 'groups'
-        ));
+        ]);
         $this->assertIsArray($ret);
         $this->assertNotNull($instance->groups);
         $this->assertEquals(1, count($instance->groups));
@@ -1104,9 +1104,9 @@ class ActiveRecordTest extends UnitTest
         $instance = new TestModel();
         $ret = $instance->find_by_id(2);
         $this->assertTrue($ret);
-        $ret = $instance->has_and_belongs_to_many(TestGroup::class, array(
+        $ret = $instance->has_and_belongs_to_many(TestGroup::class, [
             'as' => 'groups'
-        ));
+        ]);
         $this->assertIsArray($ret);
         $this->assertNotNull($instance->groups);
         $this->assertEquals(2, count($instance->groups));
@@ -1246,9 +1246,9 @@ class ActiveRecordTest extends UnitTest
         $instance = new TestGroup();
         $ret = $instance->find_by_id(1);
         $this->assertTrue($ret);
-        $ret = $instance->has_and_belongs_to_many(TestModel::class, array(
+        $ret = $instance->has_and_belongs_to_many(TestModel::class, [
             'join' => TestWidget::class
-        ));
+        ]);
         $this->assertIsArray($ret);
         $this->assertNotNull($instance->test_models);
         $this->assertEquals(1, count($instance->test_models));
@@ -1267,9 +1267,9 @@ class ActiveRecordTest extends UnitTest
         $instance = new TestGroup();
         $ret = $instance->find_by_id(2);
         $this->assertTrue($ret);
-        $ret = $instance->has_and_belongs_to_many(TestModel::class, array(
+        $ret = $instance->has_and_belongs_to_many(TestModel::class, [
             'join' => TestWidget::class
-        ));
+        ]);
         $this->assertIsArray($ret);
         $this->assertNotNull($instance->test_models);
         $this->assertEquals(2, count($instance->test_models));
@@ -1302,9 +1302,9 @@ class ActiveRecordTest extends UnitTest
 
     public function test_get_initialized_with_values()
     {
-        $instance = new TestModel(array(
+        $instance = new TestModel([
             'name' => 'foo'
-        ));
+        ]);
         $this->assertNotNull($instance);
         $this->assertEquals('foo', $instance->name);
     }
@@ -1318,9 +1318,9 @@ class ActiveRecordTest extends UnitTest
 
     public function test_get_initialized_not_a_column()
     {
-        $instance = new TestModel(array(
+        $instance = new TestModel([
             'foo' => 'bar'
-        ));
+        ]);
         $this->assertNotNull($instance);
         $this->assertNull($instance->foo);
     }
@@ -1355,7 +1355,7 @@ class ActiveRecordTest extends UnitTest
 
     public function test_get_set_nullable_column()
     {
-        $instance = new TestModel(array('name' => 'blip'));
+        $instance = new TestModel(['name' => 'blip']);
         $this->assertNotNull($instance);
         $this->assertNotNull($instance->name);
         $instance->name = null;
@@ -1395,14 +1395,14 @@ class ActiveRecordTest extends UnitTest
             $printed,
             $this->matchesRegularExpression(
                 <<<EOT
-/TestModel Object
-\(
-    \[id\] => 1
-    \[name\] => foo
-    \[created_at\] => \d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}
-\)
-/
-EOT
+                /TestModel Object
+                \(
+                    \[id\] => 1
+                    \[name\] => foo
+                    \[created_at\] => \d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}
+                \)
+                /
+                EOT
             )
         );
 
@@ -1414,26 +1414,26 @@ EOT
             $printed,
             $this->matchesRegularExpression(
                 <<<EOT
-/object\(TestModel\)#\d+ \(3\) \{
-  \["id"\]=>
-  int\(1\)
-  \["name"\]=>
-  string\(3\) "foo"
-  \["created_at"\]=>
-  string\(19\) "\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}"
-\}
-/
-EOT
+                /object\(TestModel\)#\d+ \(3\) \{
+                  \["id"\]=>
+                  int\(1\)
+                  \["name"\]=>
+                  string\(3\) "foo"
+                  \["created_at"\]=>
+                  string\(19\) "\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}"
+                \}
+                /
+                EOT
             )
         );
     }
 
     public function test_validate_on_save_null_for_not_nullable()
     {
-        $this->models[] = $athlete = new Athlete(array(
+        $this->models[] = $athlete = new Athlete([
             'name' => 'Marcell',
             'weight' => null
-        ));
+        ]);
 
         $this->expectException(Exception::class);
         $this->expectExceptionMessage("Attempt to null the field 'weight' but it is not nullable");
@@ -1444,9 +1444,9 @@ EOT
 
     public function test_validate_on_set_string_for_int()
     {
-        $this->models[] = $athlete = new Athlete(array(
+        $this->models[] = $athlete = new Athlete([
             'name' => 'Marcell'
-        ));
+        ]);
 
         $this->expectException(Exception::class);
         $this->expectExceptionMessage(
@@ -1462,9 +1462,9 @@ EOT
 
     public function test_validate_on_set_string_for_float()
     {
-        $this->models[] = $athlete = new Athlete(array(
+        $this->models[] = $athlete = new Athlete([
             'name' => 'Marcell'
-        ));
+        ]);
 
         $this->expectException(Exception::class);
         $this->expectExceptionMessage(
@@ -1480,9 +1480,9 @@ EOT
 
     public function test_validate_on_set_int_for_enum()
     {
-        $this->models[] = $athlete = new Athlete(array(
+        $this->models[] = $athlete = new Athlete([
             'name' => 'Marcell'
-        ));
+        ]);
 
         $this->expectException(Exception::class);
         $this->expectExceptionMessage(
@@ -1498,9 +1498,9 @@ EOT
 
     public function test_validate_on_set_string_for_enum()
     {
-        $this->models[] = $athlete = new Athlete(array(
+        $this->models[] = $athlete = new Athlete([
             'name' => 'Marcell'
-        ));
+        ]);
 
         $this->expectException(Exception::class);
         $this->expectExceptionMessage(
@@ -1516,9 +1516,9 @@ EOT
 
     public function test_validate_on_set_null_for_not_nullable()
     {
-        $this->models[] = $athlete = new Athlete(array(
+        $this->models[] = $athlete = new Athlete([
             'name' => 'Marcell'
-        ));
+        ]);
 
         $this->expectException(Exception::class);
         $this->expectExceptionMessage("Attempt to null the field 'weight' but it is not nullable");
@@ -1538,12 +1538,12 @@ EOT
         TestModel::_purge_pool(TestModel::class);
         $this->assertEquals(0, TestModel::get_pool_stats(TestModel::class)['count']);
 
-        $models = array();
+        $models = [];
 
         for ($i = 0; $i < 100; $i++) {
-            $model = new TestModel(array(
+            $model = new TestModel([
                 'name' => 'baz' . $i
-            ));
+            ]);
             $model->save();
 
             $this->models[] = $models[] = $model;

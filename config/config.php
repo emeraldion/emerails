@@ -13,7 +13,7 @@
 
 class Config
 {
-    private static $keys = array();
+    private static $keys = [];
 
     public static function set($key, $value)
     {
@@ -30,7 +30,7 @@ class Config
 
     protected static function reset()
     {
-        self::$keys = array();
+        self::$keys = [];
     }
 
     public static function dump()

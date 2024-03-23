@@ -49,10 +49,10 @@ class UserTest extends UnitTest
 
     public function test_get_writeonly()
     {
-        $this->user = new User(array(
+        $this->user = new User([
             'username' => 'brixton',
             'password' => sha1('brixton')
-        ));
+        ]);
 
         $this->assertEquals('***', $this->user->password);
 
@@ -64,10 +64,10 @@ class UserTest extends UnitTest
 
     public function test_debug_info_writeonly()
     {
-        $this->user = new User(array(
+        $this->user = new User([
             'username' => 'brixton',
             'password' => sha1('brixton')
-        ));
+        ]);
         $this->user->_force_create = true;
         $this->user->save();
 
@@ -79,13 +79,13 @@ class UserTest extends UnitTest
             $printed,
             $this->matchesRegularExpression(
                 <<<EOT
-/User Object
-\(
-    \[id\] => \d+
-    \[username\] => brixton
-\)
-/
-EOT
+                /User Object
+                \(
+                    \[id\] => \d+
+                    \[username\] => brixton
+                \)
+                /
+                EOT
             )
         );
 
@@ -97,23 +97,23 @@ EOT
             $printed,
             $this->matchesRegularExpression(
                 <<<EOT
-/object\(User\)#\d+ \(2\) \{
-  \["id"\]=>
-  int\(\d+\)
-  \["username"\]=>
-  string\(7\) "brixton"
-\}
-/
-EOT
+                /object\(User\)#\d+ \(2\) \{
+                  \["id"\]=>
+                  int\(\d+\)
+                  \["username"\]=>
+                  string\(7\) "brixton"
+                \}
+                /
+                EOT
             )
         );
     }
 
     public function test_actual_primary_key_column_set_on_save()
     {
-        $this->user = new User(array(
+        $this->user = new User([
             'username' => 'brixton'
-        ));
+        ]);
         $this->user->_force_create = true;
 
         $this->assertNull($this->user->id, 'User id field is not null');
@@ -132,9 +132,9 @@ EOT
 
     public function test_actual_primary_key_column_has_one()
     {
-        $this->user = new User(array(
+        $this->user = new User([
             'username' => 'croydon'
-        ));
+        ]);
         $this->user->_force_create = true;
 
         $this->assertNull($this->user->id, 'User id field is not null');
@@ -142,10 +142,10 @@ EOT
         $this->assertTrue($ret, 'User was not saved');
         $this->assertNotNull($this->user->id, 'User id field is null');
 
-        $this->account = new Account(array(
+        $this->account = new Account([
             'username' => 'croydon',
             'password' => 'croydon'
-        ));
+        ]);
 
         $this->assertNull($this->account->id, 'Account id field is null');
         $ret = $this->account->save();

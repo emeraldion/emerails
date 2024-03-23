@@ -26,18 +26,18 @@ class CSSMinifierTest extends UnitTest
     {
         $this->assertEquals(
             <<<EOT
-html{padding:0;margin:0;height:100%;background:#fff url('/assets/images/gradient_azure.png') repeat-x 0 0}
-EOT
+            html{padding:0;margin:0;height:100%;background:#fff url('/assets/images/gradient_azure.png') repeat-x 0 0}
+            EOT
             ,
             CSSMinifier::get_instance()->minify(
                 <<<EOT
-    html {
-        padding: 0;
-        margin: 0;
-        height: 100%;
-        background: #fff url('/assets/images/gradient_azure.png') repeat-x 0 0;
-    }
-EOT
+                    html {
+                        padding: 0;
+                        margin: 0;
+                        height: 100%;
+                        background: #fff url('/assets/images/gradient_azure.png') repeat-x 0 0;
+                    }
+                EOT
             )
         );
     }

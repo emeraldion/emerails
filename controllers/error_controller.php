@@ -90,7 +90,7 @@ class ErrorController extends BaseController
      */
     private function error()
     {
-        $this->render(array('layout' => 'default'));
+        $this->render(['layout' => 'default']);
     }
 }
 ?>

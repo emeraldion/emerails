@@ -51,7 +51,7 @@ class ANSIColorWriter
     const ANSI_BRIGHT_CYAN = "\033[96m";
     const ANSI_BRIGHT_WHITE = "\033[97m";
 
-    const FOREGROUNDS = array(
+    const FOREGROUNDS = [
         self::ANSI_BLACK,
         self::ANSI_RED,
         self::ANSI_GREEN,
@@ -68,7 +68,7 @@ class ANSIColorWriter
         self::ANSI_BRIGHT_PURPLE,
         self::ANSI_BRIGHT_CYAN,
         self::ANSI_BRIGHT_WHITE
-    );
+    ];
 
     const ANSI_BG_BLACK = "\033[40m";
     const ANSI_BG_RED = "\033[41m";
@@ -88,7 +88,7 @@ class ANSIColorWriter
     const ANSI_BRIGHT_BG_CYAN = "\033[106m";
     const ANSI_BRIGHT_BG_WHITE = "\033[107m";
 
-    const BACKGROUNDS = array(
+    const BACKGROUNDS = [
         self::ANSI_BG_BLACK,
         self::ANSI_BG_RED,
         self::ANSI_BG_GREEN,
@@ -105,7 +105,7 @@ class ANSIColorWriter
         self::ANSI_BRIGHT_BG_PURPLE,
         self::ANSI_BRIGHT_BG_CYAN,
         self::ANSI_BRIGHT_BG_WHITE
-    );
+    ];
 
     static function printf($text, $colors, ...$args)
     {

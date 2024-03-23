@@ -30,7 +30,7 @@ Config::set('OBJECT_POOL_ENABLED', default_to(getenv('EMERAILS_OBJECT_POOL_ENABL
 // to restore the legacy behavior of allowing all methods unless explicitly blocked.
 Config::set(
     'DEFAULT_ALLOWED_METHODS',
-    default_to(getenv('EMERAILS_DEFAULT_ALLOWED_METHODS'), array('GET', 'HEAD', 'OPTIONS'))
+    default_to(getenv('EMERAILS_DEFAULT_ALLOWED_METHODS'), ['GET', 'HEAD', 'OPTIONS'])
 );
 
 ?>

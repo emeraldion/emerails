@@ -26,12 +26,12 @@ class Db
     /**
      *  @short List of registered adapters
      */
-    private static $adapters = array();
+    private static $adapters = [];
 
     /**
      *  @short Connections pool
      */
-    private static $pool = array();
+    private static $pool = [];
 
     /**
      *  @short Connections counter
@@ -84,7 +84,7 @@ class Db
             $name = Config::get('DB_ADAPTER');
         }
         if (!isset(self::$pool[$name])) {
-            self::$pool[$name] = array();
+            self::$pool[$name] = [];
         }
         if (count(self::$pool[$name]) > 0) {
             foreach (self::$pool[$name] as &$item) {
@@ -98,11 +98,11 @@ class Db
         $adapter_class = get_class(self::get_adapter($name));
         $conn = new $adapter_class();
         // Don't reuse $item because it's a reference
-        $new_item = array(
+        $new_item = [
             DB_IN_USE_KEY => true,
             DB_CONNECTION_KEY => $conn,
             DB_ID_KEY => self::$conn_counter++
-        );
+        ];
         // Add it to the pool
         self::$pool[$name][] = $new_item;
         // Return it

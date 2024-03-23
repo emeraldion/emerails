@@ -58,14 +58,14 @@ class Request
      * @const METHODS
      * @short Names of all supported methods
      */
-    const METHODS = array(
+    const METHODS = [
         self::METHOD_GET,
         self::METHOD_POST,
         self::METHOD_PUT,
         self::METHOD_HEAD,
         self::METHOD_OPTIONS,
         self::METHOD_DELETE
-    );
+    ];
 
     /**
      *	@short The query string used in the HTTP request.
@@ -182,11 +182,11 @@ class Request
     protected static function purge_querystring()
     {
         $pairs = explode('&', @$_SERVER['QUERY_STRING']);
-        $newpairs = array();
+        $newpairs = [];
         foreach ($pairs as $pair) {
             if (!empty($pair)) {
-                @list($key, $value) = explode('=', $pair);
-                if (in_array($key, array('action', 'controller', 'id'))) {
+                @[$key, $value] = explode('=', $pair);
+                if (in_array($key, ['action', 'controller', 'id'])) {
                     continue;
                 }
                 $newpairs[] = $pair;

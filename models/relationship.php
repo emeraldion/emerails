@@ -44,7 +44,7 @@ class Relationship
      *  @attr class_initialized
      *  @short Array containing initialization information for subclasses.
      */
-    private static $class_initialized = array();
+    private static $class_initialized = [];
 
     /**
      *  @attr actual_primary_key_names
@@ -53,19 +53,19 @@ class Relationship
      *  The class property is read-only and it is set to the actual primary key of the
      *  ActiveRecord subclass when introspecting columns of the bound table.
      */
-    protected static $actual_primary_key_names = array();
+    protected static $actual_primary_key_names = [];
 
     /**
      *  @attr columns
      *  @short Array of columns for the relationship table.
      */
-    static $columns = array();
+    static $columns = [];
 
     /**
      *  @attr column_info
      *  @short Array of column info for the model object.
      */
-    static $column_info = array();
+    static $column_info = [];
 
     /**
      *  @attr primary_key_name
@@ -121,8 +121,8 @@ class Relationship
 
                 $conn->prepare('DESCRIBE `{1}`', $this->get_table_name());
                 $conn->exec();
-                $columns = array();
-                $column_info = array();
+                $columns = [];
+                $column_info = [];
                 while ($row = $conn->fetch_assoc()) {
                     $columns[] = $row['Field'];
                     $column_info[] = $row;
@@ -255,7 +255,7 @@ class Relationship
      */
     public function demux_column_names($columns)
     {
-        $ret = array();
+        $ret = [];
         foreach ($columns as $key => $val) {
             if (strpos($key, $this->get_table_name()) === 0) {
                 $ret[last(explode(':', $key))] = $val;
@@ -293,10 +293,10 @@ class Relationship
                     $other_parts = explode('\\', $this->other_classname);
                     $other_classname = $other_parts[count($other_parts) - 1];
 
-                    $table_names = array(
+                    $table_names = [
                         (new $classname())->get_relationship_table_half_name(),
                         (new $other_classname())->get_relationship_table_half_name()
-                    );
+                    ];
                     sort($table_names);
 
                     $this->table_name = implode('_', $table_names);
@@ -309,9 +309,9 @@ class Relationship
         return $this->table_name;
     }
 
-    public function between($member, $other_member, $params = array())
+    public function between($member, $other_member, $params = [])
     {
-        $classes = array($this->classname, $this->other_classname);
+        $classes = [$this->classname, $this->other_classname];
 
         if (!in_array(get_class($member), $classes)) {
             throw new Exception(
@@ -338,13 +338,13 @@ class Relationship
         return new RelationshipInstance($member, $other_member, $this, $params);
     }
 
-    public function among($members, $other_members, $params = array())
+    public function among($members, $other_members, $params = [])
     {
         if ($this->cardinality == self::ONE_TO_ONE) {
             throw new Exception('This relationship has cardinality one to one.');
         }
 
-        $classes = array($this->classname, $this->other_classname);
+        $classes = [$this->classname, $this->other_classname];
 
         $member = array_find($members, function ($member) use ($classes) {
             return !in_array(get_class($member), $classes);
@@ -374,16 +374,16 @@ class Relationship
             );
         }
 
-        $instances = array();
+        $instances = [];
         $member_pk = first($members)->get_primary_key();
         $other_member_pk = first($other_members)->get_primary_key();
         foreach ($members as $member) {
-            $member_dict = array_key_exists($member->$member_pk, $params) ? $params[$member->$member_pk] : array();
-            $instances[$member->$member_pk] = array();
+            $member_dict = array_key_exists($member->$member_pk, $params) ? $params[$member->$member_pk] : [];
+            $instances[$member->$member_pk] = [];
             foreach ($other_members as $other_member) {
                 $dict = array_key_exists($other_member->$other_member_pk, $member_dict)
                     ? $member_dict[$other_member->$other_member_pk]
-                    : array();
+                    : [];
                 $instances[$member->$member_pk][$other_member->$other_member_pk] = new RelationshipInstance(
                     $member,
                     $other_member,
@@ -491,7 +491,7 @@ class RelationshipInstance
             case Relationship::MANY_TO_MANY:
                 $columns = $this->relationship->get_column_names();
                 $ret = false;
-                $nonempty = array();
+                $nonempty = [];
 
                 $this->validate(true);
 
@@ -564,18 +564,18 @@ class RelationshipInstance
                             $this->other_member;
                     }
                 } else {
-                    $this->member->$other_member_collection = array(
+                    $this->member->$other_member_collection = [
                         $this->other_member->$other_member_pk => $this->other_member
-                    );
+                    ];
                 }
                 if (is_array($this->other_member->$member_collection)) {
                     if (!array_key_exists($this->member->$member_pk, $this->other_member->$member_collection)) {
                         $this->other_member->$member_collection[$this->member->$member_pk] = $this->member;
                     }
                 } else {
-                    $this->other_member->$member_collection = array(
+                    $this->other_member->$member_collection = [
                         $this->member->$member_pk => $this->member
-                    );
+                    ];
                 }
 
                 break;
@@ -672,7 +672,7 @@ class RelationshipInstance
             return $info['Field'] === $key;
         });
         preg_match('/([a-z]+)(\((\d+)\))?/', $info['Type'], $matches);
-        list(, $type) = $matches;
+        [, $type] = $matches;
         switch ($type) {
             case 'int':
             case 'tinyint':
@@ -726,7 +726,7 @@ class RelationshipInstance
                 $ret = null;
             } else {
                 preg_match('/([a-z]+)(\((.+)\))?/', $info['Type'], $matches);
-                list(, $type) = $matches;
+                [, $type] = $matches;
 
                 switch ($type) {
                     case 'enum':

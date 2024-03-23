@@ -74,7 +74,7 @@ class JSLocalizationHelper
      */
     private static function load_strings_table()
     {
-        $table = array();
+        $table = [];
 
         $js_strings = self::load_strings_file(@$_COOKIE[Config::get('LANGUAGE_COOKIE')] /* GLOBAL */);
         $table = array_merge($table, eval("return {$js_strings}"));
