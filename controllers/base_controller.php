@@ -828,8 +828,8 @@ class BaseController
     protected function redirect_to($params)
     {
         if (is_array($params)) {
-            // Redirect to the current action if not specified
-            if (!array_key_exists('action', $params)) {
+            // Redirect to the current action if neither action nor controller were specified
+            if (!array_key_exists('controller', $params) && !array_key_exists('action', $params)) {
                 $params['action'] = $this->action;
             }
             $URL = sprintf(
