@@ -51,7 +51,7 @@
       "/node_modules/",
       ".prettierrc.json",
       ".dockerignore",
-      ".gitignore",
+      ".gitignore"
     ]
   },
   "scripts": {
