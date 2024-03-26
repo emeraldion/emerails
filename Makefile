@@ -11,8 +11,10 @@
 
 update:
 	composer update
+	yarn upgrade
 install:
 	composer install
+	yarn install
 create_test_db:
 	mysql -u root -p < schemas/emerails_test.sql
 test: install
