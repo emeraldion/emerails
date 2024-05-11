@@ -42,3 +42,8 @@ docker-clean:
 # docker-publish:
 # 	docker build -t emeraldion/emerails:1.1 .
 # 	docker push emeraldion/emerails:1.1
+
+# Security goals
+audit:
+	composer audit
+	yarn audit
