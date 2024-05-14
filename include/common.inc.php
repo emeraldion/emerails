@@ -276,4 +276,17 @@ if (!function_exists('str_ends_with')) {
         return $length > 0 ? substr($haystack, -$length) === $needle : true;
     }
 }
+
+/**
+ * @short Like <tt>var_dump</tt>, but wrapped in a <tt>&lt;pre&gt;</tt> for readability
+ */
+if (!function_exists('pre_dump')) {
+    function pre_dump($whatever)
+    {
+        ?>
+<pre><?php var_dump($whatever); ?></pre>
+<?php
+    }
+}
+
 ?>
