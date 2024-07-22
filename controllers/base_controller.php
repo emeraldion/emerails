@@ -517,13 +517,21 @@ class BaseController
                             $value = $default_value;
                         }
                     } else {
-                        if ($valid = (is_numeric($value) && ((int) $value) == $value) || is_null($value)) {
-                            if (!is_null($value)) {
+                        if (
+                            $valid =
+                                (is_numeric($value) && ((int) $value) == $value) ||
+                                ((is_null($value) || empty($value)) && ($has_default || !$is_required))
+                        ) {
+                            if (!is_null($value) && !empty($value)) {
                                 $value = (int) $value;
                             }
                         }
-                        if (is_null($value) && $has_default) {
-                            $value = (int) $default_value;
+                        if (is_null($value) || empty($value)) {
+                            if ($has_default) {
+                                $value = (int) $default_value;
+                            } else {
+                                $value = null;
+                            }
                         }
                     }
                     break;
@@ -551,13 +559,21 @@ class BaseController
                             $value = $default_value;
                         }
                     } else {
-                        if ($valid = (is_numeric($value) && ((float) $value) == $value) || is_null($value)) {
-                            if (!is_null($value)) {
+                        if (
+                            $valid =
+                                (is_numeric($value) && ((float) $value) == $value) ||
+                                ((is_null($value) || empty($value)) && ($has_default || !$is_required))
+                        ) {
+                            if (!is_null($value) && !empty($value)) {
                                 $value = (float) $value;
                             }
                         }
-                        if (is_null($value) && $has_default) {
-                            $value = (float) $default_value;
+                        if (is_null($value) || empty($value)) {
+                            if ($has_default) {
+                                $value = (float) $default_value;
+                            } else {
+                                $value = null;
+                            }
                         }
                     }
                     break;
