@@ -54,5 +54,3 @@ abstract class UnitTest extends \PHPUnit\Framework\TestCase
         }
     }
 }
-
-?>

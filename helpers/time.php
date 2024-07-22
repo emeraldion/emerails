@@ -105,5 +105,3 @@ class Time
         return $time;
     }
 }
-
-?>

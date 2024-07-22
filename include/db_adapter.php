@@ -112,4 +112,3 @@ interface DbAdapter
      */
     public function print_query();
 }
-?>

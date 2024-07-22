@@ -173,5 +173,3 @@ class Localization
         self::$strings_table = $table;
     }
 }
-
-?>

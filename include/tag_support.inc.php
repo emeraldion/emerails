@@ -176,4 +176,3 @@ function checkbox($name, $checked, $params = [], $enabled = true)
     }
     return leaf_tag('input', $params);
 }
-?>

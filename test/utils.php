@@ -72,5 +72,3 @@ class Runner extends Athlete
 
     protected $relationship_table_half_name = 'runners';
 }
-
-?>

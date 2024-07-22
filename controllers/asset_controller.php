@@ -158,4 +158,3 @@ class AssetController extends BaseController
         return [];
     }
 }
-?>

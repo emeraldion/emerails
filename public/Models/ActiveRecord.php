@@ -18,5 +18,3 @@ require_once __DIR__ . '/../../models/base.php';
 abstract class ActiveRecord extends \ActiveRecord
 {
 }
-
-?>

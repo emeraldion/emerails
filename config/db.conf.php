@@ -40,5 +40,3 @@ switch (getenv('php_env')) {
 }
 Config::set('DB_CHARSET', default_to(getenv('DB_CHARSET'), 'utf8mb4'));
 Config::set('DB_DEBUG', default_to(getenv('DB_DEBUG'), false));
-
-?>

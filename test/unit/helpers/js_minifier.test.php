@@ -104,4 +104,3 @@ class JSMinifierTest extends UnitTest
         );
     }
 }
-?>

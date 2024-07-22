@@ -32,5 +32,3 @@ if (isset($_REQUEST['controller']) && !empty($_REQUEST['controller'])) {
 } else {
     HTTP::error(500);
 }
-?>
-  ?> ?> ?>

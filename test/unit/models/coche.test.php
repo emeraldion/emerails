@@ -97,4 +97,3 @@ class CocheTest extends UnitTest
         $this->assertNotNull($engine->car->engine, "Expecting Car instance to have an 'engine' field but found null");
     }
 }
-?>

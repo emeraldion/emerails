@@ -33,5 +33,3 @@ class ReadingTime
         return floor(str_word_count(strip_tags($text)) / self::WORDS_PER_MIN);
     }
 }
-
-?>

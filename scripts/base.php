@@ -70,5 +70,3 @@ abstract class ScriptCommand extends CLI
         parent::run();
     }
 }
-
-?>

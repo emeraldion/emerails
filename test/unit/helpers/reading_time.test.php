@@ -114,4 +114,3 @@ class ReadingTimeTest extends UnitTest
         $this->assertEquals(3, ReadingTime::minutes_for(self::LOREM_IPSUM));
     }
 }
-?>

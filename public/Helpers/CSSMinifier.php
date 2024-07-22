@@ -18,5 +18,3 @@ require_once __DIR__ . '/../../helpers/css_minifier.php';
 class CSSMinifier extends \CSSMinifier
 {
 }
-
-?>

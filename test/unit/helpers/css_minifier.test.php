@@ -42,4 +42,3 @@ class CSSMinifierTest extends UnitTest
         );
     }
 }
-?>

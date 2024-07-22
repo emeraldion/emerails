@@ -721,5 +721,3 @@ class EmerailsLocalize extends ScriptCommand
 $cli = new EmerailsLocalize();
 $cli->run();
 
-
-?>

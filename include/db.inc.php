@@ -143,5 +143,3 @@ class Db
 if (isset($_REQUEST['show_connections_pool'])) {
     Db::show_pool();
 }
-
-?>

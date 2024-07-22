@@ -18,5 +18,3 @@ require_once __DIR__ . '/../../helpers/flash.php';
 class Flash extends \Flash
 {
 }
-
-?>

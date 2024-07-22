@@ -60,5 +60,3 @@ class ApplicationHelper
 {
     // Put here functionality available to all controllers within the application
 }
-
-?>

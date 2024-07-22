@@ -18,5 +18,3 @@ require_once __DIR__ . '/../../helpers/response.php';
 class Response extends \Response
 {
 }
-
-?>

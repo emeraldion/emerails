@@ -18,5 +18,3 @@ require_once __DIR__ . '/../../helpers/application_helper.php';
 class ApplicationHelper extends \ApplicationHelper
 {
 }
-
-?>

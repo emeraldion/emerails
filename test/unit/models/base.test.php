@@ -1593,4 +1593,3 @@ class ActiveRecordTest extends UnitTest
         $r->as(TestWidget::class);
     }
 }
-?>

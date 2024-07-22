@@ -38,5 +38,3 @@ class Config
         print_r(self::$keys);
     }
 }
-
-?>

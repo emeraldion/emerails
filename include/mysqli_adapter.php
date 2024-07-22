@@ -275,4 +275,3 @@ class MysqliAdapter implements DbAdapter
 }
 
 Db::register_adapter(new MysqliAdapter(), MysqliAdapter::NAME);
-?>

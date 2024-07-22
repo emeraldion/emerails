@@ -148,4 +148,4 @@ class ANSIColorWriter
 
         printf(self::ANSI_RESET . "\n  Back to default.\n");
     }
-} ?>
+}

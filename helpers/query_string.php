@@ -81,5 +81,3 @@ class QueryString
         return self::from_assoc($params);
     }
 }
-
-?>

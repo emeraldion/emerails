@@ -82,5 +82,3 @@ class JSLocalizationHelper
         self::$strings_table = $table;
     }
 }
-
-?>

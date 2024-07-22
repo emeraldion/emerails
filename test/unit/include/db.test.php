@@ -138,4 +138,3 @@ class DBTest extends UnitTest
         $this->assertTrue($conn2 === $conn3);
     }
 }
-?>

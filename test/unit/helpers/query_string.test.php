@@ -63,4 +63,3 @@ class QueryStringUnitTest extends UnitTest
         $this->assertEquals('baz=3', QueryString::replace('baz', 3), 'Unable to replace query string');
     }
 }
-?>

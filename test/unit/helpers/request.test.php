@@ -95,4 +95,3 @@ class RequestTest extends UnitTest
         $this->assertEquals(QS1, MockRequest::purge_querystring_spy());
     }
 }
-?>

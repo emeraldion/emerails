@@ -177,4 +177,3 @@ class CommonTest extends UnitTest
         $this->assertNull(last($a));
     }
 }
-?>

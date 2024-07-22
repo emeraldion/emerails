@@ -36,4 +36,3 @@ class ConfigUnitTest extends UnitTest
         $this->assertNull(Config::get('anything.else'));
     }
 }
-?>

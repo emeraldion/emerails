@@ -18,5 +18,3 @@ require_once __DIR__ . '/../../helpers/localization.php';
 class Localization extends \Localization
 {
 }
-
-?>

@@ -93,4 +93,3 @@ class ErrorController extends BaseController
         $this->render(['layout' => 'default']);
     }
 }
-?>

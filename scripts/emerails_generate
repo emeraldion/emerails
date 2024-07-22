@@ -232,7 +232,7 @@ class EmerailsGenerate extends ScriptCommand
                 {
                     // TODO: add your code here
                 }
-                ?>
+
 
                 EOT;
 
@@ -632,7 +632,6 @@ class EmerailsGenerate extends ScriptCommand
             $controller_code .= <<<EOT
             }
 
-            ?>
 
             EOT;
 
@@ -645,5 +644,3 @@ class EmerailsGenerate extends ScriptCommand
 $cli = new EmerailsGenerate();
 $cli->run();
 
-
-?>

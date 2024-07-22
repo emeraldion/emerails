@@ -63,4 +63,3 @@ class Cookie
         setcookie($name, '', Time::yesterday(), '/', null, false);
     }
 }
-?>

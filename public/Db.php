@@ -20,5 +20,3 @@ require_once __DIR__ . '/../include/db.inc.php';
 class Db extends \Db
 {
 }
-
-?>

@@ -18,5 +18,3 @@ require_once __DIR__ . '/../../helpers/cookie.php';
 class Cookie extends \Cookie
 {
 }
-
-?>

@@ -899,4 +899,3 @@ class RelationshipTest extends UnitTest
         $this->assertNull($widget->test_versions);
     }
 }
-?>

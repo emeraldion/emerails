@@ -32,5 +32,3 @@ Config::set(
     'DEFAULT_ALLOWED_METHODS',
     default_to(getenv('EMERAILS_DEFAULT_ALLOWED_METHODS'), ['GET', 'HEAD', 'OPTIONS'])
 );
-
-?>

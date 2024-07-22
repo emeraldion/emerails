@@ -88,5 +88,3 @@ class SortDependencies extends ScriptCommand
 $cli = new SortDependencies();
 $cli->run();
 
-
-?>

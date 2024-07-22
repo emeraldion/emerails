@@ -234,4 +234,3 @@ class MysqlAdapter implements DbAdapter
 }
 
 Db::register_adapter(new MysqlAdapter(), MysqlAdapter::NAME);
-?>

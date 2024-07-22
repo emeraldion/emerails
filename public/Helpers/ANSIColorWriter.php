@@ -18,5 +18,3 @@ require_once __DIR__ . '/../../helpers/ansi_color_writer.php';
 class ANSIColorWriter extends \ANSIColorWriter
 {
 }
-
-?>

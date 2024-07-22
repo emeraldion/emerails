@@ -288,5 +288,3 @@ if (!function_exists('pre_dump')) {
 <?php
     }
 }
-
-?>
