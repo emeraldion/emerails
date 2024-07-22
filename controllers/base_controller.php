@@ -366,14 +366,14 @@ class BaseController
                     case Request::METHOD_GET:
                     case Request::METHOD_HEAD:
                     case Request::METHOD_OPTIONS:
-                        if ($this->request->get_parameter($name)) {
+                        if (!is_null($this->request->get_parameter($name))) {
                             $value = $this->request->get_parameter($name);
                         }
                         break;
                     case Request::METHOD_POST:
                     case Request::METHOD_PUT:
                     case Request::METHOD_DELETE:
-                        if ($this->request->get_parameter($name)) {
+                        if (!is_null($this->request->get_parameter($name))) {
                             $value = $this->request->get_parameter($name);
                         }
                         if (isset($_POST[$name])) {
@@ -432,11 +432,15 @@ class BaseController
                         $outval = [];
                         $valid = true;
                         if ($value) {
-                            foreach ($value as $val) {
-                                if ($v = is_string($val) || empty($val)) {
-                                    $outval[] = (string) $val;
+                            if (is_array($value)) {
+                                foreach ($value as $val) {
+                                    if ($v = is_string($val) || empty($val)) {
+                                        $outval[] = (string) $val;
+                                    }
+                                    $valid = $valid && $v;
                                 }
-                                $valid = $valid && $v;
+                            } else {
+                                $valid = false;
                             }
                             if ($valid) {
                                 $value = $outval;
@@ -446,9 +450,11 @@ class BaseController
                         }
                     } else {
                         if ($valid = is_string($value) || empty($value)) {
-                            $value = (string) $value;
+                            if (!is_null($value)) {
+                                $value = (string) $value;
+                            }
                         }
-                        if (empty($value) && $has_default) {
+                        if (is_null($value) && $has_default) {
                             $value = $default_value;
                         }
                     }
@@ -458,11 +464,17 @@ class BaseController
                         $outval = [];
                         $valid = true;
                         if ($value) {
-                            foreach ($value as $val) {
-                                if ($v = !is_null(filter_var($val, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE))) {
-                                    $outval[] = filter_var($val, FILTER_VALIDATE_BOOLEAN);
+                            if (is_array($value)) {
+                                foreach ($value as $val) {
+                                    if (
+                                        $v = !is_null(filter_var($val, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE))
+                                    ) {
+                                        $outval[] = filter_var($val, FILTER_VALIDATE_BOOLEAN);
+                                    }
+                                    $valid = $valid && $v;
                                 }
-                                $valid = $valid && $v;
+                            } else {
+                                $valid = false;
                             }
                             if ($valid) {
                                 $value = $outval;
@@ -486,13 +498,17 @@ class BaseController
                         $outval = [];
                         $valid = true;
                         if ($value) {
-                            foreach ($value as $val) {
-                                if ($v = is_numeric($val) && ((int) $val) == $val) {
-                                    $outval[] = (int) $val;
-                                } elseif ($v = empty($val) && $has_default) {
-                                    $outval[] = (int) $default_value;
+                            if (is_array($value)) {
+                                foreach ($value as $val) {
+                                    if ($v = is_numeric($val) && ((int) $val) == $val) {
+                                        $outval[] = (int) $val;
+                                    } elseif ($v = empty($val) && $has_default) {
+                                        $outval[] = (int) $default_value;
+                                    }
+                                    $valid = $valid && $v;
                                 }
-                                $valid = $valid && $v;
+                            } else {
+                                $valid = false;
                             }
                             if ($valid) {
                                 $value = $outval;
@@ -515,13 +531,17 @@ class BaseController
                         $outval = [];
                         $valid = true;
                         if ($value) {
-                            foreach ($value as $val) {
-                                if ($v = is_numeric($val) && ((float) $val) == $val) {
-                                    $outval[] = (float) $val;
-                                } elseif ($v = empty($val) && $has_default) {
-                                    $outval[] = (float) $default_value;
+                            if (is_array($value)) {
+                                foreach ($value as $val) {
+                                    if ($v = is_numeric($val) && ((float) $val) == $val) {
+                                        $outval[] = (float) $val;
+                                    } elseif ($v = empty($val) && $has_default) {
+                                        $outval[] = (float) $default_value;
+                                    }
+                                    $valid = $valid && $v;
                                 }
-                                $valid = $valid && $v;
+                            } else {
+                                $valid = false;
                             }
                             if ($valid) {
                                 $value = $outval;
@@ -548,15 +568,19 @@ class BaseController
                             $outval = [];
                             $valid = true;
                             if ($value) {
-                                foreach ($value as $val) {
-                                    if (!($v = in_array($val, $possible_values))) {
-                                        if (empty($val) && $has_default) {
-                                            $outval[] = $default_value;
+                                if (is_array($value)) {
+                                    foreach ($value as $val) {
+                                        if (!($v = in_array($val, $possible_values))) {
+                                            if (empty($val) && $has_default) {
+                                                $outval[] = $default_value;
+                                            }
+                                        } else {
+                                            $outval[] = $v;
                                         }
-                                    } else {
-                                        $outval[] = $v;
+                                        $valid = $valid && $v;
                                     }
-                                    $valid = $valid && $v;
+                                } else {
+                                    $valid = false;
                                 }
                                 if ($valid) {
                                     $value = $outval;

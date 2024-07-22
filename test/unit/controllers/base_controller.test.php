@@ -399,8 +399,7 @@ class BaseControllerTest extends UnitTest
 
     public function test_validate_parameter_string_null_valid()
     {
-        $this->assertEquals(
-            '',
+        $this->assertNull(
             $this->controller->do_validate_parameter('query', null, [
                 'type' => 'string'
             ])
