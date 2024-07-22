@@ -517,12 +517,13 @@ class BaseController
                             $value = $default_value;
                         }
                     } else {
-                        if ($valid = is_numeric($value) && ((int) $value) == $value) {
-                            $value = (int) $value;
-                        } elseif ($valid = empty($value) && ($has_default || !$is_required)) {
-                            if ($has_default) {
-                                $value = (int) $default_value;
+                        if ($valid = (is_numeric($value) && ((int) $value) == $value) || is_null($value)) {
+                            if (!is_null($value)) {
+                                $value = (int) $value;
                             }
+                        }
+                        if (is_null($value) && $has_default) {
+                            $value = (int) $default_value;
                         }
                     }
                     break;
@@ -550,12 +551,13 @@ class BaseController
                             $value = $default_value;
                         }
                     } else {
-                        if ($valid = is_numeric($value) && ((float) $value) == $value) {
-                            $value = (float) $value;
-                        } elseif ($valid = empty($value) && ($has_default || !$is_required)) {
-                            if ($has_default) {
-                                $value = (float) $default_value;
+                        if ($valid = (is_numeric($value) && ((float) $value) == $value) || is_null($value)) {
+                            if (!is_null($value)) {
+                                $value = (float) $value;
                             }
+                        }
+                        if (is_null($value) && $has_default) {
+                            $value = (float) $default_value;
                         }
                     }
                     break;
