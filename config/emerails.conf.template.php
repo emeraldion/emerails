@@ -14,3 +14,13 @@ Config::set('ERROR_REPORTING', default_to(getenv('EMERAILS_ERROR_REPORTING'), tr
 Config::set('APPLICATION_ROOT', default_to(getenv('EMERAILS_APPLICATION_ROOT'), '/'));
 Config::set('LANGUAGE_COOKIE', default_to(getenv('EMERAILS_LANGUAGE_COOKIE'), 'hl'));
 Config::set('OBJECT_POOL_ENABLED', default_to(getenv('EMERAILS_OBJECT_POOL_ENABLED'), 'false'));
+
+// Since the introduction of method allow rules, you can specify which HTTP methods are allowed by controllers.
+// By default, "dangerous" methods (PUT, POST, DELETE) are blocked by controllers.
+//
+// You can customize this config setting to tweak the default list of allowed methods, or set its value to '*'
+// to restore the legacy behavior of allowing all methods unless explicitly blocked.
+Config::set(
+    'DEFAULT_ALLOWED_METHODS',
+    default_to(getenv('EMERAILS_DEFAULT_ALLOWED_METHODS'), ['GET', 'HEAD', 'OPTIONS'])
+);
