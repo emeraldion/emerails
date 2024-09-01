@@ -20,6 +20,7 @@ use Emeraldion\EmeRails\Db;
  *  @short Models a relationship between two model classes
  *  @details TBD.
  */
+#[\AllowDynamicProperties]
 class Relationship
 {
     /**

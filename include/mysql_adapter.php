@@ -160,6 +160,9 @@ class MysqlAdapter implements DbAdapter
      */
     public function escape($value)
     {
+        if (is_null($value)) {
+            return null;
+        }
         $this->connect();
         return mysql_real_escape_string($value, $this->link);
     }

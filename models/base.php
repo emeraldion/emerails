@@ -27,6 +27,7 @@ use Emeraldion\EmeRails\Models\Relationship;
  *  foreign key called <tt>my_product_id</tt> exists in the other table. Of course this is overridable
  *  by setting explicitly <tt>$table_name</tt> and <tt>$foreign_key</tt> to a value of your choice.
  */
+#[\AllowDynamicProperties]
 abstract class ActiveRecord
 {
     const DEFAULT_PK_COLUMN_NAME = 'id';

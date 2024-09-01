@@ -54,6 +54,12 @@ class MysqliAdapter implements DbAdapter
     public $result;
 
     /**
+     *  @attr insert_id
+     *  @short The id of the last inserted row.
+     */
+    private $insert_id;
+
+    /**
      *  @fn connect
      *  @short Connects to the database.
      */
@@ -187,6 +193,9 @@ class MysqliAdapter implements DbAdapter
      */
     public function escape($value)
     {
+        if (is_null($value)) {
+            return null;
+        }
         $this->connect();
         return $this->link->real_escape_string($value);
     }
