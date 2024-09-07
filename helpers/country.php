@@ -315,6 +315,7 @@ abstract class Country
     const FLAG_PORTUGAL = '🇵🇹';
     const FLAG_ROMANIA = '🇷🇴';
     const FLAG_RUSSIA = '🇷🇺';
+    const FLAG_SINGAPORE = '🇸🇬';
     const FLAG_SOUTH_KOREA = '🇰🇷';
     const FLAG_SPAIN = '🇪🇸';
     const FLAG_SWEDEN = '🇸🇪';
@@ -352,6 +353,7 @@ abstract class Country
         self::PORTUGAL => self::FLAG_PORTUGAL,
         self::ROMANIA => self::FLAG_ROMANIA,
         self::RUSSIA => self::FLAG_RUSSIA,
+        self::SINGAPORE => self::FLAG_SINGAPORE,
         self::SOUTH_KOREA => self::FLAG_SOUTH_KOREA,
         self::SPAIN => self::FLAG_SPAIN,
         self::SWEDEN => self::FLAG_SWEDEN,
