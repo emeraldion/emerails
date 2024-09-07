@@ -150,6 +150,9 @@ abstract class Country
     const VENEZUELA = 'VE';
     const VIETNAM = 'VN';
 
+    const ZAMBIA = 'ZM';
+    const ZIMBABWE = 'ZW';
+
     const COUNTRIES = [
         self::ALBANIA,
         self::ALGERIA,
@@ -282,7 +285,76 @@ abstract class Country
         self::UZBEKISTAN,
 
         self::VENEZUELA,
-        self::VIETNAM
+        self::VIETNAM,
+
+        self::ZAMBIA,
+        self::ZIMBABWE
+    ];
+
+    const FLAG_AZERBAIJAN = '🇦🇿';
+    const FLAG_AUSTRIA = '🇦🇹';
+    const FLAG_BELGIUM = '🇧🇪';
+    const FLAG_DENMARK = '🇩🇰';
+    const FLAG_ESTONIA = '🇪🇪';
+    const FLAG_FINLAND = '🇫🇮';
+    const FLAG_FRANCE = '🇫🇷';
+    const FLAG_GERMANY = '🇩🇪';
+    const FLAG_GEORGIA = '🇬🇪';
+    const FLAG_ICELAND = '🇮🇸';
+    const FLAG_IRELAND = '🇮🇪';
+    const FLAG_ISRAEL = '🇮🇱';
+    const FLAG_ITALY = '🇮🇹';
+    const FLAG_JAPAN = '🇯🇵';
+    const FLAG_KENYA = '🇰🇪';
+    const FLAG_MALTA = '🇲🇹';
+    const FLAG_NETHERLANDS = '🇳🇱';
+    const FLAG_NORWAY = '🇳🇴';
+    const FLAG_POLAND = '🇵🇱';
+    const FLAG_PORTUGAL = '🇵🇹';
+    const FLAG_ROMANIA = '🇷🇴';
+    const FLAG_RUSSIA = '🇷🇺';
+    const FLAG_SPAIN = '🇪🇸';
+    const FLAG_SWEDEN = '🇸🇪';
+    const FLAG_SWITZERLAND = '🇨🇭';
+    const FLAG_UKRAINE = '🇺🇦';
+    const FLAG_UNITED_ARAB_EMIRATES = '🇦🇪';
+    const FLAG_UNITED_KINGDOM = '🇬🇧';
+    const FLAG_UNITED_STATES = '🇺🇸';
+    const FLAG_ZAMBIA = '🇿🇲';
+    const FLAG_ZIMBABWE = '🇿🇼';
+
+    const FLAGS = [
+        self::AZERBAIJAN => self::FLAG_AZERBAIJAN,
+        self::AUSTRIA => self::FLAG_AUSTRIA,
+        self::BELGIUM => self::FLAG_BELGIUM,
+        self::DENMARK => self::FLAG_DENMARK,
+        self::ESTONIA => self::FLAG_ESTONIA,
+        self::FINLAND => self::FLAG_FINLAND,
+        self::FRANCE => self::FLAG_FRANCE,
+        self::GERMANY => self::FLAG_GERMANY,
+        self::GEORGIA => self::FLAG_GEORGIA,
+        self::ICELAND => self::FLAG_ICELAND,
+        self::IRELAND => self::FLAG_IRELAND,
+        self::ISRAEL => self::FLAG_ISRAEL,
+        self::ITALY => self::FLAG_ITALY,
+        self::JAPAN => self::FLAG_JAPAN,
+        self::KENYA => self::FLAG_KENYA,
+        self::MALTA => self::FLAG_MALTA,
+        self::NETHERLANDS => self::FLAG_NETHERLANDS,
+        self::NORWAY => self::FLAG_NORWAY,
+        self::POLAND => self::FLAG_POLAND,
+        self::PORTUGAL => self::FLAG_PORTUGAL,
+        self::ROMANIA => self::FLAG_ROMANIA,
+        self::RUSSIA => self::FLAG_RUSSIA,
+        self::SPAIN => self::FLAG_SPAIN,
+        self::SWEDEN => self::FLAG_SWEDEN,
+        self::SWITZERLAND => self::FLAG_SWITZERLAND,
+        self::UKRAINE => self::FLAG_UKRAINE,
+        self::UNITED_ARAB_EMIRATES => self::FLAG_UNITED_ARAB_EMIRATES,
+        self::UNITED_KINGDOM => self::FLAG_UNITED_KINGDOM,
+        self::UNITED_STATES => self::FLAG_UNITED_STATES,
+        self::ZAMBIA => self::FLAG_ZAMBIA,
+        self::ZIMBABWE => self::FLAG_ZIMBABWE
     ];
 
     public static function for(string $country_code): ?string
@@ -294,61 +366,12 @@ abstract class Country
         return null;
     }
 
-    public static function flag($country)
+    public static function flag(string $country): ?string
     {
-        switch ($country) {
-            case self::AUSTRIA:
-                return '🇦🇹';
-            case self::BELGIUM:
-                return '🇧🇪';
-            case self::DENMARK:
-                return '🇩🇰';
-            case self::ESTONIA:
-                return '🇪🇪';
-            case self::FINLAND:
-                return '🇫🇮';
-            case self::FRANCE:
-                return '🇫🇷';
-            case self::GERMANY:
-                return '🇩🇪';
-            case self::ICELAND:
-                return '🇮🇸';
-            case self::IRELAND:
-                return '🇮🇪';
-            case self::ISRAEL:
-                return '🇮🇱';
-            case self::ITALY:
-                return '🇮🇹';
-            case self::JAPAN:
-                return '🇯🇵';
-            case self::MALTA:
-                return '🇲🇹';
-            case self::NETHERLANDS:
-                return '🇳🇱';
-            case self::NORWAY:
-                return '🇳🇴';
-            case self::POLAND:
-                return '🇵🇱';
-            case self::PORTUGAL:
-                return '🇵🇹';
-            case self::ROMANIA:
-                return '🇷🇴';
-            case self::RUSSIA:
-                return '🇷🇺';
-            case self::SPAIN:
-                return '🇪🇸';
-            case self::SWEDEN:
-                return '🇸🇪';
-            case self::SWITZERLAND:
-                return '🇨🇭';
-            case self::UKRAINE:
-                return '🇺🇦';
-            case self::UNITED_ARAB_EMIRATES:
-                return '🇦🇪';
-            case self::UNITED_KINGDOM:
-                return '🇬🇧';
-            case self::UNITED_STATES:
-                return '🇺🇸';
+        $cc = mb_strtoupper($country);
+        if (array_key_exists($cc, self::FLAGS)) {
+            return self::FLAGS[$cc];
         }
+        return null;
     }
 }

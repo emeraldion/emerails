@@ -46,4 +46,45 @@ class CountryUnitTest extends UnitTest
         $this->assertNull(Country::for('ZZ'));
         $this->assertNull(Country::for('Zz'));
     }
+
+    public function test_flag()
+    {
+        $this->assertEquals('🇦🇿', Country::flag(Country::AZERBAIJAN));
+        $this->assertEquals('🇦🇹', Country::flag(Country::AUSTRIA));
+        $this->assertEquals('🇧🇪', Country::flag(Country::BELGIUM));
+        $this->assertEquals('🇩🇰', Country::flag(Country::DENMARK));
+        $this->assertEquals('🇪🇪', Country::flag(Country::ESTONIA));
+        $this->assertEquals('🇫🇮', Country::flag(Country::FINLAND));
+        $this->assertEquals('🇫🇷', Country::flag(Country::FRANCE));
+        $this->assertEquals('🇩🇪', Country::flag(Country::GERMANY));
+        $this->assertEquals('🇬🇪', Country::flag(Country::GEORGIA));
+        $this->assertEquals('🇮🇸', Country::flag(Country::ICELAND));
+        $this->assertEquals('🇮🇪', Country::flag(Country::IRELAND));
+        $this->assertEquals('🇮🇱', Country::flag(Country::ISRAEL));
+        $this->assertEquals('🇮🇹', Country::flag(Country::ITALY));
+        $this->assertEquals('🇯🇵', Country::flag(Country::JAPAN));
+        $this->assertEquals('🇰🇪', Country::flag(Country::KENYA));
+        $this->assertEquals('🇲🇹', Country::flag(Country::MALTA));
+        $this->assertEquals('🇳🇱', Country::flag(Country::NETHERLANDS));
+        $this->assertEquals('🇳🇴', Country::flag(Country::NORWAY));
+        $this->assertEquals('🇵🇱', Country::flag(Country::POLAND));
+        $this->assertEquals('🇵🇹', Country::flag(Country::PORTUGAL));
+        $this->assertEquals('🇷🇴', Country::flag(Country::ROMANIA));
+        $this->assertEquals('🇷🇺', Country::flag(Country::RUSSIA));
+        $this->assertEquals('🇪🇸', Country::flag(Country::SPAIN));
+        $this->assertEquals('🇸🇪', Country::flag(Country::SWEDEN));
+        $this->assertEquals('🇨🇭', Country::flag(Country::SWITZERLAND));
+        $this->assertEquals('🇺🇦', Country::flag(Country::UKRAINE));
+        $this->assertEquals('🇦🇪', Country::flag(Country::UNITED_ARAB_EMIRATES));
+        $this->assertEquals('🇬🇧', Country::flag(Country::UNITED_KINGDOM));
+        $this->assertEquals('🇺🇸', Country::flag(Country::UNITED_STATES));
+        $this->assertEquals('🇿🇲', Country::flag(Country::ZAMBIA));
+        $this->assertEquals('🇿🇼', Country::flag(Country::ZIMBABWE));
+    }
+
+    public function test_flag_unknown()
+    {
+        $this->assertNull(Country::flag('ZZ'));
+        $this->assertNull(Country::flag('QQ'));
+    }
 }
