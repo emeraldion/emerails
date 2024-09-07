@@ -294,12 +294,14 @@ abstract class Country
     const FLAG_AZERBAIJAN = '🇦🇿';
     const FLAG_AUSTRIA = '🇦🇹';
     const FLAG_BELGIUM = '🇧🇪';
+    const FLAG_CHINA = '🇨🇳';
     const FLAG_DENMARK = '🇩🇰';
     const FLAG_ESTONIA = '🇪🇪';
     const FLAG_FINLAND = '🇫🇮';
     const FLAG_FRANCE = '🇫🇷';
     const FLAG_GERMANY = '🇩🇪';
     const FLAG_GEORGIA = '🇬🇪';
+    const FLAG_HONG_KONG = '🇭🇰';
     const FLAG_ICELAND = '🇮🇸';
     const FLAG_IRELAND = '🇮🇪';
     const FLAG_ISRAEL = '🇮🇱';
@@ -316,6 +318,7 @@ abstract class Country
     const FLAG_SPAIN = '🇪🇸';
     const FLAG_SWEDEN = '🇸🇪';
     const FLAG_SWITZERLAND = '🇨🇭';
+    const FLAG_TAIWAN = '🇹🇼';
     const FLAG_UKRAINE = '🇺🇦';
     const FLAG_UNITED_ARAB_EMIRATES = '🇦🇪';
     const FLAG_UNITED_KINGDOM = '🇬🇧';
@@ -327,12 +330,14 @@ abstract class Country
         self::AZERBAIJAN => self::FLAG_AZERBAIJAN,
         self::AUSTRIA => self::FLAG_AUSTRIA,
         self::BELGIUM => self::FLAG_BELGIUM,
+        self::CHINA => self::FLAG_CHINA,
         self::DENMARK => self::FLAG_DENMARK,
         self::ESTONIA => self::FLAG_ESTONIA,
         self::FINLAND => self::FLAG_FINLAND,
         self::FRANCE => self::FLAG_FRANCE,
         self::GERMANY => self::FLAG_GERMANY,
         self::GEORGIA => self::FLAG_GEORGIA,
+        self::HONG_KONG => self::FLAG_HONG_KONG,
         self::ICELAND => self::FLAG_ICELAND,
         self::IRELAND => self::FLAG_IRELAND,
         self::ISRAEL => self::FLAG_ISRAEL,
@@ -349,6 +354,7 @@ abstract class Country
         self::SPAIN => self::FLAG_SPAIN,
         self::SWEDEN => self::FLAG_SWEDEN,
         self::SWITZERLAND => self::FLAG_SWITZERLAND,
+        self::TAIWAN => self::FLAG_TAIWAN,
         self::UKRAINE => self::FLAG_UKRAINE,
         self::UNITED_ARAB_EMIRATES => self::FLAG_UNITED_ARAB_EMIRATES,
         self::UNITED_KINGDOM => self::FLAG_UNITED_KINGDOM,
