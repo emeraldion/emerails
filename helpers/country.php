@@ -311,8 +311,12 @@ abstract class Country
                 return '🇩🇪';
             case self::IRELAND:
                 return '🇮🇪';
+            case self::ISRAEL:
+                return '🇮🇱';
             case self::ITALY:
                 return '🇮🇹';
+            case self::JAPAN:
+                return '🇯🇵';
             case self::NETHERLANDS:
                 return '🇳🇱';
             case self::NORWAY:
@@ -325,8 +329,12 @@ abstract class Country
                 return '🇸🇪';
             case self::SWITZERLAND:
                 return '🇨🇭';
+            case self::UNITED_ARAB_EMIRATES:
+                return '🇦🇪';
             case self::UNITED_KINGDOM:
                 return '🇬🇧';
+            case self::UNITED_STATES:
+                return '🇺🇸';
         }
     }
 }
