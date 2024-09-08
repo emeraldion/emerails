@@ -1596,6 +1596,15 @@ class BaseController
     }
 
     /**
+     * @fn get_request()
+     * @short Returns the request of the current page.
+     */
+    public function get_request()
+    {
+        return $this->request;
+    }
+
+    /**
      * @fn abort_and_flush
      * @short Interrupts the processing of the request.
      */
