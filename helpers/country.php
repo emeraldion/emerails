@@ -307,6 +307,7 @@ abstract class Country
     const FLAG_ISRAEL = '🇮🇱';
     const FLAG_ITALY = '🇮🇹';
     const FLAG_JAPAN = '🇯🇵';
+    const FLAG_KAZAKHSTAN = '🇰🇿';
     const FLAG_KENYA = '🇰🇪';
     const FLAG_MALTA = '🇲🇹';
     const FLAG_NETHERLANDS = '🇳🇱';
@@ -345,6 +346,7 @@ abstract class Country
         self::ISRAEL => self::FLAG_ISRAEL,
         self::ITALY => self::FLAG_ITALY,
         self::JAPAN => self::FLAG_JAPAN,
+        self::KAZAKHSTAN => self::FLAG_KAZAKHSTAN,
         self::KENYA => self::FLAG_KENYA,
         self::MALTA => self::FLAG_MALTA,
         self::NETHERLANDS => self::FLAG_NETHERLANDS,
