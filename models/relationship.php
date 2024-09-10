@@ -16,71 +16,71 @@ require_once __DIR__ . '/../include/common.inc.php';
 use Emeraldion\EmeRails\Db;
 
 /**
- *  @class Relationship
- *  @short Models a relationship between two model classes
- *  @details TBD.
+ * @class Relationship
+ * @short Models a relationship between two model classes
+ * @details TBD.
  */
 #[\AllowDynamicProperties]
 class Relationship
 {
     /**
-     *  @const ONE_TO_ONE
-     *  @short Relationship type one-to-one.
+     * @const ONE_TO_ONE
+     * @short Relationship type one-to-one.
      */
     const ONE_TO_ONE = 'one_to_one';
 
     /**
-     *  @const ONE_TO_MANY
-     *  @short Relationship type one-to-many.
+     * @const ONE_TO_MANY
+     * @short Relationship type one-to-many.
      */
     const ONE_TO_MANY = 'one_to_many';
 
     /**
-     *  @const MANY_TO_MANY
-     *  @short Relationship type many-to-many.
+     * @const MANY_TO_MANY
+     * @short Relationship type many-to-many.
      */
     const MANY_TO_MANY = 'many_to_many';
 
     /**
-     *  @attr class_initialized
-     *  @short Array containing initialization information for subclasses.
+     * @attr class_initialized
+     * @short Array containing initialization information for subclasses.
      */
     private static $class_initialized = [];
 
     /**
-     *  @attr actual_primary_key_names
-     *  @short Name of the actual primary key column for the bound table.
-     *  @details This is a dictionary of class name to actual primary key column name.
-     *  The class property is read-only and it is set to the actual primary key of the
-     *  ActiveRecord subclass when introspecting columns of the bound table.
+     * @attr actual_primary_key_names
+     * @short Name of the actual primary key column for the bound table.
+     * @details This is a dictionary of class name to actual primary key column name.
+     * The class property is read-only and it is set to the actual primary key of the
+     * ActiveRecord subclass when introspecting columns of the bound table.
      */
     protected static $actual_primary_key_names = [];
 
     /**
-     *  @attr columns
-     *  @short Array of columns for the relationship table.
+     * @attr columns
+     * @short Array of columns for the relationship table.
      */
     static $columns = [];
 
     /**
-     *  @attr column_info
-     *  @short Array of column info for the model object.
+     * @attr column_info
+     * @short Array of column info for the model object.
      */
     static $column_info = [];
 
     /**
-     *  @attr primary_key_name
-     *  @short Name of the primary key column for the bound table.
-     *  @details Set this attribute only when the primary key of the bound table is not the canonical <tt>id</tt>.
+     * @attr primary_key_name
+     * @short Name of the primary key column for the bound table.
+     * @details Set this attribute only when the primary key of the bound table is not the canonical <tt>id</tt>.
      */
     protected static $primary_key_name = null;
 
     /**
-     *  @fn get_primary_key_name
-     *  @short Returns the name of the primary key for this class.
-     *  @details This method returns the name of the primary key in the table bound to this class.
-     *  By default, ActiveRecord considers as primary key a column named <tt>id</tt>. Of course you can override
-     *  this behavior by setting explicitly the value of <tt>$primary_key</tt> in the declaration of your class.
+     * @fn get_primary_key_name
+     * @short Returns the name of the primary key for this class.
+     * @details This method returns the name of the primary key in the table bound to this class.
+     * By default, ActiveRecord considers as primary key a column named <tt>id</tt>. Of course you can override
+     * this behavior by setting explicitly the value of <tt>$primary_key</tt> in the declaration of your class.
      */
     public function get_primary_key_name()
     {
@@ -141,10 +141,10 @@ class Relationship
     }
 
     /**
-     *  @fn _is_initialized($classname)
-     *  @short Tells whether the class <tt>classname</tt> has already been initialized.
-     *  @param classname The name of the class that you want to inspect.
-     *  @return <tt>TRUE</tt> if the class has been initialized, <tt>FALSE</tt> otherwise.
+     * @fn _is_initialized($classname)
+     * @short Tells whether the class <tt>classname</tt> has already been initialized.
+     * @param classname The name of the class that you want to inspect.
+     * @return <tt>TRUE</tt> if the class has been initialized, <tt>FALSE</tt> otherwise.
      */
     private static function _is_initialized($classname)
     {
@@ -155,10 +155,10 @@ class Relationship
     }
 
     /**
-     *  @fn _set_columns($classname, $cols)
-     *  @short Stores the columns for the desired class.
-     *  @param classname Name of the class for the desired object.
-     *  @param cols The columns of the relationship table.
+     * @fn _set_columns($classname, $cols)
+     * @short Stores the columns for the desired class.
+     * @param classname Name of the class for the desired object.
+     * @param cols The columns of the relationship table.
      */
     private static function _set_columns($classname, $cols)
     {
@@ -166,9 +166,9 @@ class Relationship
     }
 
     /**
-     *  @fn _get_columns($classname)
-     *  @short Returns the columns for the desired class.
-     *  @param classname Name of the class for the desired object.
+     * @fn _get_columns($classname)
+     * @short Returns the columns for the desired class.
+     * @param classname Name of the class for the desired object.
      */
     private static function _get_columns($classname)
     {
@@ -179,10 +179,10 @@ class Relationship
     }
 
     /**
-     *  @fn _set_column_info($classname, $info)
-     *  @short Stores column info for the desired class.
-     *  @param classname Name of the class for the desired object.
-     *  @param info The info of the model object.
+     * @fn _set_column_info($classname, $info)
+     * @short Stores column info for the desired class.
+     * @param classname Name of the class for the desired object.
+     * @param info The info of the model object.
      */
     private static function _set_column_info($classname, $info)
     {
@@ -190,9 +190,9 @@ class Relationship
     }
 
     /**
-     *  @fn _get_column_info($classname)
-     *  @short Returns column info for the desired class.
-     *  @param classname Name of the class for the desired object.
+     * @fn _get_column_info($classname)
+     * @short Returns column info for the desired class.
+     * @param classname Name of the class for the desired object.
      */
     private static function _get_column_info($classname)
     {
@@ -203,9 +203,9 @@ class Relationship
     }
 
     /**
-     *  @fn has_column($key)
-     *  @short Verifies the existence of a column named <tt>key</tt> in the bound table.
-     *  @param key The name of the column to check.
+     * @fn has_column($key)
+     * @short Verifies the existence of a column named <tt>key</tt> in the bound table.
+     * @param key The name of the column to check.
      */
     public function has_column($key)
     {
@@ -215,8 +215,8 @@ class Relationship
     }
 
     /**
-     *  @fn get_column_names()
-     *  @short Returns a list of column names in the bound table, equivalent to the object's fields
+     * @fn get_column_names()
+     * @short Returns a list of column names in the bound table, equivalent to the object's fields
      */
     public function get_column_names()
     {
@@ -225,11 +225,11 @@ class Relationship
     }
 
     /**
-     *  @fn get_column_names_for_query($with_prefix = false)
-     *  @short Returns the list of column names for a SELECT query
-     *  @details This method can be used to return a list of columns for a query. Additionally, the caller
-     *  can request the column names to be aliased for multiplexing in a multi-table query, e.g. a JOIN.
-     *  @param with_prefix Set to true to create aliases with the table name as a prefix
+     * @fn get_column_names_for_query($with_prefix = false)
+     * @short Returns the list of column names for a SELECT query
+     * @details This method can be used to return a list of columns for a query. Additionally, the caller
+     * can request the column names to be aliased for multiplexing in a multi-table query, e.g. a JOIN.
+     * @param with_prefix Set to true to create aliases with the table name as a prefix
      */
     public function get_column_names_for_query($with_prefix = false)
     {
@@ -248,11 +248,11 @@ class Relationship
     }
 
     /**
-     *  @fn demux_column_names($columns)
-     *  @short Demuxes a list of prefixed columns to intercept values of interest
-     *  @details This method can be used to filter a list of columns returned by a multi-table query, capturing
-     *  only those of interest to the receiving object.
-     *  @param columns The list of columns to filter
+     * @fn demux_column_names($columns)
+     * @short Demuxes a list of prefixed columns to intercept values of interest
+     * @details This method can be used to filter a list of columns returned by a multi-table query, capturing
+     * only those of interest to the receiving object.
+     * @param columns The list of columns to filter
      */
     public function demux_column_names($columns)
     {
@@ -266,13 +266,13 @@ class Relationship
     }
 
     /**
-     *  @fn _set_initialized($classname, $initialized)
-     *  @short Marks the class <tt>classname</tt> as initialized.
-     *  @details This method allows ActiveRecord to keep track of what subclasses have already been
-     *  initialized by inspectioning the bound database table schema, whithout the need for a per-class
-     *  initialization method.
-     *  @param classname The name of the class that should be marked as initialized
-     *  @param initialized <tt>TRUE</tt> if the class should be considered initialized, <tt>FALSE</tt> otherwise.
+     * @fn _set_initialized($classname, $initialized)
+     * @short Marks the class <tt>classname</tt> as initialized.
+     * @details This method allows ActiveRecord to keep track of what subclasses have already been
+     * initialized by inspectioning the bound database table schema, whithout the need for a per-class
+     * initialization method.
+     * @param classname The name of the class that should be marked as initialized
+     * @param initialized <tt>TRUE</tt> if the class should be considered initialized, <tt>FALSE</tt> otherwise.
      */
     private static function _set_initialized($classname, $initialized)
     {
@@ -400,8 +400,8 @@ class Relationship
 class RelationshipInstance
 {
     /**
-     *  @attr values
-     *  @short Array of values for the columns of a relationship table.
+     * @attr values
+     * @short Array of values for the columns of a relationship table.
      */
     private $values;
 
@@ -806,10 +806,10 @@ class RelationshipInstance
     }
 
     /**
-     *  @fn __set($key, $value)
-     *  @short Magic method to set the value of a property.
-     *  @param key The key of the property.
-     *  @param value The value of the property.
+     * @fn __set($key, $value)
+     * @short Magic method to set the value of a property.
+     * @param key The key of the property.
+     * @param value The value of the property.
      */
     public function __set($key, $value)
     {
@@ -821,9 +821,9 @@ class RelationshipInstance
     }
 
     /**
-     *  @fn __get($key)
-     *  @short Magic method to get the value of a property.
-     *  @param key The key of the desired property.
+     * @fn __get($key)
+     * @short Magic method to get the value of a property.
+     * @param key The key of the desired property.
      */
     public function __get($key)
     {
@@ -838,9 +838,9 @@ class RelationshipInstance
     }
 
     /**
-     *  @fn __isset($key)
-     *  @short Magic method to determine if a property exists.
-     *  @param key The key to test.
+     * @fn __isset($key)
+     * @short Magic method to determine if a property exists.
+     * @param key The key to test.
      */
     public function __isset($key)
     {
@@ -857,9 +857,9 @@ class RelationshipInstance
     }
 
     /**
-     *      @fn __unset($key)
-     *      @short Magic method to unset a property.
-     *      @param key The key to unset.
+     * @fn __unset($key)
+     * @short Magic method to unset a property.
+     * @param key The key to unset.
      */
     public function __unset($key)
     {
