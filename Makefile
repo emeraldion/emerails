@@ -25,6 +25,12 @@ docs:
 	doxygen Doxyfile
 format:
 	yarn format
+format-strings:
+	scripts/emerails_localize format --recursive
+
+# Localization goals
+check-strings:
+	scripts/emerails_localize check --recursive --strict
 
 # Docker goals
 docker-build: install

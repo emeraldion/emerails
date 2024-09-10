@@ -7,6 +7,12 @@ array(
     'base-index-title' => '¡Enhorabuena! &mdash; EmeRails',
     'base-index-tutorial-link' => 'Gu&iacute;a',
 
+    'base-missing-partfile-blurb-@1' => 'No pude leer el fragmento: %s',
+    'base-missing-partfile-heading' => 'Fragmento faltante',
+
+    'base-partfile-error-heading' => 'Error en el fragmento',
+    'base-partfile-legend-@1' => 'Fragmento: %s',
+
     'error' => 'Error',
 
     'loading' => 'Cargando...',

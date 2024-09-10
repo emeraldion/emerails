@@ -176,3 +176,75 @@ function checkbox($name, $checked, $params = [], $enabled = true)
     }
     return leaf_tag('input', $params);
 }
+
+/**
+ * @fn strip_external_php_tags($php_code)
+ * @short Strips beginning and ending delimiters from the given PHP code.
+ * @details This function removes the beginning and ending PHP code delimiters
+ * to enable safe parsing with <tt>eval</tt>.
+ * The algorithm is as follows:
+ *   - If a <tt>&lt;?php</tt> opening tag appears at the beginning of <tt>$php_code</tt>, it is stripped,
+ *     otherwise a closing tag <tt>?&gt;</tt> is added to the beginning.
+ *   - If a <tt>?&gt;</tt> closing tag appears at the end of <tt>$php_code</tt>, it is stripped, otherwise
+ * @param php_code The code snippet to be treated
+ */
+function strip_external_php_tags($php_code)
+{
+    $first_opening_tag = strpos($php_code, '<?php');
+    $last_opening_tag = strrpos($php_code, '<?php');
+    $first_closing_tag = strpos($php_code, '?>');
+    $last_closing_tag = strrpos($php_code, '?>');
+
+    if ($first_opening_tag === 0) {
+        // Trivial case, opening PHP tag at the beginning of content
+        $php_code = substr($php_code, strlen('<?php'));
+    } elseif (
+        // No opening or closing PHP tags
+        ($first_opening_tag === false && $first_closing_tag === false) ||
+        // First opening PHP tag appearing before the first closing PHP tag
+        ($first_closing_tag === false || $first_opening_tag < $first_closing_tag)
+    ) {
+        $php_code = "?>\n" . $php_code;
+    }
+    if (strrpos($php_code, "?>\n") === strlen($php_code) - strlen("?>\n")) {
+        // Trivial case, closing PHP tag at the end of content
+        $php_code = substr($php_code, 0, strrpos($php_code, "?>\n"));
+    } elseif (
+        // Last closing PHP tag appearing after the last opening PHP tag
+        $last_opening_tag === false ||
+        $last_closing_tag > $last_opening_tag
+    ) {
+        $php_code .= "\n<?php\n";
+    }
+    return $php_code;
+}
+
+/**
+ * @fn ensure_external_php_tags($php_code)
+ * @short Strips beginning and ending delimiters from the given PHP code.
+ * @details This function removes the beginning and ending PHP code delimiters
+ * to enable safe parsing with <tt>eval</tt>.
+ * The algorithm is as follows:
+ *   - If an unbalanced <tt>?&gt;</tt> closing tag appears at the beginning of <tt>$php_code</tt>, an opening tag
+ *     is added to the beginning.
+ *   - If an unbalanced <tt>&lt;?&php</tt> opening tag appears at the end of <tt>$php_code</tt>, a closing tag is
+ *     appended to the end.
+ * @param php_code The code snippet to be treated
+ */
+function ensure_external_php_tags($php_code)
+{
+    $first_opening_tag = strpos($php_code, '<?php');
+    $last_opening_tag = strrpos($php_code, '<?php');
+    $first_closing_tag = strpos($php_code, '?>');
+    $last_closing_tag = strrpos($php_code, '?>');
+
+    if ($first_opening_tag > $first_closing_tag) {
+        // There's an unbalanced closing tag at the beginning
+        $php_code = "<?php\n" . $php_code;
+    }
+    if ($last_closing_tag < $last_opening_tag) {
+        // There's an unbalanced opening tag at the end
+        $php_code .= "\n?>\n";
+    }
+    return $php_code;
+}

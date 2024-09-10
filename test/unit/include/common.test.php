@@ -16,9 +16,6 @@ require_once __DIR__ . '/../base_test.php';
 
 class CommonTest extends UnitTest
 {
-    /**
-     * @before
-     */
     function setUp(): void
     {
         reset_irregular_nouns();

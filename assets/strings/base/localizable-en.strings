@@ -7,6 +7,12 @@ array(
     'base-index-title' => 'Congratulations! &mdash; EmeRails',
     'base-index-tutorial-link' => 'Tutorial',
 
+    'base-missing-partfile-blurb-@1' => 'Could not load partfile: %s',
+    'base-missing-partfile-heading' => 'Missing partfile',
+
+    'base-partfile-error-heading' => 'Partfile parsing error',
+    'base-partfile-legend-@1' => 'Partfile: %s',
+
     'error' => 'Error',
 
     'loading' => 'Loading...',
