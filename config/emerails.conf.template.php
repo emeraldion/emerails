@@ -1,5 +1,13 @@
 <?php
 /**
+ *                                   _ __
+ *   ___  ____ ___  ___  _________ _(_) /____
+ *  / _ \/ __ `__ \/ _ \/ ___/ __ `/ / / ___/
+ * /  __/ / / / / /  __/ /  / /_/ / / (__  )
+ * \___/_/ /_/ /_/\___/_/   \__,_/_/_/____/
+ *
+ * (c) Claudio Procida 2008-2024
+ *
  * @format
  */
 
@@ -13,7 +21,8 @@ Config::set('DEV_MODE', default_to(getenv('EMERAILS_DEV_MODE'), true));
 Config::set('ERROR_REPORTING', default_to(getenv('EMERAILS_ERROR_REPORTING'), true));
 Config::set('APPLICATION_ROOT', default_to(getenv('EMERAILS_APPLICATION_ROOT'), '/'));
 Config::set('LANGUAGE_COOKIE', default_to(getenv('EMERAILS_LANGUAGE_COOKIE'), 'hl'));
-Config::set('OBJECT_POOL_ENABLED', default_to(getenv('EMERAILS_OBJECT_POOL_ENABLED'), 'false'));
+Config::set('OBJECT_POOL_ENABLED', default_to(getenv('EMERAILS_OBJECT_POOL_ENABLED'), false));
+Config::set('RENDER_DEBUG', default_to(getenv('EMERAILS_RENDER_DEBUG'), false));
 
 // Since the introduction of method allow rules, you can specify which HTTP methods are allowed by controllers.
 // By default, "dangerous" methods (PUT, POST, DELETE) are blocked by controllers.

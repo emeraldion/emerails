@@ -1453,37 +1453,32 @@ class BaseController
     }
 
     /**
-     * @fn load_part_contents($filename)
+     * @fn load_part_contents($filename, $strip_external_php_tags)
      * @short Loads the contents of the desired view file.
      * @details This method returns the contents of the requested view file
      * without parsing.
      * @param partfile The name of the view file to load.
+     * @param strip_external_php_tags True to strip external PHP tags, false to leave untouched
      */
-    protected function load_part_contents($partfile)
+    protected function load_part_contents($partfile, $strip_external_php_tags = true)
     {
         if (!file_exists($partfile)) {
             if (Config::get('DEV_MODE')) {
-                $file = preg_replace(
-                    '/' . addcslashes($this->base_path, '/') . '/',
-                    htmlentities('<PROJECT_ROOT>'),
-                    $partfile
-                );
-                return $this->strip_external_php_tags(
-                    block_tag(
-                        'div',
-                        implode("\n", [
-                            h3(l('error'), null),
-                            block_tag('p', sprintf('Missing part file: %s', $file), null)
-                        ]),
-                        ['class' => 'msg error']
-                    )
+                $contents = block_tag(
+                    'div',
+                    implode("\n", [
+                        h3(l('error'), null),
+                        block_tag('p', sprintf('Missing part file: %s', $this->get_safe_filename($partfile)), null)
+                    ]),
+                    ['class' => 'msg error']
                 );
             } else {
                 $this->send_error(500);
             }
+        } else {
+            $contents = file_get_contents($partfile);
         }
-        $contents = file_get_contents($partfile);
-        return $this->strip_external_php_tags($contents);
+        return $strip_external_php_tags ? $this->strip_external_php_tags($contents) : $contents;
     }
 
     /**
@@ -1497,6 +1492,7 @@ class BaseController
     protected function evaluate_part($partfile, $params = [])
     {
         $GLOBALS['__PART__'] = $partfile;
+
         try {
             if (isset($params['partial'])) {
                 $partial = basename($params['partial']);
@@ -1509,21 +1505,52 @@ class BaseController
                 }
             }
 
-            $ret = eval($this->load_part_contents($partfile));
+            if (Config::get('RENDER_DEBUG')) {
+                $contents = $this->load_part_contents($partfile, false);
+
+                $contents = $this->strip_external_php_tags(
+                    block_tag(
+                        'fieldset',
+                        implode("\n", [
+                            inline_tag(
+                                'legend',
+                                sprintf(
+                                    'Partfile: %s',
+                                    a($this->get_safe_filename($partfile), [
+                                        'href' => sprintf('vscode://file/%s', $partfile)
+                                    ])
+                                ),
+                                [
+                                    'class' => 'debug'
+                                ]
+                            ),
+                            $contents
+                        ]),
+                        [
+                            'class' => 'debug'
+                        ]
+                    )
+                );
+            } else {
+                $contents = $this->load_part_contents($partfile);
+            }
+
+            $ret = eval($contents);
         } catch (Throwable $t) {
             if (Config::get('DEV_MODE')) {
-                $file = preg_replace(
-                    '/' . addcslashes($this->base_path, '/') . '/',
-                    htmlentities('<PROJECT_ROOT>'),
-                    $partfile
-                );
                 $ret = block_tag(
                     'div',
                     implode("\n", [
                         h3(l('error'), null),
                         block_tag(
                             'p',
-                            sprintf('[%d] %s, at: %s:%d', $t->getCode(), $t->getMessage(), $file, $t->getLine()),
+                            sprintf(
+                                '[%d] %s, at: %s:%d',
+                                $t->getCode(),
+                                $t->getMessage(),
+                                $this->get_safe_filename($partfile),
+                                $t->getLine()
+                            ),
                             null
                         )
                     ]),
@@ -1536,6 +1563,16 @@ class BaseController
         unset($GLOBALS['__PART__']);
 
         return $ret;
+    }
+
+    /**
+     * @fn get_safe_filename($filename)
+     * @short Strips sensitive path information from a filename
+     * @param filename The filename to sanitize
+     */
+    protected function get_safe_filename($filename)
+    {
+        return get_safe_path($filename, $this->base_path, '<PROJECT_ROOT>');
     }
 
     /**

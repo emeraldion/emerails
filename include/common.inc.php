@@ -168,25 +168,40 @@ function table_name_to_foreign_key($tablename)
 }
 
 /**
- *	@fn l
- *	@short Shorthand method for the Localization::localize method.
- *	@param str The string to localize
+ * @fn l($str)
+ * @short Shorthand method for the Localization::localize method.
+ * @param str The string key to localize
  */
 function l($str)
 {
     return localized($str);
 }
 
+/**
+ * @fn localized($str)
+ * @short Shorthand for <tt>Localization::localize</tt>
+ * @param str The string key to localize
+ */
 function localized($str)
 {
     return Localization::localize($str);
 }
 
+/**
+ * @fn h($str)
+ * @short Shorthand for <tt>htmlentities</tt>
+ * @param str The string to escape
+ */
 function h($str)
 {
     return htmlentities($str);
 }
 
+/**
+ * @fn s($str)
+ * @short Shorthand for <tt>addslashes</tt>
+ * @param str The string to escape
+ */
 function s($str)
 {
     return addslashes($str);
@@ -214,6 +229,15 @@ function limit_3($val, $a, $b)
 function first(array $array)
 {
     return count($array) > 0 ? $array[array_key_first($array)] : null;
+}
+
+/**
+ * @fn get_safe_path($unsafe_path, $base_path, $replacement)
+ * @short Hides sensitive information from a path
+ */
+function get_safe_path($unsafe_path, $base_path, $replacement)
+{
+    return preg_replace('/' . addcslashes(realpath($base_path), '/') . '/', h($replacement), realpath($unsafe_path));
 }
 
 // Prevents a conflict with illuminate/collections/helpers:last()

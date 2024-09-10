@@ -45,3 +45,13 @@ a:hover,
 a:active {
   color: #f90;
 }
+
+fieldset.debug {
+  border: 2px dashed #ccc;
+  border-radius: 4px;
+}
+
+legend.debug {
+  color: #444;
+  font-size: 0.8rem;
+}
