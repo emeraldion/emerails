@@ -323,13 +323,15 @@ abstract class ActiveRecord
      *  @details This method can be used to filter a list of columns returned by a multi-table query, capturing
      *  only those of interest to the receiving object.
      *  @param columns The list of columns to filter
+     *  @param validate Validates the values of the columns
      */
-    public function demux_column_names($columns)
+    public function demux_column_names($columns, $validate = false)
     {
         $ret = [];
-        foreach ($columns as $key => $val) {
-            if (strpos($key, $this->get_table_name()) === 0) {
-                $ret[last(explode(':', $key))] = $val;
+        foreach ($columns as $muxed_key => $val) {
+            if (strpos($muxed_key, $this->get_table_name()) === 0) {
+                $key = last(explode(':', $muxed_key));
+                $ret[$key] = $validate ? $this->validate_field($key, $val) : $val;
             }
         }
         return $ret;
@@ -540,14 +542,19 @@ abstract class ActiveRecord
             $this->values[$peer_member_name] = [];
             $dict = [];
             while ($row = $conn->fetch_assoc()) {
+                // Fetch peer fields
                 $peer_row = $peer->demux_column_names($row);
+                // Fetch relationship fields with validation
+                $r_row = $r->demux_column_names($row, true);
                 // Fixup pkey from fkey
-                $r_row = $r->demux_column_names($row);
                 $peer_row[$peer_pk] = $r_row[$peer_fkey];
-
+                // Instantiate the peer
                 $peer = new $peerclass($peer_row);
+                // Store the peer in the caller's collection
                 $this->values[$peer_member_name][$peer->$peer_pk] = $peer;
-                // FIXME: this is not reflecting the real relationship
+                // FIXME: this result is not reflecting the entire relationship. The peer may have more edges to
+                // the caller's class besides the caller itself. However, for convenience and performance, we only
+                // set the caller in the peer's collection.
                 $peer->values[pluralize(camel_case_to_joined_lower(get_class($this)))] = [$this->$pkey => $this];
 
                 if ($has_join) {
@@ -570,11 +577,7 @@ abstract class ActiveRecord
                 }
             }
 
-            $ret = Relationship::many_to_many(get_called_class(), $peerclass)->among(
-                [$this],
-                array_values($this->values[$peer_member_name]),
-                [$this->values[$pkey] => $dict]
-            );
+            $ret = $r->among([$this], array_values($this->values[$peer_member_name]), [$this->values[$pkey] => $dict]);
         } else {
             // Unset previously set value
             unset($this->values[$peer_member_name]);
@@ -1176,7 +1179,7 @@ abstract class ActiveRecord
                             if ($raise) {
                                 throw new Exception(
                                     sprintf(
-                                        "%s: Field '%s' has the wrong type. Expected '%s(%s)' but found: '%s'",
+                                        "%s: Attempt to set the field '%s' to a value with incorrect type. Expected '%s(%s)' but found: '%s'",
                                         get_called_class(),
                                         $key,
                                         $type,
@@ -1207,6 +1210,7 @@ abstract class ActiveRecord
                         }
                         $ret = is_null($value) ? null : (int) $value;
                         break;
+                    case 'decimal':
                     case 'float':
                         if ($raise && !is_null($value) && !is_float($value)) {
                             throw new Exception(

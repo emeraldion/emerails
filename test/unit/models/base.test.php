@@ -976,13 +976,13 @@ class ActiveRecordTest extends UnitTest
     public function test_has_and_belongs_to_many()
     {
         /*
-         *  +----------+----------+-------+
-         *  | model_id | group_id | count |
-         *  +----------+----------+-------+
-         *  |        2 |        1 |     3 |
-         *  |        1 |        2 |     1 |
-         *  |        2 |        2 |     0 |
-         *  +----------+----------+-------+
+         *  +----------+----------+-------+-------+-------------+-------+
+         *  | model_id | group_id | count | color | min_version | price |
+         *  +----------+----------+-------+-------+-------------+-------+
+         *  |        2 |        1 |     3 | red   |        NULL |  4.99 |
+         *  |        1 |        2 |     1 | green |         1.5 |  NULL |
+         *  |        2 |        2 |     0 | NULL  |           2 | 10.99 |
+         *  +----------+----------+-------+-------+-------------+-------+
          */
         $instance = new TestModel();
         $ret = $instance->find_by_id(1);
@@ -997,6 +997,16 @@ class ActiveRecordTest extends UnitTest
             switch ($test_group->id) {
                 case 2:
                     $this->assertEquals(1, $test_group->count);
+
+                    $this->assertEquals('green', $test_group->color);
+                    $this->assertTrue(is_string($test_group->color));
+                    $this->assertEquals('string', gettype($test_group->color));
+
+                    $this->assertEquals(1.5, $test_group->min_version);
+                    $this->assertTrue(is_float($test_group->min_version));
+                    $this->assertEquals('double', gettype($test_group->min_version));
+
+                    $this->assertNull($test_group->price);
                     break;
             }
         }
@@ -1014,9 +1024,29 @@ class ActiveRecordTest extends UnitTest
             switch ($test_group->id) {
                 case 1:
                     $this->assertEquals(3, $test_group->count);
+
+                    $this->assertEquals('red', $test_group->color);
+                    $this->assertTrue(is_string($test_group->color));
+                    $this->assertEquals('string', gettype($test_group->color));
+
+                    $this->assertNull($test_group->min_version);
+
+                    $this->assertEquals(4.99, $test_group->price);
+                    $this->assertTrue(is_float($test_group->price));
+                    $this->assertEquals('double', gettype($test_group->price));
                     break;
                 case 2:
                     $this->assertEquals(0, $test_group->count);
+
+                    $this->assertNull($test_group->color);
+
+                    $this->assertEquals(2.0, $test_group->min_version);
+                    $this->assertTrue(is_float($test_group->min_version));
+                    $this->assertEquals('double', gettype($test_group->min_version));
+
+                    $this->assertEquals(10.99, $test_group->price);
+                    $this->assertTrue(is_float($test_group->price));
+                    $this->assertEquals('double', gettype($test_group->price));
                     break;
             }
         }
@@ -1025,13 +1055,13 @@ class ActiveRecordTest extends UnitTest
     public function test_has_and_belongs_to_many_by_class_name()
     {
         /*
-         *  +----------+----------+-------+
-         *  | model_id | group_id | count |
-         *  +----------+----------+-------+
-         *  |        2 |        1 |     3 |
-         *  |        1 |        2 |     1 |
-         *  |        2 |        2 |     0 |
-         *  +----------+----------+-------+
+         *  +----------+----------+-------+-------+-------------+-------+
+         *  | model_id | group_id | count | color | min_version | price |
+         *  +----------+----------+-------+-------+-------------+-------+
+         *  |        2 |        1 |     3 | red   |        NULL |  4.99 |
+         *  |        1 |        2 |     1 | green |         1.5 |  NULL |
+         *  |        2 |        2 |     0 | NULL  |           2 | 10.99 |
+         *  +----------+----------+-------+-------+-------------+-------+
          */
         $instance = new TestModel();
         $ret = $instance->find_by_id(1);
@@ -1046,6 +1076,16 @@ class ActiveRecordTest extends UnitTest
             switch ($test_group->id) {
                 case 2:
                     $this->assertEquals(1, $test_group->count);
+
+                    $this->assertEquals('green', $test_group->color);
+                    $this->assertTrue(is_string($test_group->color));
+                    $this->assertEquals('string', gettype($test_group->color));
+
+                    $this->assertEquals(1.5, $test_group->min_version);
+                    $this->assertTrue(is_float($test_group->min_version));
+                    $this->assertEquals('double', gettype($test_group->min_version));
+
+                    $this->assertNull($test_group->price);
                     break;
             }
         }
@@ -1063,9 +1103,29 @@ class ActiveRecordTest extends UnitTest
             switch ($test_group->id) {
                 case 1:
                     $this->assertEquals(3, $test_group->count);
+
+                    $this->assertEquals('red', $test_group->color);
+                    $this->assertTrue(is_string($test_group->color));
+                    $this->assertEquals('string', gettype($test_group->color));
+
+                    $this->assertNull($test_group->min_version);
+
+                    $this->assertEquals(4.99, $test_group->price);
+                    $this->assertTrue(is_float($test_group->price));
+                    $this->assertEquals('double', gettype($test_group->price));
                     break;
                 case 2:
                     $this->assertEquals(0, $test_group->count);
+
+                    $this->assertNull($test_group->color);
+
+                    $this->assertEquals(2.0, $test_group->min_version);
+                    $this->assertTrue(is_float($test_group->min_version));
+                    $this->assertEquals('double', gettype($test_group->min_version));
+
+                    $this->assertEquals(10.99, $test_group->price);
+                    $this->assertTrue(is_float($test_group->price));
+                    $this->assertEquals('double', gettype($test_group->price));
                     break;
             }
         }
@@ -1486,7 +1546,7 @@ class ActiveRecordTest extends UnitTest
 
         $this->expectException(Exception::class);
         $this->expectExceptionMessage(
-            "Field 'shirt_color' has the wrong type. Expected 'enum('red','green','blue')' but found: 'integer'"
+            "Attempt to set the field 'shirt_color' to a value with incorrect type. Expected 'enum('red','green','blue')' but found: 'integer'"
         );
 
         // This is okay:
@@ -1504,7 +1564,7 @@ class ActiveRecordTest extends UnitTest
 
         $this->expectException(Exception::class);
         $this->expectExceptionMessage(
-            "Field 'shirt_color' has the wrong type. Expected 'enum('red','green','blue')' but found: 'string'"
+            "Attempt to set the field 'shirt_color' to a value with incorrect type. Expected 'enum('red','green','blue')' but found: 'string'"
         );
 
         // This is okay:
