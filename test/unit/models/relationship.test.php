@@ -92,6 +92,8 @@ class RelationshipTest extends UnitTest
                 '`test_groups_test_models`.`test_group_id`',
                 '`test_groups_test_models`.`count`',
                 '`test_groups_test_models`.`color`',
+                '`test_groups_test_models`.`min_version`',
+                '`test_groups_test_models`.`price`',
                 '`test_groups_test_models`.`created_at`'
             ],
             $r->get_column_names_for_query()
@@ -108,6 +110,8 @@ class RelationshipTest extends UnitTest
                 '`test_groups_test_models`.`test_group_id` AS `test_groups_test_models:test_group_id`',
                 '`test_groups_test_models`.`count` AS `test_groups_test_models:count`',
                 '`test_groups_test_models`.`color` AS `test_groups_test_models:color`',
+                '`test_groups_test_models`.`min_version` AS `test_groups_test_models:min_version`',
+                '`test_groups_test_models`.`price` AS `test_groups_test_models:price`',
                 '`test_groups_test_models`.`created_at` AS `test_groups_test_models:created_at`'
             ],
             $r->get_column_names_for_query(true)
@@ -231,7 +235,12 @@ class RelationshipTest extends UnitTest
         $r = Relationship::many_to_many(TestModel::class, TestGroup::class)->among(
             [$model],
             [$g1, $g2],
-            [$model->id => [$g1->id => ['count' => 100], $g2->id => ['count' => 200]]]
+            [
+                $model->id => [
+                    $g1->id => ['count' => 100, 'min_version' => 2.5, 'price' => 10.99],
+                    $g2->id => ['count' => 200, 'min_version' => null, 'price' => 4.5]
+                ]
+            ]
         );
 
         foreach ($r as $model_id => $s) {
@@ -242,22 +251,48 @@ class RelationshipTest extends UnitTest
         }
 
         $ret = $model->has_and_belongs_to_many(TestGroup::class);
+
         $this->assertNotNull($ret);
         $this->assertIsArray($ret);
         $this->assertEquals(1, count($ret));
+
         $this->assertTrue(array_key_exists($model->id, $ret));
         $this->assertIsArray($ret[$model->id]);
         $this->assertEquals(2, count($ret[$model->id]));
 
         $this->assertTrue(array_key_exists($g1->id, $ret[$model->id]));
         $this->assertIsObject($ret[$model->id][$g1->id]);
+
         $this->assertTrue(isset($ret[$model->id][$g1->id]->count));
+        $this->assertEquals('integer', gettype($ret[$model->id][$g1->id]->count));
+        $this->assertTrue(is_int($ret[$model->id][$g1->id]->count));
         $this->assertEquals(100, $ret[$model->id][$g1->id]->count);
+
+        $this->assertTrue(isset($ret[$model->id][$g1->id]->min_version));
+        $this->assertEquals('double', gettype($ret[$model->id][$g1->id]->min_version));
+        $this->assertTrue(is_float($ret[$model->id][$g1->id]->min_version));
+        $this->assertEquals(2.5, $ret[$model->id][$g1->id]->min_version);
+
+        $this->assertTrue(isset($ret[$model->id][$g1->id]->price));
+        $this->assertEquals('double', gettype($ret[$model->id][$g1->id]->price));
+        $this->assertTrue(is_float($ret[$model->id][$g1->id]->price));
+        $this->assertEquals(10.99, $ret[$model->id][$g1->id]->price);
 
         $this->assertTrue(array_key_exists($g2->id, $ret[$model->id]));
         $this->assertIsObject($ret[$model->id][$g2->id]);
+
         $this->assertTrue(isset($ret[$model->id][$g2->id]->count));
+        $this->assertEquals('integer', gettype($ret[$model->id][$g2->id]->count));
+        $this->assertTrue(is_int($ret[$model->id][$g2->id]->count));
         $this->assertEquals(200, $ret[$model->id][$g2->id]->count);
+
+        $this->assertTrue(isset($ret[$model->id][$g2->id]->min_version));
+        $this->assertTrue(is_null($ret[$model->id][$g2->id]->min_version));
+
+        $this->assertTrue(isset($ret[$model->id][$g2->id]->price));
+        $this->assertEquals('double', gettype($ret[$model->id][$g2->id]->price));
+        $this->assertTrue(is_float($ret[$model->id][$g2->id]->price));
+        $this->assertEquals(4.5, $ret[$model->id][$g2->id]->price);
 
         foreach ($r as $model_id => $s) {
             foreach ($s as $group_id => $t) {
@@ -337,7 +372,7 @@ class RelationshipTest extends UnitTest
         $this->assertNull($ret[$model->id][$group->id]->color);
     }
 
-    public function test_among_validate_on_set()
+    public function test_among_validate_on_set_enum()
     {
         $this->models[] = $model = new TestModel();
         $model->save();
@@ -357,7 +392,7 @@ class RelationshipTest extends UnitTest
 
         $this->expectException(Exception::class);
         $this->expectExceptionMessage(
-            "Field 'color' has the wrong type. Expected 'enum('red','green','blue')' but found: 'string'"
+            "Attempt to set the field 'color' to a value with incorrect type. Expected 'enum('red','green','blue')' but found: 'string'"
         );
 
         // This is ok
@@ -365,6 +400,66 @@ class RelationshipTest extends UnitTest
 
         // This throws
         $ret[$model->id][$group->id]->color = 'lime';
+    }
+
+    public function test_among_validate_on_set_float()
+    {
+        $this->models[] = $model = new TestModel();
+        $model->save();
+        $this->models[] = $group = new TestGroup();
+        $group->save();
+
+        $r = Relationship::many_to_many(TestModel::class, TestGroup::class)->among([$model], [$group]);
+
+        foreach ($r as $model_id => $s) {
+            foreach ($s as $group_id => $t) {
+                $this->models[] = $t;
+                $t->save();
+            }
+        }
+
+        $ret = $model->has_and_belongs_to_many(TestGroup::class);
+
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage(
+            "Attempt to set the field 'min_version' to a value with incorrect type. Expected 'float' but found: 'string'"
+        );
+
+        // This is ok
+        $ret[$model->id][$group->id]->min_version = 2.5;
+
+        // This throws
+        $ret[$model->id][$group->id]->min_version = '0.9';
+    }
+
+    public function test_among_validate_on_set_decimal()
+    {
+        $this->models[] = $model = new TestModel();
+        $model->save();
+        $this->models[] = $group = new TestGroup();
+        $group->save();
+
+        $r = Relationship::many_to_many(TestModel::class, TestGroup::class)->among([$model], [$group]);
+
+        foreach ($r as $model_id => $s) {
+            foreach ($s as $group_id => $t) {
+                $this->models[] = $t;
+                $t->save();
+            }
+        }
+
+        $ret = $model->has_and_belongs_to_many(TestGroup::class);
+
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage(
+            "Attempt to set the field 'price' to a value with incorrect type. Expected 'decimal' but found: 'string'"
+        );
+
+        // This is ok
+        $ret[$model->id][$group->id]->price = 4.99;
+
+        // This throws
+        $ret[$model->id][$group->id]->price = 'abc';
     }
 
     public function test_among_validate_null_non_nullable_field()

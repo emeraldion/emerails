@@ -738,7 +738,7 @@ class RelationshipInstance
                             if ($raise) {
                                 throw new Exception(
                                     sprintf(
-                                        "Field '%s' has the wrong type. Expected '%s(%s)' but found: '%s'",
+                                        "Attempt to set the field '%s' to a value with incorrect type. Expected '%s(%s)' but found: '%s'",
                                         $key,
                                         $type,
                                         $matches[3],
@@ -767,12 +767,14 @@ class RelationshipInstance
                         }
                         $ret = is_null($value) ? null : (int) $value;
                         break;
+                    case 'decimal':
                     case 'float':
                         if ($raise && !is_null($value) && !is_float($value)) {
                             throw new Exception(
                                 sprintf(
-                                    "Attempt to set the field '%s' to a value with incorrect type. Expected 'float' but found: '%s'",
+                                    "Attempt to set the field '%s' to a value with incorrect type. Expected '%s' but found: '%s'",
                                     $key,
+                                    $type,
                                     gettype($value)
                                 )
                             );
