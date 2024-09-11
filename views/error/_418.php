@@ -11,8 +11,10 @@
  * @format
  */
 
-$this->set_title("418 - I'm a teapot"); ?>
-<h1>418 - I'm a teapot</h1>
+$this->set_title(l('error-_418-title')); ?>
+<h1><?php print l('error-_418-heading'); ?></h1>
 <p>
-    I refuse your attempt to brew coffee with a teapot. This ain't your expresso machine.
+    <?php print h(
+        l('error-_418-blurb')
+    ); ?>
 </p>

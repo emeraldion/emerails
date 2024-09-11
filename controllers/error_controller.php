@@ -85,6 +85,15 @@ class ErrorController extends BaseController
     }
 
     /**
+     *	@fn _501
+     *	@short Handles 501 Not Implemented HTTP errors.
+     */
+    public function _501()
+    {
+        $this->error();
+    }
+
+    /**
      *	@fn error
      *	@short Private common error handler.
      */

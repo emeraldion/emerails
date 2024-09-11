@@ -11,8 +11,8 @@
  * @format
  */
 
-$this->set_title('500 - Internal Server Error'); ?>
-<h1>500 - Internal Server Error</h1>
+$this->set_title(l('error-_500-title')); ?>
+<h1><?php print l('error-_500-heading'); ?></h1>
 <p>
-	Uh-oh! The server encountered an error while processing the request.
+	<?php print h(l('error-_500-blurb')); ?>
 </p>

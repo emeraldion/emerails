@@ -11,8 +11,8 @@
  * @format
  */
 
-$this->set_title('409 - Conflict'); ?>
-<h1>409 - Conflict</h1>
+$this->set_title(l('error-_409-title')); ?>
+<h1><?php print l('error-_409-heading'); ?></h1>
 <p>
-	The request conflicts with the current state of the target resource.
+	<?php print h(l('error-_409-blurb')); ?>
 </p>

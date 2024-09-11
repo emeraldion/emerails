@@ -11,8 +11,8 @@
  * @format
  */
 
-$this->set_title('403 - Bad Request'); ?>
-<h1>403 - Bad Request</h1>
+$this->set_title(l('error-_400-title')); ?>
+<h1><?php print l('error-_400-heading'); ?></h1>
 <p>
-	The server received a malformed request and could not understand it.
+	<?php print h(l('error-_400-blurb')); ?>
 </p>

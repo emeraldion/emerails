@@ -11,10 +11,13 @@
  * @format
  */
 
-$this->set_title('404 - Not Found'); ?>
-<h1>404 - Not Found</h1>
+$this->set_title(l('error-_404-title')); ?>
+<h1><?php print l('error-_404-heading'); ?></h1>
 <p>
-	Uh-oh! The requested resource <strong><?php print $_SERVER[
-     'REDIRECT_URL'
- ]; ?></strong> does not exist (yet?) on this server.
+    <?php print h(
+        sprintf(
+            l('error-_404-blurb'),
+            $_SERVER['REDIRECT_URL']
+        )
+    ); ?>
 </p>

@@ -1,0 +1,33 @@
+array(
+    'error-_400-blurb' => 'The server received a malformed request and could not understand it.',
+    'error-_400-heading' => '400 - Bad Request',
+    'error-_400-title' => '400 - Bad Request',
+
+    'error-_403-blurb' => 'The server has been instructed to not let you access the requested resource, you naughty one!',
+    'error-_403-heading' => '403 - Forbidden',
+    'error-_403-title' => '403 - Forbidden',
+
+    'error-_404-blurb' => 'The requested resource <strong>%s</strong> does not exist (yet?) on this server.',
+    'error-_404-heading' => '404 - Not Found',
+    'error-_404-title' => '404 - Not Found',
+
+    'error-_405-blurb' => 'The request method is not supported by the requested resource.',
+    'error-_405-heading' => '405 - Method Not Allowed',
+    'error-_405-title' => '405 - Method Not Allowed',
+
+    'error-_409-blurb' => 'The request conflicts with the current state of the target resource.',
+    'error-_409-heading' => '409 - Conflict',
+    'error-_409-title' => '409 - Conflict',
+
+    'error-_418-blurb' => "I refuse your attempt to brew coffee with a teapot. This ain't your espresso machine.",
+    'error-_418-heading' => "418 - I'm a teapot",
+    'error-_418-title' => "418 - I'm a teapot",
+
+    'error-_500-blurb' => 'Uh-oh! The server encountered an error while processing the request.',
+    'error-_500-heading' => '500 - Internal Server Error',
+    'error-_500-title' => '500 - Internal Server Error',
+
+    'error-_501-blurb' => 'Blimey! The server does not recognize the request method, or it cannot fulfil the request.',
+    'error-_501-heading' => '501 - Not Implemented',
+    'error-_501-title' => '501 - Not Implemented',
+);

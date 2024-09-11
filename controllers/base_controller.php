@@ -1335,9 +1335,13 @@ class BaseController
 
             // Call eventual controller action
             if (is_callable([$this, $this->action])) {
-                $this->invoke_action();
+                try {
+                    $this->invoke_action();
+                } catch (Throwable $t) {
+                    $this->send_error(500);
+                }
             } else {
-                $this->send_error(500);
+                $this->send_error(501);
             }
             // Call render on the controller
             // This won't have effect if the controller has already rendered

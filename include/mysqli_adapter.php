@@ -16,6 +16,8 @@ require_once __DIR__ . '/db_adapter.php';
 use Emeraldion\EmeRails\Config;
 use Emeraldion\EmeRails\Db;
 
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+
 /**
  * @format
  *  @class MysqliAdapter
@@ -129,7 +131,16 @@ class MysqliAdapter implements DbAdapter
     public function exec()
     {
         $this->connect();
-        $this->result = $this->link->query($this->query);
+        try {
+            $this->result = $this->link->query($this->query);
+        } catch (mysqli_sql_exception $mse) {
+            throw new Exception(
+                Config::get('DB_DEBUG') ? "Error ({$this->query}): {$mse->getMessage()}" : 'Query error',
+                $mse->getCode(),
+                $mse
+            );
+        }
+
         if (!$this->result) {
             throw new Exception(
                 Config::get('DB_DEBUG') ? "Error ({$this->query}): {$this->link->error}" : 'DB unavailable'
