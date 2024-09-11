@@ -25,7 +25,7 @@ use Emeraldion\EmeRails\Config; ?>
 <?php print $this->content_for_layout; ?>
 		</div>
 		<div id="footer">
-			<a href="https://emerails.emeraldion.it">EmeRails</a> &copy; 2008-2023 Claudio Procida &mdash; Emeraldion Lodge
+			<a href="https://emerails.emeraldion.it">EmeRails</a> &copy; 2008-2024 Claudio Procida &mdash; Emeraldion Lodge
 		</div>
 	</body>
 </html>
