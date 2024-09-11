@@ -15,6 +15,7 @@ require_once __DIR__ . '/../include/common.inc.php';
 require_once __DIR__ . '/../include/tag_support.inc.php';
 
 use Emeraldion\EmeRails\Config;
+use Emeraldion\EmeRails\Helpers\Headers;
 use Emeraldion\EmeRails\Helpers\HTTP;
 use Emeraldion\EmeRails\Helpers\Localization;
 use Emeraldion\EmeRails\Helpers\Request;
@@ -893,13 +894,13 @@ class BaseController
                 $this->url_to($params)
             );
             if (!isset($params['after'])) {
-                $this->response->add_header('Location', $URL);
+                $this->response->add_header(Headers::LOCATION, $URL);
                 $this->response->flush();
             } else {
-                $this->response->add_header('Refresh', "{$params['after']};url={$URL}");
+                $this->response->add_header(Headers::REFRESH, "{$params['after']};url={$URL}");
             }
         } else {
-            $this->response->add_header('Location', $params);
+            $this->response->add_header(Headers::LOCATION, $params);
             $this->response->flush();
         }
     }
@@ -1324,9 +1325,9 @@ class BaseController
         if (in_array($this->action, $this->pages_cached) && $this->cached_page_exists()) {
             $cached_file = $this->cached_page_filename();
             if (isset($this->mimetype)) {
-                $this->response->add_header('Content-Type', $this->mimetype);
+                $this->response->add_header(Headers::CONTENT_TYPE, $this->mimetype);
             }
-            $this->response->add_header('Content-Length', filesize($cached_file));
+            $this->response->add_header(Headers::CONTENT_LENGTH, filesize($cached_file));
             $this->response->body .= file_get_contents($cached_file);
         } else {
             // Start buffering
@@ -1364,7 +1365,7 @@ class BaseController
         }
 
         if (isset($this->mimetype)) {
-            $this->response->add_header('Content-Type', $this->mimetype);
+            $this->response->add_header(Headers::CONTENT_TYPE, $this->mimetype);
         }
 
         // Finally, flush responses
@@ -1660,7 +1661,7 @@ class BaseController
             preg_match('/(x-gzip|gzip)/', $_SERVER['HTTP_ACCEPT_ENCODING'], $matches)
         ) {
             $this->response->body = gzencode($this->response->body, 9);
-            $this->response->add_header('Content-Encoding', $matches[1]);
+            $this->response->add_header(Headers::CONTENT_ENCODING, $matches[1]);
         }
     }
 }

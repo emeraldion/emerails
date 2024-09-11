@@ -14,6 +14,7 @@
 require_once __DIR__ . '/base_controller.php';
 
 use Emeraldion\EmeRails\Config;
+use Emeraldion\EmeRails\Helpers\Headers;
 
 function strip_double_dots($str)
 {
@@ -71,7 +72,10 @@ class AssetController extends BaseController
 
         $this->response->body = $this->rewrite(file_get_contents($asset_file));
 
-        $this->response->add_header('Last-Modified', gmstrftime('%a, %d %b %Y %H:%M:%S %Z', filemtime($asset_file)));
+        $this->response->add_header(
+            Headers::LAST_MODIFIED,
+            gmstrftime('%a, %d %b %Y %H:%M:%S %Z', filemtime($asset_file))
+        );
 
         $this->render(null);
     }
@@ -94,7 +98,7 @@ class AssetController extends BaseController
             $this->response->body .= $this->rewrite(file_get_contents($asset_file));
         }
 
-        $this->response->add_header('Last-Modified', gmstrftime('%a, %d %b %Y %H:%M:%S %Z', $mtime));
+        $this->response->add_header(Headers::LAST_MODIFIED, gmstrftime('%a, %d %b %Y %H:%M:%S %Z', $mtime));
 
         $this->render(null);
     }
@@ -126,11 +130,11 @@ class AssetController extends BaseController
      */
     protected function send_cache_headers()
     {
-        $this->response->add_header('Content-Type', $this->mimetype);
-        $this->response->add_header('Cache-Control', 'max-age=86400');
-        $this->response->add_header('Pragma', 'max-age=86400');
-        $this->response->add_header('Date', gmstrftime('%a, %d %b %Y %H:%M:%S %Z'));
-        $this->response->add_header('Expires', gmstrftime('%a, %d %b %Y %H:%M:%S %Z', time() + 86400));
+        $this->response->add_header(Headers::CONTENT_TYPE, $this->mimetype);
+        $this->response->add_header(Headers::CACHE_CONTROL, 'max-age=86400');
+        $this->response->add_header(Headers::PRAGMA, 'max-age=86400');
+        $this->response->add_header(Headers::DATE, gmstrftime('%a, %d %b %Y %H:%M:%S %Z'));
+        $this->response->add_header(Headers::EXPIRES, gmstrftime('%a, %d %b %Y %H:%M:%S %Z', time() + 86400));
     }
 
     /**
