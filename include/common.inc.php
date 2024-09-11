@@ -240,6 +240,23 @@ function get_safe_path($unsafe_path, $base_path, $replacement)
     return preg_replace('/' . addcslashes(realpath($base_path), '/') . '/', h($replacement), $unsafe_path);
 }
 
+function vscode_linkify($path)
+{
+    return sprintf('vscode://file/%s', $path);
+}
+
+function sanitize_stacktrace($stacktrace, $base_path, $replacement)
+{
+    return preg_replace_callback(
+        '/(' . addcslashes(realpath($base_path), '/') . '[^\']*)\'/',
+        function ($matches) use ($base_path, $replacement) {
+            $path = $matches[1];
+            return a(get_safe_path($path, $base_path, $replacement), ['href' => vscode_linkify($path)]) . '\'';
+        },
+        $stacktrace
+    );
+}
+
 // Prevents a conflict with illuminate/collections/helpers:last()
 if (!function_exists('last')) {
     /**

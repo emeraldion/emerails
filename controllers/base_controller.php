@@ -1527,7 +1527,7 @@ class BaseController
                                 sprintf(
                                     l('base-partfile-legend-@1'),
                                     a($this->get_safe_filename($partfile), [
-                                        'href' => sprintf('vscode://file/%s', $partfile)
+                                        'href' => vscode_linkify($partfile)
                                     ])
                                 ),
                                 [
@@ -1586,6 +1586,16 @@ class BaseController
     }
 
     /**
+     * @fn get_safe_stacktrace($stacktrace)
+     * @short Strips sensitive information from a stacktrace
+     * @param stacktrace The stacktrace to sanitize
+     */
+    protected function get_safe_stacktrace($stacktrace)
+    {
+        return sanitize_stacktrace($stacktrace, $this->base_path, '<PROJECT_ROOT>');
+    }
+
+    /**
      * Miscellaneous
      */
 
@@ -1624,6 +1634,10 @@ class BaseController
      */
     protected function handle_exception(Throwable $t)
     {
+        $_SESSION['errno'] = $t->getCode();
+        $_SESSION['errstr'] = $t->getMessage();
+        $_SESSION['error_message'] = $t->getMessage();
+        $_SESSION['debug_stacktrace'] = $this->get_safe_stacktrace(var_export(first(debug_backtrace()), true));
     }
 
     /**

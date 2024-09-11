@@ -24,6 +24,9 @@ array(
     'error-_418-title' => "418 - I'm a teapot",
 
     'error-_500-blurb' => 'Uh-oh! The server encountered an error while processing the request.',
+    'error-_500-error-message-heading' => 'Error message',
+    'error-_500-error-message-stacktrace-copy-button-label' => 'Copy',
+    'error-_500-error-message-stacktrace-heading' => 'Stacktrace',
     'error-_500-heading' => '500 - Internal Server Error',
     'error-_500-title' => '500 - Internal Server Error',
 

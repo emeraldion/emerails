@@ -10,8 +10,21 @@
  * @format
  */
 
+:root {
+  --bg-color: #fff;
+  --bg-color-alt: #444;
+  --border-color: #eee;
+  --border-radius: 4px;
+  --heading-color: #333;
+  --text-color: #000;
+  --text-color-alt: #fff;
+  --link-color: #090;
+  --link-color-active: #f90;
+}
+
 html {
-  background: #fff url('/assets/images/gradient_azure.png') repeat-x 0 0;
+  background: var(--bg-color) url('/assets/images/gradient_azure.png') repeat-x 0 0;
+  color: var(--text-color);
   height: 100%;
   margin: 0;
   padding: 0;
@@ -29,8 +42,8 @@ body {
   width: 800px;
 }
 h1 {
-  border-bottom: 1px solid #eee;
-  color: #333;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--heading-color);
   padding-bottom: 0.25em;
 }
 #footer {
@@ -39,19 +52,40 @@ h1 {
 }
 a:link,
 a:visited {
-  color: #090;
+  color: var(--link-color);
 }
 a:hover,
 a:active {
-  color: #f90;
+  color: var(--link-color-active);
 }
 
 fieldset.debug {
-  border: 2px dashed #ccc;
+  border: 2px dashed var(--border-color);
   border-radius: 4px;
 }
 
 legend.debug {
-  color: #444;
+  color: var(--heading-color);
   font-size: 0.8rem;
+}
+.error-message {
+  background-color: var(--bg-color-alt);
+  border-radius: var(--border-radius);
+  color: var(--text-color-alt);
+  padding: 0;
+  position: relative;
+}
+.error-message pre {
+  margin: 0;
+  max-height: 50vh;
+  overflow-y: scroll;
+  padding: 20px;
+  white-space: pre-wrap;
+}
+.error-actions {
+  bottom: 10px;
+  display: flex;
+  justify-content: flex-end;
+  position: absolute;
+  right: 10px;
 }
