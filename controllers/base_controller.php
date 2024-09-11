@@ -1338,6 +1338,7 @@ class BaseController
                 try {
                     $this->invoke_action();
                 } catch (Throwable $t) {
+                    $this->handle_exception($t);
                     $this->send_error(500);
                 }
             } else {
@@ -1615,6 +1616,14 @@ class BaseController
     {
         ob_end_flush();
         exit();
+    }
+
+    /**
+     * @fn handle_exception($t)
+     * @short Offers subclassers a hook to handle or log exceptions
+     */
+    protected function handle_exception(Throwable $t)
+    {
     }
 
     /**
