@@ -237,7 +237,7 @@ function first(array $array)
  */
 function get_safe_path($unsafe_path, $base_path, $replacement)
 {
-    return preg_replace('/' . addcslashes(realpath($base_path), '/') . '/', h($replacement), realpath($unsafe_path));
+    return preg_replace('/' . addcslashes(realpath($base_path), '/') . '/', h($replacement), $unsafe_path);
 }
 
 // Prevents a conflict with illuminate/collections/helpers:last()
