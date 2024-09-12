@@ -312,11 +312,12 @@ abstract class Country
     const FLAG_GERMANY = '🇩🇪';
     const FLAG_GEORGIA = '🇬🇪';
 
+    const FLAG_HONDURAS = '🇭🇳';
     const FLAG_HONG_KONG = '🇭🇰';
+    const FLAG_HUNGARY = '🇭🇺';
 
     const FLAG_ICELAND = '🇮🇸';
     const FLAG_IRELAND = '🇮🇪';
-
     const FLAG_ISRAEL = '🇮🇱';
     const FLAG_ITALY = '🇮🇹';
 
@@ -378,7 +379,9 @@ abstract class Country
         self::GERMANY => self::FLAG_GERMANY,
         self::GEORGIA => self::FLAG_GEORGIA,
 
+        self::HONDURAS => self::FLAG_HONDURAS,
         self::HONG_KONG => self::FLAG_HONG_KONG,
+        self::HUNGARY => self::FLAG_HUNGARY,
 
         self::ICELAND => self::FLAG_ICELAND,
         self::IRELAND => self::FLAG_IRELAND,
