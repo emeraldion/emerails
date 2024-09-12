@@ -291,13 +291,16 @@ abstract class Country
         self::ZIMBABWE
     ];
 
-    const FLAG_AZERBAIJAN = '🇦🇿';
+    const FLAG_ALBANIA = '🇦🇱';
+    const FLAG_AUSTRALIA = '🇦🇺';
     const FLAG_AUSTRIA = '🇦🇹';
+    const FLAG_AZERBAIJAN = '🇦🇿';
 
     const FLAG_BELARUS = '🇧🇾';
     const FLAG_BELGIUM = '🇧🇪';
 
     const FLAG_CHINA = '🇨🇳';
+    const FLAG_CZECH_REPUBLIC = '🇨🇿';
 
     const FLAG_DENMARK = '🇩🇰';
 
@@ -354,13 +357,16 @@ abstract class Country
     const FLAG_ZIMBABWE = '🇿🇼';
 
     const FLAGS = [
-        self::AZERBAIJAN => self::FLAG_AZERBAIJAN,
+        self::ALBANIA => self::FLAG_ALBANIA,
+        self::AUSTRALIA => self::FLAG_AUSTRALIA,
         self::AUSTRIA => self::FLAG_AUSTRIA,
+        self::AZERBAIJAN => self::FLAG_AZERBAIJAN,
 
         self::BELARUS => self::FLAG_BELARUS,
         self::BELGIUM => self::FLAG_BELGIUM,
 
         self::CHINA => self::FLAG_CHINA,
+        self::CZECH_REPUBLIC => self::FLAG_CZECH_REPUBLIC,
 
         self::DENMARK => self::FLAG_DENMARK,
 
