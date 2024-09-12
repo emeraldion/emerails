@@ -1667,6 +1667,7 @@ class BaseController
      */
     public function index()
     {
+        $this->set_title(l('base-index-title'));
         $this->render(['layout' => 'default']);
     }
 

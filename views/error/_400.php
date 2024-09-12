@@ -10,8 +10,7 @@
  *
  * @format
  */
-
-$this->set_title(l('error-_400-title')); ?>
+?>
 <h1><?php print l('error-_400-heading'); ?></h1>
 <p>
 	<?php print h(l('error-_400-blurb')); ?>

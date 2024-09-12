@@ -99,6 +99,7 @@ class ErrorController extends BaseController
      */
     private function error()
     {
+        $this->set_title(l(sprintf('error-%s-title', $this->action)));
         $this->render(['layout' => 'default']);
     }
 }

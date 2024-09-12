@@ -10,8 +10,7 @@
  *
  * @format
  */
-
-$this->set_title(l('base-index-title')); ?>
+?>
 <h1><?php print l('base-index-heading'); ?></h1>
 <p>
 	<?php print l('base-index-para-1'); ?>

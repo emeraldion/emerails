@@ -10,11 +10,8 @@
  *
  * @format
  */
-
-$this->set_title(l('error-_418-title')); ?>
+?>
 <h1><?php print l('error-_418-heading'); ?></h1>
 <p>
-    <?php print h(
-        l('error-_418-blurb')
-    ); ?>
+    <?php print h(l('error-_418-blurb')); ?>
 </p>

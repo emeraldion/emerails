@@ -10,14 +10,8 @@
  *
  * @format
  */
-
-$this->set_title(l('error-_404-title')); ?>
+?>
 <h1><?php print l('error-_404-heading'); ?></h1>
 <p>
-    <?php print h(
-        sprintf(
-            l('error-_404-blurb'),
-            $_SERVER['REDIRECT_URL']
-        )
-    ); ?>
+    <?php print h(sprintf(l('error-_404-blurb'), $_SERVER['REDIRECT_URL'])); ?>
 </p>
