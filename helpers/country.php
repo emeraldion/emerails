@@ -293,80 +293,125 @@ abstract class Country
 
     const FLAG_AZERBAIJAN = '🇦🇿';
     const FLAG_AUSTRIA = '🇦🇹';
+
+    const FLAG_BELARUS = '🇧🇾';
     const FLAG_BELGIUM = '🇧🇪';
+
     const FLAG_CHINA = '🇨🇳';
+
     const FLAG_DENMARK = '🇩🇰';
+
     const FLAG_ESTONIA = '🇪🇪';
+
     const FLAG_FINLAND = '🇫🇮';
     const FLAG_FRANCE = '🇫🇷';
+
     const FLAG_GERMANY = '🇩🇪';
     const FLAG_GEORGIA = '🇬🇪';
+
     const FLAG_HONG_KONG = '🇭🇰';
+
     const FLAG_ICELAND = '🇮🇸';
     const FLAG_IRELAND = '🇮🇪';
+
     const FLAG_ISRAEL = '🇮🇱';
     const FLAG_ITALY = '🇮🇹';
+
     const FLAG_JAPAN = '🇯🇵';
+
     const FLAG_KAZAKHSTAN = '🇰🇿';
     const FLAG_KENYA = '🇰🇪';
+
+    const FLAG_LATVIA = '🇱🇻';
+    const FLAG_LITHUANIA = '🇱🇹';
+
     const FLAG_MALTA = '🇲🇹';
     const FLAG_MOROCCO = '🇲🇦';
+
     const FLAG_NETHERLANDS = '🇳🇱';
     const FLAG_NORWAY = '🇳🇴';
+
     const FLAG_POLAND = '🇵🇱';
     const FLAG_PORTUGAL = '🇵🇹';
+
     const FLAG_ROMANIA = '🇷🇴';
     const FLAG_RUSSIA = '🇷🇺';
+
     const FLAG_SINGAPORE = '🇸🇬';
     const FLAG_SOUTH_KOREA = '🇰🇷';
     const FLAG_SPAIN = '🇪🇸';
     const FLAG_SWEDEN = '🇸🇪';
     const FLAG_SWITZERLAND = '🇨🇭';
+
     const FLAG_TAIWAN = '🇹🇼';
+
     const FLAG_UKRAINE = '🇺🇦';
     const FLAG_UNITED_ARAB_EMIRATES = '🇦🇪';
     const FLAG_UNITED_KINGDOM = '🇬🇧';
     const FLAG_UNITED_STATES = '🇺🇸';
+
     const FLAG_ZAMBIA = '🇿🇲';
     const FLAG_ZIMBABWE = '🇿🇼';
 
     const FLAGS = [
         self::AZERBAIJAN => self::FLAG_AZERBAIJAN,
         self::AUSTRIA => self::FLAG_AUSTRIA,
+
+        self::BELARUS => self::FLAG_BELARUS,
         self::BELGIUM => self::FLAG_BELGIUM,
+
         self::CHINA => self::FLAG_CHINA,
+
         self::DENMARK => self::FLAG_DENMARK,
+
         self::ESTONIA => self::FLAG_ESTONIA,
+
         self::FINLAND => self::FLAG_FINLAND,
         self::FRANCE => self::FLAG_FRANCE,
+
         self::GERMANY => self::FLAG_GERMANY,
         self::GEORGIA => self::FLAG_GEORGIA,
+
         self::HONG_KONG => self::FLAG_HONG_KONG,
+
         self::ICELAND => self::FLAG_ICELAND,
         self::IRELAND => self::FLAG_IRELAND,
         self::ISRAEL => self::FLAG_ISRAEL,
         self::ITALY => self::FLAG_ITALY,
+
         self::JAPAN => self::FLAG_JAPAN,
+
         self::KAZAKHSTAN => self::FLAG_KAZAKHSTAN,
         self::KENYA => self::FLAG_KENYA,
+
+        self::LATVIA => self::FLAG_LATVIA,
+        self::LITHUANIA => self::FLAG_LITHUANIA,
+
         self::MALTA => self::FLAG_MALTA,
         self::MOROCCO => self::FLAG_MOROCCO,
+
         self::NETHERLANDS => self::FLAG_NETHERLANDS,
         self::NORWAY => self::FLAG_NORWAY,
+
         self::POLAND => self::FLAG_POLAND,
         self::PORTUGAL => self::FLAG_PORTUGAL,
+
         self::ROMANIA => self::FLAG_ROMANIA,
         self::RUSSIA => self::FLAG_RUSSIA,
+
         self::SINGAPORE => self::FLAG_SINGAPORE,
         self::SOUTH_KOREA => self::FLAG_SOUTH_KOREA,
         self::SPAIN => self::FLAG_SPAIN,
         self::SWEDEN => self::FLAG_SWEDEN,
         self::SWITZERLAND => self::FLAG_SWITZERLAND,
+
         self::TAIWAN => self::FLAG_TAIWAN,
+
         self::UKRAINE => self::FLAG_UKRAINE,
         self::UNITED_ARAB_EMIRATES => self::FLAG_UNITED_ARAB_EMIRATES,
         self::UNITED_KINGDOM => self::FLAG_UNITED_KINGDOM,
         self::UNITED_STATES => self::FLAG_UNITED_STATES,
+
         self::ZAMBIA => self::FLAG_ZAMBIA,
         self::ZIMBABWE => self::FLAG_ZIMBABWE
     ];
