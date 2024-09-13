@@ -248,10 +248,10 @@ function vscode_linkify($path)
 function sanitize_stacktrace($stacktrace, $base_path, $replacement)
 {
     return preg_replace_callback(
-        '/(' . addcslashes(realpath($base_path), '/') . '[^\']*)\'/',
+        '/(' . addcslashes(realpath($base_path), '/') . '[^\'\(]*)(\'|\()/',
         function ($matches) use ($base_path, $replacement) {
-            $path = $matches[1];
-            return a(get_safe_path($path, $base_path, $replacement), ['href' => vscode_linkify($path)]) . '\'';
+            [, $path, $terminator] = $matches;
+            return a(get_safe_path($path, $base_path, $replacement), ['href' => vscode_linkify($path)]) . $terminator;
         },
         $stacktrace
     );
