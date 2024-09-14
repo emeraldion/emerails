@@ -298,12 +298,17 @@ abstract class Country
 
     const FLAG_BELARUS = '🇧🇾';
     const FLAG_BELGIUM = '🇧🇪';
+    const FLAG_BRAZIL = '🇧🇷';
 
     const FLAG_CHINA = '🇨🇳';
+    const FLAG_COLOMBIA = '🇨🇴';
+    const FLAG_COSTA_RICA = '🇨🇷';
     const FLAG_CZECH_REPUBLIC = '🇨🇿';
 
     const FLAG_DENMARK = '🇩🇰';
 
+    const FLAG_ECUADOR = '🇪🇨';
+    const FLAG_EL_SALVADOR = '🇸🇻';
     const FLAG_ESTONIA = '🇪🇪';
 
     const FLAG_FINLAND = '🇫🇮';
@@ -312,6 +317,7 @@ abstract class Country
     const FLAG_GEORGIA = '🇬🇪';
     const FLAG_GERMANY = '🇩🇪';
     const FLAG_GREECE = '🇬🇷';
+    const FLAG_GUATEMALA = '🇬🇹';
 
     const FLAG_HONDURAS = '🇭🇳';
     const FLAG_HONG_KONG = '🇭🇰';
@@ -367,12 +373,17 @@ abstract class Country
 
         self::BELARUS => self::FLAG_BELARUS,
         self::BELGIUM => self::FLAG_BELGIUM,
+        self::BRAZIL => self::FLAG_BRAZIL,
 
         self::CHINA => self::FLAG_CHINA,
+        self::COLOMBIA => self::FLAG_COLOMBIA,
+        self::COSTA_RICA => self::FLAG_COSTA_RICA,
         self::CZECH_REPUBLIC => self::FLAG_CZECH_REPUBLIC,
 
         self::DENMARK => self::FLAG_DENMARK,
 
+        self::ECUADOR => self::FLAG_ECUADOR,
+        self::EL_SALVADOR => self::FLAG_EL_SALVADOR,
         self::ESTONIA => self::FLAG_ESTONIA,
 
         self::FINLAND => self::FLAG_FINLAND,
@@ -381,6 +392,7 @@ abstract class Country
         self::GEORGIA => self::FLAG_GEORGIA,
         self::GERMANY => self::FLAG_GERMANY,
         self::GREECE => self::FLAG_GREECE,
+        self::GUATEMALA => self::FLAG_GUATEMALA,
 
         self::HONDURAS => self::FLAG_HONDURAS,
         self::HONG_KONG => self::FLAG_HONG_KONG,
