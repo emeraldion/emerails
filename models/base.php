@@ -971,6 +971,16 @@ abstract class ActiveRecord
     }
 
     /**
+     * @fn ignore
+     * @short Convenience method to set the <code>_ignore</code> flag in a streaming style
+     */
+    public function ignore(): self
+    {
+        $this->_ignore = true;
+        return $this;
+    }
+
+    /**
      *  @fn save
      *  @short Requests the receiver to save its data in the bound table.
      *  @details This method has two distinct effects. If called on an object fetched
