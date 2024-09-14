@@ -342,6 +342,7 @@ abstract class Country
     const FLAG_NETHERLANDS = '🇳🇱';
     const FLAG_NORWAY = '🇳🇴';
 
+    const FLAG_PERU = '🇵🇪';
     const FLAG_POLAND = '🇵🇱';
     const FLAG_PORTUGAL = '🇵🇹';
 
@@ -417,6 +418,7 @@ abstract class Country
         self::NETHERLANDS => self::FLAG_NETHERLANDS,
         self::NORWAY => self::FLAG_NORWAY,
 
+        self::PERU => self::FLAG_PERU,
         self::POLAND => self::FLAG_POLAND,
         self::PORTUGAL => self::FLAG_PORTUGAL,
 
