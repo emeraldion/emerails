@@ -94,6 +94,15 @@ class ErrorController extends BaseController
     }
 
     /**
+     *	@fn _503
+     *	@short Handles 503 Service Unavailable HTTP errors.
+     */
+    public function _503()
+    {
+        $this->error();
+    }
+
+    /**
      *	@fn error
      *	@short Private common error handler.
      */

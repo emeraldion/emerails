@@ -33,4 +33,8 @@ array(
     'error-_501-blurb' => 'Blimey! The server does not recognize the request method, or it cannot fulfil the request.',
     'error-_501-heading' => '501 - Not Implemented',
     'error-_501-title' => '501 - Not Implemented',
+
+    'error-_503-blurb' => 'The server is down for maintenance or overloaded. Please try again later.',
+    'error-_503-heading' => '503 - Service Unavailable',
+    'error-_503-title' => '503 - Service Unavailable',
 );
