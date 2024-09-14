@@ -535,6 +535,16 @@ class RelationshipInstance
         return null;
     }
 
+    /**
+     * @fn ignore
+     * @short Convenience method to set the <code>_ignore</code> flag in a streaming style
+     */
+    public function ignore(): self
+    {
+        $this->_ignore = true;
+        return $this;
+    }
+
     public function save()
     {
         $conn = Db::get_connection();
