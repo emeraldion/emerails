@@ -153,7 +153,7 @@ abstract class Country
     const ZAMBIA = 'ZM';
     const ZIMBABWE = 'ZW';
 
-    const COUNTRIES = [
+    const ALL = [
         self::ALBANIA,
         self::ALGERIA,
         self::ARGENTINA,
@@ -450,7 +450,7 @@ abstract class Country
     public static function for(string $country_code): ?string
     {
         $cc = mb_strtoupper($country_code);
-        if (in_array($cc, self::COUNTRIES)) {
+        if (in_array($cc, self::ALL)) {
             return $cc;
         }
         return null;
