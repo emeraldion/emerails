@@ -464,4 +464,16 @@ abstract class Country
         }
         return null;
     }
+
+    public static function name(string $country): string
+    {
+        return l(sprintf('country-name-%s', strtolower($country)));
+    }
+
+    public static function name_with_flag(string $country): ?string
+    {
+        $name = self::name($country);
+        $flag = self::flag($country);
+        return $flag ? sprintf('%s %s', $flag, $name) : $name;
+    }
 }
