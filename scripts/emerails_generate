@@ -23,16 +23,17 @@ class EmerailsGenerate extends ScriptCommand
     protected $name = 'EmeRails Generator Utility';
     protected $version = 'v1.1';
 
-    const OPT_DRY_RUN = 'dry-run';
-    const OPT_VERBOSE = 'verbose';
-    const OPT_ACTIONS = 'actions';
-    const OPT_FIELDS = 'fields';
-    const OPT_ROOT_DIR = 'root-dir';
+    const OPTION_DRY_RUN = 'dry-run';
+    const OPTION_VERBOSE = 'verbose';
+    const OPTION_ACTIONS = 'actions';
+    const OPTION_FIELDS = 'fields';
+    const OPTION_ROOT_DIR = 'root-dir';
+    const OPTION_SKIP_VIEWS = 'skip-views';
 
-    const OPT_HAS_ONE = 'has-one';
-    const OPT_HAS_MANY = 'has-many';
-    const OPT_HAS_AND_BELONGS_TO_MANY = 'has-and-belongs-to-many';
-    const OPT_BELONGS_TO = 'belongs-to';
+    const OPTION_HAS_ONE = 'has-one';
+    const OPTION_HAS_MANY = 'has-many';
+    const OPTION_HAS_AND_BELONGS_TO_MANY = 'has-and-belongs-to-many';
+    const OPTION_BELONGS_TO = 'belongs-to';
 
     const COMMAND_CREATE = 'create';
     const COMMAND_MODEL = 'model';
@@ -49,22 +50,29 @@ class EmerailsGenerate extends ScriptCommand
         $options->setHelp('EmeRails script to generate controllers, models and views');
 
         // General options
-        $options->registerOption(self::OPT_VERBOSE, 'Print additional messages');
-        $options->registerOption(self::OPT_DRY_RUN, 'Do not commit changes');
+        $options->registerOption(self::OPTION_VERBOSE, 'Print additional messages');
+        $options->registerOption(self::OPTION_DRY_RUN, 'Do not commit changes');
 
         // Create command
         $options->registerCommand(self::COMMAND_CREATE, 'Create an EmeRails app');
-        $options->registerOption(self::OPT_ROOT_DIR, 'Root directory of the app', 'r', 'dir', 'create');
+        $options->registerOption(self::OPTION_ROOT_DIR, 'Root directory of the app', 'r', 'dir', 'create');
 
         // Controller command
         $options->registerCommand(self::COMMAND_CONTROLLER, 'Manage controllers');
         // Controller command options
         $options->registerArgument(self::ARGUMENT_CONTROLLER, 'Name of the controller', true, self::COMMAND_CONTROLLER);
         $options->registerOption(
-            self::OPT_ACTIONS,
+            self::OPTION_ACTIONS,
             'Action methods, comma separated',
             'a',
             'action1,action2,...',
+            self::COMMAND_CONTROLLER
+        );
+        $options->registerOption(
+            self::OPTION_SKIP_VIEWS,
+            'Skip creation of view partfiles',
+            'V',
+            false,
             self::COMMAND_CONTROLLER
         );
 
@@ -73,7 +81,7 @@ class EmerailsGenerate extends ScriptCommand
         // Model command options
         $options->registerArgument(self::ARGUMENT_MODEL, 'Name of the model', true, self::COMMAND_MODEL);
         $options->registerOption(
-            self::OPT_FIELDS,
+            self::OPTION_FIELDS,
             'Fields of the model, with types',
             'f',
             'field1:type1,field2:type2,...',
@@ -90,35 +98,35 @@ class EmerailsGenerate extends ScriptCommand
             self::COMMAND_RELATIONSHIP
         );
         $options->registerOption(
-            self::OPT_BELONGS_TO,
+            self::OPTION_BELONGS_TO,
             'Name of the parent model in a one-to-one relationship with the first',
             null,
             'parent-model',
             self::COMMAND_RELATIONSHIP
         );
         $options->registerOption(
-            self::OPT_HAS_ONE,
+            self::OPTION_HAS_ONE,
             'Name of the child model in a one-to-one relationship with the first',
             null,
             'child-model',
             self::COMMAND_RELATIONSHIP
         );
         $options->registerOption(
-            self::OPT_HAS_MANY,
+            self::OPTION_HAS_MANY,
             'Name of the child model in a one-to-many relationship with the first',
             null,
             'child-model',
             self::COMMAND_RELATIONSHIP
         );
         $options->registerOption(
-            self::OPT_HAS_AND_BELONGS_TO_MANY,
+            self::OPTION_HAS_AND_BELONGS_TO_MANY,
             'Name of the peer model in a many-to-many relationship with the first',
             null,
             'peer-model',
             self::COMMAND_RELATIONSHIP
         );
         $options->registerOption(
-            self::OPT_FIELDS,
+            self::OPTION_FIELDS,
             'Fields of the relationship, with types',
             'f',
             'field1:type1,field2:type2,...',
@@ -138,8 +146,8 @@ class EmerailsGenerate extends ScriptCommand
 
     protected function main(Options $options)
     {
-        $dry_run = $options->getOpt(self::OPT_DRY_RUN);
-        $verbose = $options->getOpt(self::OPT_VERBOSE);
+        $dry_run = $options->getOpt(self::OPTION_DRY_RUN);
+        $verbose = $options->getOpt(self::OPTION_VERBOSE);
 
         // This path is relative to the Composer bin directory if available
         $basedir = sprintf('%s/../..', $GLOBALS['_composer_bin_dir'] ?? __DIR__ . '/../vendor/bin');
@@ -147,47 +155,15 @@ class EmerailsGenerate extends ScriptCommand
         switch ($options->getCmd()) {
             case self::COMMAND_CREATE:
                 // This command can operate on a different root directory
-                $basedir = $options->getOpt(self::OPT_ROOT_DIR) ?: $basedir;
+                $basedir = $options->getOpt(self::OPTION_ROOT_DIR) ?: $basedir;
                 if (!file_exists($basedir)) {
                     mkdir($basedir, 0755, true);
                 }
 
                 print "\tcreating an EmeRails app at $basedir\n";
-
-                $success =
-                    // Copy the .htaccess file
-                    copy(__DIR__ . '/../.htaccess.template', $basedir . '/.htaccess') &&
-                    // Copy the router.php file
-                    copy(__DIR__ . '/../router.template.php', $basedir . '/router.php') &&
-                    // Make the assets directory
-                    $this->create_dir($basedir . '/assets') &&
-                    // Make the config directory
-                    $this->create_dir($basedir . '/config') &&
-                    // Copy db.conf.php file
-                    copy(__DIR__ . '/../config/db.conf.template.php', $basedir . '/config/db.conf.php') &&
-                    // Copy emerails.conf.php file
-                    copy(__DIR__ . '/../config/emerails.conf.template.php', $basedir . '/config/emerails.conf.php') &&
-                    // Make the controllers directory
-                    $this->create_dir($basedir . '/controllers') &&
-                    // Make the models directory
-                    $this->create_dir($basedir . '/models') &&
-                    // Make the helpers directory
-                    $this->create_dir($basedir . '/helpers') &&
-                    copy(
-                        __DIR__ . '/../helpers/application_helper.template.php',
-                        $basedir . '/helpers/application_helper.php'
-                    ) &&
-                    // Make the views directory
-                    $this->create_dir($basedir . '/views') &&
-                    // Make the views/layouts directory
-                    $this->create_dir($basedir . '/views/layouts') &&
-                    // default_layout.php
-                    copy(
-                        __DIR__ . '/../views/layouts/default_layout.template.php',
-                        $basedir . '/views/layouts/default_layout.php'
-                    );
-
-                $this->create_or_update_controller($basedir, 'home');
+                if ($this->create_app($options, $basedir)) {
+                    $this->create_or_update_controller($options, $basedir, 'home');
+                }
 
                 break;
 
@@ -199,55 +175,13 @@ class EmerailsGenerate extends ScriptCommand
                 // Name of the controller is an argument
                 $controller = strtolower(first($options->getArgs()));
                 // Optional actions from options
-                $actions = explode(',', $options->getOpt(self::OPT_ACTIONS));
+                $actions = explode(',', $options->getOpt(self::OPTION_ACTIONS));
                 // Create or update controller
-                $this->create_or_update_controller($basedir, $controller, $actions);
+                $this->create_or_update_controller($options, $basedir, $controller, $actions);
                 break;
 
             case self::COMMAND_MODEL:
-                // Ensure models directory exists
-                $dir = sprintf('%s/models', $basedir);
-                $this->create_dir($dir);
-
-                $model_class = joined_lower_to_camel_case(first($options->getArgs()));
-                $model_table = class_name_to_table_name($model_class);
-                $model = singularize($model_table);
-
-                print "\tcreating models/$model.php\n";
-
-                $model_code = <<<EOT
-                <?php
-                /**
-                 * @format
-                 */
-
-                use Emeraldion\EmeRails\Models\ActiveRecord;
-
-                /**
-                 * @class {$model_class}
-                 * @short Edit this model's short description
-                 * @details Edit this model's detailed description
-                 */
-                class {$model_class} extends ActiveRecord
-                {
-                    // TODO: add your code here
-                }
-
-
-                EOT;
-
-                file_put_contents(sprintf('%s/%s.php', $dir, $model), $model_code);
-
-                $fields = [];
-                if ($options->getOpt(self::OPT_FIELDS)) {
-                    $fields_opt = explode(',', $options->getOpt(self::OPT_FIELDS));
-                    for ($i = 0; $i < count($fields_opt); $i += 1) {
-                        [$name, $type] = explode(':', $fields_opt[$i]);
-                        $fields[$name] = $type;
-                    }
-                }
-
-                $this->create_model($model_table, $fields);
+                $this->model($options, $basedir);
                 break;
 
             case self::COMMAND_RELATIONSHIP:
@@ -264,17 +198,118 @@ class EmerailsGenerate extends ScriptCommand
         }
     }
 
+    protected function model(Options $options, string $basedir)
+    {
+        // Ensure models directory exists
+        $dir = sprintf('%s/models', $basedir);
+        $this->create_dir($dir);
+
+        $model_class = joined_lower_to_camel_case(first($options->getArgs()));
+        $model_table = class_name_to_table_name($model_class);
+        $model = singularize($model_table);
+
+        print "\tcreating models/$model.php\n";
+
+        $model_code = <<<EOT
+        <?php
+        /**
+         *                                   _ __
+         *   ___  ____ ___  ___  _________ _(_) /____
+         *  / _ \/ __ `__ \/ _ \/ ___/ __ `/ / / ___/
+         * /  __/ / / / / /  __/ /  / /_/ / / (__  )
+         * \___/_/ /_/ /_/\___/_/   \__,_/_/_/____/
+         *
+         * (c) Claudio Procida 2008-2024
+         *
+         * @format
+         */
+
+        use Emeraldion\EmeRails\Models\ActiveRecord;
+
+        /**
+         * @class {$model_class}
+         * @short Edit this model's short description
+         * @details Edit this model's detailed description
+         */
+        class {$model_class} extends ActiveRecord
+        {
+            // TODO: add your code here
+        }
+
+
+        EOT;
+
+        file_put_contents(sprintf('%s/%s.php', $dir, $model), $model_code);
+
+        $fields = [];
+        if ($options->getOpt(self::OPTION_FIELDS)) {
+            $fields_opt = explode(',', $options->getOpt(self::OPTION_FIELDS));
+            for ($i = 0; $i < count($fields_opt); $i += 1) {
+                [$name, $type] = explode(':', $fields_opt[$i]);
+                $fields[$name] = $type;
+            }
+        }
+
+        $this->create_model($model_table, $fields);
+    }
+
+    protected function create_app(Options $options, string $basedir): bool
+    {
+        $dry_run = $options->getOpt(self::OPTION_DRY_RUN);
+        $verbose = $options->getOpt(self::OPTION_VERBOSE);
+
+        $success =
+            // Copy the .htaccess file
+            copy(__DIR__ . '/../.htaccess.template', $basedir . '/.htaccess') &&
+            // Copy the router.php file
+            copy(__DIR__ . '/../router.template.php', $basedir . '/router.php') &&
+            // Make the assets directory
+            $this->create_dir($basedir . '/assets') &&
+            // Make the config directory
+            $this->create_dir($basedir . '/config') &&
+            // Copy db.conf.php file
+            copy(__DIR__ . '/../config/db.conf.template.php', $basedir . '/config/db.conf.php') &&
+            // Copy emerails.conf.php file
+            copy(__DIR__ . '/../config/emerails.conf.template.php', $basedir . '/config/emerails.conf.php') &&
+            // Make the controllers directory
+            $this->create_dir($basedir . '/controllers') &&
+            // Make the models directory
+            $this->create_dir($basedir . '/models') &&
+            // Make the helpers directory
+            $this->create_dir($basedir . '/helpers') &&
+            copy(
+                __DIR__ . '/../helpers/application_helper.template.php',
+                $basedir . '/helpers/application_helper.php'
+            ) &&
+            // Make the views directory
+            $this->create_dir($basedir . '/views') &&
+            // Make the views/layouts directory
+            $this->create_dir($basedir . '/views/layouts') &&
+            // default_layout.php
+            copy(
+                __DIR__ . '/../views/layouts/default_layout.template.php',
+                $basedir . '/views/layouts/default_layout.php'
+            );
+
+        return $success;
+    }
+
     protected function relationship(Options $options)
     {
-        $dry_run = $options->getOpt(self::OPT_DRY_RUN);
-        $verbose = $options->getOpt(self::OPT_VERBOSE);
+        $dry_run = $options->getOpt(self::OPTION_DRY_RUN);
+        $verbose = $options->getOpt(self::OPTION_VERBOSE);
 
         $model_class = joined_lower_to_camel_case(strtolower(first($options->getArgs())));
         $model_table = class_name_to_table_name($model_class);
         $model = singularize($model_table);
 
         $relationship_signature = array_reduce(
-            [self::OPT_HAS_ONE, self::OPT_HAS_MANY, self::OPT_HAS_AND_BELONGS_TO_MANY, self::OPT_BELONGS_TO],
+            [
+                self::OPTION_HAS_ONE,
+                self::OPTION_HAS_MANY,
+                self::OPTION_HAS_AND_BELONGS_TO_MANY,
+                self::OPTION_BELONGS_TO
+            ],
             function ($carry, $key) use ($options) {
                 $o = $options->getOpt($key);
                 if ($o) {
@@ -289,10 +324,10 @@ class EmerailsGenerate extends ScriptCommand
             throw new Exception(
                 sprintf(
                     "Only one of --%s, --%s, --%s, and --%s can be used at once, but %s were provided.\n",
-                    self::OPT_HAS_ONE,
-                    self::OPT_HAS_MANY,
-                    self::OPT_HAS_AND_BELONGS_TO_MANY,
-                    self::OPT_BELONGS_TO,
+                    self::OPTION_HAS_ONE,
+                    self::OPTION_HAS_MANY,
+                    self::OPTION_HAS_AND_BELONGS_TO_MANY,
+                    self::OPTION_BELONGS_TO,
                     implode(
                         ', ',
                         array_map(function ($key) {
@@ -311,8 +346,8 @@ class EmerailsGenerate extends ScriptCommand
             $other_model = singularize($other_model_table);
 
             switch ($cardinality) {
-                case self::OPT_HAS_ONE:
-                case self::OPT_HAS_MANY:
+                case self::OPTION_HAS_ONE:
+                case self::OPTION_HAS_MANY:
                     // Add a fk column to the other_model table
                     $model_fk_name = sprintf('%s_id', $model);
                     $conn->prepare(
@@ -327,7 +362,7 @@ class EmerailsGenerate extends ScriptCommand
                     );
                     $conn->exec_multiline();
                     break;
-                case self::OPT_HAS_AND_BELONGS_TO_MANY:
+                case self::OPTION_HAS_AND_BELONGS_TO_MANY:
                     // This is the only case where we have to create a new table
                     $model_fk_name = sprintf('%s_id', $model);
                     $other_model_fk_name = sprintf('%s_id', $other_model);
@@ -337,8 +372,8 @@ class EmerailsGenerate extends ScriptCommand
                     $relationship_table_name = implode('_', $table_names);
 
                     $fields = [];
-                    if ($options->getOpt(self::OPT_FIELDS)) {
-                        $fields_opt = explode(',', $options->getOpt(self::OPT_FIELDS));
+                    if ($options->getOpt(self::OPTION_FIELDS)) {
+                        $fields_opt = explode(',', $options->getOpt(self::OPTION_FIELDS));
                         for ($i = 0; $i < count($fields_opt); $i += 1) {
                             [$name, $type] = explode(':', $fields_opt[$i]);
                             $fields[$name] = $type;
@@ -355,7 +390,7 @@ class EmerailsGenerate extends ScriptCommand
                     );
 
                     break;
-                case self::OPT_BELONGS_TO:
+                case self::OPTION_BELONGS_TO:
                     // Add a fk column to the model table
                     $other_model_fk_name = sprintf('%s_id', $other_model);
                     $conn->prepare(
@@ -378,8 +413,8 @@ class EmerailsGenerate extends ScriptCommand
 
     protected function view(Options $options)
     {
-        $dry_run = $options->getOpt(self::OPT_DRY_RUN);
-        $verbose = $options->getOpt(self::OPT_VERBOSE);
+        $dry_run = $options->getOpt(self::OPTION_DRY_RUN);
+        $verbose = $options->getOpt(self::OPTION_VERBOSE);
 
         // TODO:
     }
@@ -494,8 +529,15 @@ class EmerailsGenerate extends ScriptCommand
         Db::close_connection($conn);
     }
 
-    protected function create_view($basedir, $controller, $action)
+    protected function create_view(Options $options, string $basedir, $controller, $action)
     {
+        $dry_run = $options->getOpt(self::OPTION_DRY_RUN);
+        $verbose = $options->getOpt(self::OPTION_VERBOSE);
+
+        if ($options->getOpt(self::OPTION_SKIP_VIEWS)) {
+            return;
+        }
+
         $dir = sprintf('%s/views/%s', $basedir, $controller);
 
         print "\tcreating views/$controller/$action.php\n";
@@ -512,8 +554,12 @@ class EmerailsGenerate extends ScriptCommand
         return false;
     }
 
-    protected function create_or_update_controller(string $basedir, string $controller, array $actions = [])
-    {
+    protected function create_or_update_controller(
+        Options $options,
+        string $basedir,
+        string $controller,
+        array $actions = []
+    ) {
         $dir = $basedir . '/controllers';
 
         $controller_class = table_name_to_class_name("{$controller}_controller");
@@ -544,7 +590,7 @@ class EmerailsGenerate extends ScriptCommand
                     continue;
                 }
 
-                $this->create_view($basedir, $controller, $action);
+                $this->create_view($options, $basedir, $controller, $action);
 
                 $updated_code .= <<<EOT
 
@@ -569,6 +615,14 @@ class EmerailsGenerate extends ScriptCommand
             $controller_code = <<<EOT
             <?php
             /**
+             *                                   _ __
+             *   ___  ____ ___  ___  _________ _(_) /____
+             *  / _ \/ __ `__ \/ _ \/ ___/ __ `/ / / ___/
+             * /  __/ / / / / /  __/ /  / /_/ / / (__  )
+             * \___/_/ /_/ /_/\___/_/   \__,_/_/_/____/
+             *
+             * (c) Claudio Procida 2008-2024
+             *
              * @format
              */
 
@@ -604,7 +658,7 @@ class EmerailsGenerate extends ScriptCommand
                 }
 
             EOT;
-            $this->create_view($basedir, $controller, 'index');
+            $this->create_view($options, $basedir, $controller, 'index');
 
             for ($i = 0; $i < count($actions); $i += 1) {
                 $action = strtolower($actions[$i]);
@@ -613,7 +667,7 @@ class EmerailsGenerate extends ScriptCommand
                     continue;
                 }
 
-                $this->create_view($basedir, $controller, $action);
+                $this->create_view($options, $basedir, $controller, $action);
 
                 $controller_code .= <<<EOT
 
