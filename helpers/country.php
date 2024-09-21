@@ -292,22 +292,34 @@ abstract class Country
     ];
 
     const FLAG_ALBANIA = '🇦🇱';
+    const FLAG_ALGERIA = '🇩🇿';
+    const FLAG_ARGENTINA = '🇦🇷';
+    const FLAG_ARMENIA = '🇦🇲';
     const FLAG_AUSTRALIA = '🇦🇺';
     const FLAG_AUSTRIA = '🇦🇹';
     const FLAG_AZERBAIJAN = '🇦🇿';
 
+    const FLAG_BAHRAIN = '🇧🇭';
+    const FLAG_BANGLADESH = '🇧🇩';
     const FLAG_BELARUS = '🇧🇾';
     const FLAG_BELGIUM = '🇧🇪';
+    const FLAG_BOLIVIA = '🇧🇴';
+    const FLAG_BOSNIA_AND_HERZEGOVINA = '🇧🇦';
     const FLAG_BRAZIL = '🇧🇷';
+    const FLAG_BRUNEI = '🇧🇳';
+    const FLAG_BULGARIA = '🇧🇬';
 
+    const FLAG_CANADA = '🇨🇦';
     const FLAG_CHINA = '🇨🇳';
     const FLAG_COLOMBIA = '🇨🇴';
     const FLAG_COSTA_RICA = '🇨🇷';
+    const FLAG_CROATIA = '🇭🇷';
     const FLAG_CZECH_REPUBLIC = '🇨🇿';
 
     const FLAG_DENMARK = '🇩🇰';
 
     const FLAG_ECUADOR = '🇪🇨';
+    const FLAG_EGYPT = '🇪🇬';
     const FLAG_EL_SALVADOR = '🇸🇻';
     const FLAG_ESTONIA = '🇪🇪';
 
@@ -324,6 +336,7 @@ abstract class Country
     const FLAG_HUNGARY = '🇭🇺';
 
     const FLAG_ICELAND = '🇮🇸';
+    const FLAG_INDIA = '🇮🇳';
     const FLAG_IRELAND = '🇮🇪';
     const FLAG_ISRAEL = '🇮🇱';
     const FLAG_ITALY = '🇮🇹';
@@ -370,22 +383,34 @@ abstract class Country
 
     const FLAGS = [
         self::ALBANIA => self::FLAG_ALBANIA,
+        self::ALGERIA => self::FLAG_ALGERIA,
+        self::ARGENTINA => self::FLAG_ARGENTINA,
+        self::ARMENIA => self::FLAG_ARMENIA,
         self::AUSTRALIA => self::FLAG_AUSTRALIA,
         self::AUSTRIA => self::FLAG_AUSTRIA,
         self::AZERBAIJAN => self::FLAG_AZERBAIJAN,
 
+        self::BAHRAIN => self::FLAG_BAHRAIN,
+        self::BANGLADESH => self::FLAG_BANGLADESH,
         self::BELARUS => self::FLAG_BELARUS,
         self::BELGIUM => self::FLAG_BELGIUM,
+        self::BOLIVIA => self::FLAG_BOLIVIA,
+        self::BOSNIA_AND_HERZEGOVINA => self::FLAG_BOSNIA_AND_HERZEGOVINA,
         self::BRAZIL => self::FLAG_BRAZIL,
+        self::BRUNEI => self::FLAG_BRUNEI,
+        self::BULGARIA => self::FLAG_BULGARIA,
 
+        self::CANADA => self::FLAG_CANADA,
         self::CHINA => self::FLAG_CHINA,
         self::COLOMBIA => self::FLAG_COLOMBIA,
         self::COSTA_RICA => self::FLAG_COSTA_RICA,
+        self::CROATIA => self::FLAG_CROATIA,
         self::CZECH_REPUBLIC => self::FLAG_CZECH_REPUBLIC,
 
         self::DENMARK => self::FLAG_DENMARK,
 
         self::ECUADOR => self::FLAG_ECUADOR,
+        self::EGYPT => self::FLAG_EGYPT,
         self::EL_SALVADOR => self::FLAG_EL_SALVADOR,
         self::ESTONIA => self::FLAG_ESTONIA,
 
@@ -402,6 +427,7 @@ abstract class Country
         self::HUNGARY => self::FLAG_HUNGARY,
 
         self::ICELAND => self::FLAG_ICELAND,
+        self::INDIA => self::FLAG_INDIA,
         self::IRELAND => self::FLAG_IRELAND,
         self::ISRAEL => self::FLAG_ISRAEL,
         self::ITALY => self::FLAG_ITALY,
