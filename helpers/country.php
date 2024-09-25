@@ -365,26 +365,48 @@ abstract class Country
     const FLAG_LITHUANIA = '🇱🇹';
     const FLAG_LUXEMBOURG = '🇱🇺';
 
+    const FLAG_MACAU = '🇲🇴';
+    const FLAG_MALAYSIA = '🇲🇾';
     const FLAG_MALTA = '🇲🇹';
+    const FLAG_MAURITIUS = '🇲🇺';
+    const FLAG_MEXICO = '🇲🇽';
+    const FLAG_MOLDOVA = '🇲🇩';
+    const FLAG_MONGOLIA = '🇲🇳';
+    const FLAG_MONTENEGRO = '🇲🇪';
     const FLAG_MOROCCO = '🇲🇦';
 
     const FLAG_NETHERLANDS = '🇳🇱';
+    const FLAG_NEW_ZEALAND = '🇳🇿';
+    const FLAG_NICARAGUA = '🇳🇮';
+    const FLAG_NIGERIA = '🇳🇬';
+    const FLAG_NORTH_KOREA = '🇰🇵';
+    const FLAG_NORTH_MACEDONIA = '🇲🇰';
     const FLAG_NORWAY = '🇳🇴';
 
+    const FLAG_PAKISTAN = '🇵🇰';
+    const FLAG_PANAMA = '🇵🇦';
+    const FLAG_PARAGUAY = '🇵🇾';
     const FLAG_PERU = '🇵🇪';
+    const FLAG_PHILIPPINES = '🇵🇭';
     const FLAG_POLAND = '🇵🇱';
     const FLAG_PORTUGAL = '🇵🇹';
 
     const FLAG_ROMANIA = '🇷🇴';
     const FLAG_RUSSIA = '🇷🇺';
 
+    const FLAG_SAUDI_ARABIA = '🇸🇦';
+    const FLAG_SENEGAL = '🇸🇳';
     const FLAG_SERBIA = '🇷🇸';
     const FLAG_SINGAPORE = '🇸🇬';
     const FLAG_SLOVAKIA = '🇸🇰';
+    const FLAG_SLOVENIA = '🇸🇮';
+    const FLAG_SOUTH_AFRICA = '🇿🇦';
     const FLAG_SOUTH_KOREA = '🇰🇷';
     const FLAG_SPAIN = '🇪🇸';
+    const FLAG_SRI_LANKA = '🇱🇰';
     const FLAG_SWEDEN = '🇸🇪';
     const FLAG_SWITZERLAND = '🇨🇭';
+    const FLAG_SYRIA = '🇸🇾';
 
     const FLAG_TAIWAN = '🇹🇼';
     const FLAG_TANZANIA = '🇹🇿';
@@ -480,26 +502,48 @@ abstract class Country
         self::LITHUANIA => self::FLAG_LITHUANIA,
         self::LUXEMBOURG => self::FLAG_LUXEMBOURG,
 
+        self::MACAU => self::FLAG_MACAU,
+        self::MALAYSIA => self::FLAG_MALAYSIA,
         self::MALTA => self::FLAG_MALTA,
+        self::MAURITIUS => self::FLAG_MAURITIUS,
+        self::MEXICO => self::FLAG_MEXICO,
+        self::MOLDOVA => self::FLAG_MOLDOVA,
+        self::MONGOLIA => self::FLAG_MONGOLIA,
+        self::MONTENEGRO => self::FLAG_MONTENEGRO,
         self::MOROCCO => self::FLAG_MOROCCO,
 
         self::NETHERLANDS => self::FLAG_NETHERLANDS,
+        self::NEW_ZEALAND => self::FLAG_NEW_ZEALAND,
+        self::NICARAGUA => self::FLAG_NICARAGUA,
+        self::NIGERIA => self::FLAG_NIGERIA,
+        self::NORTH_KOREA => self::FLAG_NORTH_KOREA,
+        self::NORTH_MACEDONIA => self::FLAG_NORTH_MACEDONIA,
         self::NORWAY => self::FLAG_NORWAY,
 
+        self::PAKISTAN => self::FLAG_PAKISTAN,
+        self::PANAMA => self::FLAG_PANAMA,
+        self::PARAGUAY => self::FLAG_PARAGUAY,
         self::PERU => self::FLAG_PERU,
+        self::PHILIPPINES => self::FLAG_PHILIPPINES,
         self::POLAND => self::FLAG_POLAND,
         self::PORTUGAL => self::FLAG_PORTUGAL,
 
         self::ROMANIA => self::FLAG_ROMANIA,
         self::RUSSIA => self::FLAG_RUSSIA,
 
+        self::SAUDI_ARABIA => self::FLAG_SAUDI_ARABIA,
+        self::SENEGAL => self::FLAG_SENEGAL,
         self::SERBIA => self::FLAG_SERBIA,
         self::SINGAPORE => self::FLAG_SINGAPORE,
         self::SLOVAKIA => self::FLAG_SLOVAKIA,
+        self::SLOVENIA => self::FLAG_SLOVENIA,
+        self::SOUTH_AFRICA => self::FLAG_SOUTH_AFRICA,
         self::SOUTH_KOREA => self::FLAG_SOUTH_KOREA,
         self::SPAIN => self::FLAG_SPAIN,
+        self::SRI_LANKA => self::FLAG_SRI_LANKA,
         self::SWEDEN => self::FLAG_SWEDEN,
         self::SWITZERLAND => self::FLAG_SWITZERLAND,
+        self::SYRIA => self::FLAG_SYRIA,
 
         self::TAIWAN => self::FLAG_TAIWAN,
         self::TANZANIA => self::FLAG_TANZANIA,
