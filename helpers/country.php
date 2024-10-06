@@ -574,11 +574,13 @@ abstract class Country
         return null;
     }
 
-    public static function flag(string $country): ?string
+    public static function flag(?string $country): ?string
     {
-        $cc = mb_strtoupper($country);
-        if (array_key_exists($cc, self::FLAGS)) {
-            return self::FLAGS[$cc];
+        if ($country) {
+            $cc = mb_strtoupper($country);
+            if (array_key_exists($cc, self::FLAGS)) {
+                return self::FLAGS[$cc];
+            }
         }
         return null;
     }
