@@ -23,6 +23,20 @@ class BaseControllerWrapper extends BaseController
     }
 }
 
+class SimpleController extends BaseController
+{
+    public $is_simple_action;
+    public $is_simple_index;
+    public $is_simple;
+
+    public function action()
+    {
+        $this->is_simple_action = $this->is('simple', 'action');
+        $this->is_simple_index = $this->is('simple', 'index');
+        $this->is_simple = $this->is('simple');
+    }
+}
+
 class BaseControllerTest extends UnitTest
 {
     public function setUp(): void
@@ -718,5 +732,19 @@ class BaseControllerTest extends UnitTest
                 'required' => true
             ]
         );
+    }
+
+    public function test_is()
+    {
+        // FIXME: Hack
+        $old_action = @$_REQUEST['action'];
+        $_REQUEST['action'] = 'action';
+        $controller = new SimpleController();
+        $controller->action();
+        $_REQUEST['action'] = $old_action;
+
+        $this->assertTrue($controller->is_simple);
+        $this->assertTrue($controller->is_simple_action);
+        $this->assertFalse($controller->is_simple_index);
     }
 }

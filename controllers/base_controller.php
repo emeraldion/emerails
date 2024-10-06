@@ -1641,6 +1641,17 @@ class BaseController
     }
 
     /**
+     * @fn is($name, $action)
+     * @short Checks if the callee is an instance of the given controller and action
+     * @param name The name of the controller
+     * @param action The action of the controller
+     */
+    public function is(string $name, ?string $action = null): bool
+    {
+        return $this->name === $name && (is_null($action) || $this->action === $action);
+    }
+
+    /**
      * Messages handling
      */
 
