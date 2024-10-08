@@ -565,6 +565,12 @@ abstract class Country
         self::ZIMBABWE => self::FLAG_ZIMBABWE
     ];
 
+    /**
+     * @fn for($country_code)
+     * @short Returns the argument if the value is one of the <tt>Country</tt> constants
+     * @param country_code The ISO 3166 country code to check
+     * @return The argument if the value is one of the <tt>Country</tt> constants
+     */
     public static function for(string $country_code): ?string
     {
         $cc = mb_strtoupper($country_code);
@@ -574,6 +580,12 @@ abstract class Country
         return null;
     }
 
+    /**
+     * @fn flag($country)
+     * @short Returns the flag of the requested country if available
+     * @param country The country as one of the <tt>Country</tt> constants
+     * @return The flag of the requested country if available
+     */
     public static function flag(?string $country): ?string
     {
         if ($country) {
@@ -585,6 +597,14 @@ abstract class Country
         return null;
     }
 
+    /**
+     * @fn name($country)
+     * @short Returns the name of the requested country
+     * @details This function assumes there is a string key <tt>'country-name-xy'</tt> where
+     * <tt>'xy'</tt> is the lowercase two letter ISO 3166 code for the country.
+     * @param country The country as one of the <tt>Country</tt> constants
+     * @return The name of the requested country
+     */
     public static function name(string $country): string
     {
         return l(sprintf('country-name-%s', strtolower($country)));
