@@ -523,6 +523,10 @@ class RelationshipInstance
         $this->validate();
     }
 
+    /**
+     * @fn of($classname)
+     * @short Returns the member of the relationship of the requested class
+     */
     public function of(string $classname)
     {
         if (get_class($this->member) == $classname) {

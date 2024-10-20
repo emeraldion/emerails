@@ -38,6 +38,8 @@ abstract class ActiveRecord
     const PARAM_STRICT = 'strict';
     const PARAM_LIMIT = 'limit';
     const PARAM_WHERE_CLAUSE = 'where_clause';
+    // key function used to index relationship pairs
+    const PARAM_KEY_FN = 'key_fn';
 
     /**
      *  @const READONLY_COLUMNS
@@ -439,8 +441,12 @@ abstract class ActiveRecord
         if (is_array($children) && count($children) > 0) {
             $dict = [];
             foreach ($children as $child) {
+                $child_key =
+                    isset($params[self::PARAM_KEY_FN]) && is_callable($params[self::PARAM_KEY_FN])
+                        ? $params[self::PARAM_KEY_FN]($child)
+                        : $child->$child_pk;
                 $child->values[camel_case_to_joined_lower(get_class($this))] = $this;
-                $dict[$child->$child_pk] = $child;
+                $dict[$child_key] = $child;
             }
             $this->values[$child_member_name] = $dict;
 
@@ -550,8 +556,14 @@ abstract class ActiveRecord
                 $peer_row[$peer_pk] = $r_row[$peer_fkey];
                 // Instantiate the peer
                 $peer = new $peerclass($peer_row);
+                // Compute the peer's key in the caller's collection
+                $peer_key =
+                    isset($params[self::PARAM_KEY_FN]) && is_callable($params[self::PARAM_KEY_FN])
+                        ? $params[self::PARAM_KEY_FN]($peer)
+                        : $peer->$peer_pk;
+
                 // Store the peer in the caller's collection
-                $this->values[$peer_member_name][$peer->$peer_pk] = $peer;
+                $this->values[$peer_member_name][$peer_key] = $peer;
                 // FIXME: this result is not reflecting the entire relationship. The peer may have more edges to
                 // the caller's class besides the caller itself. However, for convenience and performance, we only
                 // set the caller in the peer's collection.

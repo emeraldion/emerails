@@ -944,6 +944,25 @@ class ActiveRecordTest extends UnitTest
         $this->assertEquals(1, count($instance->versions));
     }
 
+    public function test_has_many_with_key_fn_param()
+    {
+        $instance = new TestWidget();
+        $ret = $instance->find_by_id(1);
+        $this->assertTrue($ret);
+        $ret = $instance->has_many(TestVersion::class, [
+            'key_fn' => function ($version) {
+                return 'v_' . $version->id;
+            }
+        ]);
+        $this->assertIsArray($ret);
+        $this->assertNotNull($instance->test_versions);
+        $this->assertEquals(4, count($instance->test_versions));
+
+        foreach ($instance->test_versions as $key => $test_version) {
+            $this->assertEquals('v_' . $test_version->id, $key);
+        }
+    }
+
     public function test_has_many_by_class_name()
     {
         $instance = new TestWidget();
@@ -1181,6 +1200,33 @@ class ActiveRecordTest extends UnitTest
                     $this->assertEquals(0, $test_group->count);
                     break;
             }
+        }
+    }
+
+    public function test_has_and_belongs_to_many_with_key_fn_param()
+    {
+        /*
+         *  +----------+----------+-------+
+         *  | model_id | group_id | count |
+         *  +----------+----------+-------+
+         *  |        2 |        1 |     3 |
+         *  |        1 |        2 |     1 |
+         *  |        2 |        2 |     0 |
+         *  +----------+----------+-------+
+         */
+        $instance = new TestModel();
+        $ret = $instance->find_by_id(1);
+        $this->assertTrue($ret);
+        $ret = $instance->has_and_belongs_to_many(TestGroup::class, [
+            'key_fn' => function ($group) {
+                return 'gid_' . $group->id;
+            }
+        ]);
+        $this->assertIsArray($ret);
+        $this->assertNotNull($instance->test_groups);
+        $this->assertEquals(1, count($instance->test_groups));
+        foreach ($instance->test_groups as $key => $test_group) {
+            $this->assertEquals('gid_' . $test_group->id, $key);
         }
     }
 
