@@ -559,7 +559,7 @@ abstract class ActiveRecord
                 // Compute the peer's key in the caller's collection
                 $peer_key =
                     isset($params[self::PARAM_KEY_FN]) && is_callable($params[self::PARAM_KEY_FN])
-                        ? $params[self::PARAM_KEY_FN]($peer)
+                        ? $params[self::PARAM_KEY_FN]($peer, $r_row)
                         : $peer->$peer_pk;
 
                 // Store the peer in the caller's collection
