@@ -33,6 +33,7 @@ abstract class ActiveRecord
     const DEFAULT_PK_COLUMN_NAME = 'id';
     const PARAM_AS = 'as';
     const PARAM_JOIN = 'join';
+    const PARAM_KEY = 'key';
     const PARAM_ORDER_BY = 'order_by';
     const PARAM_START = 'start';
     const PARAM_STRICT = 'strict';
@@ -350,8 +351,7 @@ abstract class ActiveRecord
      */
     public function belongs_to($class_or_table_name, $params = [])
     {
-        $classname = get_class($this);
-        $columns = self::_get_columns($classname);
+        $columns = $this->get_column_names();
         try {
             // Assume class name and obtain table name
             $ownerclass = $class_or_table_name;
@@ -372,7 +372,9 @@ abstract class ActiveRecord
             );
         }
         $fk = null;
-        if (in_array(table_name_to_foreign_key($table_name), $columns)) {
+        if (isset($params[self::PARAM_KEY]) && in_array($params[self::PARAM_KEY], $columns)) {
+            $fk = $this->values[$params[self::PARAM_KEY]];
+        } elseif (in_array(table_name_to_foreign_key($table_name), $columns)) {
             $fk = $this->values[table_name_to_foreign_key($table_name)];
         } elseif (in_array($owner->get_foreign_key_name(), $columns)) {
             $fk = $this->values[$owner->get_foreign_key_name()];
@@ -876,7 +878,7 @@ abstract class ActiveRecord
         $conn->exec();
         if ($conn->num_rows() > 0) {
             $classname = get_class($this);
-            $columns = self::_get_columns($classname);
+            $columns = $this->get_column_names();
             $values = $conn->fetch_assoc();
             foreach ($columns as $column) {
                 $this->values[$column] = $this->validate_field($column, $values[$column]);
@@ -1018,8 +1020,7 @@ abstract class ActiveRecord
 
         $conn = Db::get_connection();
 
-        $classname = get_class($this);
-        $columns = self::_get_columns($classname);
+        $columns = $this->get_column_names();
         $ret = false;
         $nonempty = [];
 
@@ -1146,8 +1147,7 @@ abstract class ActiveRecord
             return;
         }
 
-        $classname = get_class($this);
-        $columns = self::_get_columns($classname);
+        $columns = $this->get_column_names();
 
         foreach ($columns as $column) {
             if (
