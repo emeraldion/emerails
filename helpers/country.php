@@ -79,7 +79,7 @@ abstract class Country
     const JAPAN = 'JP';
     const JORDAN = 'JO';
 
-    const KAZAKHSTAN = 'KH';
+    const KAZAKHSTAN = 'KZ';
     const KENYA = 'KE';
     const KOSOVO = 'XK';
     const KUWAIT = 'KW';
