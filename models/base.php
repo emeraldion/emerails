@@ -271,6 +271,18 @@ abstract class ActiveRecord
      */
     public function get_primary_key()
     {
+        return $this->get_primary_key_name();
+    }
+
+    /**
+     *  @fn get_primary_key_name
+     *  @short Returns the name of the primary key for this class.
+     *  @details This method returns the name of the primary key in the table bound to this class.
+     *  By default, ActiveRecord considers as primary key a column named <tt>id</tt>. Of course you can override
+     *  this behavior by setting explicitly the value of <tt>$primary_key</tt> in the declaration of your class.
+     */
+    public function get_primary_key_name()
+    {
         // Set to primary_key member for backwards compatibility
         $ret = $this->primary_key;
         // Set to static primary_key_name member (new way)
@@ -431,12 +443,12 @@ abstract class ActiveRecord
         if (isset($params[self::PARAM_WHERE_CLAUSE])) {
             $params[
                 self::PARAM_WHERE_CLAUSE
-            ] = "({$params[self::PARAM_WHERE_CLAUSE]}) AND `{$fkey}` = '{$this->values[$this->get_primary_key()]}' ";
+            ] = "({$params[self::PARAM_WHERE_CLAUSE]}) AND `{$fkey}` = '{$this->values[$this->get_primary_key_name()]}' ";
         } else {
-            $params[self::PARAM_WHERE_CLAUSE] = "`{$fkey}` = '{$this->values[$this->get_primary_key()]}' ";
+            $params[self::PARAM_WHERE_CLAUSE] = "`{$fkey}` = '{$this->values[$this->get_primary_key_name()]}' ";
         }
         $children = $child->find_all($params);
-        $child_pk = $child->get_primary_key();
+        $child_pk = $child->get_primary_key_name();
         $child_member_name = isset($params[self::PARAM_AS])
             ? $params[self::PARAM_AS]
             : pluralize(camel_case_to_joined_lower($childclass));
@@ -492,9 +504,9 @@ abstract class ActiveRecord
             );
         }
 
-        $pkey = $this->get_primary_key();
+        $pkey = $this->get_primary_key_name();
         $fkey = $this->get_foreign_key_name();
-        $peer_pk = $peer->get_primary_key();
+        $peer_pk = $peer->get_primary_key_name();
         $peer_fkey = $peer->get_foreign_key_name();
 
         $r = Relationship::many_to_many(get_called_class(), $peerclass);
@@ -534,7 +546,7 @@ abstract class ActiveRecord
             $params[self::PARAM_START] ?? 0, // 7
             $params[self::PARAM_LIMIT] ?? 9999, // 8
             $has_join ? $joined_obj->get_table_name() : null, // 9
-            $has_join ? $joined_obj->get_primary_key() : null, // 10
+            $has_join ? $joined_obj->get_primary_key_name() : null, // 10
             $has_join ? $joined_obj->get_foreign_key_name() : null, // 11
             implode(',', $peer->get_column_names_for_query(true)), // 12
             ',' . implode(',', $r->get_column_names_for_query(true)), // 13
@@ -715,7 +727,7 @@ abstract class ActiveRecord
             $params[self::PARAM_WHERE_CLAUSE] = '1';
         }
         if (empty($params[self::PARAM_ORDER_BY])) {
-            $params[self::PARAM_ORDER_BY] = "`{$this->get_table_name()}`.`{$this->get_primary_key()}` ASC";
+            $params[self::PARAM_ORDER_BY] = "`{$this->get_table_name()}`.`{$this->get_primary_key_name()}` ASC";
         }
         if (empty($params[self::PARAM_LIMIT])) {
             $params[self::PARAM_LIMIT] = 999;
@@ -733,7 +745,7 @@ abstract class ActiveRecord
             if (
                 $joined_obj->has_column($this->get_foreign_key_name()) &&
                 // Edge case: this model's foreign key name is the joined object's primary key
-                $this->get_foreign_key_name() != $joined_obj->get_primary_key()
+                $this->get_foreign_key_name() != $joined_obj->get_primary_key_name()
             ) {
                 $query = 'SELECT {7} FROM `{1}` JOIN `{4}` ON `{1}`.`{2}` = `{4}`.`{3}`';
             } elseif ($this->has_column($joined_obj->get_foreign_key_name())) {
@@ -756,10 +768,10 @@ abstract class ActiveRecord
             $conn->prepare(
                 $query,
                 $this->get_table_name(), // 1
-                $this->get_primary_key(), // 2
+                $this->get_primary_key_name(), // 2
                 $this->get_foreign_key_name(), // 3
                 $joined_obj->get_table_name(), // 4
-                $joined_obj->get_primary_key(), // 5
+                $joined_obj->get_primary_key_name(), // 5
                 $joined_obj->get_foreign_key_name(), // 6,
                 implode(
                     ',',
@@ -936,10 +948,10 @@ abstract class ActiveRecord
             $conn->prepare(
                 $query,
                 $this->get_table_name(), // 1
-                $this->get_primary_key(), // 2
+                $this->get_primary_key_name(), // 2
                 $this->get_foreign_key_name(), // 3
                 $joined_obj->get_table_name(), // 4
-                $joined_obj->get_primary_key(), // 5
+                $joined_obj->get_primary_key_name(), // 5
                 $joined_obj->get_foreign_key_name(), // 6,
                 implode(
                     ',',
@@ -1029,7 +1041,7 @@ abstract class ActiveRecord
         for ($i = 0; $i < count($columns); $i++) {
             if (
                 // Do not set the primary key unless we're creating a new row
-                ($columns[$i] != $this->get_primary_key() || $this->_force_create) &&
+                ($columns[$i] != $this->get_primary_key_name() || $this->_force_create) &&
                 // Exclude read-only columns
                 !in_array($columns[$i], self::READONLY_COLUMNS) &&
                 // Exclude empty columns
@@ -1041,7 +1053,7 @@ abstract class ActiveRecord
             }
         }
 
-        if (!empty($this->values[$this->get_primary_key()]) && !isset($this->_force_create)) {
+        if (!empty($this->values[$this->get_primary_key_name()]) && !isset($this->_force_create)) {
             $query = 'UPDATE `{1}` SET ';
             for ($i = 0; $i < count($nonempty); $i++) {
                 $query .= "`{$nonempty[$i]}` = {$this->wrap_value_for_query(
@@ -1053,8 +1065,8 @@ abstract class ActiveRecord
                     $query .= ', ';
                 }
             }
-            $query .= " WHERE `{$this->get_primary_key()}` = '{2}' LIMIT 1";
-            $conn->prepare($query, $this->get_table_name(), $this->values[$this->get_primary_key()]);
+            $query .= " WHERE `{$this->get_primary_key_name()}` = '{2}' LIMIT 1";
+            $conn->prepare($query, $this->get_table_name(), $this->values[$this->get_primary_key_name()]);
             $conn->exec();
             $ret = true;
         } else {
@@ -1152,7 +1164,7 @@ abstract class ActiveRecord
         foreach ($columns as $column) {
             if (
                 // Do not set the primary key unless we're creating a new row
-                ($column != $this->get_primary_key() || $this->_force_create) &&
+                ($column != $this->get_primary_key_name() || $this->_force_create) &&
                 // Exclude read-only columns
                 !in_array($column, self::READONLY_COLUMNS) &&
                 // Exclude empty columns

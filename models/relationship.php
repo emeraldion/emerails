@@ -378,8 +378,8 @@ class Relationship
         }
 
         $instances = [];
-        $member_pk = first($members)->get_primary_key();
-        $other_member_pk = first($other_members)->get_primary_key();
+        $member_pk = first($members)->get_primary_key_name();
+        $other_member_pk = first($other_members)->get_primary_key_name();
         foreach ($members as $member) {
             $member_dict = array_key_exists($member->$member_pk, $params) ? $params[$member->$member_pk] : [];
             $instances[$member->$member_pk] = [];
@@ -553,10 +553,10 @@ class RelationshipInstance
     {
         $conn = Db::get_connection();
 
-        $member_pk = $this->member->get_primary_key();
+        $member_pk = $this->member->get_primary_key_name();
         $member_fk = $this->member->get_foreign_key_name();
 
-        $other_member_pk = $this->other_member->get_primary_key();
+        $other_member_pk = $this->other_member->get_primary_key_name();
         $other_member_fk = $this->other_member->get_foreign_key_name();
 
         $ret = false;
@@ -707,10 +707,10 @@ class RelationshipInstance
     {
         $conn = Db::get_connection();
 
-        $member_pk = $this->member->get_primary_key();
+        $member_pk = $this->member->get_primary_key_name();
         $member_fk = $this->member->get_foreign_key_name();
 
-        $other_member_pk = $this->other_member->get_primary_key();
+        $other_member_pk = $this->other_member->get_primary_key_name();
         $other_member_fk = $this->other_member->get_foreign_key_name();
 
         $ret = false;
