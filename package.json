@@ -6,6 +6,7 @@
     "prettier-plugin-css-order": "^2.0.1"
   },
   "scripts": {
-    "format": "prettier --write assets/styles/**/*.css controllers/**/*.php helpers/**/*.php include/**/*.php models/**/*.php scripts/**/*.php scripts/* test/**/*.php test/**/**/*.php views/**/*.php config/**/*.php public/*.php public/**/*.php router.php"
+    "format": "prettier --write assets/styles/**/*.css controllers/**/*.php helpers/**/*.php include/**/*.php models/**/*.php scripts/**/*.php scripts/* test/**/*.php test/**/**/*.php views/**/*.php config/**/*.php public/*.php public/**/*.php router.php",
+    "pin-node": "node -v > .nvmrc"
   }
 }
