@@ -35,6 +35,7 @@ abstract class Country
     const BRUNEI = 'BN';
     const BULGARIA = 'BG';
 
+    const CAPE_VERDE = 'CV';
     const CAMBODIA = 'KH';
     const CANADA = 'CA';
     const CHILE = 'CL';
@@ -172,6 +173,7 @@ abstract class Country
         self::BRUNEI,
         self::BULGARIA,
 
+        self::CAPE_VERDE,
         self::CAMBODIA,
         self::CANADA,
         self::CHILE,
@@ -309,6 +311,7 @@ abstract class Country
     const FLAG_BRUNEI = '🇧🇳';
     const FLAG_BULGARIA = '🇧🇬';
 
+    const FLAG_CAPE_VERDE = '🇨🇻';
     const FLAG_CAMBODIA = '🇰🇭';
     const FLAG_CANADA = '🇨🇦';
     const FLAG_CHILE = '🇨🇱';
@@ -446,6 +449,7 @@ abstract class Country
         self::BRUNEI => self::FLAG_BRUNEI,
         self::BULGARIA => self::FLAG_BULGARIA,
 
+        self::CAPE_VERDE => self::FLAG_CAPE_VERDE,
         self::CAMBODIA => self::FLAG_CAMBODIA,
         self::CANADA => self::FLAG_CANADA,
         self::CHILE => self::FLAG_CHILE,
