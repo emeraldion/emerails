@@ -20,9 +20,7 @@ class RelationshipTest extends UnitTest
 {
     private $models = [];
 
-    function setUp(): void
-    {
-    }
+    function setUp(): void {}
 
     function teardown(): void
     {

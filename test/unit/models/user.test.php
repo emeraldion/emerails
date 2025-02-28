@@ -30,9 +30,7 @@ class Account extends ActiveRecord
 
 class UserTest extends UnitTest
 {
-    function setUp(): void
-    {
-    }
+    function setUp(): void {}
 
     function teardown(): void
     {

@@ -18,65 +18,35 @@ use Emeraldion\EmeRails\DbAdapter;
 
 class TestAdapterBase implements DbAdapter
 {
-    public function connect()
-    {
-    }
+    public function connect() {}
 
-    public function select_db($database_name)
-    {
-    }
+    public function select_db($database_name) {}
 
-    public function close()
-    {
-    }
+    public function close() {}
 
-    public function prepare($query)
-    {
-    }
+    public function prepare($query) {}
 
-    public function exec()
-    {
-    }
+    public function exec() {}
 
-    public function insert_id()
-    {
-    }
+    public function insert_id() {}
 
-    public function exec_multiline()
-    {
-    }
+    public function exec_multiline() {}
 
-    public function escape($value)
-    {
-    }
+    public function escape($value) {}
 
-    public function result($pos = 0, $colname = null)
-    {
-    }
+    public function result($pos = 0, $colname = null) {}
 
-    public function num_rows()
-    {
-    }
+    public function num_rows() {}
 
-    public function affected_rows()
-    {
-    }
+    public function affected_rows() {}
 
-    public function fetch_assoc()
-    {
-    }
+    public function fetch_assoc() {}
 
-    public function fetch_array()
-    {
-    }
+    public function fetch_array() {}
 
-    public function free_result()
-    {
-    }
+    public function free_result() {}
 
-    public function print_query()
-    {
-    }
+    public function print_query() {}
 }
 
 class TestAdapter extends TestAdapterBase

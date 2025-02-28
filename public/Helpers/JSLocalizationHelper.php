@@ -15,6 +15,4 @@ namespace Emeraldion\EmeRails\Helpers;
 
 require_once __DIR__ . '/../../helpers/js_localization_helper.php';
 
-class JSLocalizationHelper extends \JSLocalizationHelper
-{
-}
+class JSLocalizationHelper extends \JSLocalizationHelper {}

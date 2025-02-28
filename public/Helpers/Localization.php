@@ -15,6 +15,4 @@ namespace Emeraldion\EmeRails\Helpers;
 
 require_once __DIR__ . '/../../helpers/localization.php';
 
-class Localization extends \Localization
-{
-}
+class Localization extends \Localization {}

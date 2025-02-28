@@ -15,6 +15,4 @@ namespace Emeraldion\EmeRails\Helpers;
 
 require_once __DIR__ . '/../../helpers/js_minifier.php';
 
-class JSMinifier extends \JSMinifier
-{
-}
+class JSMinifier extends \JSMinifier {}

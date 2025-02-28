@@ -28,9 +28,7 @@ class JSLocalizationHelper
      */
     private static $strings_table;
 
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 
     /**
      *	@fn set_base_dir($base_dir)

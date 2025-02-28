@@ -21,9 +21,7 @@ class JSMinifier implements Minifier
 
     private $jsshrink;
 
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 
     public static function get_instance($options = [])
     {

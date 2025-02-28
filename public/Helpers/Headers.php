@@ -15,6 +15,4 @@ namespace Emeraldion\EmeRails\Helpers;
 
 require_once __DIR__ . '/../../helpers/headers.php';
 
-class Headers extends \Headers
-{
-}
+class Headers extends \Headers {}
