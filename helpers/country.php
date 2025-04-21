@@ -465,6 +465,10 @@ abstract class Country
     const FLAG_ZAMBIA = '🇿🇲';
     const FLAG_ZIMBABWE = '🇿🇼';
 
+    // Aliases
+
+    const FLAG_CZECHIA = self::FLAG_CZECH_REPUBLIC;
+
     const FLAGS = [
         self::ALBANIA => self::FLAG_ALBANIA,
         self::ALGERIA => self::FLAG_ALGERIA,
