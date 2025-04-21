@@ -154,6 +154,10 @@ abstract class Country
     const ZAMBIA = 'ZM';
     const ZIMBABWE = 'ZW';
 
+    // Aliases
+
+    const CZECHIA = self::CZECH_REPUBLIC;
+
     const ALL_COUNTRIES = [
         self::ALBANIA,
         self::ALGERIA,
@@ -291,6 +295,37 @@ abstract class Country
 
         self::ZAMBIA,
         self::ZIMBABWE
+    ];
+
+    // Source: https://european-union.europa.eu/principles-countries-history/eu-countries_en
+    const EU_COUNTRIES = [
+        self::AUSTRIA,
+        self::BELGIUM,
+        self::BULGARIA,
+        self::CROATIA,
+        self::CYPRUS,
+        self::CZECHIA,
+        self::DENMARK,
+        self::ESTONIA,
+        self::FINLAND,
+        self::FRANCE,
+        self::GERMANY,
+        self::GREECE,
+        self::HUNGARY,
+        self::IRELAND,
+        self::ITALY,
+        self::LATVIA,
+        self::LITHUANIA,
+        self::LUXEMBOURG,
+        self::MALTA,
+        self::NETHERLANDS,
+        self::POLAND,
+        self::PORTUGAL,
+        self::ROMANIA,
+        self::SLOVAKIA,
+        self::SLOVENIA,
+        self::SPAIN,
+        self::SWEDEN
     ];
 
     const FLAG_ALBANIA = '🇦🇱';
@@ -582,6 +617,17 @@ abstract class Country
             return $cc;
         }
         return null;
+    }
+
+    /**
+     * @fn in_eu($country_code)
+     * @short Returns true if the argument is a EU country included in the <tt>EU_COUNTRIES</tt> list
+     * @param country_code The ISO 3166 country code to check
+     * @return true if the argument is a EU country included in the <tt>EU_COUNTRIES</tt> list
+     */
+    public static function in_eu(string $country_code): bool
+    {
+        return in_array($country_code, self::EU_COUNTRIES);
     }
 
     /**

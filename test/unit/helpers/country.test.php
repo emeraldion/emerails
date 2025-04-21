@@ -87,4 +87,16 @@ class CountryUnitTest extends UnitTest
         $this->assertNull(Country::flag('ZZ'));
         $this->assertNull(Country::flag('QQ'));
     }
+
+    public function test_in_eu()
+    {
+        $this->assertTrue(Country::in_eu(Country::CZECHIA));
+        $this->assertTrue(Country::in_eu(Country::CZECH_REPUBLIC));
+        $this->assertTrue(Country::in_eu(Country::ITALY));
+        $this->assertTrue(Country::in_eu(Country::NETHERLANDS));
+
+        $this->assertFalse(Country::in_eu(Country::SWITZERLAND));
+        $this->assertFalse(Country::in_eu(Country::UNITED_KINGDOM));
+        $this->assertFalse(Country::in_eu(Country::UNITED_STATES));
+    }
 }
