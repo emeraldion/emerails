@@ -631,7 +631,8 @@ abstract class Country
      */
     public static function in_eu(string $country_code): bool
     {
-        return in_array($country_code, self::EU_COUNTRIES);
+        $cc = mb_strtoupper($country_code);
+        return in_array($cc, self::EU_COUNTRIES);
     }
 
     /**
