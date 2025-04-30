@@ -308,13 +308,20 @@ function array_find(array $array, callable $fn)
 }
 
 /**
- * Ponyfill
+ * Ponyfills
  */
 if (!function_exists('str_ends_with')) {
-    function str_ends_with($haystack, $needle)
+    function str_ends_with(string $haystack, string $needle): bool
     {
-        $length = strlen($needle);
-        return $length > 0 ? substr($haystack, -$length) === $needle : true;
+        $needle_len = strlen($needle);
+        return $needle_len === 0 || 0 === substr_compare($haystack, $needle, -$needle_len);
+    }
+}
+
+if (!function_exists('str_starts_with')) {
+    function str_starts_with(string $haystack, string $needle): bool
+    {
+        return strpos($haystack, $needle) === 0;
     }
 }
 

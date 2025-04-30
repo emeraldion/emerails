@@ -173,4 +173,24 @@ class CommonTest extends UnitTest
         $a = [];
         $this->assertNull(last($a));
     }
+
+    public function test_str_starts_with()
+    {
+        $this->assertTrue(str_starts_with('abc', 'a'));
+        $this->assertTrue(str_starts_with('abc', 'ab'));
+        $this->assertTrue(str_starts_with('abc', 'abc'));
+
+        $this->assertFalse(str_starts_with('abc', 'b'));
+        $this->assertFalse(str_starts_with('abc', 'bc'));
+    }
+
+    public function test_str_ends_with()
+    {
+        $this->assertTrue(str_ends_with('abc', 'c'));
+        $this->assertTrue(str_ends_with('abc', 'bc'));
+        $this->assertTrue(str_ends_with('abc', 'abc'));
+
+        $this->assertFalse(str_ends_with('abc', 'b'));
+        $this->assertFalse(str_ends_with('abc', 'ab'));
+    }
 }
