@@ -15,6 +15,7 @@ require_once __DIR__ . '/../include/common.inc.php';
 require_once __DIR__ . '/../include/tag_support.inc.php';
 
 use Emeraldion\EmeRails\Config;
+use Emeraldion\EmeRails\Controllers\Controller;
 use Emeraldion\EmeRails\Helpers\Headers;
 use Emeraldion\EmeRails\Helpers\HTTP;
 use Emeraldion\EmeRails\Helpers\Localization;
@@ -27,7 +28,7 @@ use Emeraldion\EmeRails\Helpers\Response;
  *  @details A subclass of BaseController is in charge of handling a set of actions. It creates the network of model objects
  *  that will be rendered by the views, handles and validates postback data, defines and applies before and after filters.
  */
-class BaseController
+class BaseController implements Controller
 {
     /**
      * @attr name
@@ -1074,7 +1075,7 @@ class BaseController
      * has the same semantics used in the <tt>make_relative_url</tt> method.
      * @param params Array of key value pairs defining the URL.
      */
-    public function url_to($params)
+    public function url_to(array $params): string
     {
         return $this->make_relative_url($params);
     }
@@ -1086,7 +1087,7 @@ class BaseController
      * @param relative Whether the URL should contain only the path,
      * or be a qualified URI.
      */
-    function url_to_myself($relative = true)
+    public function url_to_myself(bool $relative = true): string
     {
         $url = $this->url_to([
             'action' => $this->action,
