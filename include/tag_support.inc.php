@@ -86,7 +86,7 @@ function leaf_tag($tagname, $params = null)
  *	Containers
  */
 
-function a($content, $params)
+function a($content, $params = [])
 {
     if (isset($params['query_string'])) {
         $params['href'] .= "?{$params['query_string']}";
@@ -99,52 +99,52 @@ function a($content, $params)
     return inline_tag('a', $content, $params);
 }
 
-function p($content, $params)
+function p($content, $params = [])
 {
     return block_tag('p', $content, $params);
 }
 
-function span($content, $params)
+function span($content, $params = [])
 {
     return inline_tag('span', $content, $params);
 }
 
-function div($content, $params)
+function div($content, $params = [])
 {
     return block_tag('div', $content, $params);
 }
 
-function em($content, $params)
+function em($content, $params = [])
 {
     return inline_tag('em', $content, $params);
 }
 
-function h1($content, $params)
+function h1($content, $params = [])
 {
     return block_tag('h1', $content, $params);
 }
 
-function h2($content, $params)
+function h2($content, $params = [])
 {
     return block_tag('h2', $content, $params);
 }
 
-function h3($content, $params)
+function h3($content, $params = [])
 {
     return block_tag('h3', $content, $params);
 }
 
-function h4($content, $params)
+function h4($content, $params = [])
 {
     return block_tag('h4', $content, $params);
 }
 
-function h5($content, $params)
+function h5($content, $params = [])
 {
     return block_tag('h5', $content, $params);
 }
 
-function h6($content, $params)
+function h6($content, $params = [])
 {
     return block_tag('h6', $content, $params);
 }
