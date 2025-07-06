@@ -13,7 +13,15 @@
 
 function QueryString_implode_item(&$item, $key)
 {
-    $item = urlencode($key) . QueryString::EQUALS . urlencode($item);
+    if (is_array($item)) {
+        $ret = [];
+        foreach ($item as $i) {
+            $ret[] = urlencode($key . '[]') . QueryString::EQUALS . urlencode($i);
+        }
+        $item = implode(QueryString::SEPARATOR, $ret);
+    } else {
+        $item = urlencode($key) . QueryString::EQUALS . urlencode($item);
+    }
 }
 
 function QueryString_explode_item($item)
@@ -61,8 +69,18 @@ class QueryString
         $ret = [];
         if ($string && ($parts = explode(QueryString::SEPARATOR, $string))) {
             foreach ($parts as $part) {
-                $p = QueryString_explode_item($part);
-                $ret[$p[0]] = $p[1];
+                [$key, $value] = QueryString_explode_item($part);
+                if (str_ends_with($key, '[]')) {
+                    $key = substr($key, 0, -2);
+                }
+                if (array_key_exists($key, $ret)) {
+                    if (!is_array($ret[$key])) {
+                        $ret[$key] = [$ret[$key]];
+                    }
+                    $ret[$key][] = $value;
+                } else {
+                    $ret[$key] = $value;
+                }
             }
         }
         return $ret;
