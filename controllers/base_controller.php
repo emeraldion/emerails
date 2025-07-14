@@ -424,7 +424,8 @@ class BaseController implements Controller
             }
 
             if ($is_required) {
-                if (empty($value)) {
+                // Empty value is considered false for bool params
+                if (empty($value) && $type != self::PARAM_TYPE_BOOL) {
                     // TODO: delegate the subclass to present this error
                     trigger_error(
                         sprintf(
@@ -497,11 +498,17 @@ class BaseController implements Controller
                             $value = $default_value;
                         }
                     } else {
-                        if ($valid = !is_null(filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE))) {
+                        if (
+                            $valid =
+                                !is_null($value) &&
+                                !is_null(filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE))
+                        ) {
                             $value = filter_var($value, FILTER_VALIDATE_BOOLEAN);
-                        } elseif ($valid = empty($value) && ($has_default || !$is_required)) {
+                        } elseif ($valid = is_null($value) && !$is_required) {
                             if ($has_default) {
                                 $value = (bool) $default_value;
+                            } else {
+                                $value = null;
                             }
                         }
                     }

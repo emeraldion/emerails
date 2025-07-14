@@ -213,7 +213,7 @@ class BaseControllerTest extends UnitTest
     {
         $this->expectError();
         $this->expectErrorMessage(
-            "[BaseControllerWrapper::validate_parameter] Missing required bool parameter 'enabled'"
+            "[BaseControllerWrapper::validate_parameter] Type mismatch for parameter 'enabled'. Expected 'bool', but found: NULL"
         );
 
         $this->controller->do_validate_parameter('enabled', null, [
