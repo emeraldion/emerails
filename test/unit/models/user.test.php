@@ -26,6 +26,7 @@ class User extends ActiveRecord
 class Account extends ActiveRecord
 {
     protected $table_name = 'user_accounts';
+    const WRITEONLY_COLUMNS = ['password', 'pet_name'];
 }
 
 class UserTest extends UnitTest
@@ -106,6 +107,72 @@ class UserTest extends UnitTest
             )
         );
     }
+
+    // public function test_get_writeonly_subclass()
+    // {
+    //     $this->user = new Account([
+    //         'username' => 'brixton',
+    //         'password' => sha1('brixton'),
+    //         'pet_name' => 'fluffy'
+    //     ]);
+
+    //     $this->assertEquals('***', $this->user->password);
+    //     $this->assertEquals('***', $this->user->pet_name);
+
+    //     $this->user->_force_create = true;
+    //     $this->user->save();
+
+    //     $this->assertEquals('***', $this->user->password);
+    //     $this->assertEquals('***', $this->user->pet_name);
+    // }
+
+    // public function test_debug_info_writeonly_subclass()
+    // {
+    //     $this->user = new Account([
+    //         'username' => 'brixton',
+    //         'password' => sha1('brixton'),
+    //         'pet_name' => 'fluffy'
+    //     ]);
+    //     $this->user->_force_create = true;
+    //     $this->user->save();
+
+    //     ob_start();
+    //     print_r($this->user);
+    //     $printed = ob_get_clean();
+    //     $this->assertNotNull($printed);
+    //     $this->assertThat(
+    //         $printed,
+    //         $this->matchesRegularExpression(
+    //             <<<EOT
+    //             /Account Object
+    //             \(
+    //                 \[id\] => \d+
+    //                 \[username\] => brixton
+    //             \)
+    //             /
+    //             EOT
+    //         )
+    //     );
+
+    //     ob_start();
+    //     var_dump($this->user);
+    //     $printed = ob_get_clean();
+    //     $this->assertNotNull($printed);
+    //     $this->assertThat(
+    //         $printed,
+    //         $this->matchesRegularExpression(
+    //             <<<EOT
+    //             /object\(Account\)#\d+ \(2\) \{
+    //               \["id"\]=>
+    //               int\(\d+\)
+    //               \["username"\]=>
+    //               string\(7\) "brixton"
+    //             \}
+    //             /
+    //             EOT
+    //         )
+    //     );
+    // }
 
     public function test_actual_primary_key_column_set_on_save()
     {

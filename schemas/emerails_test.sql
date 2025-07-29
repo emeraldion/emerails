@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.1.0
+-- version 5.2.0
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:8889
--- Generation Time: Jul 04, 2023 at 01:20 PM
--- Server version: 5.7.34
--- PHP Version: 7.4.21
+-- Generation Time: Jul 29, 2025 at 11:15 PM
+-- Server version: 5.7.39
+-- PHP Version: 7.4.33
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -38,6 +38,36 @@ CREATE TABLE `athletes` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `basses`
+--
+
+DROP TABLE IF EXISTS `basses`;
+CREATE TABLE `basses` (
+  `id` int(11) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `basses_foos`
+--
+
+DROP TABLE IF EXISTS `basses_foos`;
+CREATE TABLE `basses_foos` (
+  `id` int(11) NOT NULL,
+  `quantity` smallint(6) DEFAULT NULL,
+  `active` tinyint(1) DEFAULT NULL,
+  `bass_id` int(11) NOT NULL,
+  `foo_id` int(11) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `coches`
 --
 
@@ -52,6 +82,19 @@ CREATE TABLE `coches` (
 
 INSERT INTO `coches` (`id`) VALUES
 (1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `foos`
+--
+
+DROP TABLE IF EXISTS `foos`;
+CREATE TABLE `foos` (
+  `id` int(11) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 -- --------------------------------------------------------
 
@@ -106,6 +149,8 @@ CREATE TABLE `test_groups_test_models` (
   `test_group_id` int(11) NOT NULL,
   `count` int(11) NOT NULL DEFAULT '0',
   `color` enum('red','green','blue') CHARACTER SET latin1 COLLATE latin1_general_cs DEFAULT NULL,
+  `min_version` float DEFAULT NULL,
+  `price` decimal(10,2) DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -113,10 +158,10 @@ CREATE TABLE `test_groups_test_models` (
 -- Dumping data for table `test_groups_test_models`
 --
 
-INSERT INTO `test_groups_test_models` (`id`, `test_model_id`, `test_group_id`, `count`, `color`, `created_at`) VALUES
-(1, 2, 1, 3, NULL, '2023-01-05 22:21:48'),
-(2, 1, 2, 1, NULL, '2023-01-05 22:21:48'),
-(3, 2, 2, 0, NULL, '2023-01-05 22:21:48');
+INSERT INTO `test_groups_test_models` (`id`, `test_model_id`, `test_group_id`, `count`, `color`, `min_version`, `price`, `created_at`) VALUES
+(1, 2, 1, 3, 'red', NULL, 4.99, '2023-01-05 22:21:48'),
+(2, 1, 2, 1, 'green', 1.5, NULL, '2023-01-05 22:21:48'),
+(3, 2, 2, 0, NULL, 2, 10.99, '2023-01-05 22:21:48');
 
 -- --------------------------------------------------------
 
@@ -197,7 +242,8 @@ DROP TABLE IF EXISTS `user_accounts`;
 CREATE TABLE `user_accounts` (
   `id` int(11) NOT NULL,
   `username` varchar(24) NOT NULL,
-  `password` varchar(24) NOT NULL
+  `password` varchar(24) NOT NULL,
+  `pet_name` varchar(24) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -223,10 +269,37 @@ ALTER TABLE `athletes`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `basses`
+--
+ALTER TABLE `basses`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `created_at` (`created_at`),
+  ADD KEY `updated_at` (`updated_at`);
+
+--
+-- Indexes for table `basses_foos`
+--
+ALTER TABLE `basses_foos`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `bass_id_foo_id` (`bass_id`,`foo_id`),
+  ADD KEY `bass_id` (`bass_id`),
+  ADD KEY `foo_id` (`foo_id`),
+  ADD KEY `created_at` (`created_at`),
+  ADD KEY `updated_at` (`updated_at`);
+
+--
 -- Indexes for table `coches`
 --
 ALTER TABLE `coches`
   ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `foos`
+--
+ALTER TABLE `foos`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `created_at` (`created_at`),
+  ADD KEY `updated_at` (`updated_at`);
 
 --
 -- Indexes for table `motores`
@@ -290,13 +363,31 @@ ALTER TABLE `user_profiles`
 -- AUTO_INCREMENT for table `athletes`
 --
 ALTER TABLE `athletes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=63;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=67;
+
+--
+-- AUTO_INCREMENT for table `basses`
+--
+ALTER TABLE `basses`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `basses_foos`
+--
+ALTER TABLE `basses_foos`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `coches`
 --
 ALTER TABLE `coches`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `foos`
+--
+ALTER TABLE `foos`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `motores`
@@ -308,41 +399,52 @@ ALTER TABLE `motores`
 -- AUTO_INCREMENT for table `test_groups`
 --
 ALTER TABLE `test_groups`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=407;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=437;
 
 --
 -- AUTO_INCREMENT for table `test_groups_test_models`
 --
 ALTER TABLE `test_groups_test_models`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `test_models`
 --
 ALTER TABLE `test_models`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3785;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4033;
 
 --
 -- AUTO_INCREMENT for table `test_versions`
 --
 ALTER TABLE `test_versions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=285;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=303;
 
 --
 -- AUTO_INCREMENT for table `test_widgets`
 --
 ALTER TABLE `test_widgets`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=252;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=268;
 
 --
 -- AUTO_INCREMENT for table `user_accounts`
 --
 ALTER TABLE `user_accounts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
 -- AUTO_INCREMENT for table `user_profiles`
 --
 ALTER TABLE `user_profiles`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=125;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=133;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `basses_foos`
+--
+ALTER TABLE `basses_foos`
+  ADD CONSTRAINT `basses_foos_ibfk_1` FOREIGN KEY (`bass_id`) REFERENCES `basses` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `basses_foos_ibfk_2` FOREIGN KEY (`foo_id`) REFERENCES `foos` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 COMMIT;

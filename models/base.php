@@ -1043,7 +1043,7 @@ abstract class ActiveRecord
                 // Do not set the primary key unless we're creating a new row
                 ($columns[$i] != $this->get_primary_key_name() || $this->_force_create) &&
                 // Exclude read-only columns
-                !in_array($columns[$i], self::READONLY_COLUMNS) &&
+                !in_array($columns[$i], get_called_class()::READONLY_COLUMNS) &&
                 // Exclude empty columns
                 $this->values &&
                 array_key_exists($columns[$i], $this->values) &&
@@ -1166,7 +1166,7 @@ abstract class ActiveRecord
                 // Do not set the primary key unless we're creating a new row
                 ($column != $this->get_primary_key_name() || $this->_force_create) &&
                 // Exclude read-only columns
-                !in_array($column, self::READONLY_COLUMNS) &&
+                !in_array($column, get_called_class()::READONLY_COLUMNS) &&
                 // Exclude empty columns
                 $this->values &&
                 array_key_exists($column, $this->values) &&
@@ -1368,7 +1368,7 @@ abstract class ActiveRecord
      */
     public function __get($key)
     {
-        if (in_array($key, self::WRITEONLY_COLUMNS)) {
+        if (in_array($key, get_called_class()::WRITEONLY_COLUMNS)) {
             return '***';
         }
         if ($this->values !== null && array_key_exists($key, $this->values)) {
@@ -1426,7 +1426,7 @@ abstract class ActiveRecord
     {
         $debug_info = [];
         foreach ($this->get_column_names() as $column) {
-            if (in_array($column, self::WRITEONLY_COLUMNS)) {
+            if (in_array($column, get_called_class()::WRITEONLY_COLUMNS)) {
                 $debug_info[$column] = '***';
             } elseif (isset($this->values[$column])) {
                 $debug_info[$column] = is_null($this->values[$column]) ? 'NULL' : $this->values[$column];

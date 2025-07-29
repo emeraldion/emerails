@@ -1004,7 +1004,7 @@ class ActiveRecordTest extends UnitTest
         $instance = new TestModel();
         $ret = $instance->find_by_id(1);
         $this->assertTrue($ret);
-        $ret = $instance->has_and_belongs_to_many('test_groups');
+        $ret = $instance->has_and_belongs_to_many(TestGroup::class);
         $this->assertIsArray($ret);
         $this->assertNotNull($instance->test_groups);
         $this->assertEquals(1, count($instance->test_groups));
@@ -1031,7 +1031,7 @@ class ActiveRecordTest extends UnitTest
         $instance = new TestModel();
         $ret = $instance->find_by_id(2);
         $this->assertTrue($ret);
-        $ret = $instance->has_and_belongs_to_many('test_groups');
+        $ret = $instance->has_and_belongs_to_many(TestGroup::class);
         $this->assertIsArray($ret);
         $this->assertNotNull($instance->test_groups);
         $this->assertEquals(2, count($instance->test_groups));
