@@ -647,7 +647,11 @@ abstract class ActiveRecord
 
         $fkey = $this->get_foreign_key_name();
         $children = $child->find_all([
-            self::PARAM_WHERE_CLAUSE => "`{$fkey}` = '{$this->values[$this->primary_key]}'",
+            self::PARAM_WHERE_CLAUSE =>
+                "`{$fkey}` = '{$this->values[$this->primary_key]}'" .
+                (array_key_exists(self::PARAM_WHERE_CLAUSE, $params)
+                    ? ' AND ' . $params[self::PARAM_WHERE_CLAUSE]
+                    : ''),
             // Do not limit results in strict mode, so we can raise if we get more than one
             'limit' => isset($params[self::PARAM_STRICT]) ? null : 1
         ]);
