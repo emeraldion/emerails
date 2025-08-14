@@ -242,7 +242,7 @@ class MysqliAdapter implements DbAdapter
      */
     public function num_rows()
     {
-        if (is_null($this->result)) {
+        if (!$this->result) {
             return false;
         }
         return $this->result->num_rows;
