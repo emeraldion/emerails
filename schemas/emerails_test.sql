@@ -32,6 +32,7 @@ CREATE TABLE `athletes` (
   `foo` datetime DEFAULT NULL,
   `bar` timestamp NULL DEFAULT NULL,
   `baz` tinyint(4) DEFAULT NULL,
+  `blip` decimal(10,3) DEFAULT NULL,
   `shirt_color` enum('red','green','blue') COLLATE latin1_general_cs DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 

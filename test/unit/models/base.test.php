@@ -1598,6 +1598,22 @@ class ActiveRecordTest extends UnitTest
         $athlete->height = 0;
     }
 
+    public function test_validate_on_set_int_for_decimal()
+    {
+        $this->models[] = $athlete = new Athlete([
+            'name' => 'Marcell'
+        ]);
+
+        // This is okay:
+        $athlete->blip = 12.345;
+
+        // This is also okay:
+        $athlete->blip = 12;
+
+        // This is okay, too:
+        $athlete->blip = 0;
+    }
+
     public function test_validate_on_set_int_for_enum()
     {
         $this->models[] = $athlete = new Athlete([
