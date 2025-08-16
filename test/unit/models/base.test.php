@@ -1582,6 +1582,22 @@ class ActiveRecordTest extends UnitTest
         $athlete->height = '123.456';
     }
 
+    public function test_validate_on_set_int_for_float()
+    {
+        $this->models[] = $athlete = new Athlete([
+            'name' => 'Marcell'
+        ]);
+
+        // This is okay:
+        $athlete->height = 123.456;
+
+        // This is also okay:
+        $athlete->height = 123;
+
+        // This is okay, too:
+        $athlete->height = 0;
+    }
+
     public function test_validate_on_set_int_for_enum()
     {
         $this->models[] = $athlete = new Athlete([

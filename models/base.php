@@ -1250,7 +1250,7 @@ abstract class ActiveRecord
                         break;
                     case 'decimal':
                     case 'float':
-                        if ($raise && !is_null($value) && !is_float($value)) {
+                        if ($raise && !is_null($value) && !is_float($value) && !is_int($value)) {
                             throw new Exception(
                                 sprintf(
                                     "%s: Attempt to set the field '%s' to a value with incorrect type. Expected 'float' but found: '%s'",
