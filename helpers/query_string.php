@@ -55,6 +55,7 @@ class QueryString
      *	@fn from_assoc($parts)
      *	@short Writes the query string for an associative array
      *	@param parts The associative array
+     *	@param pluralized_keys A list of keys to always keep plural
      */
     public static function from_assoc($parts, $pluralized_keys = [])
     {
@@ -67,9 +68,9 @@ class QueryString
     }
 
     /**
-     *	@fn to_assoc($string)
-     *	@short Parses a query string into an associative array
-     *	@param string The query string
+     * @fn to_assoc($string)
+     * @short Parses a query string into an associative array
+     * @param string The query string
      */
     public static function to_assoc($string)
     {
@@ -93,7 +94,14 @@ class QueryString
         return $ret;
     }
 
-    public static function replace($key, $val)
+    /**
+     * @fn replace($key, $val, $pluralized_keys)
+     * @short Replaces a URL param in the query string with the requested value
+     * @param key The key to replace
+     * @param val The value to replace
+     * @param pluralized_keys A list of keys to always keep plural
+     */
+    public static function replace($key, $val, $pluralized_keys = [])
     {
         $pos = strpos($_SERVER['REQUEST_URI'], '?');
         if ($pos != false) {
@@ -103,6 +111,6 @@ class QueryString
             $params = [];
         }
         $params[$key] = $val;
-        return self::from_assoc($params);
+        return self::from_assoc($params, $pluralized_keys);
     }
 }
