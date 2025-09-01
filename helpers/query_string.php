@@ -11,8 +11,11 @@
  * @format
  */
 
-function QueryString_implode_item(&$item, $key)
+function QueryString_implode_item($item, $key, $pluralized_keys = [])
 {
+    if (in_array($key, $pluralized_keys)) {
+        $item = [$item];
+    }
     if (is_array($item)) {
         $ret = [];
         foreach ($item as $i) {
@@ -22,6 +25,7 @@ function QueryString_implode_item(&$item, $key)
     } else {
         $item = urlencode($key) . QueryString::EQUALS . urlencode($item);
     }
+    return $item;
 }
 
 function QueryString_explode_item($item)
@@ -52,11 +56,14 @@ class QueryString
      *	@short Writes the query string for an associative array
      *	@param parts The associative array
      */
-    public static function from_assoc($parts)
+    public static function from_assoc($parts, $pluralized_keys = [])
     {
-        array_walk($parts, 'QueryString_implode_item');
+        $ret = [];
+        foreach ($parts as $key => $item) {
+            $ret[$key] = QueryString_implode_item($item, $key, $pluralized_keys);
+        }
 
-        return implode(QueryString::SEPARATOR, $parts);
+        return implode(QueryString::SEPARATOR, $ret);
     }
 
     /**

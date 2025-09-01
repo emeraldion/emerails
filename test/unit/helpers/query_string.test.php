@@ -68,6 +68,27 @@ class QueryStringUnitTest extends UnitTest
     }
 
     /**
+     *	@fn test_from_assoc_pluralize
+     *	@short Test method for from_assoc() with pluralized URL params
+     */
+    public function test_from_assoc_pluralized()
+    {
+        $this->assertEquals(
+            'field%5B%5D=type&operator%5B%5D=eq&value%5B%5D=1',
+            QueryString::from_assoc(
+                ['field' => 'type', 'operator' => 'eq', 'value' => '1'],
+                ['field', 'operator', 'value']
+            ),
+            'Unable to create query string'
+        );
+        $this->assertEquals(
+            'field%5B%5D=type&operator=eq&value%5B%5D=1',
+            QueryString::from_assoc(['field' => 'type', 'operator' => 'eq', 'value' => '1'], ['field', 'value']),
+            'Unable to create query string'
+        );
+    }
+
+    /**
      *	@fn test_to_assoc
      *	@short Test method for to_assoc().
      */
