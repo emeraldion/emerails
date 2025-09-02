@@ -19,8 +19,13 @@ use Emeraldion\EmeRails\Helpers\QueryString;
  *	@class QueryStringUnitTest
  *	@short Test case for QueryString helper object.
  */
-class QueryStringUnitTest extends UnitTest
+class QueryStringUnitTest extends UnitTestBase
 {
+    public function setUp(): void
+    {
+        QueryString::set_pluralized_keys([]);
+    }
+
     /**
      *	@fn test_from_assoc
      *	@short Test method for from_assoc().
@@ -73,14 +78,14 @@ class QueryStringUnitTest extends UnitTest
      */
     public function test_from_assoc_pluralized()
     {
+        QueryString::set_pluralized_keys(['field', 'operator', 'value']);
         $this->assertEquals(
             'field%5B%5D=type&operator%5B%5D=eq&value%5B%5D=1',
-            QueryString::from_assoc(
-                ['field' => 'type', 'operator' => 'eq', 'value' => '1'],
-                ['field', 'operator', 'value']
-            ),
+            QueryString::from_assoc(['field' => 'type', 'operator' => 'eq', 'value' => '1']),
             'Unable to create query string'
         );
+
+        QueryString::set_pluralized_keys(['field', 'value']);
         $this->assertEquals(
             'field%5B%5D=type&operator=eq&value%5B%5D=1',
             QueryString::from_assoc(['field' => 'type', 'operator' => 'eq', 'value' => '1'], ['field', 'value']),

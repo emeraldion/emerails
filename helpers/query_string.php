@@ -51,17 +51,18 @@ class QueryString
      */
     const EQUALS = '=';
 
+    static $pluralized_keys = [];
+
     /**
      *	@fn from_assoc($parts)
      *	@short Writes the query string for an associative array
      *	@param parts The associative array
-     *	@param pluralized_keys A list of keys to always keep plural
      */
-    public static function from_assoc($parts, $pluralized_keys = [])
+    public static function from_assoc(array $parts): string
     {
         $ret = [];
         foreach ($parts as $key => $item) {
-            $ret[$key] = QueryString_implode_item($item, $key, $pluralized_keys);
+            $ret[$key] = QueryString_implode_item($item, $key, self::$pluralized_keys);
         }
 
         return implode(QueryString::SEPARATOR, $ret);
@@ -72,7 +73,7 @@ class QueryString
      * @short Parses a query string into an associative array
      * @param string The query string
      */
-    public static function to_assoc($string)
+    public static function to_assoc(string $string): array
     {
         $ret = [];
         if ($string && ($parts = explode(QueryString::SEPARATOR, $string))) {
@@ -99,9 +100,8 @@ class QueryString
      * @short Replaces a URL param in the query string with the requested value
      * @param key The key to replace
      * @param val The value to replace
-     * @param pluralized_keys A list of keys to always keep plural
      */
-    public static function replace($key, $val, $pluralized_keys = [])
+    public static function replace(string $key, $val)
     {
         $pos = strpos($_SERVER['REQUEST_URI'], '?');
         if ($pos != false) {
@@ -111,6 +111,18 @@ class QueryString
             $params = [];
         }
         $params[$key] = $val;
-        return self::from_assoc($params, $pluralized_keys);
+        return self::from_assoc($params);
+    }
+
+    /**
+     * @fn replace($key, $val, $pluralized_keys)
+     * @short Sets a list of URL param names to always keep plural
+     * @detail Strings in the array passed as argument will be forcibly treated as multivalue URL
+     * params when encountered by <tt>from_assoc(array $parts)</tt>, even when they have a single value.
+     * @param pluralized_keys An array of strings to forcibly treat as multivalue URL params
+     */
+    public static function set_pluralized_keys(array $pluralized_keys): void
+    {
+        self::$pluralized_keys = $pluralized_keys;
     }
 }
