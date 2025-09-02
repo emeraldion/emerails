@@ -13,7 +13,7 @@
 
 function QueryString_implode_item($item, $key, $pluralized_keys = [])
 {
-    if (in_array($key, $pluralized_keys)) {
+    if (in_array($key, $pluralized_keys) && !is_array($item)) {
         $item = [$item];
     }
     if (is_array($item)) {
