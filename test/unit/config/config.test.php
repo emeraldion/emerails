@@ -19,7 +19,7 @@ use Emeraldion\EmeRails\Config;
  *	@class ConfigUnitTest
  *	@short Test case for Config storage.
  */
-class ConfigUnitTest extends UnitTest
+class ConfigUnitTest extends UnitTestBase
 {
     /**
      *	@fn test_set

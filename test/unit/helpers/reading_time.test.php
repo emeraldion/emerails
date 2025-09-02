@@ -15,7 +15,7 @@ require_once __DIR__ . '/../base_test.php';
 
 use Emeraldion\EmeRails\Helpers\ReadingTime;
 
-class ReadingTimeTest extends UnitTest
+class ReadingTimeTest extends UnitTestBase
 {
     const LOREM_IPSUM = <<<EOT
     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed

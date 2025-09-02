@@ -23,7 +23,7 @@ class MockRequest extends Request
     }
 }
 
-class RequestTest extends UnitTest
+class RequestTest extends UnitTestBase
 {
     public function test_construct()
     {

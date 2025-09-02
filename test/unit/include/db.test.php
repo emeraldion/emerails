@@ -59,7 +59,7 @@ class TestAdapterOther extends TestAdapterBase
     const NAME = 'test_other';
 }
 
-class DBTest extends UnitTest
+class DBTest extends UnitTestBase
 {
     public function test_get_adapter()
     {

@@ -14,7 +14,7 @@
 require_once __DIR__ . '/../../../include/tag_support.inc.php';
 require_once __DIR__ . '/../base_test.php';
 
-class TagSupportTest extends UnitTest
+class TagSupportTest extends UnitTestBase
 {
     public function test_strip_external_php_tags_pure_html()
     {

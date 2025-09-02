@@ -19,7 +19,7 @@ use Emeraldion\EmeRails\Db;
 
 error_reporting(E_ALL & ~E_USER_DEPRECATED);
 
-class ActiveRecordTest extends UnitTest
+class ActiveRecordTest extends UnitTestBase
 {
     private $models = [];
 
@@ -306,10 +306,9 @@ class ActiveRecordTest extends UnitTest
         ]);
         $instance->volatile = true;
 
-        $this->expectError();
-        $this->expectErrorMessage('[TestModel::save] This model object is volatile and cannot be saved.');
-
-        $instance->save();
+        $this->assertErrorWithMessage(function () use ($instance) {
+            $instance->save();
+        }, '[TestModel::save] This model object is volatile and cannot be saved.');
     }
 
     public function test_delete()
@@ -350,10 +349,9 @@ class ActiveRecordTest extends UnitTest
         ]);
         $instance->volatile = true;
 
-        $this->expectError();
-        $this->expectErrorMessage('[TestModel::delete] This model object is volatile and cannot be deleted.');
-
-        $this->assertTrue($instance->delete());
+        $this->assertErrorWithMessage(function () use ($instance) {
+            $this->assertTrue($instance->delete());
+        }, '[TestModel::delete] This model object is volatile and cannot be deleted.');
     }
 
     public function test_static_find()
@@ -468,15 +466,12 @@ class ActiveRecordTest extends UnitTest
     {
         $widget_factory = new TestWidget();
 
-        $this->expectError();
-        $this->expectErrorMessage(
-            '[TestWidget::find_all] Failed to find a foreign key column `test_widget_id` in table `athletes` or `athlete_id` in table `test_widgets`.'
-        );
-
-        // These two models are not in a relationship so this call will trigger an error
-        $widgets = $widget_factory->find_all([
-            'join' => Athlete::class
-        ]);
+        $this->assertErrorWithMessage(function () use ($widget_factory) {
+            // These two models are not in a relationship so this call will trigger an error
+            $widgets = $widget_factory->find_all([
+                'join' => Athlete::class
+            ]);
+        }, '[TestWidget::find_all] Failed to find a foreign key column `test_widget_id` in table `athletes` or `athlete_id` in table `test_widgets`.');
     }
 
     public function test_find_all_with_join_reverse()
@@ -1588,6 +1583,8 @@ class ActiveRecordTest extends UnitTest
             'name' => 'Marcell'
         ]);
 
+        $this->expectNotToPerformAssertions();
+
         // This is okay:
         $athlete->height = 123.456;
 
@@ -1603,6 +1600,8 @@ class ActiveRecordTest extends UnitTest
         $this->models[] = $athlete = new Athlete([
             'name' => 'Marcell'
         ]);
+
+        $this->expectNotToPerformAssertions();
 
         // This is okay:
         $athlete->blip = 12.345;
@@ -1720,12 +1719,9 @@ class ActiveRecordTest extends UnitTest
 
         $this->assertEquals('Runner', get_class($r));
 
-        $this->expectError();
-        $this->expectErrorMessage(
-            '[Runner::as] Attempted to cast an instance of Runner to TestWidget but it is not a valid superclass.'
-        );
-
-        // Triggers
-        $r->as(TestWidget::class);
+        $this->assertErrorWithMessage(function () use ($r) {
+            // Triggers
+            $r->as(TestWidget::class);
+        }, '[Runner::as] Attempted to cast an instance of Runner to TestWidget but it is not a valid superclass.');
     }
 }

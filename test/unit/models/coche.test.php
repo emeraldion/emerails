@@ -27,7 +27,7 @@ class Engine extends ActiveRecord
     protected $table_name = 'motores';
 }
 
-class CocheTest extends UnitTest
+class CocheTest extends UnitTestBase
 {
     public function test_get_table_name()
     {

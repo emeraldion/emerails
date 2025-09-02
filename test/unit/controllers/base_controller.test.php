@@ -37,7 +37,7 @@ class SimpleController extends BaseController
     }
 }
 
-class BaseControllerTest extends UnitTest
+class BaseControllerTest extends UnitTestBase
 {
     public function setUp(): void
     {
@@ -77,13 +77,12 @@ class BaseControllerTest extends UnitTest
 
     public function test_validate_parameter_int_required_null_invalid()
     {
-        $this->expectError();
-        $this->expectErrorMessage("[BaseControllerWrapper::validate_parameter] Missing required int parameter 'id'");
-
-        $this->controller->do_validate_parameter('id', null, [
-            'type' => 'int',
-            'required' => true
-        ]);
+        $this->assertErrorWithMessage(function () {
+            $this->controller->do_validate_parameter('id', null, [
+                'type' => 'int',
+                'required' => true
+            ]);
+        }, "[BaseControllerWrapper::validate_parameter] Missing required int parameter 'id'");
     }
 
     public function test_validate_parameter_int_required_valid()
@@ -99,26 +98,22 @@ class BaseControllerTest extends UnitTest
 
     public function test_validate_parameter_int_required_invalid()
     {
-        $this->expectError();
-        $this->expectErrorMessage("[BaseControllerWrapper::validate_parameter] Missing required int parameter 'id'");
-
-        $this->controller->do_validate_parameter('id', '', [
-            'type' => 'int',
-            'required' => true
-        ]);
+        $this->assertErrorWithMessage(function () {
+            $this->controller->do_validate_parameter('id', '', [
+                'type' => 'int',
+                'required' => true
+            ]);
+        }, "[BaseControllerWrapper::validate_parameter] Missing required int parameter 'id'");
     }
 
     public function test_validate_parameter_int_required_string_invalid()
     {
-        $this->expectError();
-        $this->expectErrorMessage(
-            "[BaseControllerWrapper::validate_parameter] Type mismatch for parameter 'id'. Expected 'int', but found: 'abc'"
-        );
-
-        $this->controller->do_validate_parameter('id', 'abc', [
-            'type' => 'int',
-            'required' => true
-        ]);
+        $this->assertErrorWithMessage(function () {
+            $this->controller->do_validate_parameter('id', 'abc', [
+                'type' => 'int',
+                'required' => true
+            ]);
+        }, "[BaseControllerWrapper::validate_parameter] Type mismatch for parameter 'id'. Expected 'int', but found: 'abc'");
     }
 
     public function test_validate_parameter_int_array_valid()
@@ -163,20 +158,22 @@ class BaseControllerTest extends UnitTest
 
     public function test_validate_parameter_int_array_required_invalid()
     {
-        $this->expectError();
-        $this->expectErrorMessage("[BaseControllerWrapper::validate_parameter] Type mismatch for parameter 'id'. Expected 'int[]', but found: array (
+        $this->assertErrorWithMessage(
+            function () {
+                $this->controller->do_validate_parameter(
+                    'id',
+                    ['a', 'b', 'c'],
+                    [
+                        'type' => 'int[]',
+                        'required' => true
+                    ]
+                );
+            },
+            "[BaseControllerWrapper::validate_parameter] Type mismatch for parameter 'id'. Expected 'int[]', but found: array (
   0 => 'a',
   1 => 'b',
   2 => 'c',
-)");
-
-        $this->controller->do_validate_parameter(
-            'id',
-            ['a', 'b', 'c'],
-            [
-                'type' => 'int[]',
-                'required' => true
-            ]
+)"
         );
     }
 
@@ -211,15 +208,12 @@ class BaseControllerTest extends UnitTest
 
     public function test_validate_parameter_bool_required_null_invalid()
     {
-        $this->expectError();
-        $this->expectErrorMessage(
-            "[BaseControllerWrapper::validate_parameter] Type mismatch for parameter 'enabled'. Expected 'bool', but found: NULL"
-        );
-
-        $this->controller->do_validate_parameter('enabled', null, [
-            'type' => 'bool',
-            'required' => true
-        ]);
+        $this->assertErrorWithMessage(function () {
+            $this->controller->do_validate_parameter('enabled', null, [
+                'type' => 'bool',
+                'required' => true
+            ]);
+        }, "[BaseControllerWrapper::validate_parameter] Type mismatch for parameter 'enabled'. Expected 'bool', but found: NULL");
     }
 
     public function test_validate_parameter_bool_required_valid()
@@ -234,15 +228,12 @@ class BaseControllerTest extends UnitTest
 
     public function test_validate_parameter_bool_required_invalid()
     {
-        $this->expectError();
-        $this->expectErrorMessage(
-            "[BaseControllerWrapper::validate_parameter] Type mismatch for parameter 'enabled'. Expected 'bool', but found: 'bogus'"
-        );
-
-        $this->controller->do_validate_parameter('enabled', 'bogus', [
-            'type' => 'bool',
-            'required' => true
-        ]);
+        $this->assertErrorWithMessage(function () {
+            $this->controller->do_validate_parameter('enabled', 'bogus', [
+                'type' => 'bool',
+                'required' => true
+            ]);
+        }, "[BaseControllerWrapper::validate_parameter] Type mismatch for parameter 'enabled'. Expected 'bool', but found: 'bogus'");
     }
 
     public function test_validate_parameter_bool_array_valid()
@@ -287,20 +278,22 @@ class BaseControllerTest extends UnitTest
 
     public function test_validate_parameter_bool_array_required_invalid()
     {
-        $this->expectError();
-        $this->expectErrorMessage("[BaseControllerWrapper::validate_parameter] Type mismatch for parameter 'enabled'. Expected 'bool[]', but found: array (
+        $this->assertErrorWithMessage(
+            function () {
+                $this->controller->do_validate_parameter(
+                    'enabled',
+                    ['a', 'b', 'c'],
+                    [
+                        'type' => 'bool[]',
+                        'required' => true
+                    ]
+                );
+            },
+            "[BaseControllerWrapper::validate_parameter] Type mismatch for parameter 'enabled'. Expected 'bool[]', but found: array (
   0 => 'a',
   1 => 'b',
   2 => 'c',
-)");
-
-        $this->controller->do_validate_parameter(
-            'enabled',
-            ['a', 'b', 'c'],
-            [
-                'type' => 'bool[]',
-                'required' => true
-            ]
+)"
         );
     }
 
@@ -336,15 +329,12 @@ class BaseControllerTest extends UnitTest
 
     public function test_validate_parameter_string_required_null_invalid()
     {
-        $this->expectError();
-        $this->expectErrorMessage(
-            "[BaseControllerWrapper::validate_parameter] Missing required string parameter 'query'"
-        );
-
-        $this->controller->do_validate_parameter('query', null, [
-            'type' => 'string',
-            'required' => true
-        ]);
+        $this->assertErrorWithMessage(function () {
+            $this->controller->do_validate_parameter('query', null, [
+                'type' => 'string',
+                'required' => true
+            ]);
+        }, "[BaseControllerWrapper::validate_parameter] Missing required string parameter 'query'");
     }
 
     public function test_validate_parameter_string_required_valid()
@@ -360,28 +350,22 @@ class BaseControllerTest extends UnitTest
 
     public function test_validate_parameter_string_required_invalid()
     {
-        $this->expectError();
-        $this->expectErrorMessage(
-            "[BaseControllerWrapper::validate_parameter] Missing required string parameter 'query'"
-        );
-
-        $this->controller->do_validate_parameter('query', '', [
-            'type' => 'string',
-            'required' => true
-        ]);
+        $this->assertErrorWithMessage(function () {
+            $this->controller->do_validate_parameter('query', '', [
+                'type' => 'string',
+                'required' => true
+            ]);
+        }, "[BaseControllerWrapper::validate_parameter] Missing required string parameter 'query'");
     }
 
     public function test_validate_parameter_string_required_int_invalid()
     {
-        $this->expectError();
-        $this->expectErrorMessage(
-            "[BaseControllerWrapper::validate_parameter] Type mismatch for parameter 'query'. Expected 'string', but found: 123"
-        );
-
-        $this->controller->do_validate_parameter('query', 123, [
-            'type' => 'string',
-            'required' => true
-        ]);
+        $this->assertErrorWithMessage(function () {
+            $this->controller->do_validate_parameter('query', 123, [
+                'type' => 'string',
+                'required' => true
+            ]);
+        }, "[BaseControllerWrapper::validate_parameter] Type mismatch for parameter 'query'. Expected 'string', but found: 123");
     }
 
     public function test_validate_parameter_string_array_valid()
@@ -426,20 +410,22 @@ class BaseControllerTest extends UnitTest
 
     public function test_validate_parameter_string_array_required_invalid()
     {
-        $this->expectError();
-        $this->expectErrorMessage("[BaseControllerWrapper::validate_parameter] Type mismatch for parameter 'query'. Expected 'string[]', but found: array (
+        $this->assertErrorWithMessage(
+            function () {
+                $this->controller->do_validate_parameter(
+                    'query',
+                    [1, 2, 3],
+                    [
+                        'type' => 'string[]',
+                        'required' => true
+                    ]
+                );
+            },
+            "[BaseControllerWrapper::validate_parameter] Type mismatch for parameter 'query'. Expected 'string[]', but found: array (
   0 => 1,
   1 => 2,
   2 => 3,
-)");
-
-        $this->controller->do_validate_parameter(
-            'query',
-            [1, 2, 3],
-            [
-                'type' => 'string[]',
-                'required' => true
-            ]
+)"
         );
     }
 
@@ -475,15 +461,12 @@ class BaseControllerTest extends UnitTest
 
     public function test_validate_parameter_float_required_null_invalid()
     {
-        $this->expectError();
-        $this->expectErrorMessage(
-            "[BaseControllerWrapper::validate_parameter] Missing required float parameter 'ratio'"
-        );
-
-        $this->controller->do_validate_parameter('ratio', null, [
-            'type' => 'float',
-            'required' => true
-        ]);
+        $this->assertErrorWithMessage(function () {
+            $this->controller->do_validate_parameter('ratio', null, [
+                'type' => 'float',
+                'required' => true
+            ]);
+        }, "[BaseControllerWrapper::validate_parameter] Missing required float parameter 'ratio'");
     }
 
     public function test_validate_parameter_float_required_valid()
@@ -499,28 +482,22 @@ class BaseControllerTest extends UnitTest
 
     public function test_validate_parameter_float_required_invalid()
     {
-        $this->expectError();
-        $this->expectErrorMessage(
-            "[BaseControllerWrapper::validate_parameter] Missing required float parameter 'ratio'"
-        );
-
-        $this->controller->do_validate_parameter('ratio', '', [
-            'type' => 'float',
-            'required' => true
-        ]);
+        $this->assertErrorWithMessage(function () {
+            $this->controller->do_validate_parameter('ratio', '', [
+                'type' => 'float',
+                'required' => true
+            ]);
+        }, "[BaseControllerWrapper::validate_parameter] Missing required float parameter 'ratio'");
     }
 
     public function test_validate_parameter_float_required_string_invalid()
     {
-        $this->expectError();
-        $this->expectErrorMessage(
-            "[BaseControllerWrapper::validate_parameter] Type mismatch for parameter 'ratio'. Expected 'float', but found: 'abc'"
-        );
-
-        $this->controller->do_validate_parameter('ratio', 'abc', [
-            'type' => 'float',
-            'required' => true
-        ]);
+        $this->assertErrorWithMessage(function () {
+            $this->controller->do_validate_parameter('ratio', 'abc', [
+                'type' => 'float',
+                'required' => true
+            ]);
+        }, "[BaseControllerWrapper::validate_parameter] Type mismatch for parameter 'ratio'. Expected 'float', but found: 'abc'");
     }
 
     public function test_validate_parameter_float_array_valid()
@@ -565,22 +542,22 @@ class BaseControllerTest extends UnitTest
 
     public function test_validate_parameter_float_array_required_invalid()
     {
-        $this->expectError();
-        $this->expectErrorMessage(
+        $this->assertErrorWithMessage(
+            function () {
+                $this->controller->do_validate_parameter(
+                    'ratio',
+                    ['a', 'b', '1.23'],
+                    [
+                        'type' => 'float[]',
+                        'required' => true
+                    ]
+                );
+            },
             "[BaseControllerWrapper::validate_parameter] Type mismatch for parameter 'ratio'. Expected 'float[]', but found: array (
   0 => 'a',
   1 => 'b',
   2 => '1.23',
 )"
-        );
-
-        $this->controller->do_validate_parameter(
-            'ratio',
-            ['a', 'b', '1.23'],
-            [
-                'type' => 'float[]',
-                'required' => true
-            ]
         );
     }
 
@@ -619,16 +596,13 @@ class BaseControllerTest extends UnitTest
 
     public function test_validate_parameter_enum_required_null_invalid()
     {
-        $this->expectError();
-        $this->expectErrorMessage(
-            "[BaseControllerWrapper::validate_parameter] Missing required enum parameter 'fruit'"
-        );
-
-        $this->controller->do_validate_parameter('fruit', null, [
-            'type' => 'enum',
-            'values' => ['oranges', 'apples', 'nectarines', 'kiwis'],
-            'required' => true
-        ]);
+        $this->assertErrorWithMessage(function () {
+            $this->controller->do_validate_parameter('fruit', null, [
+                'type' => 'enum',
+                'values' => ['oranges', 'apples', 'nectarines', 'kiwis'],
+                'required' => true
+            ]);
+        }, "[BaseControllerWrapper::validate_parameter] Missing required enum parameter 'fruit'");
     }
 
     public function test_validate_parameter_enum_required_valid()
@@ -645,30 +619,24 @@ class BaseControllerTest extends UnitTest
 
     public function test_validate_parameter_enum_required_invalid()
     {
-        $this->expectError();
-        $this->expectErrorMessage(
-            "[BaseControllerWrapper::validate_parameter] Missing required enum parameter 'fruit'"
-        );
-
-        $this->controller->do_validate_parameter('fruit', '', [
-            'type' => 'enum',
-            'values' => ['oranges', 'apples', 'nectarines', 'kiwis'],
-            'required' => true
-        ]);
+        $this->assertErrorWithMessage(function () {
+            $this->controller->do_validate_parameter('fruit', '', [
+                'type' => 'enum',
+                'values' => ['oranges', 'apples', 'nectarines', 'kiwis'],
+                'required' => true
+            ]);
+        }, "[BaseControllerWrapper::validate_parameter] Missing required enum parameter 'fruit'");
     }
 
     public function test_validate_parameter_enum_required_string_invalid()
     {
-        $this->expectError();
-        $this->expectErrorMessage(
-            "[BaseControllerWrapper::validate_parameter] Type mismatch for parameter 'fruit'. Expected 'enum', but found: 'foobar'"
-        );
-
-        $this->controller->do_validate_parameter('fruit', 'foobar', [
-            'type' => 'enum',
-            'values' => ['oranges', 'apples', 'nectarines', 'kiwis'],
-            'required' => true
-        ]);
+        $this->assertErrorWithMessage(function () {
+            $this->controller->do_validate_parameter('fruit', 'foobar', [
+                'type' => 'enum',
+                'values' => ['oranges', 'apples', 'nectarines', 'kiwis'],
+                'required' => true
+            ]);
+        }, "[BaseControllerWrapper::validate_parameter] Type mismatch for parameter 'fruit'. Expected 'enum', but found: 'foobar'");
     }
 
     public function test_validate_parameter_enum_array_valid()
@@ -716,21 +684,23 @@ class BaseControllerTest extends UnitTest
 
     public function test_validate_parameter_enum_array_required_invalid()
     {
-        $this->expectError();
-        $this->expectErrorMessage("[BaseControllerWrapper::validate_parameter] Type mismatch for parameter 'fruit'. Expected 'enum[]', but found: array (
+        $this->assertErrorWithMessage(
+            function () {
+                $this->controller->do_validate_parameter(
+                    'fruit',
+                    [1, 2, 3],
+                    [
+                        'type' => 'enum[]',
+                        'values' => ['oranges', 'apples', 'nectarines', 'kiwis'],
+                        'required' => true
+                    ]
+                );
+            },
+            "[BaseControllerWrapper::validate_parameter] Type mismatch for parameter 'fruit'. Expected 'enum[]', but found: array (
   0 => 1,
   1 => 2,
   2 => 3,
-)");
-
-        $this->controller->do_validate_parameter(
-            'fruit',
-            [1, 2, 3],
-            [
-                'type' => 'enum[]',
-                'values' => ['oranges', 'apples', 'nectarines', 'kiwis'],
-                'required' => true
-            ]
+)"
         );
     }
 

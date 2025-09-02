@@ -29,7 +29,7 @@ class Account extends ActiveRecord
     const WRITEONLY_COLUMNS = ['password', 'pet_name'];
 }
 
-class UserTest extends UnitTest
+class UserTest extends UnitTestBase
 {
     function setUp(): void {}
 

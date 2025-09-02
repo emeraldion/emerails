@@ -16,7 +16,7 @@ require_once __DIR__ . '/../base_test.php';
 
 use Emeraldion\EmeRails\Models\Relationship;
 
-class RelationshipTest extends UnitTest
+class RelationshipTest extends UnitTestBase
 {
     private $models = [];
 

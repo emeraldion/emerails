@@ -15,7 +15,7 @@ require_once __DIR__ . '/../base_test.php';
 
 use Emeraldion\EmeRails\Helpers\CSSMinifier;
 
-class CSSMinifierTest extends UnitTest
+class CSSMinifierTest extends UnitTestBase
 {
     public function test_get_instance()
     {

@@ -19,7 +19,7 @@ use Emeraldion\EmeRails\Helpers\Country;
  *	@class CountryTest
  *	@short Test case for Country helper object.
  */
-class CountryUnitTest extends UnitTest
+class CountryUnitTest extends UnitTestBase
 {
     /**
      *	@fn test_for

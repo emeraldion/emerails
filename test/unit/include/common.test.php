@@ -14,7 +14,7 @@
 require_once __DIR__ . '/../../../include/common.inc.php';
 require_once __DIR__ . '/../base_test.php';
 
-class CommonTest extends UnitTest
+class CommonTest extends UnitTestBase
 {
     function setUp(): void
     {
