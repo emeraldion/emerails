@@ -181,7 +181,7 @@ class MysqliAdapter implements DbAdapter
         } while ($this->link->more_results());
 
         if (Config::get('DB_DEBUG')) {
-            $num_rows = count($this->results);
+            $num_rows = count($this->result);
             printf($num_rows == 1 ? "1 result\n" : "%d results\n", $num_rows);
         }
 
