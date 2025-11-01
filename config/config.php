@@ -20,12 +20,12 @@ class Config
         self::$keys[$key] = $value;
     }
 
-    public static function get($key)
+    public static function get(string $key, $default_value = null)
     {
         if (isset(self::$keys[$key])) {
             return self::$keys[$key];
         }
-        return null;
+        return $default_value;
     }
 
     protected static function reset()
