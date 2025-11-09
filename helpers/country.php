@@ -19,6 +19,7 @@ abstract class Country
 {
     const ALBANIA = 'AL';
     const ALGERIA = 'DZ';
+    const ANDORRA = 'AD';
     const ARGENTINA = 'AR';
     const ARMENIA = 'AM';
     const AUSTRALIA = 'AU';
@@ -148,6 +149,7 @@ abstract class Country
     const URUGUAY = 'UY';
     const UZBEKISTAN = 'UZ';
 
+    const VATICAN_CITY = 'VA';
     const VENEZUELA = 'VE';
     const VIETNAM = 'VN';
 
@@ -161,6 +163,7 @@ abstract class Country
     const ALL_COUNTRIES = [
         self::ALBANIA,
         self::ALGERIA,
+        self::ANDORRA,
         self::ARGENTINA,
         self::ARMENIA,
         self::AUSTRALIA,
@@ -290,6 +293,7 @@ abstract class Country
         self::URUGUAY,
         self::UZBEKISTAN,
 
+        self::VATICAN_CITY,
         self::VENEZUELA,
         self::VIETNAM,
 
@@ -330,6 +334,7 @@ abstract class Country
 
     const FLAG_ALBANIA = '🇦🇱';
     const FLAG_ALGERIA = '🇩🇿';
+    const FLAG_ANDORRA = '🇦🇩';
     const FLAG_ARGENTINA = '🇦🇷';
     const FLAG_ARMENIA = '🇦🇲';
     const FLAG_AUSTRALIA = '🇦🇺';
@@ -459,6 +464,7 @@ abstract class Country
     const FLAG_URUGUAY = '🇺🇾';
     const FLAG_UZBEKISTAN = '🇺🇿';
 
+    const FLAG_VATICAN_CITY = '🇻🇦';
     const FLAG_VENEZUELA = '🇻🇪';
     const FLAG_VIETNAM = '🇻🇳';
 
@@ -472,6 +478,7 @@ abstract class Country
     const FLAGS = [
         self::ALBANIA => self::FLAG_ALBANIA,
         self::ALGERIA => self::FLAG_ALGERIA,
+        self::ANDORRA => self::FLAG_ANDORRA,
         self::ARGENTINA => self::FLAG_ARGENTINA,
         self::ARMENIA => self::FLAG_ARMENIA,
         self::AUSTRALIA => self::FLAG_AUSTRALIA,
@@ -601,6 +608,7 @@ abstract class Country
         self::URUGUAY => self::FLAG_URUGUAY,
         self::UZBEKISTAN => self::FLAG_UZBEKISTAN,
 
+        self::VATICAN_CITY => self::FLAG_VATICAN_CITY,
         self::VENEZUELA => self::FLAG_VENEZUELA,
         self::VIETNAM => self::FLAG_VIETNAM,
 
