@@ -62,6 +62,7 @@ abstract class Country
     const GEORGIA = 'GE';
     const GERMANY = 'DE';
     const GHANA = 'GH';
+    const GIBRALTAR = 'GI';
     const GREECE = 'GR';
     const GUATEMALA = 'GT';
 
@@ -124,6 +125,7 @@ abstract class Country
     const ROMANIA = 'RO';
     const RUSSIA = 'RU';
 
+    const SAN_MARINO = 'SM';
     const SAUDI_ARABIA = 'SA';
     const SENEGAL = 'SN';
     const SERBIA = 'RS';
@@ -207,6 +209,7 @@ abstract class Country
 
         self::GEORGIA,
         self::GERMANY,
+        self::GIBRALTAR,
         self::GHANA,
         self::GREECE,
         self::GUATEMALA,
@@ -270,6 +273,7 @@ abstract class Country
         self::ROMANIA,
         self::RUSSIA,
 
+        self::SAN_MARINO,
         self::SAUDI_ARABIA,
         self::SENEGAL,
         self::SERBIA,
@@ -380,6 +384,7 @@ abstract class Country
 
     const FLAG_GEORGIA = '🇬🇪';
     const FLAG_GERMANY = '🇩🇪';
+    const FLAG_GIBRALTAR = '🇬🇮';
     const FLAG_GHANA = '🇬🇭';
     const FLAG_GREECE = '🇬🇷';
     const FLAG_GUATEMALA = '🇬🇹';
@@ -443,6 +448,7 @@ abstract class Country
     const FLAG_ROMANIA = '🇷🇴';
     const FLAG_RUSSIA = '🇷🇺';
 
+    const FLAG_SAN_MARINO = '🇸🇲';
     const FLAG_SAUDI_ARABIA = '🇸🇦';
     const FLAG_SENEGAL = '🇸🇳';
     const FLAG_SERBIA = '🇷🇸';
@@ -526,6 +532,7 @@ abstract class Country
 
         self::GEORGIA => self::FLAG_GEORGIA,
         self::GERMANY => self::FLAG_GERMANY,
+        self::GIBRALTAR => self::FLAG_GIBRALTAR,
         self::GHANA => self::FLAG_GHANA,
         self::GREECE => self::FLAG_GREECE,
         self::GUATEMALA => self::FLAG_GUATEMALA,
@@ -589,6 +596,7 @@ abstract class Country
         self::ROMANIA => self::FLAG_ROMANIA,
         self::RUSSIA => self::FLAG_RUSSIA,
 
+        self::SAN_MARINO => self::FLAG_SAN_MARINO,
         self::SAUDI_ARABIA => self::FLAG_SAUDI_ARABIA,
         self::SENEGAL => self::FLAG_SENEGAL,
         self::SERBIA => self::FLAG_SERBIA,
