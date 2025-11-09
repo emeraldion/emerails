@@ -90,6 +90,7 @@ abstract class Country
     const LATVIA = 'LV';
     const LEBANON = 'LB';
     const LIBYA = 'LY';
+    const LIECHTENSTEIN = 'LI';
     const LITHUANIA = 'LT';
     const LUXEMBOURG = 'LU';
 
@@ -99,6 +100,7 @@ abstract class Country
     const MAURITIUS = 'MU';
     const MEXICO = 'MX';
     const MOLDOVA = 'MD';
+    const MONACO = 'MC';
     const MONGOLIA = 'MN';
     const MONTENEGRO = 'ME';
     const MOROCCO = 'MA';
@@ -234,6 +236,7 @@ abstract class Country
         self::LATVIA,
         self::LEBANON,
         self::LIBYA,
+        self::LIECHTENSTEIN,
         self::LITHUANIA,
         self::LUXEMBOURG,
 
@@ -243,6 +246,7 @@ abstract class Country
         self::MAURITIUS,
         self::MEXICO,
         self::MOLDOVA,
+        self::MONACO,
         self::MONGOLIA,
         self::MONTENEGRO,
         self::MOROCCO,
@@ -405,6 +409,7 @@ abstract class Country
     const FLAG_LATVIA = '🇱🇻';
     const FLAG_LEBANON = '🇱🇧';
     const FLAG_LIBYA = '🇱🇾';
+    const FLAG_LIECHTENSTEIN = '🇱🇮';
     const FLAG_LITHUANIA = '🇱🇹';
     const FLAG_LUXEMBOURG = '🇱🇺';
 
@@ -414,6 +419,7 @@ abstract class Country
     const FLAG_MAURITIUS = '🇲🇺';
     const FLAG_MEXICO = '🇲🇽';
     const FLAG_MOLDOVA = '🇲🇩';
+    const FLAG_MONACO = '🇲🇨';
     const FLAG_MONGOLIA = '🇲🇳';
     const FLAG_MONTENEGRO = '🇲🇪';
     const FLAG_MOROCCO = '🇲🇦';
@@ -549,6 +555,7 @@ abstract class Country
         self::LATVIA => self::FLAG_LATVIA,
         self::LEBANON => self::FLAG_LEBANON,
         self::LIBYA => self::FLAG_LIBYA,
+        self::LIECHTENSTEIN => self::FLAG_LIECHTENSTEIN,
         self::LITHUANIA => self::FLAG_LITHUANIA,
         self::LUXEMBOURG => self::FLAG_LUXEMBOURG,
 
@@ -558,6 +565,7 @@ abstract class Country
         self::MAURITIUS => self::FLAG_MAURITIUS,
         self::MEXICO => self::FLAG_MEXICO,
         self::MOLDOVA => self::FLAG_MOLDOVA,
+        self::MONACO => self::FLAG_MONACO,
         self::MONGOLIA => self::FLAG_MONGOLIA,
         self::MONTENEGRO => self::FLAG_MONTENEGRO,
         self::MOROCCO => self::FLAG_MOROCCO,
