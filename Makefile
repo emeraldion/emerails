@@ -4,7 +4,7 @@
 # /  __/ / / / / /  __/ /  / /_/ / / (__  )
 # \___/_/ /_/ /_/\___/_/   \__,_/_/_/____/
 #
-# (c) Claudio Procida 2008-2024
+# (c) Claudio Procida 2008-2025
 #
 
 .PHONY: docs test install update

@@ -6,7 +6,7 @@
  * /  __/ / / / / /  __/ /  / /_/ / / (__  )
  * \___/_/ /_/ /_/\___/_/   \__,_/_/_/____/
  *
- * (c) Claudio Procida 2008-2024
+ * (c) Claudio Procida 2008-2025
  *
  * @format
  */
@@ -46,25 +46,15 @@ function delete_test_models($names)
     Db::close_connection($conn);
 }
 
-class TestModel extends ActiveRecord
-{
-}
+class TestModel extends ActiveRecord {}
 
-class TestWidget extends ActiveRecord
-{
-}
+class TestWidget extends ActiveRecord {}
 
-class TestGroup extends ActiveRecord
-{
-}
+class TestGroup extends ActiveRecord {}
 
-class TestVersion extends ActiveRecord
-{
-}
+class TestVersion extends ActiveRecord {}
 
-class Athlete extends ActiveRecord
-{
-}
+class Athlete extends ActiveRecord {}
 
 class Runner extends Athlete
 {

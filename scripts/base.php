@@ -6,7 +6,7 @@
  * /  __/ / / / / /  __/ /  / /_/ / / (__  )
  * \___/_/ /_/ /_/\___/_/   \__,_/_/_/____/
  *
- * (c) Claudio Procida 2008-2024
+ * (c) Claudio Procida 2008-2025
  *
  * @format
  */
@@ -52,7 +52,7 @@ abstract class ScriptCommand extends CLI
         );
         printf(
             <<<EOT
-            (c) Claudio Procida 2008-2024
+            (c) Claudio Procida 2008-2025
 
             %s %s
 
