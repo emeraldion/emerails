@@ -297,14 +297,16 @@ function array_every(array $array, callable $fn)
 /**
  * @short Returns the first element of $array that satisfies the predicate $fn
  */
-function array_find(array $array, callable $fn)
-{
-    foreach ($array as $value) {
-        if ($fn($value)) {
-            return $value;
+if (!function_exists('array_find')) {
+    function array_find(array $array, callable $fn)
+    {
+        foreach ($array as $value) {
+            if ($fn($value)) {
+                return $value;
+            }
         }
+        return false;
     }
-    return false;
 }
 
 /**
