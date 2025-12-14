@@ -29,6 +29,8 @@ function strip_double_dots($str)
  */
 class AssetController extends BaseController
 {
+    const TIME_FORMAT = 'a, d b Y H:M:S Z';
+
     protected function init()
     {
         // Call parent's init method
@@ -72,10 +74,7 @@ class AssetController extends BaseController
 
         $this->response->body = $this->rewrite(file_get_contents($asset_file));
 
-        $this->response->add_header(
-            Headers::LAST_MODIFIED,
-            gmstrftime('%a, %d %b %Y %H:%M:%S %Z', filemtime($asset_file))
-        );
+        $this->response->add_header(Headers::LAST_MODIFIED, gmdate(self::TIME_FORMAT, filemtime($asset_file)));
 
         $this->render(null);
     }
@@ -98,7 +97,7 @@ class AssetController extends BaseController
             $this->response->body .= $this->rewrite(file_get_contents($asset_file));
         }
 
-        $this->response->add_header(Headers::LAST_MODIFIED, gmstrftime('%a, %d %b %Y %H:%M:%S %Z', $mtime));
+        $this->response->add_header(Headers::LAST_MODIFIED, gmdate(self::TIME_FORMAT, $mtime));
 
         $this->render(null);
     }
@@ -133,8 +132,8 @@ class AssetController extends BaseController
         $this->response->add_header(Headers::CONTENT_TYPE, $this->mimetype);
         $this->response->add_header(Headers::CACHE_CONTROL, 'max-age=86400');
         $this->response->add_header(Headers::PRAGMA, 'max-age=86400');
-        $this->response->add_header(Headers::DATE, gmstrftime('%a, %d %b %Y %H:%M:%S %Z'));
-        $this->response->add_header(Headers::EXPIRES, gmstrftime('%a, %d %b %Y %H:%M:%S %Z', time() + 86400));
+        $this->response->add_header(Headers::DATE, gmdate(self::TIME_FORMAT));
+        $this->response->add_header(Headers::EXPIRES, gmdate(self::TIME_FORMAT, time() + 86400));
     }
 
     /**
