@@ -101,7 +101,11 @@ class MysqlAdapter implements DbAdapter
         $args_len = func_num_args();
         if ($args_len > 1) {
             for ($i = 1; $i < $args_len; $i++) {
-                $query = str_replace('{' . $i . '}', mysql_real_escape_string($args[$i], $this->link), $query);
+                $query = str_replace(
+                    '{' . $i . '}',
+                    is_null($args[$i]) ? 'NULL' : mysql_real_escape_string($args[$i], $this->link),
+                    $query
+                );
             }
         }
         $this->query = $query;
