@@ -19,6 +19,8 @@ create_test_db:
 	mysql -u root -p < schemas/emerails_test.sql
 test: install
 	vendor/bin/phpunit --test-suffix=.test.php test/unit --color auto --coverage-html coverage
+test-helpers: install
+	vendor/bin/phpunit --test-suffix=.test.php test/unit/helpers --color auto --coverage-html coverage
 test-ci: install
 	vendor/bin/phpunit --test-suffix=.test.php test/unit --color auto --coverage-clover build/logs/clover.xml
 docs:

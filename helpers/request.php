@@ -84,7 +84,7 @@ class Request
     public function __construct()
     {
         $this->querystring = self::purge_querystring();
-        $this->method = strtoupper(@$_SERVER['REQUEST_METHOD']);
+        $this->method = strtoupper(@$_SERVER['REQUEST_METHOD'] ?: 'GET');
     }
 
     /**
@@ -181,7 +181,7 @@ class Request
      */
     protected static function purge_querystring()
     {
-        $pairs = explode('&', @$_SERVER['QUERY_STRING']);
+        $pairs = explode('&', @$_SERVER['QUERY_STRING'] ?: '');
         $newpairs = [];
         foreach ($pairs as $pair) {
             if (!empty($pair)) {
