@@ -114,7 +114,11 @@ class MysqliAdapter implements DbAdapter
         $args_len = func_num_args();
         if ($args_len > 1) {
             for ($i = 1; $i < $args_len; $i++) {
-                $query = str_replace('{' . $i . '}', $this->link->real_escape_string($args[$i]), $query);
+                $query = str_replace(
+                    '{' . $i . '}',
+                    is_null($args[$i]) ? 'NULL' : $this->link->real_escape_string($args[$i]),
+                    $query
+                );
             }
         }
         $this->query = $query;

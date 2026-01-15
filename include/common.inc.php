@@ -192,9 +192,9 @@ function localized($str)
  * @short Shorthand for <tt>htmlentities</tt>
  * @param str The string to escape
  */
-function h($str)
+function h(?string $str): ?string
 {
-    return htmlentities($str);
+    return is_null($str) ? null : htmlentities($str);
 }
 
 /**
