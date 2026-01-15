@@ -193,4 +193,46 @@ class CommonTest extends UnitTestBase
         $this->assertFalse(str_ends_with('abc', 'b'));
         $this->assertFalse(str_ends_with('abc', 'ab'));
     }
+
+    public function test_limit_3_positive_range()
+    {
+        // min < val < max
+        $this->assertEquals(1, limit_3(1, 0, 2));
+        // val == min
+        $this->assertEquals(0, limit_3(0, 0, 2));
+        // val < min
+        $this->assertEquals(0, limit_3(-1, 0, 2));
+        // val > max
+        $this->assertEquals(2, limit_3(3, 0, 2));
+        // non numeric val
+        $this->assertEquals(0, limit_3(null, 0, 2));
+    }
+
+    public function test_limit_3_range_across_zero()
+    {
+        // min < val < max
+        $this->assertEquals(1, limit_3(1, -1, 2));
+        // val == min
+        $this->assertEquals(-1, limit_3(-1, -1, 2));
+        // val < min
+        $this->assertEquals(-1, limit_3(-1, -1, 2));
+        // val > max
+        $this->assertEquals(2, limit_3(3, -1, 2));
+        // non numeric val
+        $this->assertEquals(-1, limit_3(null, -1, 2));
+    }
+
+    public function test_limit_3_inverted_range()
+    {
+        // min < val < max
+        $this->assertEquals(1, limit_3(1, 3, 1));
+        // val == min
+        $this->assertEquals(1, limit_3(0, 3, 1));
+        // val < min
+        $this->assertEquals(1, limit_3(-1, 3, 1));
+        // val > max
+        $this->assertEquals(3, limit_3(3, 3, 1));
+        // non numeric val
+        $this->assertEquals(1, limit_3(null, 3, 1));
+    }
 }
