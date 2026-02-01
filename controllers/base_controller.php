@@ -114,7 +114,7 @@ class BaseController implements Controller
      *
      * // GET /controller/action/1
      * protected function init() {
-     *  $this->accept_parameter('index', 'id', array('required' => true, 'type' => 'int'));
+     *  $this->accept_parameter('index', 'id', ['required' => true, 'type' => 'int']);
      * }
      *
      * public function action() {
@@ -247,15 +247,15 @@ class BaseController implements Controller
      *
      * Examples:
      *
-     * <tt>$this->before_filter(array('foo', 'bar'));</tt>
+     * <tt>$this->before_filter(['foo', 'bar']);</tt>
      *
      * Executes the <tt>foo</tt> and <tt>bar</tt> filters (in this order) whatever action is requested.
      *
-     * <tt>$this->before_filter('foo', array('only' => 'index'));</tt>
+     * <tt>$this->before_filter('foo', ['only' => 'index']);</tt>
      *
      * Executes the <tt>foo</tt> filter only when the <tt>index</tt> action is requested.
      *
-     * <tt>$this->before_filter('foo', array('except' => array('index', 'list')));</tt>
+     * <tt>$this->before_filter('foo', ['except' => ['index', 'list']]);</tt>
      *
      * Executes the <tt>foo</tt> filter unless the <tt>index</tt> or <tt>list</tt> actions are requested.
      *
@@ -288,15 +288,15 @@ class BaseController implements Controller
      *
      * Examples:
      *
-     * <tt>$this->after_filter(array('foo', 'bar'));</tt>
+     * <tt>$this->after_filter(['foo', 'bar']);</tt>
      *
      * Executes the <tt>foo</tt> and <tt>bar</tt> filters (in this order) whatever action is requested.
      *
-     * <tt>$this->after_filter('foo', array('only' => 'index'));</tt>
+     * <tt>$this->after_filter('foo', ['only' => 'index']);</tt>
      *
      * Executes the <tt>foo</tt> filter only when the <tt>index</tt> action is requested.
      *
-     * <tt>$this->after_filter('foo', array('except' => array('index', 'list')));</tt>
+     * <tt>$this->after_filter('foo', ['except' => ['index', 'list']]);</tt>
      *
      * Executes the <tt>foo</tt> filter unless the <tt>index</tt> or <tt>list</tt> actions are requested.
      *
@@ -687,11 +687,11 @@ class BaseController implements Controller
      *
      * Allows the <tt>POST</tt> method on the <tt>create</tt> action.
      *
-     * <tt>$this->allow_method(array('PUT', 'DELETE'), 'widget');</tt>
+     * <tt>$this->allow_method(['PUT', 'DELETE'], 'widget');</tt>
      *
      * Allows the <tt>PUT</tt> and <tt>DELETE</tt> methods on the <tt>widget</tt> action.
      *
-     * <tt>$this->allow_method('GET', array('except' => array('delete')));</tt>
+     * <tt>$this->allow_method('GET', ['except' => ['delete']]);</tt>
      *
      * Blocks the <tt>GET</tt> method on the <tt>delete</tt> action.
      *
