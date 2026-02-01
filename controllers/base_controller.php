@@ -347,6 +347,9 @@ class BaseController implements Controller
             }
             // Allow a flat list of actions per filter as an alias for the 'only' form
             return in_array($this->action, $conditions);
+        } elseif ($conditions) {
+            // Allow a single action name
+            return $this->action == $conditions;
         }
         return true;
     }
