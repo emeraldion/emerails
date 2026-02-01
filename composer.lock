@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8786b8bd0ee7b8a6846a5e1d78fa1058",
+    "content-hash": "e9fd4bf4b806b531908c4bcff613329d",
     "packages": [
         {
             "name": "splitbrain/php-cli",
@@ -1184,16 +1184,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "9.6.34",
+            "version": "9.6.33",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "b36f02317466907a230d3aa1d34467041271ef4a"
+                "reference": "fea06253ecc0a32faf787bd31b261f56f351d049"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/b36f02317466907a230d3aa1d34467041271ef4a",
-                "reference": "b36f02317466907a230d3aa1d34467041271ef4a",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/fea06253ecc0a32faf787bd31b261f56f351d049",
+                "reference": "fea06253ecc0a32faf787bd31b261f56f351d049",
                 "shasum": ""
             },
             "require": {
@@ -1267,7 +1267,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
                 "security": "https://github.com/sebastianbergmann/phpunit/security/policy",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/9.6.34"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/9.6.33"
             },
             "funding": [
                 {
@@ -1291,7 +1291,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-01-27T05:45:00+00:00"
+            "time": "2026-01-27T05:25:09+00:00"
         },
         {
             "name": "psr/container",
