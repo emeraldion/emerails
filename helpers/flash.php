@@ -15,6 +15,9 @@ class Flash
 {
     protected static $instance = null;
 
+    public $message;
+    public $type;
+
     protected function __construct()
     {
         $this->message = $_SESSION['flash']['message'];
