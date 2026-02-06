@@ -1,6 +1,7 @@
 {
   "name": "emeraldion/emerails",
   "type": "project",
+  "version": "2.0.1",
   "description": "Rails-like LAMP web application framework",
   "keywords": [
     "framework",
