@@ -23,8 +23,21 @@ abstract class Headers
     const CONTENT_TYPE = 'Content-Type';
     const DATE = 'Date';
     const EXPIRES = 'Expires';
-    const LOCATION = 'Location';
     const LAST_MODIFIED = 'Last-Modified';
+    const LOCATION = 'Location';
     const PRAGMA = 'Pragma';
+    const REFERRER = 'Referer';
     const REFRESH = 'Refresh';
+
+    public static function get(array $headers = [], string $name): ?string
+    {
+        if (array_key_exists($name, $headers)) {
+            return $headers[$name];
+        } elseif (array_key_exists($k = strtolower($name), $headers)) {
+            return $headers[$k];
+        } elseif (array_key_exists($k = mb_convert_case($name, MB_CASE_TITLE_SIMPLE), $headers)) {
+            return $headers[$k];
+        }
+        return null;
+    }
 }
