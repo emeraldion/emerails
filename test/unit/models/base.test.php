@@ -918,6 +918,19 @@ class ActiveRecordTest extends UnitTestBase
         $this->assertEquals(1, count($instance->test_versions));
     }
 
+    public function test_count_has_many()
+    {
+        $instance = new TestWidget();
+        $ret = $instance->find_by_id(1);
+        $this->assertTrue($ret);
+        $this->assertEquals(4, $instance->count_has_many('test_versions'));
+
+        $instance = new TestWidget();
+        $ret = $instance->find_by_id(2);
+        $this->assertTrue($ret);
+        $this->assertEquals(1, $instance->count_has_many('test_versions'));
+    }
+
     public function test_has_many_with_as_param()
     {
         $instance = new TestWidget();
@@ -975,6 +988,19 @@ class ActiveRecordTest extends UnitTestBase
         $this->assertEquals(1, count($instance->test_versions));
     }
 
+    public function test_count_has_many_by_class_name()
+    {
+        $instance = new TestWidget();
+        $ret = $instance->find_by_id(1);
+        $this->assertTrue($ret);
+        $this->assertEquals(4, $instance->count_has_many(TestVersion::class));
+
+        $instance = new TestWidget();
+        $ret = $instance->find_by_id(2);
+        $this->assertTrue($ret);
+        $this->assertEquals(1, $instance->count_has_many(TestVersion::class));
+    }
+
     public function test_has_many_no_matches()
     {
         $instance = new TestWidget();
@@ -983,6 +1009,14 @@ class ActiveRecordTest extends UnitTestBase
         $ret = $instance->has_many('test_versions');
         $this->assertFalse($ret);
         $this->assertNull($instance->test_versions);
+    }
+
+    public function test_count_has_many_no_matches()
+    {
+        $instance = new TestWidget();
+        $ret = $instance->find_by_id(3);
+        $this->assertTrue($ret);
+        $this->assertEquals(0, $instance->count_has_many('test_versions'));
     }
 
     public function test_has_and_belongs_to_many()
@@ -1064,6 +1098,28 @@ class ActiveRecordTest extends UnitTestBase
         }
     }
 
+    public function test_count_has_and_belongs_to_many()
+    {
+        /*
+         *  +----------+----------+-------+-------+-------------+-------+
+         *  | model_id | group_id | count | color | min_version | price |
+         *  +----------+----------+-------+-------+-------------+-------+
+         *  |        2 |        1 |     3 | red   |        NULL |  4.99 |
+         *  |        1 |        2 |     1 | green |         1.5 |  NULL |
+         *  |        2 |        2 |     0 | NULL  |           2 | 10.99 |
+         *  +----------+----------+-------+-------+-------------+-------+
+         */
+        $instance = new TestModel();
+        $ret = $instance->find_by_id(1);
+        $this->assertTrue($ret);
+        $this->assertEquals(1, $instance->count_has_and_belongs_to_many(TestGroup::class));
+
+        $instance = new TestModel();
+        $ret = $instance->find_by_id(2);
+        $this->assertTrue($ret);
+        $this->assertEquals(2, $instance->count_has_and_belongs_to_many(TestGroup::class));
+    }
+
     public function test_has_and_belongs_to_many_by_class_name()
     {
         /*
@@ -1141,6 +1197,28 @@ class ActiveRecordTest extends UnitTestBase
                     break;
             }
         }
+    }
+
+    public function test_count_has_and_belongs_to_many_by_class_name()
+    {
+        /*
+         *  +----------+----------+-------+-------+-------------+-------+
+         *  | model_id | group_id | count | color | min_version | price |
+         *  +----------+----------+-------+-------+-------------+-------+
+         *  |        2 |        1 |     3 | red   |        NULL |  4.99 |
+         *  |        1 |        2 |     1 | green |         1.5 |  NULL |
+         *  |        2 |        2 |     0 | NULL  |           2 | 10.99 |
+         *  +----------+----------+-------+-------+-------------+-------+
+         */
+        $instance = new TestModel();
+        $ret = $instance->find_by_id(1);
+        $this->assertTrue($ret);
+        $this->assertEquals(1, $instance->count_has_and_belongs_to_many(TestGroup::class));
+
+        $instance = new TestModel();
+        $ret = $instance->find_by_id(2);
+        $this->assertTrue($ret);
+        $this->assertEquals(2, $instance->count_has_and_belongs_to_many(TestGroup::class));
     }
 
     public function test_has_and_belongs_to_many_with_as_param()
@@ -1319,6 +1397,28 @@ class ActiveRecordTest extends UnitTestBase
                     break;
             }
         }
+    }
+
+    public function test_count_has_and_belongs_to_many_inverse_by_class_name()
+    {
+        /*
+         *  +----------+----------+-------+
+         *  | model_id | group_id | count |
+         *  +----------+----------+-------+
+         *  |        2 |        1 |     3 |
+         *  |        1 |        2 |     1 |
+         *  |        2 |        2 |     0 |
+         *  +----------+----------+-------+
+         */
+        $instance = new TestGroup();
+        $ret = $instance->find_by_id(1);
+        $this->assertTrue($ret);
+        $this->assertEquals(1, $instance->count_has_and_belongs_to_many(TestModel::class));
+
+        $instance = new TestGroup();
+        $ret = $instance->find_by_id(2);
+        $this->assertTrue($ret);
+        $this->assertEquals(2, $instance->count_has_and_belongs_to_many(TestModel::class));
     }
 
     public function test_has_and_belongs_to_many_join_widgets()

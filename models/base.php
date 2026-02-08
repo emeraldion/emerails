@@ -473,6 +473,46 @@ abstract class ActiveRecord
     }
 
     /**
+     *  @fn count_has_many($class_or_table_name, $params)
+     *  @short Counts the children of the receiver in a one-to-many relationship.
+     *  @param class_or_table_name The name of the child class or table.
+     *  @param params An array of conditions. For the semantics, see find_all
+     *  @return ret The number of children
+     *  @see find_all
+     */
+    public function count_has_many($class_or_table_name, $params = [])
+    {
+        try {
+            // Assume class name and obtain table name
+            $childclass = $class_or_table_name;
+            $child = new $childclass();
+            $table_name = $child->get_table_name();
+        } catch (Throwable $t) {
+            // Assume table name and infer class name
+            $table_name = $class_or_table_name;
+            $childclass = table_name_to_class_name($table_name);
+            $child = new $childclass();
+            trigger_error(
+                sprintf(
+                    '%s::%s was invoked with a table name instead of a class name. This behavior is deprecated and will be removed in a future milestone. Please refactor your code to use class names.',
+                    get_class($this),
+                    __FUNCTION__
+                ),
+                E_USER_DEPRECATED
+            );
+        }
+        $fkey = $this->get_foreign_key_name();
+        if (isset($params[self::PARAM_WHERE_CLAUSE])) {
+            $params[
+                self::PARAM_WHERE_CLAUSE
+            ] = "({$params[self::PARAM_WHERE_CLAUSE]}) AND `{$fkey}` = '{$this->values[$this->get_primary_key_name()]}' ";
+        } else {
+            $params[self::PARAM_WHERE_CLAUSE] = "`{$fkey}` = '{$this->values[$this->get_primary_key_name()]}' ";
+        }
+        return $child->count_all($params);
+    }
+
+    /**
      *  @fn has_and_belongs_to_many($class_or_table_name, $params)
      *  @short Loads the object network the receiver belongs to in a many-to-many relationship.
      *  @param class_or_table_name The name of the peer class or table.
@@ -608,6 +648,87 @@ abstract class ActiveRecord
             // Unset previously set value
             unset($this->values[$peer_member_name]);
         }
+        $conn->free_result();
+
+        Db::close_connection($conn);
+
+        return $ret;
+    }
+
+    /**
+     *  @fn count_has_and_belongs_to_many($class_or_table_name, $params)
+     *  @short Loads the object network the receiver belongs to in a many-to-many relationship.
+     *  @param class_or_table_name The name of the peer class or table.
+     *  @param params An array of conditions. For the semantics, see find_all
+     *  @return ret The number of peers
+     *  @see find_all
+     */
+    public function count_has_and_belongs_to_many($class_or_table_name, $params = [])
+    {
+        $conn = Db::get_connection();
+
+        try {
+            // Assume class name and obtain table name
+            $peerclass = $class_or_table_name;
+            $peer = new $peerclass();
+            $table_name = $peer->get_table_name();
+        } catch (Throwable $t) {
+            // Assume table name and infer class name
+            $table_name = $class_or_table_name;
+            $peerclass = table_name_to_class_name($table_name);
+            $peer = new $peerclass();
+            trigger_error(
+                sprintf(
+                    '%s::%s was invoked with a table name instead of a class name. This behavior is deprecated and will be removed in a future milestone. Please refactor your code to use class names.',
+                    get_class($this),
+                    __FUNCTION__
+                ),
+                E_USER_DEPRECATED
+            );
+        }
+
+        $pkey = $this->get_primary_key_name();
+        $fkey = $this->get_foreign_key_name();
+        $peer_pk = $peer->get_primary_key_name();
+        $peer_fkey = $peer->get_foreign_key_name();
+
+        $r = Relationship::many_to_many(get_called_class(), $peerclass);
+        $relation_table = $r->get_table_name();
+
+        $query = 'SELECT COUNT(*) FROM `{1}` JOIN `{2}` ON `{1}`.`{3}` = `{2}`.`{4}`';
+        if (!empty($params[self::PARAM_JOIN])) {
+            $has_join = true;
+            $joined_classname = $params[self::PARAM_JOIN];
+            $joined_obj = new $joined_classname();
+
+            if ($joined_obj->has_column($peer_fkey)) {
+                $query .= ' JOIN `{9}` ON `{2}`.`{4}` = `{9}`.`{3}`';
+            } elseif ($peer->has_column($joined_obj->get_foreign_key_name())) {
+                $query .= ' JOIN `{9}` ON `{2}`.`{11}` = `{9}`.`{10}`';
+            }
+        } else {
+            $has_join = false;
+        }
+
+        $query .= " WHERE (`{1}`.`{5}` = '{6}' AND " . ($params[self::PARAM_WHERE_CLAUSE] ?? '1') . ')';
+
+        $conn->prepare(
+            $query,
+            $relation_table, // 1
+            $table_name, // 2
+            $peer_fkey, // 3
+            $peer_pk, // 4
+            $fkey, // 5
+            $this->values[$pkey], // 6
+            // Leaving 7, 8 as gap for symmetry and interoperability with has_and_belongs_to_many
+            $has_join ? $joined_obj->get_table_name() : null, // 9
+            $has_join ? $joined_obj->get_primary_key_name() : null, // 10
+            $has_join ? $joined_obj->get_foreign_key_name() : null // 11
+        );
+        $conn->exec();
+
+        $ret = first($conn->fetch_assoc());
+
         $conn->free_result();
 
         Db::close_connection($conn);
