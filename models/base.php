@@ -721,6 +721,8 @@ abstract class ActiveRecord
             $fkey, // 5
             $this->values[$pkey], // 6
             // Leaving 7, 8 as gap for symmetry and interoperability with has_and_belongs_to_many
+            null, // 7
+            null, // 8
             $has_join ? $joined_obj->get_table_name() : null, // 9
             $has_join ? $joined_obj->get_primary_key_name() : null, // 10
             $has_join ? $joined_obj->get_foreign_key_name() : null // 11
