@@ -29,7 +29,7 @@ abstract class Headers
     const REFERRER = 'Referer';
     const REFRESH = 'Refresh';
 
-    public static function get(array $headers = [], string $name): ?string
+    public static function get(array $headers, string $name): ?string
     {
         $ret = null;
         if (array_key_exists($name, $headers)) {
