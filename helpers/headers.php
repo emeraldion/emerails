@@ -31,13 +31,18 @@ abstract class Headers
 
     public static function get(array $headers = [], string $name): ?string
     {
+        $ret = null;
         if (array_key_exists($name, $headers)) {
-            return $headers[$name];
+            $ret = $headers[$name];
         } elseif (array_key_exists($k = strtolower($name), $headers)) {
-            return $headers[$k];
+            $ret = $headers[$k];
         } elseif (array_key_exists($k = mb_convert_case($name, MB_CASE_TITLE_SIMPLE), $headers)) {
-            return $headers[$k];
+            $ret = $headers[$k];
         }
-        return null;
+        // Last one wins
+        if (is_array($ret)) {
+            $ret = last($ret);
+        }
+        return $ret;
     }
 }
