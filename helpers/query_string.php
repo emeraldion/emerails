@@ -19,11 +19,11 @@ function QueryString_implode_item($item, $key, $pluralized_keys = [])
     if (is_array($item)) {
         $ret = [];
         foreach ($item as $i) {
-            $ret[] = urlencode($key . '[]') . QueryString::EQUALS . urlencode($i);
+            $ret[] = urlencode($key . '[]') . QueryString::EQUALS . urlencode($i ?? '');
         }
         $item = implode(QueryString::SEPARATOR, $ret);
     } else {
-        $item = urlencode($key) . QueryString::EQUALS . urlencode($item);
+        $item = urlencode($key) . QueryString::EQUALS . urlencode($item ?? '');
     }
     return $item;
 }
