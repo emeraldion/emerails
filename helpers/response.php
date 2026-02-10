@@ -52,8 +52,10 @@ class Response
      *	@param name The header name.
      *	@param value The header value.
      */
-    public function add_header($name, $value)
+    public function add_header($name, $value): self
     {
         $this->headers[] = [$name, $value];
+
+        return $this;
     }
 }
