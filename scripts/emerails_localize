@@ -37,12 +37,15 @@ class EmerailsLocalize extends ScriptCommand
     // TODO:
     // const OPTION_FIX = 'fix';
     const OPTION_GLOBAL = 'global';
+    const OPTION_HELPERS = 'helpers';
     const OPTION_LANGUAGES = 'languages';
-    const OPTION_PURGE = 'purge';
+    const OPTION_MODELS = 'models';
+    // TODO:
+    // const OPTION_PURGE = 'purge';
     const OPTION_RECURSIVE = 'recursive';
     const OPTION_SKIP_EMPTY = 'skip-empty';
-    const OPTION_STRIP_INLINED = 'strip-inlined';
     const OPTION_STRICT = 'strict';
+    const OPTION_STRIP_INLINED = 'strip-inlined';
     const OPTION_TRAITS = 'traits';
     const OPTION_VERBOSE = 'verbose';
 
@@ -90,11 +93,26 @@ class EmerailsLocalize extends ScriptCommand
             'languages',
             self::COMMAND_EXTRACT
         );
+        // TODO:
         // $options->registerOption(self::OPTION_PURGE, 'Purges unused strings', 'P', false, self::COMMAND_EXTRACT);
         $options->registerOption(
             self::OPTION_TRAITS,
             'Extract from controller traits',
             't',
+            false,
+            self::COMMAND_EXTRACT
+        );
+        $options->registerOption(
+            self::OPTION_HELPERS,
+            'Extract from helpers. Strings extracted from helpers will be written to the global scope.',
+            'e',
+            false,
+            self::COMMAND_EXTRACT
+        );
+        $options->registerOption(
+            self::OPTION_MODELS,
+            'Extract from models. Strings extracted from models will be written to the global scope.',
+            'm',
             false,
             self::COMMAND_EXTRACT
         );
@@ -331,6 +349,8 @@ class EmerailsLocalize extends ScriptCommand
         $verbose = $options->getOpt(self::OPTION_VERBOSE);
         $controller = $options->getOpt(self::OPTION_CONTROLLER);
         $extract_from_traits = $options->getOpt(self::OPTION_TRAITS);
+        $extract_from_helpers = $options->getOpt(self::OPTION_HELPERS);
+        $extract_from_models = $options->getOpt(self::OPTION_MODELS);
         $strip_inlined = $options->getOpt(self::OPTION_STRIP_INLINED);
         $languages = $options->getOpt(self::OPTION_LANGUAGES) ?: self::DEFAULT_LANGUAGE;
 
@@ -339,122 +359,222 @@ class EmerailsLocalize extends ScriptCommand
 
         $success = true;
 
-        $controllers_dir = sprintf('%s/../../controllers', $base_dir);
-        if (!(file_exists($controllers_dir) && is_dir($controllers_dir))) {
-            printf(
-                "[%s] Unable to locate controllers directory: %s\n",
-                ANSIColorWriter::colorize('Error', 'red'),
-                $controllers_dir
-            );
-            exit(1);
-        }
-
-        // 1. Extract strings from controller file
-        // TODO: this is not sufficient to extract all strings from controllers spread across various traits
-        $controller_filename = sprintf('%s/%s_controller.php', $controllers_dir, $controller);
-        $extracted_keys = $this->extract_keys_from_file($controller_filename, $strip_inlined);
-
-        // 2. Extract strings from controller traits
-        // TODO: this is not sufficient to extract all strings from controllers spread across various traits
-        if ($extract_from_traits) {
-            $handle = opendir($controllers_dir);
-            if ($handle) {
-                while (($filename = readdir($handle)) !== false) {
-                    if ($filename === '.' || $filename === '..') {
-                        continue;
-                    }
-                    if (stripos($filename, sprintf('%s_controller_', $controller)) !== 0) {
-                        continue;
-                    }
-                    $trait_filename = $controllers_dir . '/' . $filename;
-                    $extracted_keys = array_merge(
-                        $extracted_keys,
-                        $this->extract_keys_from_file($trait_filename, $strip_inlined)
-                    );
-                }
-            }
-        }
-
-        // 3. Extract strings from controller views
-        $controller_views_dir = sprintf('%s/../../views/%s', $base_dir, $controller);
-        if (file_exists($controller_views_dir) && is_dir($controller_views_dir)) {
-            $handle = opendir($controller_views_dir);
-            if ($handle) {
-                while (($filename = readdir($handle)) !== false) {
-                    if ($filename === '.' || $filename === '..') {
-                        continue;
-                    }
-                    $view_filename = $controller_views_dir . '/' . $filename;
-
-                    $extracted_keys = array_merge(
-                        $extracted_keys,
-                        $this->extract_keys_from_file($view_filename, $strip_inlined)
-                    );
-                }
-            }
-        }
-
-        foreach (explode(',', $languages) as $language) {
-            // 4. Read in existing strings if available
-            $controller_path = sprintf(
-                $base_dir . self::DEFAULT_BASE_DIR . '/%s/localizable-%s.strings',
-                $controller,
-                $language
-            );
-            if (file_exists($controller_path)) {
-                $handle = fopen($controller_path, 'r');
-                $contents = fread($handle, filesize($controller_path));
-                fclose($handle);
-
-                [$strings, $success] = $this->evaluate_strings_callback($contents);
-            } else {
-                $strings = [];
-            }
-
-            // 5. Load global strings, unset duplicate keys, and emit a warning
-            $global_path = sprintf($base_dir . self::DEFAULT_BASE_DIR . '/localizable-%s.strings', $language);
-            if (file_exists($global_path)) {
-                $handle = fopen($global_path, 'r');
-                $contents = fread($handle, filesize($global_path));
-                fclose($handle);
-
-                [$global_strings, $success] = $this->evaluate_strings_callback($contents);
-            } else {
-                $global_strings = [];
-            }
-
-            // 6. Layer existing strings on top of extracted strings
-            $combined_strings = [];
-            foreach ($extracted_keys as $key => $inlined_value) {
-                if (array_key_exists($key, $global_strings)) {
-                    // TODO: warn if verbose
-                    continue;
-                }
-                $combined_strings[$key] = $inlined_value;
-            }
-            foreach ($strings as $key => $value) {
-                $combined_strings[$key] = $value ?? $key;
-            }
-            ksort($combined_strings);
-
-            if ($dry_run) {
-                print "Extracted strings:\n";
-                var_dump($combined_strings);
-            } else {
-                $dir = sprintf('%s/../../assets/strings/%s', $base_dir, $controller);
-                if (!(file_exists($dir) && is_dir($dir))) {
-                    if (!mkdir($dir, 0755, true)) {
-                        exit(1);
-                    }
-                }
-
-                // TODO: should we rename the old file as .bak ?
-                $this->write_sorted_strings(
-                    $combined_strings,
-                    $controller_path,
-                    !$dry_run,
-                    $options->getOpt(self::OPTION_SKIP_EMPTY)
+        if ($controller) {
+            $controllers_dir = sprintf('%s/../../controllers', $base_dir);
+            if (!(file_exists($controllers_dir) && is_dir($controllers_dir))) {
+                printf(
+                    "[%s] Unable to locate controllers directory: %s\n",
+                    ANSIColorWriter::colorize('Error', 'red'),
+                    $controllers_dir
                 );
+                exit(1);
+            }
+
+            // 1. Extract strings from controller file
+            $controller_filename = sprintf('%s/%s_controller.php', $controllers_dir, $controller);
+            $extracted_keys = $this->extract_keys_from_file($controller_filename, $strip_inlined);
+
+            // 2. Extract strings from controller traits
+            if ($extract_from_traits) {
+                $handle = opendir($controllers_dir);
+                if ($handle) {
+                    while (($filename = readdir($handle)) !== false) {
+                        if ($filename === '.' || $filename === '..') {
+                            continue;
+                        }
+                        if (stripos($filename, sprintf('%s_controller_', $controller)) !== 0) {
+                            continue;
+                        }
+                        $trait_filename = $controllers_dir . '/' . $filename;
+                        $extracted_keys = array_merge(
+                            $extracted_keys,
+                            $this->extract_keys_from_file($trait_filename, $strip_inlined)
+                        );
+                    }
+                }
+            }
+
+            // 3. Extract strings from controller views
+            $controller_views_dir = sprintf('%s/../../views/%s', $base_dir, $controller);
+            if (file_exists($controller_views_dir) && is_dir($controller_views_dir)) {
+                $handle = opendir($controller_views_dir);
+                if ($handle) {
+                    while (($filename = readdir($handle)) !== false) {
+                        if ($filename === '.' || $filename === '..') {
+                            continue;
+                        }
+                        $view_filename = $controller_views_dir . '/' . $filename;
+
+                        $extracted_keys = array_merge(
+                            $extracted_keys,
+                            $this->extract_keys_from_file($view_filename, $strip_inlined)
+                        );
+                    }
+                }
+            }
+
+            foreach (explode(',', $languages) as $language) {
+                // 4. Read in existing strings if available
+                $controller_path = sprintf(
+                    $base_dir . self::DEFAULT_BASE_DIR . '/%s/localizable-%s.strings',
+                    $controller,
+                    $language
+                );
+                if (file_exists($controller_path)) {
+                    $handle = fopen($controller_path, 'r');
+                    $contents = fread($handle, filesize($controller_path));
+                    fclose($handle);
+
+                    [$strings, $success] = $this->evaluate_strings_callback($contents);
+                } else {
+                    $strings = [];
+                }
+
+                // 5. Load global strings, unset duplicate keys, and emit a warning
+                $global_path = sprintf($base_dir . self::DEFAULT_BASE_DIR . '/localizable-%s.strings', $language);
+                if (file_exists($global_path)) {
+                    $handle = fopen($global_path, 'r');
+                    $contents = fread($handle, filesize($global_path));
+                    fclose($handle);
+
+                    [$global_strings, $success] = $this->evaluate_strings_callback($contents);
+                } else {
+                    $global_strings = [];
+                }
+
+                // 6. Layer existing strings on top of extracted strings
+                $combined_strings = [];
+                foreach ($extracted_keys as $key => $inlined_value) {
+                    if (array_key_exists($key, $global_strings)) {
+                        // TODO: warn if verbose
+                        continue;
+                    }
+                    $combined_strings[$key] = $inlined_value;
+                }
+                foreach ($strings as $key => $value) {
+                    $combined_strings[$key] = $value ?? $key;
+                }
+                ksort($combined_strings);
+
+                if ($dry_run) {
+                    print "Extracted strings:\n";
+                    var_dump($combined_strings);
+                } else {
+                    $dir = sprintf('%s/../../assets/strings/%s', $base_dir, $controller);
+                    if (!(file_exists($dir) && is_dir($dir))) {
+                        if (!mkdir($dir, 0755, true)) {
+                            exit(1);
+                        }
+                    }
+
+                    // TODO: should we rename the old file as .bak ?
+                    $this->write_sorted_strings(
+                        $combined_strings,
+                        $controller_path,
+                        !$dry_run,
+                        $options->getOpt(self::OPTION_SKIP_EMPTY)
+                    );
+                }
+            }
+        }
+
+        $global_extracted_keys = [];
+        if ($extract_from_helpers) {
+            $helpers_dir = sprintf('%s/../../helpers', $base_dir);
+            if (!(file_exists($helpers_dir) && is_dir($helpers_dir))) {
+                printf(
+                    "[%s] Unable to locate helpers directory: %s\n",
+                    ANSIColorWriter::colorize('Error', 'red'),
+                    $helpers_dir
+                );
+                exit(1);
+            }
+
+            // 1. Extract strings from helpers
+            $handle = opendir($helpers_dir);
+            if ($handle) {
+                while (($filename = readdir($handle)) !== false) {
+                    if ($filename === '.' || $filename === '..') {
+                        continue;
+                    }
+                    if (!str_ends_with($filename, '.php')) {
+                        continue;
+                    }
+                    $helper_filename = $helpers_dir . '/' . $filename;
+                    $global_extracted_keys = array_merge(
+                        $global_extracted_keys,
+                        $this->extract_keys_from_file($helper_filename, $strip_inlined)
+                    );
+                }
+            }
+        }
+
+        if ($extract_from_models) {
+            $models_dir = sprintf('%s/../../models', $base_dir);
+            if (!(file_exists($models_dir) && is_dir($models_dir))) {
+                printf(
+                    "[%s] Unable to locate models directory: %s\n",
+                    ANSIColorWriter::colorize('Error', 'red'),
+                    $models_dir
+                );
+                exit(1);
+            }
+
+            // 1. Extract strings from models
+            $handle = opendir($models_dir);
+            if ($handle) {
+                while (($filename = readdir($handle)) !== false) {
+                    if ($filename === '.' || $filename === '..') {
+                        continue;
+                    }
+                    if (!str_ends_with($filename, '.php')) {
+                        continue;
+                    }
+                    $model_filename = $models_dir . '/' . $filename;
+                    $global_extracted_keys = array_merge(
+                        $global_extracted_keys,
+                        $this->extract_keys_from_file($model_filename, $strip_inlined)
+                    );
+                }
+            }
+        }
+
+        if ($global_extracted_keys) {
+            foreach (explode(',', $languages) as $language) {
+                // 2. Load global strings
+                $global_path = sprintf($base_dir . self::DEFAULT_BASE_DIR . '/localizable-%s.strings', $language);
+                if (file_exists($global_path)) {
+                    $handle = fopen($global_path, 'r');
+                    $contents = fread($handle, filesize($global_path));
+                    fclose($handle);
+
+                    [$global_strings, $success] = $this->evaluate_strings_callback($contents);
+                } else {
+                    $global_strings = [];
+                }
+
+                // 3. Layer existing strings on top of extracted strings
+                $combined_strings = [];
+                foreach ($global_extracted_keys as $key => $inlined_value) {
+                    $combined_strings[$key] = $inlined_value;
+                }
+                foreach ($global_strings as $key => $value) {
+                    $combined_strings[$key] = $value ?? $key;
+                }
+                ksort($combined_strings);
+
+                if ($dry_run) {
+                    print "Extracted strings:\n";
+                    var_dump($combined_strings);
+                } else {
+                    // TODO: should we rename the old file as .bak ?
+                    $this->write_sorted_strings(
+                        $combined_strings,
+                        $global_path,
+                        !$dry_run,
+                        $options->getOpt(self::OPTION_SKIP_EMPTY)
+                    );
+                }
             }
         }
 
@@ -491,8 +611,8 @@ class EmerailsLocalize extends ScriptCommand
 
         if ($write) {
             $template = <<<EOT
-            array(
-            %s);
+            [
+            %s];
 
             EOT;
 
