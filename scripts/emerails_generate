@@ -50,8 +50,7 @@ class EmerailsGenerate extends ScriptCommand
         $options->setHelp('EmeRails script to generate controllers, models and views');
 
         // General options
-        $options->registerOption(self::OPTION_VERBOSE, 'Print additional messages');
-        $options->registerOption(self::OPTION_DRY_RUN, 'Do not commit changes');
+        $this->register_common_options($options);
 
         // Create command
         $options->registerCommand(self::COMMAND_CREATE, 'Create an EmeRails app');

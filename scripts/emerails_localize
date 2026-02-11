@@ -58,8 +58,7 @@ class EmerailsLocalize extends ScriptCommand
         $options->setHelp('EmeRails script to manage localization resources');
 
         // General options
-        $options->registerOption(self::OPTION_DRY_RUN, 'Do not save anything');
-        $options->registerOption(self::OPTION_VERBOSE, 'Print additional information', 'v');
+        $this->register_common_options($options);
         $options->registerOption(self::OPTION_BASE_DIR, 'Base directory of strings files', 'd', 'base-dir');
 
         // Check command

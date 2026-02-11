@@ -23,6 +23,8 @@ class SortDependencies extends ScriptCommand
     protected function setup(Options $options)
     {
         $options->setHelp('EmeRails script to sort dependencies');
+
+        $this->register_common_options($options);
     }
 
     protected function main(Options $options)

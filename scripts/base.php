@@ -32,6 +32,10 @@ Db::register_adapter(new MysqlAdapter(), MysqlAdapter::NAME);
 
 abstract class ScriptCommand extends CLI
 {
+    const OPTION_DRY_RUN = 'dry-run';
+    const OPTION_NO_LOGO = 'no-logo';
+    const OPTION_VERBOSE = 'verbose';
+
     protected $name = '<COMMAND NAME>';
     protected $version = '<VERSION>';
 
@@ -52,7 +56,7 @@ abstract class ScriptCommand extends CLI
         );
         printf(
             <<<EOT
-            (c) Claudio Procida 2008-2025
+            (c) Claudio Procida 2008-2026
 
             %s %s
 
@@ -64,9 +68,18 @@ abstract class ScriptCommand extends CLI
         );
     }
 
-    public function run()
+    protected function execute()
     {
-        $this->hello();
-        parent::run();
+        if (!$this->options->getOpt(self::OPTION_NO_LOGO)) {
+            $this->hello();
+        }
+        parent::execute();
+    }
+
+    protected function register_common_options(Options $options): void
+    {
+        $options->registerOption(self::OPTION_DRY_RUN, 'Do not save anything');
+        $options->registerOption(self::OPTION_NO_LOGO, 'Do not print a logo');
+        $options->registerOption(self::OPTION_VERBOSE, 'Print additional information', 'v');
     }
 }
