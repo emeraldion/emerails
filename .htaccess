@@ -4,7 +4,7 @@
 # /  __/ / / / / /  __/ /  / /_/ / / (__  )
 # \___/_/ /_/ /_/\___/_/   \__,_/_/_/____/
 #
-# (c) Claudio Procida 2008-2025
+# (c) Claudio Procida 2008-2026
 #
 
 ErrorDocument 404 /router.php?controller=error&action=_404
