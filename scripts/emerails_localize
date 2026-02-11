@@ -23,6 +23,9 @@ class EmerailsLocalize extends ScriptCommand
     protected $name = 'EmeRails Localization Utility';
     protected $version = 'v1.0';
 
+    // This is useful to open files in an IDE
+    // TODO: open on a specific line
+    const DEFAULT_PATH_PREFIX = 'assets/strings';
     const DEFAULT_BASE_DIR = '/../../assets/strings';
     const STRINGS_FILE_EXTENSION = '.strings';
 
@@ -170,7 +173,7 @@ class EmerailsLocalize extends ScriptCommand
         );
     }
 
-    protected function check(Options $options)
+    protected function check(Options $options): void
     {
         $dry_run = $options->getOpt(self::OPTION_DRY_RUN);
         $verbose = $options->getOpt(self::OPTION_VERBOSE);
@@ -198,7 +201,7 @@ class EmerailsLocalize extends ScriptCommand
         }
     }
 
-    protected function create(Options $options)
+    protected function create(Options $options): void
     {
         $dry_run = $options->getOpt(self::OPTION_DRY_RUN);
         $verbose = $options->getOpt(self::OPTION_VERBOSE);
@@ -235,7 +238,7 @@ class EmerailsLocalize extends ScriptCommand
         }
     }
 
-    protected function format_dir($dir, $write = false, $recursive = false)
+    protected function format_dir(string $dir, bool $write = false, bool $recursive = false): bool
     {
         $success = true;
 
@@ -261,7 +264,7 @@ class EmerailsLocalize extends ScriptCommand
         return $success;
     }
 
-    protected function format(Options $options)
+    protected function format(Options $options): void
     {
         $dry_run = $options->getOpt(self::OPTION_DRY_RUN);
         $verbose = $options->getOpt(self::OPTION_VERBOSE);
@@ -289,7 +292,7 @@ class EmerailsLocalize extends ScriptCommand
      * @fn export_strings($str)
      * @short Slightly better var_export for strings with control on quotes and escape sequences
      */
-    protected function export_string($str)
+    protected function export_string(string $str): string
     {
         $has_newlines = strpos($str, "\n") !== false;
         $has_quotes = strpos($str, "'") !== false;
@@ -306,7 +309,7 @@ class EmerailsLocalize extends ScriptCommand
         return $ret;
     }
 
-    protected function extract_keys_from_file($filename, $strip_inlined = false)
+    protected function extract_keys_from_file(string $filename, bool $strip_inlined = false): array
     {
         $handle = fopen($filename, 'r');
         $contents = $original_contents = fread($handle, filesize($filename));
@@ -342,7 +345,7 @@ class EmerailsLocalize extends ScriptCommand
         return $extracted_keys;
     }
 
-    protected function extract(Options $options)
+    protected function extract(Options $options): void
     {
         $dry_run = $options->getOpt(self::OPTION_DRY_RUN);
         $verbose = $options->getOpt(self::OPTION_VERBOSE);
@@ -429,7 +432,7 @@ class EmerailsLocalize extends ScriptCommand
                     $strings = [];
                 }
 
-                // 5. Load global strings, unset duplicate keys, and emit a warning
+                // 5. Load global strings; we will ignore extracted strings that match those
                 $global_path = sprintf($base_dir . self::DEFAULT_BASE_DIR . '/localizable-%s.strings', $language);
                 if (file_exists($global_path)) {
                     $handle = fopen($global_path, 'r');
@@ -445,7 +448,31 @@ class EmerailsLocalize extends ScriptCommand
                 $combined_strings = [];
                 foreach ($extracted_keys as $key => $inlined_value) {
                     if (array_key_exists($key, $global_strings)) {
-                        // TODO: warn if verbose
+                        if ($verbose) {
+                            ANSIColorWriter::printf(
+                                "Warning: string is already defined in global scope and will be ignored\n",
+                                'yellow'
+                            );
+                            ANSIColorWriter::printf(
+                                "----------------------------------------------------------------------\n",
+                                'bright-black'
+                            );
+                            ANSIColorWriter::printf(
+                                "Language: %s\n",
+                                'bright-black',
+                                ANSIColorWriter::colorize(self::DEFAULT_LANGUAGE, 'white')
+                            );
+                            ANSIColorWriter::printf(
+                                " Current: %s\n",
+                                'bright-black',
+                                ANSIColorWriter::colorize($inlined_value, 'white')
+                            );
+                            ANSIColorWriter::printf(
+                                "Existing: %s\n\n",
+                                'bright-black',
+                                ANSIColorWriter::colorize($global_strings[$key], 'white')
+                            );
+                        }
                         continue;
                     }
                     $combined_strings[$key] = $inlined_value;
@@ -555,6 +582,33 @@ class EmerailsLocalize extends ScriptCommand
                 // 3. Layer existing strings on top of extracted strings
                 $combined_strings = [];
                 foreach ($global_extracted_keys as $key => $inlined_value) {
+                    if (array_key_exists($key, $global_strings)) {
+                        if ($verbose) {
+                            ANSIColorWriter::printf(
+                                "Warning: string is already defined in global scope and will be ignored\n",
+                                'yellow'
+                            );
+                            ANSIColorWriter::printf(
+                                "----------------------------------------------------------------------\n",
+                                'bright-black'
+                            );
+                            ANSIColorWriter::printf(
+                                "Language: %s\n",
+                                'bright-black',
+                                ANSIColorWriter::colorize(self::DEFAULT_LANGUAGE, 'white')
+                            );
+                            ANSIColorWriter::printf(
+                                " Current: %s\n",
+                                'bright-black',
+                                ANSIColorWriter::colorize($inlined_value, 'white')
+                            );
+                            ANSIColorWriter::printf(
+                                "Existing: %s\n\n",
+                                'bright-black',
+                                ANSIColorWriter::colorize($global_strings[$key], 'white')
+                            );
+                        }
+                    }
                     $combined_strings[$key] = $inlined_value;
                 }
                 foreach ($global_strings as $key => $value) {
@@ -587,8 +641,12 @@ class EmerailsLocalize extends ScriptCommand
         }
     }
 
-    protected function write_sorted_strings($strings = [], $path, $write = false, $skip_empty = false)
-    {
+    protected function write_sorted_strings(
+        array $strings = [],
+        string $path,
+        bool $write = false,
+        bool $skip_empty = false
+    ) {
         if (!$strings && $skip_empty) {
             // Nothing to do here
             return;
@@ -640,7 +698,7 @@ class EmerailsLocalize extends ScriptCommand
         }
     }
 
-    protected function check_dir($dir, $recursive = false, $strict = false)
+    protected function check_dir(string $dir, bool $recursive = false, bool $strict = false): bool
     {
         $success = true;
 
@@ -682,8 +740,8 @@ class EmerailsLocalize extends ScriptCommand
                         )
                         as $key => $value
                     ) {
-                        ANSIColorWriter::printf("Warning: missing key in strings file\n", 'yellow');
-                        ANSIColorWriter::printf("------------------------------------\n", 'bright-black');
+                        ANSIColorWriter::printf("Warning: missing localizable string\n", 'yellow');
+                        ANSIColorWriter::printf("-----------------------------------\n", 'bright-black');
                         ANSIColorWriter::printf(
                             "Language: %s\n",
                             'bright-black',
@@ -693,7 +751,12 @@ class EmerailsLocalize extends ScriptCommand
                             "    File: %s\n",
                             'bright-black',
                             ANSIColorWriter::colorize(
-                                sprintf('%s/localizable-%s.strings', $dir, self::DEFAULT_LANGUAGE),
+                                sprintf(
+                                    '%s/%s/localizable-%s.strings',
+                                    self::DEFAULT_PATH_PREFIX,
+                                    $dir,
+                                    self::DEFAULT_LANGUAGE
+                                ),
                                 'white'
                             )
                         );
@@ -712,8 +775,8 @@ class EmerailsLocalize extends ScriptCommand
                         )
                         as $key => $value
                     ) {
-                        ANSIColorWriter::printf("Warning: missing key in strings file\n", 'yellow');
-                        ANSIColorWriter::printf("------------------------------------\n", 'bright-black');
+                        ANSIColorWriter::printf("Warning: missing localizable string\n", 'yellow');
+                        ANSIColorWriter::printf("-----------------------------------\n", 'bright-black');
                         ANSIColorWriter::printf(
                             "Language: %s\n",
                             'bright-black',
@@ -722,7 +785,10 @@ class EmerailsLocalize extends ScriptCommand
                         ANSIColorWriter::printf(
                             "    File: %s\n",
                             'bright-black',
-                            ANSIColorWriter::colorize(sprintf('%s/localizable-%s.strings', $dir, $language), 'white')
+                            ANSIColorWriter::colorize(
+                                sprintf('%s/%s/localizable-%s.strings', self::DEFAULT_PATH_PREFIX, $dir, $language),
+                                'white'
+                            )
                         );
                         ANSIColorWriter::printf(
                             "     Key: %s\n\n",
@@ -737,13 +803,13 @@ class EmerailsLocalize extends ScriptCommand
         return $success;
     }
 
-    protected function get_key_prefix(string $key)
+    protected function get_key_prefix(string $key): string
     {
         $prefix = implode('-', array_slice(explode('-', $key), 0, 2));
         return $prefix;
     }
 
-    protected function format_file($dir, $filename, $write = false)
+    protected function format_file(string $dir, string $filename, bool $write = false): string
     {
         $success = true;
 
@@ -760,7 +826,7 @@ class EmerailsLocalize extends ScriptCommand
         return $success;
     }
 
-    protected function check_file($dir, $filename)
+    protected function check_file(string $dir, string $filename): bool
     {
         $success = true;
 
@@ -782,7 +848,7 @@ class EmerailsLocalize extends ScriptCommand
         return $success;
     }
 
-    protected function evaluate_strings_callback($contents, $callback_fn = null)
+    protected function evaluate_strings_callback(string $contents, callable $callback_fn = null): array
     {
         $success = true;
         $strings = null;
@@ -814,7 +880,7 @@ class EmerailsLocalize extends ScriptCommand
         }
     }
 
-    protected function set_string($dir, $language, $key, $value)
+    protected function set_string(string $dir, string $language, string $key, string $value): void
     {
         $dir = $this->get_string_file($dir);
         if (!isset($this->thesaurus[$dir])) {
@@ -826,7 +892,7 @@ class EmerailsLocalize extends ScriptCommand
         $this->thesaurus[$dir][$language][$key] = $value;
     }
 
-    protected function get_string_file($dir)
+    protected function get_string_file(string $dir): string
     {
         // This path is relative to the Composer bin directory if available
         $base_dir = ($GLOBALS['_composer_bin_dir'] ?? __DIR__ . '/../vendor/bin') . self::DEFAULT_BASE_DIR;
