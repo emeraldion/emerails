@@ -116,7 +116,7 @@ abstract class Country
 
     const PAKISTAN = 'PK';
     const PANAMA = 'PA';
-    const PARAGUAY = 'PA';
+    const PARAGUAY = 'PY';
     const PERU = 'PE';
     const PHILIPPINES = 'PH';
     const POLAND = 'PL';
