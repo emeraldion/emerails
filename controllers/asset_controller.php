@@ -29,7 +29,7 @@ function strip_double_dots($str)
  */
 class AssetController extends BaseController
 {
-    const TIME_FORMAT = 'a, d b Y H:M:S Z';
+    const TIME_FORMAT = 'D, d M Y H:i:s T';
 
     protected function init()
     {
