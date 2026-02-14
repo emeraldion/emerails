@@ -617,7 +617,7 @@ class BaseController implements Controller
                                                 $outval[] = $default_value;
                                             }
                                         } else {
-                                            $outval[] = $v;
+                                            $outval[] = $val;
                                         }
                                         $valid = $valid && $v;
                                     }
