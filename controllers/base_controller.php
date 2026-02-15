@@ -579,8 +579,6 @@ class BaseController implements Controller
                             if ($valid) {
                                 $value = $outval;
                             }
-                        } elseif ($has_default) {
-                            $value = $default_value;
                         }
                     } else {
                         if (
