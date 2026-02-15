@@ -609,7 +609,14 @@ class BaseController implements Controller
                         if ($multi) {
                             $outval = [];
                             $valid = true;
-                            if ($value) {
+                            if (empty($value)) {
+                                if ($has_default) {
+                                    $value = $default_value;
+                                } else {
+                                    $value = null;
+                                    $valid = !$is_required;
+                                }
+                            } elseif ($value) {
                                 if (is_array($value)) {
                                     foreach ($value as $val) {
                                         if (!($v = in_array($val, $possible_values))) {
