@@ -18,18 +18,23 @@ function select($name, $values, $default_value, $params = [])
         $params_serialized .= " $key=\"" . htmlentities($value) . "\"";
     }
     $options = '';
+    $multiple = array_key_exists('multiple', $params);
     foreach ($values as $value => $title) {
         $value = htmlentities($value);
-        $selected = $value == $default_value ? ' selected="selected"' : '';
+        if ($multiple) {
+            $selected = in_array($value, $default_value) ? ' selected="selected"' : '';
+        } else {
+            $selected = $value == $default_value ? ' selected="selected"' : '';
+        }
         $options .= <<<EOT
-        		<option value="{$value}"{$selected}>{$title}</option>
+            <option value="{$value}"{$selected}>{$title}</option>
 
         EOT;
     }
     $html = <<<EOT
-    	<select name="{$name}"{$params_serialized}>
-    	{$options}
-    	</select>
+    <select name="{$name}"{$params_serialized}>
+    {$options}
+    </select>
     EOT;
     return $html;
 }
