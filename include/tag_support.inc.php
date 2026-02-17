@@ -22,7 +22,7 @@ function select($name, $values, $default_value, $params = [])
     foreach ($values as $value => $title) {
         $value = htmlentities($value);
         if ($multiple) {
-            $selected = in_array($value, $default_value) ? ' selected="selected"' : '';
+            $selected = in_array($value, $default_value ?? []) ? ' selected="selected"' : '';
         } else {
             $selected = $value == $default_value ? ' selected="selected"' : '';
         }
