@@ -208,6 +208,7 @@ abstract class ActiveRecord
                 $this->values[$key] = $this->validate_field($key, $val, true);
             }
         }
+        return $this;
     }
 
     /**
