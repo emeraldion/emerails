@@ -40,6 +40,37 @@ class ActiveRecordTest extends UnitTestBase
         $this->assertNotNull($instance);
     }
 
+    public function test_construct_with_arguments()
+    {
+        $instance = new TestModel([
+            'name' => 'goo'
+        ]);
+        $this->assertNotNull($instance);
+        $this->assertEquals('goo', $instance->name);
+    }
+
+    public function test_update_with()
+    {
+        $instance = new TestModel();
+        $this->assertNotNull($instance);
+        $this->assertNull($instance->name);
+
+        $instance->update_with(['name' => 'goo']);
+        $this->assertEquals('goo', $instance->name);
+    }
+
+    public function test_update_with_overwrite()
+    {
+        $instance = new TestModel([
+            'name' => 'boo'
+        ]);
+        $this->assertNotNull($instance);
+        $this->assertEquals('boo', $instance->name);
+
+        $instance->update_with(['name' => 'goo']);
+        $this->assertEquals('goo', $instance->name);
+    }
+
     public function test_get_column_names()
     {
         $instance = new TestModel();

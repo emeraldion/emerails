@@ -194,10 +194,27 @@ abstract class ActiveRecord
     }
 
     /**
+     * @fn update_with($values)
+     * @short Updates the fields of the ActiveRecord object
+     * @details The method updates the fields of the receiver with the values from the argument under the keys
+     * corresponding to the names of the respective columns
+     * @param values Values to update the object.
+     */
+    function update_with(array $values): self
+    {
+        $columns = $this->get_column_names();
+        foreach ($values as $key => $val) {
+            if (in_array($key, $columns)) {
+                $this->values[$key] = $this->validate_field($key, $val, true);
+            }
+        }
+    }
+
+    /**
      *  @fn init($values)
      *  @short Performs specialized initialization tasks.
      *  @details Subclassers will use this method to perform custom initialization.
-     *  @note The default implementation simply does nothing.
+     *  @note The default implementation sets the primary key name.
      *  @param values An array of column-value pairs to initialize the receiver.
      */
     protected function init($values)
