@@ -72,11 +72,7 @@ function custom_error_handler($errno, $errstr, $errfile, $errline)
         $_SESSION['errno'] = $errno;
         $_SESSION['errstr'] = $errstr;
         $_SESSION['error_message'] = $error_message;
-        $_SESSION['debug_stacktrace'] = sanitize_stacktrace(
-            var_export(array_slice(debug_backtrace(), 2), true),
-            BASE_DIR,
-            '<PROJECT_ROOT>'
-        );
+        $_SESSION['debug_stacktrace'] = sanitize_stacktrace(symbolicate_stacktrace(), BASE_DIR, '<PROJECT_ROOT>');
     }
 
     HTTP::error(500);
