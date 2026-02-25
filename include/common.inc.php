@@ -258,7 +258,7 @@ function sanitize_stacktrace($stacktrace, $base_path, $replacement)
 }
 
 /**
- * @fn symbolicate_stacktrace($t, $levels, $strip_levels)
+ * @fn symbolicate_stacktrace($t, $levels, $skip_levels)
  * @short Produces a simplified stacktrace for display
  * @details This method produces a simplified stacktrace for debugging purposes, by showing a single line for each frame in the stack.
  * The stack is obtained from a <tt>Throwable</tt> accepted as first argument, or a call to <tt>debug_stacktrace()</tt> if no throwable is passed.
@@ -269,12 +269,24 @@ function sanitize_stacktrace($stacktrace, $base_path, $replacement)
  * @param skip_levels The number of initial levels to skip
  * @return The symbolicated stacktrace
  */
-function symbolicate_stacktrace(?Throwable $t = null, int $levels = 10, int $skip_levels = 2): string
+function symbolicate_stacktrace(?Throwable $t = null, int $levels = 10, int $skip_levels = 0): string
 {
     $ret = '';
-    $trace = array_slice($t ? $t->getTrace() : debug_backtrace(0, $levels + $skip_levels), $skip_levels);
-    foreach ($ds = $trace as $frame) {
-        $symbol = array_key_exists('class', $frame) ? $frame['class'] . '::' . $frame['function'] : $frame['function'];
+    $trace = array_slice(
+        $t
+            ? array_merge([['file' => $t->getFile(), 'line' => $t->getLine()]], $t->getTrace())
+            : debug_backtrace(0, $levels + $skip_levels),
+        $skip_levels
+    );
+    $stack_depth = count($trace);
+    for ($i = 0; $i < $stack_depth; $i += 1) {
+        $frame = $trace[$i];
+        $next_frame = $i < $stack_depth - 1 ? $trace[$i + 1] : null;
+        $symbol = $next_frame
+            ? (array_key_exists('class', $next_frame)
+                ? $next_frame['class'] . '::' . $next_frame['function']
+                : $next_frame['function'])
+            : h('<anonymous>');
         $ret .= "\tat {$symbol}({$frame['file']}:{$frame['line']})\n";
     }
     return $ret;
