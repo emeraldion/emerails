@@ -51,9 +51,7 @@ function block_tag($tagname, $content, $params = null)
         }
     }
     $html = <<<EOT
-    <{$tagname}{$params_serialized}>
-    	{$content}
-    </{$tagname}>
+    <{$tagname}{$params_serialized}>{$content}</{$tagname}>
 
     EOT;
     return $html;

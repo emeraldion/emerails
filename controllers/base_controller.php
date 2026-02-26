@@ -1571,19 +1571,29 @@ class BaseController implements Controller
                 $ret = block_tag(
                     'div',
                     implode("\n", [
-                        h3(l('base-partfile-error-heading'), null),
+                        h3(sprintf(l('base-partfile-error-heading-@1'), $t->getMessage()), null),
                         block_tag(
                             'pre',
-                            sprintf(
-                                "%s\n%s\n--\n%s\n",
-                                sprintf(l('error-title-@1'), $t->getMessage()),
-                                l('error-stacktrace-heading'),
-                                sanitize_stacktrace(symbolicate_stacktrace($t), $this->base_path, self::PROJECT_ROOT)
-                            ),
-                            ['style' => 'text-align: left']
+                            implode("\n", [
+                                sprintf(
+                                    l('base-partfile-error-subtitle-@1'),
+                                    a($this->get_safe_filename($partfile), [
+                                        'href' => vscode_linkify($partfile)
+                                    ])
+                                ),
+                                sprintf(
+                                    "%s\n--\n%s\n",
+                                    l('error-stacktrace-heading'),
+                                    sanitize_stacktrace(
+                                        symbolicate_stacktrace($t),
+                                        $this->base_path,
+                                        self::PROJECT_ROOT
+                                    )
+                                )
+                            ])
                         )
                     ]),
-                    ['class' => 'msg error']
+                    ['class' => 'msg error', 'style' => 'text-align: left']
                 );
             } else {
                 throw $t;
