@@ -1,4 +1,4 @@
-array(
+[
     'base-index-discussion-group-link' => 'Discussion Group',
     'base-index-docs-link' => 'Documentation',
     'base-index-heading' => 'Congratulations!',
@@ -15,5 +15,9 @@ array(
 
     'error' => 'Error',
 
+    'error-stacktrace-heading' => 'Stacktrace:',
+
+    'error-title-@1' => 'Error: %s',
+
     'loading' => 'Loading...',
-);
+];

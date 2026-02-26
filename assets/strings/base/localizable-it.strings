@@ -1,4 +1,4 @@
-array(
+[
     'base-index-discussion-group-link' => 'gruppo di discussione',
     'base-index-docs-link' => 'documentazione',
     'base-index-heading' => 'Congratulazioni!',
@@ -13,7 +13,11 @@ array(
     'base-partfile-error-heading' => 'Errore nel frammento',
     'base-partfile-legend-@1' => 'Frammento: %s',
 
-    'error' => 'Error',
+    'error' => 'Errore',
+
+    'error-stacktrace-heading' => 'Traccia dello stack:',
+
+    'error-title-@1' => 'Errore: %s',
 
     'loading' => 'Caricando...',
-);
+];

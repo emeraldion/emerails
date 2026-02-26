@@ -30,6 +30,8 @@ use Emeraldion\EmeRails\Helpers\Response;
  */
 class BaseController implements Controller
 {
+    const PROJECT_ROOT = '<PROJECT_ROOT>';
+
     /**
      * @attr name
      * @short The name of the controller.
@@ -1571,15 +1573,14 @@ class BaseController implements Controller
                     implode("\n", [
                         h3(l('base-partfile-error-heading'), null),
                         block_tag(
-                            'p',
+                            'pre',
                             sprintf(
-                                '[%d] %s, at: %s:%d',
-                                $t->getCode(),
-                                $t->getMessage(),
-                                $this->get_safe_filename($partfile),
-                                $t->getLine()
+                                "%s\n%s\n--\n%s\n",
+                                sprintf(l('error-title-@1', 'Error: %s'), $t->getMessage()),
+                                l('error-stacktrace-heading', 'Stacktrace:'),
+                                sanitize_stacktrace(symbolicate_stacktrace($t), $this->base_path, self::PROJECT_ROOT)
                             ),
-                            null
+                            ['style' => 'text-align: left']
                         )
                     ]),
                     ['class' => 'msg error']
@@ -1600,7 +1601,7 @@ class BaseController implements Controller
      */
     protected function get_safe_filename($filename)
     {
-        return get_safe_path($filename, $this->base_path, '<PROJECT_ROOT>');
+        return get_safe_path($filename, $this->base_path, self::PROJECT_ROOT);
     }
 
     /**
@@ -1610,7 +1611,7 @@ class BaseController implements Controller
      */
     protected function get_safe_stacktrace($stacktrace)
     {
-        return sanitize_stacktrace($stacktrace, $this->base_path, '<PROJECT_ROOT>');
+        return sanitize_stacktrace($stacktrace, $this->base_path, self::PROJECT_ROOT);
     }
 
     /**
