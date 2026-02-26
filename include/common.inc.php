@@ -287,7 +287,11 @@ function symbolicate_stacktrace(?Throwable $t = null, int $levels = 10, int $ski
                 ? $next_frame['class'] . '::' . $next_frame['function']
                 : $next_frame['function'])
             : h('<anonymous>');
-        $ret .= "\tat {$symbol}({$frame['file']}:{$frame['line']})\n";
+        $location = array_key_exists('file', $frame) ? $frame['file'] : h('<native code>');
+        if (array_key_exists('line', $frame)) {
+            $location .= ':' . $frame['line'];
+        }
+        $ret .= "\tat {$symbol}({$location})\n";
     }
     return $ret;
 }
