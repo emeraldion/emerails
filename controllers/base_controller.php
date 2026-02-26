@@ -1576,8 +1576,8 @@ class BaseController implements Controller
                             'pre',
                             sprintf(
                                 "%s\n%s\n--\n%s\n",
-                                sprintf(l('error-title-@1', 'Error: %s'), $t->getMessage()),
-                                l('error-stacktrace-heading', 'Stacktrace:'),
+                                sprintf(l('error-title-@1'), $t->getMessage()),
+                                l('error-stacktrace-heading'),
                                 sanitize_stacktrace(symbolicate_stacktrace($t), $this->base_path, self::PROJECT_ROOT)
                             ),
                             ['style' => 'text-align: left']
