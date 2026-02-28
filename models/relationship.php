@@ -499,6 +499,7 @@ class Relationship
     }
 }
 
+#[\AllowDynamicProperties]
 class RelationshipInstance
 {
     /**
