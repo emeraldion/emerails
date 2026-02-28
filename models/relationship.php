@@ -479,7 +479,7 @@ class Relationship
                 }
             }
         }
-        if ($type != 'enum' && $ret != $value) {
+        if ($type != 'enum' && $value !== '' && $ret != $value) {
             trigger_error(
                 sprintf(
                     "Expected %s::%s('%s', '%s') to return: '%s' of type '%s' but got: %s.",
