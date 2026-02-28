@@ -32,7 +32,7 @@ class RelationshipTest extends UnitTestBase
     public function test_private_constructor()
     {
         $this->expectException(Error::class);
-        $this->expectExceptionMessage("Call to private Relationship::__construct() from context 'RelationshipTest'");
+        $this->expectExceptionMessage('Call to private Relationship::__construct() from ');
         new Relationship(TestModel::class, TestWidget::class);
     }
 

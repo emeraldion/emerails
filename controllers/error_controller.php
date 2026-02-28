@@ -19,6 +19,7 @@ require_once __DIR__ . '/base_controller.php';
  *	@details ErrorController is responsible for handling HTTP errors. Feel free to improve this class
  *	by adding your custom error handling code.
  */
+#[\AllowDynamicProperties]
 class ErrorController extends BaseController
 {
     /**

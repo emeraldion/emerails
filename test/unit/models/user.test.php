@@ -31,6 +31,9 @@ class Account extends ActiveRecord
 
 class UserTest extends UnitTestBase
 {
+    private $user;
+    private $account;
+
     function setUp(): void {}
 
     function teardown(): void

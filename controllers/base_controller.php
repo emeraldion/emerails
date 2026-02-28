@@ -16,6 +16,8 @@ require_once __DIR__ . '/../include/tag_support.inc.php';
 
 use Emeraldion\EmeRails\Config;
 use Emeraldion\EmeRails\Controllers\Controller;
+use Emeraldion\EmeRails\Exceptions\MissingRequiredParameterException;
+use Emeraldion\EmeRails\Exceptions\ParameterTypeMismatchException;
 use Emeraldion\EmeRails\Helpers\Headers;
 use Emeraldion\EmeRails\Helpers\HTTP;
 use Emeraldion\EmeRails\Helpers\Localization;
@@ -28,6 +30,7 @@ use Emeraldion\EmeRails\Helpers\Response;
  *  @details A subclass of BaseController is in charge of handling a set of actions. It creates the network of model objects
  *  that will be rendered by the views, handles and validates postback data, defines and applies before and after filters.
  */
+#[\AllowDynamicProperties]
 class BaseController implements Controller
 {
     const PROJECT_ROOT = '<PROJECT_ROOT>';
@@ -431,16 +434,14 @@ class BaseController implements Controller
             if ($is_required) {
                 // Empty value is considered false for bool params
                 if (empty($value) && $type != self::PARAM_TYPE_BOOL) {
-                    // TODO: delegate the subclass to present this error
-                    trigger_error(
+                    throw new MissingRequiredParameterException(
                         sprintf(
                             "[%s::%s] Missing required %s parameter '%s'",
                             get_called_class(),
                             __FUNCTION__,
                             $type . $multi,
                             $name
-                        ),
-                        E_USER_ERROR
+                        )
                     );
                 }
             }
@@ -655,7 +656,7 @@ class BaseController implements Controller
             }
             if (!$valid) {
                 // TODO: delegate the subclass to present this error
-                trigger_error(
+                throw new ParameterTypeMismatchException(
                     sprintf(
                         "[%s::%s] Type mismatch for parameter '%s'. Expected '%s', but found: %s",
                         get_called_class(),

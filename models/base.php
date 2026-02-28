@@ -15,6 +15,8 @@ require_once __DIR__ . '/../include/common.inc.php';
 
 use Emeraldion\EmeRails\Config;
 use Emeraldion\EmeRails\Db;
+use Emeraldion\EmeRails\Exceptions\BadCastException;
+use Emeraldion\EmeRails\Exceptions\MissingForeignKeyException;
 use Emeraldion\EmeRails\Models\Relationship;
 
 /**
@@ -896,7 +898,7 @@ abstract class ActiveRecord
             } elseif ($this->has_column($joined_obj->get_foreign_key_name())) {
                 $query = 'SELECT {7} FROM `{1}` JOIN `{4}` ON `{1}`.`{6}` = `{4}`.`{5}`';
             } else {
-                trigger_error(
+                throw new MissingForeignKeyException(
                     sprintf(
                         '[%s::%s] Failed to find a foreign key column `%s` in table `%s` or `%s` in table `%s`.',
                         get_class($this),
@@ -905,8 +907,7 @@ abstract class ActiveRecord
                         $joined_obj->get_table_name(),
                         $joined_obj->get_foreign_key_name(),
                         $this->get_table_name()
-                    ),
-                    E_USER_ERROR
+                    )
                 );
             }
             $query .= " WHERE (1 AND ({$params[self::PARAM_WHERE_CLAUSE]})) ORDER BY {$params[self::PARAM_ORDER_BY]} LIMIT {$params[self::PARAM_START]}, {$params[self::PARAM_LIMIT]}";
@@ -1076,7 +1077,7 @@ abstract class ActiveRecord
             } elseif ($this->has_column($joined_obj->get_foreign_key_name())) {
                 $query = 'SELECT COUNT(*) FROM `{1}` JOIN `{4}` ON `{1}`.`{6}` = `{4}`.`{5}`';
             } else {
-                trigger_error(
+                throw new MissingForeignKeyException(
                     sprintf(
                         '[%s::%s] Failed to find a foreign key column `%s` in table `%s` or `%s` in table `%s`.',
                         get_class($this),
@@ -1085,8 +1086,7 @@ abstract class ActiveRecord
                         $joined_obj->get_table_name(),
                         $joined_obj->get_foreign_key_name(),
                         $this->get_table_name()
-                    ),
-                    E_USER_ERROR
+                    )
                 );
             }
             $query .= " WHERE (1 AND ({$params[self::PARAM_WHERE_CLAUSE]}))";
@@ -1472,15 +1472,14 @@ abstract class ActiveRecord
         if (is_subclass_of(get_class($this), $superclass)) {
             return new $superclass($this->values);
         }
-        trigger_error(
+        throw new BadCastException(
             sprintf(
                 '[%s::%s] Attempted to cast an instance of %s to %s but it is not a valid superclass.',
                 get_class($this),
                 __FUNCTION__,
                 get_class($this),
                 $superclass
-            ),
-            E_USER_ERROR
+            )
         );
     }
 

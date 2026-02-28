@@ -13,9 +13,11 @@
 
 require_once __DIR__ . '/../../utils.php';
 require_once __DIR__ . '/../base_test.php';
+require_once __DIR__ . '/../../../exceptions/duplicate_entry_exception.php';
 
 use Emeraldion\EmeRails\Config;
 use Emeraldion\EmeRails\Db;
+// use Emeraldion\EmeRails\Exceptions\DuplicateEntryException;
 
 error_reporting(E_ALL & ~E_USER_DEPRECATED);
 
@@ -243,11 +245,11 @@ class ActiveRecordTest extends UnitTestBase
 
     public function test_save_nullable_field_varchar_set()
     {
-        $this->models[] = $model = new TestModel(['name' => 'foo']);
+        $this->models[] = $model = new TestModel(['name' => 'biz']);
         $model->save();
 
         $this->assertNotNull($model->name);
-        $this->assertEquals('foo', $model->name);
+        $this->assertEquals('biz', $model->name);
 
         $model->name = null;
         $model->save();
@@ -309,7 +311,7 @@ class ActiveRecordTest extends UnitTestBase
         $this->assertNull($other->shirt_color);
     }
 
-    public function test_save_dupe()
+    public function test_save_duplicate_ignore()
     {
         $instance = new TestModel([
             'name' => 'baz'
@@ -320,14 +322,33 @@ class ActiveRecordTest extends UnitTestBase
         $this->assertNotNull($instance->id, 'Model id was not set');
 
         $other_instance = new TestModel([
-            'id' => $instance->id,
             'name' => 'baz'
         ]);
         $this->assertNotNull($other_instance, 'Duplicate model was not instantiated');
-        $other_instance->_force_create = true;
         $other_instance->_ignore = true;
         $ret = $other_instance->save();
         $this->assertFalse($ret, 'Duplicate model was saved and not rejected');
+    }
+
+    public function test_save_duplicate_throws()
+    {
+        $instance = new TestModel([
+            'name' => 'baz'
+        ]);
+        $this->assertNotNull($instance, 'Model was not instantiated');
+        $ret = $instance->save();
+        $this->assertTrue($ret, 'Model was not saved');
+        $this->assertNotNull($instance->id, 'Model id was not set');
+
+        $other_instance = new TestModel([
+            'name' => 'baz'
+        ]);
+        $this->assertNotNull($other_instance, 'Duplicate model was not instantiated');
+
+        $this->expectException(DuplicateEntryException::class);
+        $this->expectExceptionMessage("Duplicate entry 'baz' for key 'name'");
+
+        $ret = $other_instance->save();
     }
 
     public function test_save_volatile()

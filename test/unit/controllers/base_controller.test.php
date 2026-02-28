@@ -39,6 +39,8 @@ class SimpleController extends BaseController
 
 class BaseControllerTest extends UnitTestBase
 {
+    private $controller;
+
     public function setUp(): void
     {
         $this->controller = new BaseControllerWrapper();

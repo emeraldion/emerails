@@ -27,6 +27,7 @@ function strip_double_dots($str)
  *	@details The Asset controller tries to save bandwidth by compressing the plain text resources
  *	(e.g. CSS stylesheets, Javascript source code, etc.)
  */
+#[\AllowDynamicProperties]
 class AssetController extends BaseController
 {
     const TIME_FORMAT = 'D, d M Y H:i:s T';

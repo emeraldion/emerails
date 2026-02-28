@@ -326,7 +326,8 @@ ALTER TABLE `test_groups_test_models`
 -- Indexes for table `test_models`
 --
 ALTER TABLE `test_models`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `name` (`name`);
 
 --
 -- Indexes for table `test_versions`
