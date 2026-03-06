@@ -1134,8 +1134,9 @@ abstract class ActiveRecord
         [, $type] = $matches;
         switch ($type) {
             case 'int':
-            case 'tinyint':
+            case 'mediumint':
             case 'smallint':
+            case 'tinyint':
                 return $conn->escape($value);
         }
         return "'{$conn->escape($value)}'";
@@ -1373,6 +1374,8 @@ abstract class ActiveRecord
                         }
                         break;
                     case 'int':
+                    case 'mediumint':
+                    case 'smallint':
                     case 'tinyint':
                         $max_length = (int) $matches[3];
                         if ($raise && !is_null($value) && !is_int($value)) {
