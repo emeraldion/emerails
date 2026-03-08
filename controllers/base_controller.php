@@ -1566,6 +1566,8 @@ class BaseController implements Controller
                 $contents = $this->load_part_contents($partfile);
             }
 
+            $contents = $this->parse_part_contents($contents);
+
             $ret = eval($contents);
         } catch (Throwable $t) {
             if (Config::get('DEV_MODE')) {
@@ -1603,6 +1605,17 @@ class BaseController implements Controller
         unset($GLOBALS['__PART__']);
 
         return $ret;
+    }
+
+    /**
+     * @fn parse_part_contents($contents)
+     * @short Parses the content of a partfile
+     * @details This is a convenient hook for template engines, that can use this method to process tags embedded in partfiles.
+     * The default implementation returns the contents of the partfile as-is.
+     */
+    protected function parse_part_contents(string $contents): string
+    {
+        return $contents;
     }
 
     /**
