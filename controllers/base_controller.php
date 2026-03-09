@@ -113,6 +113,12 @@ class BaseController implements Controller
     private $accepted_parameters = [];
 
     /**
+     * @attr controller_stack
+     * @short Stack of controllers in the invocation chain
+     */
+    private static $controller_stack = [];
+
+    /**
      * @attr parameters
      * @short Hub for accepted request parameters
      * @details All parameters declared with <tt>accept_parameter</tt> will be hoisted as properties of this object, e.g.
@@ -1326,6 +1332,10 @@ class BaseController implements Controller
      */
     public function render_page()
     {
+        if (!count(self::$controller_stack)) {
+            self::$controller_stack[] = $this;
+        }
+
         // Check if method is allowed for this action
         if (!$this->is_method_allowed()) {
             $this->send_error(405);
@@ -1442,41 +1452,49 @@ class BaseController implements Controller
             Localization::add_strings_table($controller_name);
         }
 
-        // Create class name
-        $classname = joined_lower_to_camel_case($controller_name) . 'Controller';
+        try {
+            // Create class name
+            $classname = joined_lower_to_camel_case($controller_name) . 'Controller';
 
-        // Instantiate controller
-        $controller = new $classname();
-        $controller->_name = $this->name;
-        $controller->_action = $this->action;
+            // Instantiate controller
+            $controller = new $classname();
+            $controller->_name = $this->name;
+            $controller->_action = $this->action;
 
-        // Propagate base path
-        $controller->set_base_path($this->base_path);
+            // Add to the stack
+            self::$controller_stack[] = $controller;
 
-        // Unset controller key from params (why?)
-        unset($params['controller']);
+            // Propagate base path
+            $controller->set_base_path($this->base_path);
 
-        // Set requested action
-        if (isset($params['action'])) {
-            $action = basename($params['action']);
+            // Unset controller key from params (why?)
+            unset($params['controller']);
 
-            $controller->action = $action;
-        }
+            // Set requested action
+            if (isset($params['action'])) {
+                $action = basename($params['action']);
 
-        if (isset($params['props'])) {
-            foreach ($params['props'] as $key => $val) {
-                $controller->$key = $val;
+                $controller->action = $action;
             }
+
+            if (isset($params['props'])) {
+                foreach ($params['props'] as $key => $val) {
+                    $controller->$key = $val;
+                }
+            }
+
+            // Invoke action method
+            $controller->$action();
+
+            // Request rendering with no layout
+            $params['layout'] = false;
+
+            // Note that this could already have been called
+            $controller->render($params);
+        } finally {
+            // Pop the stack
+            array_pop(self::$controller_stack);
         }
-
-        // Invoke action method
-        $controller->$action();
-
-        // Request rendering with no layout
-        $params['layout'] = false;
-
-        // Note that this could already have been called
-        $controller->render($params);
     }
 
     /**
@@ -1692,6 +1710,15 @@ class BaseController implements Controller
     public function is(string $name, ?string $action = null): bool
     {
         return $this->name === $name && (is_null($action) || $this->action === $action);
+    }
+
+    /**
+     * @fn current
+     * @short Returns the current controller
+     */
+    public static function current(): Controller
+    {
+        return last(self::$controller_stack);
     }
 
     /**
