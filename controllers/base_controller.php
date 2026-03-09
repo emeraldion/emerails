@@ -1626,6 +1626,19 @@ class BaseController implements Controller
     }
 
     /**
+     * @fn include($filename)
+     * @short Framework-compliant alternative to include files
+     * @details This is an alternative to the <tt>include</tt> construct that can be safely used inside partfiles.
+     */
+    public function include(string $filename): void
+    {
+        if (!str_starts_with($filename, '/')) {
+            $filename = '/' . $filename;
+        }
+        print $this->evaluate_part($this->base_path . $filename);
+    }
+
+    /**
      * @fn parse_part_contents($contents)
      * @short Parses the content of a partfile
      * @details This is a convenient hook for template engines, that can use this method to process tags embedded in partfiles.
