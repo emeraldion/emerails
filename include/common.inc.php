@@ -167,6 +167,22 @@ function table_name_to_foreign_key($tablename)
     return $fkey;
 }
 
+function normalize_entity_name(string $str): string
+{
+    // Lowercase
+    $ret = strtolower($str);
+    // Hyphens (-) must be transformed into underscores (_)
+    $ret = str_replace('-', '_', $ret);
+    // Must start with a letter
+    if (preg_match('/^[^a-z]/', $ret)) {
+        throw new Exception(sprintf("'%s' must start with a letter", $str));
+    }
+    if (preg_match('/[^a-z0-9_]/', $ret)) {
+        throw new Exception(sprintf("'%s' must only contain letters, numbers and underscores", $str));
+    }
+    return $ret;
+}
+
 /**
  * @fn l($str)
  * @short Shorthand method for the Localization::localize method.

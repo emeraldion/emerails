@@ -172,7 +172,7 @@ class EmerailsGenerate extends ScriptCommand
                 $this->create_dir($dir);
 
                 // Name of the controller is an argument
-                $controller = strtolower(first($options->getArgs()));
+                $controller = normalize_entity_name(first($options->getArgs()));
                 // Optional actions from options
                 $actions = explode(',', $options->getOpt(self::OPTION_ACTIONS));
                 // Create or update controller
@@ -298,7 +298,7 @@ class EmerailsGenerate extends ScriptCommand
         $dry_run = $options->getOpt(self::OPTION_DRY_RUN);
         $verbose = $options->getOpt(self::OPTION_VERBOSE);
 
-        $model_class = joined_lower_to_camel_case(strtolower(first($options->getArgs())));
+        $model_class = joined_lower_to_camel_case(normalize_entity_name(first($options->getArgs())));
         $model_table = class_name_to_table_name($model_class);
         $model = singularize($model_table);
 
@@ -340,7 +340,7 @@ class EmerailsGenerate extends ScriptCommand
         $conn = Db::get_connection();
 
         foreach ($relationship_signature as $cardinality => $other) {
-            $other_model_class = joined_lower_to_camel_case(strtolower($other));
+            $other_model_class = joined_lower_to_camel_case(normalize_entity_name($other));
             $other_model_table = class_name_to_table_name($other_model_class);
             $other_model = singularize($other_model_table);
 
@@ -583,7 +583,7 @@ class EmerailsGenerate extends ScriptCommand
             $updated_code = substr($controller_code, 0, $insertion_point);
 
             for ($i = 0; $i < count($actions); $i += 1) {
-                $action = strtolower($actions[$i]);
+                $action = normalize_entity_name($actions[$i]);
 
                 if ($action === 'index') {
                     continue;
@@ -660,7 +660,7 @@ class EmerailsGenerate extends ScriptCommand
             $this->create_view($options, $basedir, $controller, 'index');
 
             for ($i = 0; $i < count($actions); $i += 1) {
-                $action = strtolower($actions[$i]);
+                $action = normalize_entity_name($actions[$i]);
 
                 if ($action === 'index') {
                     continue;

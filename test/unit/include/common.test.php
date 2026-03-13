@@ -235,4 +235,28 @@ class CommonTest extends UnitTestBase
         // non numeric val
         $this->assertEquals(1, limit_3(null, 3, 1));
     }
+
+    public function test_normalize_entity_name_valid()
+    {
+        $this->assertEquals('somename', normalize_entity_name('somename'));
+        $this->assertEquals('somename', normalize_entity_name('soMEnaME'));
+        $this->assertEquals('some_name', normalize_entity_name('some-name'));
+        $this->assertEquals('some_name', normalize_entity_name('sOMe-NAme'));
+        $this->assertEquals('some_name_123', normalize_entity_name('some-name-123'));
+        $this->assertEquals('some_name_123', normalize_entity_name('sOMe-NAme-123'));
+    }
+
+    public function test_normalize_entity_name_starts_with_numbers()
+    {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage("'123soMEnaME' must start with a letter");
+        normalize_entity_name('123soMEnaME');
+    }
+
+    public function test_normalize_entity_name_invalid_characters()
+    {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage("'a*&(&Aj1asf' must only contain letters, numbers and underscores");
+        normalize_entity_name('a*&(&Aj1asf');
+    }
 }
