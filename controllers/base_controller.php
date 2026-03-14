@@ -1638,15 +1638,34 @@ class BaseController implements Controller
         print $this->evaluate_part($this->base_path . $filename);
     }
 
+    /* Component trait */
+
     /**
      * @fn parse_part_contents($contents)
      * @short Parses the content of a partfile
      * @details This is a convenient hook for template engines, that can use this method to process tags embedded in partfiles.
-     * The default implementation returns the contents of the partfile as-is.
+     * The default implementation invokes the component parser on the partfile if EmeRails components are enabled.
      */
     protected function parse_part_contents(string $contents): string
     {
+        if (Config::get('COMPONENTS_ENABLED')) {
+            require_once __DIR__ . '/../helpers/component_parser.php';
+            return ComponentParser::parse_contents($contents);
+        }
         return $contents;
+    }
+
+    /**
+     * @fn default_props($params)
+     * @short Sets defaults for component props
+     */
+    protected function default_props(array $params): void
+    {
+        foreach ($params as $name => $default_value) {
+            if (!property_exists($this, $name)) {
+                $this->{$name} = $default_value;
+            }
+        }
     }
 
     /**
