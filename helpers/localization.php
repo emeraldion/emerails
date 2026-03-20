@@ -21,6 +21,8 @@ use Emeraldion\EmeRails\Config;
  */
 class Localization
 {
+    const GLOBAL_TABLE = '__GLOBAL__';
+
     /**
      * @attr base_dir
      * @short The base directory for localization files.
@@ -56,17 +58,29 @@ class Localization
     ];
 
     /**
-     * @attr strings_table
-     * @short Table of translated strings.
+     * @attr strings
+     * @short Table of localized strings.
      */
-    private static $strings_table;
+    private static $strings = [];
+
+    /**
+     * @attr tables
+     * @short List of string tables.
+     */
+    private static $tables = [self::GLOBAL_TABLE];
+
+    /**
+     * @attr is_loaded
+     * @short Have strings been loaded from tables yet?
+     */
+    private static $is_loaded = false;
 
     /**
      * @fn set_base_dir($base_dir)
      * @short Initializes the base directory for localization files.
      * @param base_dir The base directory. Defaults to the parent directory of this file.
      */
-    public static function set_base_dir($base_dir = __DIR__ . '/../')
+    public static function set_base_dir(string $base_dir = __DIR__ . '/../'): void
     {
         self::$base_dir = $base_dir;
     }
@@ -75,9 +89,11 @@ class Localization
      * @fn reset()
      * @short Resets the localization helper.
      */
-    public static function reset()
+    public static function reset(): void
     {
-        self::$strings_table = null;
+        self::$is_loaded = false;
+        self::$strings = [];
+        self::$tables = [self::GLOBAL_TABLE];
     }
 
     /**
@@ -94,30 +110,33 @@ class Localization
      * @param fallback The fallback string to return when the key can't be resolved.
      * @see wrap($term)
      */
-    public static function localize($key, $fallback = null)
+    public static function localize(string $key, ?string $fallback = null): string
     {
-        if (!self::$strings_table) {
-            self::load_strings_table();
+        if (!self::$is_loaded) {
+            self::load_strings();
         }
-        return self::wrap(
-            array_key_exists($key, self::$strings_table) ? self::$strings_table[$key] : $fallback ?? $key
-        );
+        return self::wrap(array_key_exists($key, self::$strings) ? self::$strings[$key] : $fallback ?? $key);
     }
 
     /**
-     * @fn add_strings_table
-     * @short Adds another strings table for a desired controller.
-     * @details Language is obtained by the request parameters.
-     * @param controller The name of the controller.
+     * @fn add_strings
+     * @short Adds a strings table to the localization.
+     * @details Strings are lazy loaded when the first localized string is requested
+     * @param table The name of the table.
      */
-    public static function add_strings_table($controller)
+    public static function add_strings_table(string $table): void
     {
-        $table = self::$strings_table;
+        if (!in_array($table, self::$tables)) {
+            self::$tables[] = $table;
+        }
 
-        $local_strings = self::load_strings_file(@$_COOKIE[Config::get('LANGUAGE_COOKIE')], $controller);
-        $table = array_merge(self::$strings_table ?? [], eval("return {$local_strings};"));
+        // If tables were already loaded, load the new strings table immediately
+        if (self::$is_loaded) {
+            $strings_table = self::load_strings_table(@$_COOKIE[Config::get('LANGUAGE_COOKIE')], $table);
+            $strings = array_merge(self::$strings, eval("return {$strings_table}"));
 
-        self::$strings_table = $table;
+            self::$strings = $strings;
+        }
     }
 
     /**
@@ -125,51 +144,54 @@ class Localization
      * @short Wraps a string in a parent HTML element to add debug style selectors.
      * @param term The string to be wrapped.
      */
-    private static function wrap($term)
+    private static function wrap(string $term): string
     {
-        if (!Config::get('LOCALIZATION_DEBUG')) {
-            return $term;
+        if (Config::get('LOCALIZATION_DEBUG')) {
+            return span($term, ['class' => 'localization-debug']);
         }
-        return span($term, ['class' => 'localization-debug']);
+        return $term;
     }
 
     /**
-     * @fn load_strings_file($lang, $controller)
-     * @short Loads the string file for the desired controller and language.
+     * @fn load_strings_table($lang, $table)
+     * @short Loads the strings from the desired table and language.
      * @param lang The language for the strings file.
-     * @param controller The name of the controller.
+     * @param table The name of the table.
      */
-    private static function load_strings_file($lang = 'en', $controller = null)
+    private static function load_strings_table(string $lang = 'en', string $table): string
     {
-        $strings_file = $controller
-            ? sprintf('%sassets/strings/%s/localizable-%s.strings', self::$base_dir, $controller, $lang)
-            : sprintf('%sassets/strings/localizable-%s.strings', self::$base_dir, $lang);
+        $strings_file =
+            $table === self::GLOBAL_TABLE
+                ? sprintf('%sassets/strings/localizable-%s.strings', self::$base_dir, $lang)
+                : sprintf('%sassets/strings/%s/localizable-%s.strings', self::$base_dir, $table, $lang);
 
         if (file_exists($strings_file)) {
             return file_get_contents($strings_file);
         } elseif ($lang != 'en') {
-            return self::load_strings_file('en', $controller);
+            // Fall back to English
+            return self::load_strings_file('en', $table);
         }
-        return 'array();';
+        return '[];';
     }
 
     /**
-     * @fn load_strings_table
-     * @short Loads the string table for the current controller and language.
-     * @details Controller and language are obtained by the request parameters.
+     * @fn load_strings
+     * @short Loads the strings from the requested string tables and language.
+     * @details Language is obtained from request parameters.
      */
-    private static function load_strings_table()
+    private static function load_strings(): void
     {
-        $table = [];
-
-        $global_strings = self::load_strings_file(@$_COOKIE[Config::get('LANGUAGE_COOKIE')] /* GLOBAL */);
-        $table = array_merge($table, eval("return {$global_strings}"));
-        if (isset($_REQUEST['controller'])) {
-            $controller = $_REQUEST['controller'];
-            $local_strings = self::load_strings_file(@$_COOKIE[Config::get('LANGUAGE_COOKIE')], $controller);
-            $table = array_merge($table, eval("return {$local_strings}"));
+        if (self::$is_loaded) {
+            return;
         }
 
-        self::$strings_table = $table;
+        $strings = [];
+
+        foreach (self::$tables as $table) {
+            $strings_table = self::load_strings_table(@$_COOKIE[Config::get('LANGUAGE_COOKIE')], $table);
+            $strings = array_merge($strings, eval("return {$strings_table}"));
+        }
+
+        self::$strings = $strings;
     }
 }
