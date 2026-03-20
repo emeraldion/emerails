@@ -128,14 +128,14 @@ class Localization
     {
         if (!in_array($table, self::$tables)) {
             self::$tables[] = $table;
-        }
 
-        // If tables were already loaded, load the new strings table immediately
-        if (self::$is_loaded) {
-            $strings_table = self::load_strings_table($table, @$_COOKIE[Config::get('LANGUAGE_COOKIE')] ?: 'en');
-            $strings = array_merge(self::$strings, eval("return {$strings_table}"));
+            // If tables were already loaded, load the new strings table immediately
+            if (self::$is_loaded) {
+                $strings_table = self::load_strings_table($table, @$_COOKIE[Config::get('LANGUAGE_COOKIE')] ?: 'en');
+                $strings = array_merge(self::$strings, eval("return {$strings_table}"));
 
-            self::$strings = $strings;
+                self::$strings = $strings;
+            }
         }
     }
 
