@@ -132,7 +132,7 @@ class Localization
 
         // If tables were already loaded, load the new strings table immediately
         if (self::$is_loaded) {
-            $strings_table = self::load_strings_table(@$_COOKIE[Config::get('LANGUAGE_COOKIE')], $table);
+            $strings_table = self::load_strings_table($table, @$_COOKIE[Config::get('LANGUAGE_COOKIE')]);
             $strings = array_merge(self::$strings, eval("return {$strings_table}"));
 
             self::$strings = $strings;
@@ -153,12 +153,12 @@ class Localization
     }
 
     /**
-     * @fn load_strings_table($lang, $table)
+     * @fn load_strings_table($table, $lang)
      * @short Loads the strings from the desired table and language.
-     * @param lang The language for the strings file.
      * @param table The name of the table.
+     * @param lang The language for the strings file.
      */
-    private static function load_strings_table(string $lang = 'en', string $table): string
+    private static function load_strings_table(string $table, string $lang = 'en'): string
     {
         $strings_file =
             $table === self::GLOBAL_TABLE
@@ -188,7 +188,7 @@ class Localization
         $strings = [];
 
         foreach (self::$tables as $table) {
-            $strings_table = self::load_strings_table(@$_COOKIE[Config::get('LANGUAGE_COOKIE')], $table);
+            $strings_table = self::load_strings_table($table, @$_COOKIE[Config::get('LANGUAGE_COOKIE')]);
             $strings = array_merge($strings, eval("return {$strings_table}"));
         }
 
