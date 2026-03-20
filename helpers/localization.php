@@ -193,5 +193,6 @@ class Localization
         }
 
         self::$strings = $strings;
+        self::$is_loaded = true;
     }
 }
