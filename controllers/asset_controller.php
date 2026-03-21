@@ -54,7 +54,7 @@ class AssetController extends BaseController
                 $this->mimetype = 'text/plain';
         }
 
-        $this->after_filter('send_cache_headers', 'compress');
+        $this->after_filter(['send_cache_headers', 'compress']);
     }
 
     /**
