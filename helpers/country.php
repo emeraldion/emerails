@@ -55,6 +55,7 @@ abstract class Country
     const EGYPT = 'EG';
     const EL_SALVADOR = 'SV';
     const ESTONIA = 'EE';
+    const ETHIOPIA = 'ET';
 
     const FINLAND = 'FI';
     const FRANCE = 'FR';
@@ -203,6 +204,7 @@ abstract class Country
         self::EGYPT,
         self::EL_SALVADOR,
         self::ESTONIA,
+        self::ETHIOPIA,
 
         self::FINLAND,
         self::FRANCE,
@@ -378,6 +380,7 @@ abstract class Country
     const FLAG_EGYPT = '🇪🇬';
     const FLAG_EL_SALVADOR = '🇸🇻';
     const FLAG_ESTONIA = '🇪🇪';
+    const FLAG_ETHIOPIA = '🇪🇹';
 
     const FLAG_FINLAND = '🇫🇮';
     const FLAG_FRANCE = '🇫🇷';
@@ -526,6 +529,7 @@ abstract class Country
         self::EGYPT => self::FLAG_EGYPT,
         self::EL_SALVADOR => self::FLAG_EL_SALVADOR,
         self::ESTONIA => self::FLAG_ESTONIA,
+        self::ETHIOPIA => self::FLAG_ETHIOPIA,
 
         self::FINLAND => self::FLAG_FINLAND,
         self::FRANCE => self::FLAG_FRANCE,
