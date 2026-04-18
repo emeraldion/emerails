@@ -169,7 +169,7 @@ class Localization
             return file_get_contents($strings_file);
         } elseif ($lang != 'en') {
             // Fall back to English
-            return self::load_strings_file('en', $table);
+            return self::load_strings_table($table, 'en');
         }
         return '[];';
     }
