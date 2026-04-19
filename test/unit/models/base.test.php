@@ -61,6 +61,24 @@ class ActiveRecordTest extends UnitTestBase
         $this->assertEquals('goo', $instance->name);
     }
 
+    public function test_update_with_strict()
+    {
+        $instance = new TestWidget();
+        $this->assertNotNull($instance);
+        $this->assertNull($instance->color);
+
+        $instance->update_with(['color' => 'red', 'test_model_id' => 2], true);
+        $this->assertEquals('red', $instance->color);
+        $this->assertEquals(2, $instance->test_model_id);
+
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage(
+            "TestWidget: Attempt to set the field 'test_model_id' to a value with incorrect type. Expected 'int(11)' but found: 'string'"
+        );
+
+        $instance->update_with(['color' => 'red', 'test_model_id' => '3'], true);
+    }
+
     public function test_update_with_overwrite()
     {
         $instance = new TestModel([

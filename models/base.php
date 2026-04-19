@@ -201,13 +201,14 @@ abstract class ActiveRecord
      * @details The method updates the fields of the receiver with the values from the argument under the keys
      * corresponding to the names of the respective columns
      * @param values Values to update the object.
+     * @param strict Set to true to validate the fields.
      */
-    function update_with(array $values): self
+    function update_with(array $values, bool $strict = false): self
     {
         $columns = $this->get_column_names();
         foreach ($values as $key => $val) {
             if (in_array($key, $columns)) {
-                $this->values[$key] = $this->validate_field($key, $val, true);
+                $this->values[$key] = $this->validate_field($key, $val, $strict);
             }
         }
         return $this;
