@@ -228,4 +228,94 @@ class ComponentParserTest extends UnitTestBase
             )
         );
     }
+
+    public function test_parse_singleton_component_expression_attribute_multiline()
+    {
+        $this->assertEquals(
+            <<<EOT
+            <div><?php
+            \$this->render_component([
+                'controller' => 'common',
+                'action' => 'dropdown_button',
+                'props' => [
+            \t'button_label' => l('actions-button-label'),
+            \t'menu_items' => [
+                [
+                    \$this->link_to(l('menu-item-button-label1'), [
+                        'controller' => 'controller1',
+                        'action' => 'action1',
+                        'id' => 'id1',
+                        'return' => true
+                    ]),
+                    \$this->link_to(l('menu-item-button-label2'), [
+                        'controller' => 'controller2',
+                        'action' => 'action2',
+                        'id' => 'id2',
+                        'return' => true
+                    ]),
+                    \$this->link_to(l('menu-item-button-label3'), [
+                        'controller' => 'controller3',
+                        'action' => 'action3',
+                        'id' => 'id3',
+                        'return' => true
+                    ])
+                ],
+            ]
+
+            ]);
+            ?></div>
+            EOT
+            ,
+            ComponentParser::parse_contents(
+                <<<EOT
+                <div><x:dropdown-button button-label={l('actions-button-label')} menu-items={[
+                    [
+                        \$this->link_to(l('menu-item-button-label1'), [
+                            'controller' => 'controller1',
+                            'action' => 'action1',
+                            'id' => 'id1',
+                            'return' => true
+                        ]),
+                        \$this->link_to(l('menu-item-button-label2'), [
+                            'controller' => 'controller2',
+                            'action' => 'action2',
+                            'id' => 'id2',
+                            'return' => true
+                        ]),
+                        \$this->link_to(l('menu-item-button-label3'), [
+                            'controller' => 'controller3',
+                            'action' => 'action3',
+                            'id' => 'id3',
+                            'return' => true
+                        ])
+                    ]} /></div>
+                EOT
+            )
+        );
+    }
+
+    public function test_parse_singleton_component_expression_attribute_tag_newline()
+    {
+        $this->assertEquals(
+            <<<EOT
+            <div><?php
+            \$this->render_component([
+                'controller' => 'common',
+                'action' => 'dropdown_button',
+                'props' => [
+            \t'button_label' => l('actions-button-label'),
+            ]
+
+            ]);
+            ?></div>
+            EOT
+            ,
+            ComponentParser::parse_contents(
+                <<<EOT
+                <div><x:dropdown-button
+                    button-label={l('actions-button-label')} /></div>
+                EOT
+            )
+        );
+    }
 }

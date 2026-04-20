@@ -76,13 +76,13 @@ abstract class ComponentParser
                 $j = 0;
                 while (!$is_at_end && $j < $max_component_length) {
                     $c = getc($contents);
-                    // printf("Character: '%s'\t", $c);
+                    // printf("Character: '%s'\n", $c);
                     switch ($state) {
                         case self::STATE_COMPONENT_NAME:
                             switch ($c) {
                                 case ' ':
-                                case '\t':
-                                case '\n':
+                                case "\t":
+                                case "\n":
                                     $state = self::STATE_ATTRIBUTE_LIST;
                                     break;
                                 case '>':
@@ -93,6 +93,7 @@ abstract class ComponentParser
                                     break;
                                 default:
                                     $component_name .= $c;
+                                    // printf("Component name: '%s'\n", $component_name);
                                     break;
                             }
                             break;
@@ -105,8 +106,8 @@ abstract class ComponentParser
                                     $state = self::STATE_CLOSING_TAG;
                                     break;
                                 case ' ':
-                                case '\t':
-                                case '\n':
+                                case "\t":
+                                case "\n":
                                     // Stay in STATE_ATTRIBUTE_LIST
                                     break;
                                 default:
@@ -119,8 +120,8 @@ abstract class ComponentParser
                         case self::STATE_ATTRIBUTE_NAME:
                             switch ($c) {
                                 case ' ':
-                                case '\t':
-                                case '\n':
+                                case "\t":
+                                case "\n":
                                     $state = self::STATE_ATTRIBUTE_NAME_EXPECTING_EQUAL;
                                     break;
                                 case '=':
@@ -134,8 +135,8 @@ abstract class ComponentParser
                         case self::STATE_ATTRIBUTE_NAME_EXPECTING_EQUAL:
                             switch ($c) {
                                 case ' ':
-                                case '\t':
-                                case '\n':
+                                case "\t":
+                                case "\n":
                                     // Stay in STATE_ATTRIBUTE_NAME_EXPECTING_EQUAL
                                     break;
                                 case '=':
@@ -172,8 +173,8 @@ abstract class ComponentParser
                                     $state = self::STATE_ATTRIBUTE_EXPRESSION;
                                     break;
                                 case ' ':
-                                case '\t':
-                                case '\n':
+                                case "\t":
+                                case "\n":
                                     $state = self::STATE_ATTRIBUTE_OPENING;
                                     break;
                                 default:
@@ -191,8 +192,8 @@ abstract class ComponentParser
                                     $state = self::STATE_ATTRIBUTE_EXPRESSION;
                                     break;
                                 case ' ':
-                                case '\t':
-                                case '\n':
+                                case "\t":
+                                case "\n":
                                     // $state = self::STATE_ATTRIBUTE_OPENING;
                                     break;
                                 default:
@@ -251,8 +252,8 @@ abstract class ComponentParser
                                     // TODO: and pop the stack
                                     break;
                                 case ' ':
-                                case '\t':
-                                case '\n':
+                                case "\t":
+                                case "\n":
                                     // Stay in STATE_CLOSING_TAG
                                     break;
                                 default:
