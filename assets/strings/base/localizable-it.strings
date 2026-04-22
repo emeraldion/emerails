@@ -1,6 +1,4 @@
 [
-    'base-component-parser-error-heading' => 'Errore nel componente',
-
     'base-index-discussion-group-link' => 'gruppo di discussione',
     'base-index-docs-link' => 'documentazione',
     'base-index-heading' => 'Congratulazioni!',

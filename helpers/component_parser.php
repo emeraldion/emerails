@@ -278,7 +278,7 @@ abstract class ComponentParser
                     $ret .= block_tag(
                         'div',
                         implode("\n", [
-                            h3(l('base-component-parser-error-heading'), null),
+                            h3(l('component-parser-error-heading'), null),
                             block_tag('p', $e->getMessage(), null)
                         ]),
                         ['class' => 'msg error']

@@ -402,9 +402,6 @@ class ComponentParserTest extends UnitTestBase
 
     public function test_parse_singleton_component_multiline_expression_exceeding_max_size()
     {
-        $this->expectException(ComponentParserException::class);
-        $this->expectExceptionMessage('Component exceeds maximum size of 4096 characters');
-
         $content = var_export(
             array_map(function ($i) {
                 return sprintf(
@@ -425,12 +422,48 @@ class ComponentParserTest extends UnitTestBase
             }, range(1, 20)),
             true
         );
-        ComponentParser::parse_contents(
+        $this->assertEquals(
             <<<EOT
-            <div><x:dropdown-button
-                button-label={l('actions-button-label')}
-                menu-items={[{$content}]} /></div>
+            <div><div class="msg error"><h3>Component parse error</h3>
+
+            <p>Component <strong>dropdown-button</strong> exceeds the maximum allowed size of 4096 characters. Consider increasing the value of the MAX_COMPONENT_LENGTH config setting.</p>
+            </div>
+            > true
+                        ])',
+              16 => '            \$this->link_to(l(\'menu-item-button-label17\'), [
+                            \'controller\' => \'controller17\',
+                            \'action\' => \'action17\',
+                            \'id\' => \'id17\',
+                            \'return\' => true
+                        ])',
+              17 => '            \$this->link_to(l(\'menu-item-button-label18\'), [
+                            \'controller\' => \'controller18\',
+                            \'action\' => \'action18\',
+                            \'id\' => \'id18\',
+                            \'return\' => true
+                        ])',
+              18 => '            \$this->link_to(l(\'menu-item-button-label19\'), [
+                            \'controller\' => \'controller19\',
+                            \'action\' => \'action19\',
+                            \'id\' => \'id19\',
+                            \'return\' => true
+                        ])',
+              19 => '            \$this->link_to(l(\'menu-item-button-label20\'), [
+                            \'controller\' => \'controller20\',
+                            \'action\' => \'action20\',
+                            \'id\' => \'id20\',
+                            \'return\' => true
+                        ])',
+            )]} /></div>
             EOT
+            ,
+            ComponentParser::parse_contents(
+                <<<EOT
+                <div><x:dropdown-button
+                    button-label={l('actions-button-label')}
+                    menu-items={[{$content}]} /></div>
+                EOT
+            )
         );
     }
 }
