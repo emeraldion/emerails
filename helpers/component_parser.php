@@ -63,212 +63,228 @@ abstract class ComponentParser
             while (($start_pos = strpos($contents, self::COMPONENT_OPENING_TAG)) !== false && $i < $max_components) {
                 $ret .= substr($contents, 0, $start_pos);
                 $contents = substr($contents, $start_pos + strlen(self::COMPONENT_OPENING_TAG));
-
-                $is_at_end = false;
-                $state = self::STATE_COMPONENT_NAME;
-                $has_children = true;
-                $component_name = '';
-                $attribute_name = '';
-                $attribute_type = null;
-                $attribute_quote = '';
-                $attribute_value = '';
-                $attributes = [];
-                $children = '';
-                $j = 0;
-                while (!$is_at_end && $j < $max_component_length) {
-                    $c = getc($contents);
-                    // printf("Character: '%s'\n", $c);
-                    switch ($state) {
-                        case self::STATE_COMPONENT_NAME:
-                            switch ($c) {
-                                case ' ':
-                                case "\t":
-                                case "\n":
-                                    $state = self::STATE_ATTRIBUTE_LIST;
-                                    break;
-                                case '>':
-                                    $state = self::STATE_CHILDREN;
-                                    break;
-                                case '/':
-                                    $state = self::STATE_CLOSING_TAG;
-                                    break;
-                                default:
-                                    $component_name .= $c;
-                                    // printf("Component name: '%s'\n", $component_name);
-                                    break;
-                            }
-                            break;
-                        case self::STATE_ATTRIBUTE_LIST:
-                            switch ($c) {
-                                case '>':
-                                    $state = self::STATE_CHILDREN;
-                                    break;
-                                case '/':
-                                    $state = self::STATE_CLOSING_TAG;
-                                    break;
-                                case ' ':
-                                case "\t":
-                                case "\n":
-                                    // Stay in STATE_ATTRIBUTE_LIST
-                                    break;
-                                default:
-                                    // if (is_alphanumeric($c)) {
-                                    $state = self::STATE_ATTRIBUTE_NAME;
-                                    $attribute_name = $c;
-                                // }
-                            }
-                            break;
-                        case self::STATE_ATTRIBUTE_NAME:
-                            switch ($c) {
-                                case ' ':
-                                case "\t":
-                                case "\n":
-                                    $state = self::STATE_ATTRIBUTE_NAME_EXPECTING_EQUAL;
-                                    break;
-                                case '=':
-                                    $state = self::STATE_ATTRIBUTE_EQUAL;
-                                    break;
-                                default:
-                                    $attribute_name .= $c;
-                                    break;
-                            }
-                            break;
-                        case self::STATE_ATTRIBUTE_NAME_EXPECTING_EQUAL:
-                            switch ($c) {
-                                case ' ':
-                                case "\t":
-                                case "\n":
-                                    // Stay in STATE_ATTRIBUTE_NAME_EXPECTING_EQUAL
-                                    break;
-                                case '=':
-                                    $state = self::STATE_ATTRIBUTE_EQUAL;
-                                    break;
-                                case '/':
-                                    // Commit the previous attribute
-                                    $attributes[$attribute_name] = [
-                                        'value' => true,
-                                        'type' => self::ATTRIBUTE_TYPE_EXPRESSION
-                                    ];
-                                    $state = self::STATE_CLOSING_TAG;
-                                    break;
-                                default:
-                                    // Commit the previous attribute
-                                    $attributes[$attribute_name] = [
-                                        'value' => true,
-                                        'type' => self::ATTRIBUTE_TYPE_EXPRESSION
-                                    ];
-                                    // Start a new one
-                                    $state = self::STATE_ATTRIBUTE_NAME;
-                                    $attribute_name = $c;
-                                    break;
-                            }
-                            break;
-                        case self::STATE_ATTRIBUTE_EQUAL:
-                            switch ($c) {
-                                case '"':
-                                case '\'':
-                                    $state = self::STATE_ATTRIBUTE_VALUE;
-                                    $attribute_quote = $c;
-                                    break;
-                                case '{':
-                                    $state = self::STATE_ATTRIBUTE_EXPRESSION;
-                                    break;
-                                case ' ':
-                                case "\t":
-                                case "\n":
-                                    $state = self::STATE_ATTRIBUTE_OPENING;
-                                    break;
-                                default:
-                                    throw new Exception('Malformed attribute ' . $attribute_name);
-                            }
-                            break;
-                        case self::STATE_ATTRIBUTE_OPENING: // Conflate with STATE_ATTRIBUTE_EQUAL ?
-                            switch ($c) {
-                                case '"':
-                                case '\'':
-                                    $state = self::STATE_ATTRIBUTE_VALUE;
-                                    $attribute_quote = $c;
-                                    break;
-                                case '{':
-                                    $state = self::STATE_ATTRIBUTE_EXPRESSION;
-                                    break;
-                                case ' ':
-                                case "\t":
-                                case "\n":
-                                    // $state = self::STATE_ATTRIBUTE_OPENING;
-                                    break;
-                                default:
-                                    throw new Exception('Malformed attribute ' . $attribute_name);
-                            }
-                            break;
-                        case self::STATE_ATTRIBUTE_VALUE:
-                            switch ($c) {
-                                case $attribute_quote:
-                                    // Commit the previous attribute
-                                    $attributes[$attribute_name] = [
-                                        'value' => $attribute_value,
-                                        'type' => self::ATTRIBUTE_TYPE_STRING
-                                    ];
-                                    $state = self::STATE_ATTRIBUTE_LIST;
-                                    // Reset attribute
-                                    $attribute_name = '';
-                                    $attribute_value = '';
-                                    break;
-                                default:
-                                    $attribute_value .= $c;
-                                    break;
-                            }
-                            break;
-                        case self::STATE_ATTRIBUTE_EXPRESSION:
-                            switch ($c) {
-                                // TODO: support nested braces
-                                case '}':
-                                    // Commit the previous attribute
-                                    $attributes[$attribute_name] = [
-                                        'value' => $attribute_value,
-                                        'type' => self::ATTRIBUTE_TYPE_EXPRESSION
-                                    ];
-                                    $state = self::STATE_ATTRIBUTE_LIST;
-                                    // Reset attribute
-                                    $attribute_name = '';
-                                    $attribute_value = '';
-                                    break;
-                                default:
-                                    $attribute_value .= $c;
-                                    break;
-                            }
-                            break;
-                        case self::STATE_CHILDREN:
-                            // TODO: push a new component onto the stack
-                            break;
-                        case self::STATE_OPENING_TAG:
-                            // TODO: do we really need this?
-                            break;
-                        case self::STATE_CLOSING_TAG:
-                            switch ($c) {
-                                case '>':
-                                    $is_at_end = true;
-                                    // Append parsed component
-                                    $ret .= self::render_component($component_name, $attributes);
-                                    // TODO: and pop the stack
-                                    break;
-                                case ' ':
-                                case "\t":
-                                case "\n":
-                                    // Stay in STATE_CLOSING_TAG
-                                    break;
-                                default:
-                                    throw new Exception('Unexpected character after \'/\': ', $c);
-                            }
-                            break;
+                try {
+                    $is_at_end = false;
+                    $state = self::STATE_COMPONENT_NAME;
+                    $has_children = true;
+                    $component_name = '';
+                    $attribute_name = '';
+                    $attribute_type = null;
+                    $attribute_quote = '';
+                    $attribute_value = '';
+                    $attributes = [];
+                    $children = '';
+                    $j = 0;
+                    while (!$is_at_end && $j < $max_component_length) {
+                        $c = getc($contents);
+                        // printf("Character: '%s'\n", $c);
+                        switch ($state) {
+                            case self::STATE_COMPONENT_NAME:
+                                switch ($c) {
+                                    case ' ':
+                                    case "\t":
+                                    case "\n":
+                                        $state = self::STATE_ATTRIBUTE_LIST;
+                                        break;
+                                    case '>':
+                                        $state = self::STATE_CHILDREN;
+                                        break;
+                                    case '/':
+                                        $state = self::STATE_CLOSING_TAG;
+                                        break;
+                                    default:
+                                        $component_name .= $c;
+                                        // printf("Component name: '%s'\n", $component_name);
+                                        break;
+                                }
+                                break;
+                            case self::STATE_ATTRIBUTE_LIST:
+                                switch ($c) {
+                                    case '>':
+                                        $state = self::STATE_CHILDREN;
+                                        break;
+                                    case '/':
+                                        $state = self::STATE_CLOSING_TAG;
+                                        break;
+                                    case ' ':
+                                    case "\t":
+                                    case "\n":
+                                        // Stay in STATE_ATTRIBUTE_LIST
+                                        break;
+                                    default:
+                                        // if (is_alphanumeric($c)) {
+                                        $state = self::STATE_ATTRIBUTE_NAME;
+                                        $attribute_name = $c;
+                                    // }
+                                }
+                                break;
+                            case self::STATE_ATTRIBUTE_NAME:
+                                switch ($c) {
+                                    case ' ':
+                                    case "\t":
+                                    case "\n":
+                                        $state = self::STATE_ATTRIBUTE_NAME_EXPECTING_EQUAL;
+                                        break;
+                                    case '=':
+                                        $state = self::STATE_ATTRIBUTE_EQUAL;
+                                        break;
+                                    default:
+                                        $attribute_name .= $c;
+                                        break;
+                                }
+                                break;
+                            case self::STATE_ATTRIBUTE_NAME_EXPECTING_EQUAL:
+                                switch ($c) {
+                                    case ' ':
+                                    case "\t":
+                                    case "\n":
+                                        // Stay in STATE_ATTRIBUTE_NAME_EXPECTING_EQUAL
+                                        break;
+                                    case '=':
+                                        $state = self::STATE_ATTRIBUTE_EQUAL;
+                                        break;
+                                    case '/':
+                                        // Commit the previous attribute
+                                        $attributes[$attribute_name] = [
+                                            'value' => true,
+                                            'type' => self::ATTRIBUTE_TYPE_EXPRESSION
+                                        ];
+                                        $state = self::STATE_CLOSING_TAG;
+                                        break;
+                                    default:
+                                        // Commit the previous attribute
+                                        $attributes[$attribute_name] = [
+                                            'value' => true,
+                                            'type' => self::ATTRIBUTE_TYPE_EXPRESSION
+                                        ];
+                                        // Start a new one
+                                        $state = self::STATE_ATTRIBUTE_NAME;
+                                        $attribute_name = $c;
+                                        break;
+                                }
+                                break;
+                            case self::STATE_ATTRIBUTE_EQUAL:
+                                switch ($c) {
+                                    case '"':
+                                    case '\'':
+                                        $state = self::STATE_ATTRIBUTE_VALUE;
+                                        $attribute_quote = $c;
+                                        break;
+                                    case '{':
+                                        $state = self::STATE_ATTRIBUTE_EXPRESSION;
+                                        break;
+                                    case ' ':
+                                    case "\t":
+                                    case "\n":
+                                        $state = self::STATE_ATTRIBUTE_OPENING;
+                                        break;
+                                    default:
+                                        throw new ComponentParserException('Malformed attribute ' . $attribute_name);
+                                }
+                                break;
+                            case self::STATE_ATTRIBUTE_OPENING: // Conflate with STATE_ATTRIBUTE_EQUAL ?
+                                switch ($c) {
+                                    case '"':
+                                    case '\'':
+                                        $state = self::STATE_ATTRIBUTE_VALUE;
+                                        $attribute_quote = $c;
+                                        break;
+                                    case '{':
+                                        $state = self::STATE_ATTRIBUTE_EXPRESSION;
+                                        break;
+                                    case ' ':
+                                    case "\t":
+                                    case "\n":
+                                        // $state = self::STATE_ATTRIBUTE_OPENING;
+                                        break;
+                                    default:
+                                        throw new ComponentParserException('Malformed attribute ' . $attribute_name);
+                                }
+                                break;
+                            case self::STATE_ATTRIBUTE_VALUE:
+                                switch ($c) {
+                                    case $attribute_quote:
+                                        // Commit the previous attribute
+                                        $attributes[$attribute_name] = [
+                                            'value' => $attribute_value,
+                                            'type' => self::ATTRIBUTE_TYPE_STRING
+                                        ];
+                                        $state = self::STATE_ATTRIBUTE_LIST;
+                                        // Reset attribute
+                                        $attribute_name = '';
+                                        $attribute_value = '';
+                                        break;
+                                    default:
+                                        $attribute_value .= $c;
+                                        break;
+                                }
+                                break;
+                            case self::STATE_ATTRIBUTE_EXPRESSION:
+                                switch ($c) {
+                                    // TODO: support nested braces
+                                    case '}':
+                                        // Commit the previous attribute
+                                        $attributes[$attribute_name] = [
+                                            'value' => $attribute_value,
+                                            'type' => self::ATTRIBUTE_TYPE_EXPRESSION
+                                        ];
+                                        $state = self::STATE_ATTRIBUTE_LIST;
+                                        // Reset attribute
+                                        $attribute_name = '';
+                                        $attribute_value = '';
+                                        break;
+                                    default:
+                                        $attribute_value .= $c;
+                                        break;
+                                }
+                                break;
+                            case self::STATE_CHILDREN:
+                                // TODO: push a new component onto the stack
+                                break;
+                            case self::STATE_OPENING_TAG:
+                                // TODO: do we really need this?
+                                break;
+                            case self::STATE_CLOSING_TAG:
+                                switch ($c) {
+                                    case '>':
+                                        $is_at_end = true;
+                                        // Append parsed component
+                                        $ret .= self::render_component($component_name, $attributes);
+                                        // TODO: and pop the stack
+                                        break;
+                                    case ' ':
+                                    case "\t":
+                                    case "\n":
+                                        // Stay in STATE_CLOSING_TAG
+                                        break;
+                                    default:
+                                        throw new ComponentParserException('Unexpected character after \'/\': ', $c);
+                                }
+                                break;
+                        }
+                        $j += 1;
+                        // printf("State: %d\n", $state);
                     }
-                    $j += 1;
-                    // printf("State: %d\n", $state);
-                }
-                if ($j >= $max_component_length) {
-                    throw new ComponentParserException(
-                        sprintf('Component exceeds maximum size of %s characters', self::MAX_COMPONENT_LENGTH)
+                    if ($j >= $max_component_length) {
+                        throw new ComponentParserException(
+                            sprintf(
+                                'Component <strong>%s</strong> exceeds the maximum allowed size of %s characters. Consider increasing the value of the MAX_COMPONENT_LENGTH config setting.',
+                                $component_name,
+                                self::MAX_COMPONENT_LENGTH
+                            )
+                        );
+                    }
+                } catch (ComponentParserException $e) {
+                    $ret .= block_tag(
+                        'div',
+                        implode("\n", [
+                            h3(l('base-component-parser-error-heading'), null),
+                            block_tag('p', $e->getMessage(), null)
+                        ]),
+                        ['class' => 'msg error']
                     );
+                } catch (Throwable $t) {
+                    throw $t;
                 }
 
                 // self::print_component($component_name, $attributes);

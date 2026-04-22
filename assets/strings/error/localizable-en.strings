@@ -1,4 +1,4 @@
-array(
+[
     'error-_400-blurb' => 'The server received a malformed request and could not understand it.',
     'error-_400-heading' => '400 - Bad Request',
     'error-_400-title' => '400 - Bad Request',
@@ -37,4 +37,4 @@ array(
     'error-_503-blurb' => 'The server is down for maintenance or overloaded. Please try again later.',
     'error-_503-heading' => '503 - Service Unavailable',
     'error-_503-title' => '503 - Service Unavailable',
-);
+];

@@ -1,4 +1,6 @@
 [
+    'base-component-parser-error-heading' => 'Component parse error',
+
     'base-index-discussion-group-link' => 'Discussion Group',
     'base-index-docs-link' => 'Documentation',
     'base-index-heading' => 'Congratulations!',

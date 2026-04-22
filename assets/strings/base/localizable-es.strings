@@ -1,4 +1,6 @@
-array(
+[
+    'base-component-parser-error-heading' => 'Error en el componente',
+
     'base-index-discussion-group-link' => 'Grupo de Discusi&oacute;n',
     'base-index-docs-link' => 'Documentaci&oacute;n',
     'base-index-heading' => '¡Enhorabuena!',
@@ -15,5 +17,9 @@ array(
 
     'error' => 'Error',
 
+    'error-stacktrace-heading' => 'Stack trace:',
+
+    'error-title-@1' => 'Error: %s',
+
     'loading' => 'Cargando...',
-);
+];
