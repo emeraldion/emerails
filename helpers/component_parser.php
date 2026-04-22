@@ -12,6 +12,7 @@
  */
 
 use Emeraldion\EmeRails\Config;
+use Emeraldion\EmeRails\Exceptions\ComponentParserException;
 
 function getc(string &$str): string
 {
@@ -44,7 +45,7 @@ abstract class ComponentParser
     const ATTRIBUTE_TYPE_EXPRESSION = 'expression';
 
     const MAX_COMPONENTS = 16;
-    const MAX_COMPONENT_LENGTH = 1024;
+    const MAX_COMPONENT_LENGTH = 4096;
 
     const RESERVED_ATTRIBUTE_NAMES = ['action', 'name', 'type'];
 
@@ -263,6 +264,11 @@ abstract class ComponentParser
                     }
                     $j += 1;
                     // printf("State: %d\n", $state);
+                }
+                if ($j >= $max_component_length) {
+                    throw new ComponentParserException(
+                        sprintf('Component exceeds maximum size of %s characters', self::MAX_COMPONENT_LENGTH)
+                    );
                 }
 
                 // self::print_component($component_name, $attributes);

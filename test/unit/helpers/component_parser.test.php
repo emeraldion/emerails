@@ -14,6 +14,8 @@
 require_once __DIR__ . '/../base_test.php';
 require_once __DIR__ . '/../../../helpers/component_parser.php';
 
+use Emeraldion\EmeRails\Exceptions\ComponentParserException;
+
 class ComponentParserTest extends UnitTestBase
 {
     public function test_parse_no_components()
@@ -229,7 +231,7 @@ class ComponentParserTest extends UnitTestBase
         );
     }
 
-    public function test_parse_singleton_component_expression_attribute_multiline()
+    public function test_parse_singleton_component_multiline_expression_attribute_multiline()
     {
         $this->assertEquals(
             <<<EOT
@@ -316,6 +318,119 @@ class ComponentParserTest extends UnitTestBase
                     button-label={l('actions-button-label')} /></div>
                 EOT
             )
+        );
+    }
+
+    public function test_parse_singleton_component_multiline_expression_attribute_tag_newline()
+    {
+        $this->assertEquals(
+            <<<EOT
+            <div><?php
+            \$this->render_component([
+                'controller' => 'common',
+                'action' => 'dropdown_button',
+                'props' => [
+            \t'button_label' => l('actions-button-label'),
+            \t'menu_items' => [
+                [
+                    \$this->link_to(l('menu-item-button-label1'), [
+                        'controller' => 'controller1',
+                        'action' => 'action1',
+                        'id' => 'id1',
+                        'return' => true
+                    ]),
+                    \$this->link_to(l('menu-item-button-label2'), [
+                        'controller' => 'controller2',
+                        'action' => 'action2',
+                        'id' => 'id2',
+                        'return' => true
+                    ]),
+                    \$this->link_to(l('menu-item-button-label3'), [
+                        'controller' => 'controller3',
+                        'action' => 'action3',
+                        'id' => 'id3',
+                        'return' => true
+                    ]),
+                    \$this->link_to(l('menu-item-button-label4'), [
+                        'controller' => 'controller4',
+                        'action' => 'action4',
+                        'id' => 'id4',
+                        'return' => true
+                    ])
+                ],
+            ]
+
+            ]);
+            ?></div>
+            EOT
+            ,
+            ComponentParser::parse_contents(
+                <<<EOT
+                <div><x:dropdown-button
+                    button-label={l('actions-button-label')}
+                    menu-items={[
+                    [
+                        \$this->link_to(l('menu-item-button-label1'), [
+                            'controller' => 'controller1',
+                            'action' => 'action1',
+                            'id' => 'id1',
+                            'return' => true
+                        ]),
+                        \$this->link_to(l('menu-item-button-label2'), [
+                            'controller' => 'controller2',
+                            'action' => 'action2',
+                            'id' => 'id2',
+                            'return' => true
+                        ]),
+                        \$this->link_to(l('menu-item-button-label3'), [
+                            'controller' => 'controller3',
+                            'action' => 'action3',
+                            'id' => 'id3',
+                            'return' => true
+                        ]),
+                        \$this->link_to(l('menu-item-button-label4'), [
+                            'controller' => 'controller4',
+                            'action' => 'action4',
+                            'id' => 'id4',
+                            'return' => true
+                        ])
+                    ]} /></div>
+                EOT
+            )
+        );
+    }
+
+    public function test_parse_singleton_component_multiline_expression_exceeding_max_size()
+    {
+        $this->expectException(ComponentParserException::class);
+        $this->expectExceptionMessage('Component exceeds maximum size of 4096 characters');
+
+        $content = var_export(
+            array_map(function ($i) {
+                return sprintf(
+                    <<<EOT
+                                \$this->link_to(l('menu-item-button-label%d'), [
+                                    'controller' => 'controller%d',
+                                    'action' => 'action%d',
+                                    'id' => 'id%d',
+                                    'return' => true
+                                ])
+                    EOT
+                    ,
+                    $i,
+                    $i,
+                    $i,
+                    $i
+                );
+            }, range(1, 20)),
+            true
+        );
+        ComponentParser::parse_contents(
+            <<<EOT
+            <div><x:dropdown-button
+                button-label={l('actions-button-label')}
+                menu-items={[{$content}]} /></div>
+            EOT
         );
     }
 }
