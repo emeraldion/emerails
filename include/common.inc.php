@@ -24,8 +24,6 @@ $default_irregular_nouns = [
     'portfolio' => 'portfolios'
 ];
 
-const SYMBOLICATE_STACKTRACE_EVALD_CODE_MARKER = 'eval()\'d code';
-
 $irregular_nouns = $default_irregular_nouns;
 
 function default_to($value, $default)
@@ -290,24 +288,12 @@ function sanitize_stacktrace($stacktrace, $base_path, $replacement)
 function symbolicate_stacktrace(?Throwable $t = null, int $levels = 10, int $skip_levels = 0): string
 {
     $ret = '';
-    if (!is_null($t)) {
-        $trace = array_merge([['file' => $t->getFile(), 'line' => $t->getLine()]], $t->getTrace());
-    } else {
-        $trace = debug_backtrace(0, $levels + $skip_levels);
-        $significant_line = $trace[1];
-        if (
-            array_key_exists('__PART__', $GLOBALS) &&
-            strpos($significant_line['file'], SYMBOLICATE_STACKTRACE_EVALD_CODE_MARKER) !== false
-        ) {
-            array_splice($trace, 1, 0, [
-                [
-                    'file' => $GLOBALS['__PART__'],
-                    'line' => $significant_line['line']
-                ]
-            ]);
-        }
-    }
-    $trace = array_slice($trace, $skip_levels);
+    $trace = array_slice(
+        $t
+            ? array_merge([['file' => $t->getFile(), 'line' => $t->getLine()]], $t->getTrace())
+            : debug_backtrace(0, $levels + $skip_levels),
+        $skip_levels
+    );
     $stack_depth = count($trace);
     for ($i = 0; $i < $stack_depth; $i += 1) {
         $frame = $trace[$i];
@@ -317,7 +303,12 @@ function symbolicate_stacktrace(?Throwable $t = null, int $levels = 10, int $ski
                 ? $next_frame['class'] . '::' . $next_frame['function']
                 : $next_frame['function'])
             : h('<anonymous>');
-        $location = array_key_exists('file', $frame) ? $frame['file'] : h('<native code>');
+        $location =
+            $next_frame['function'] === 'eval' && array_key_exists('__PART__', $GLOBALS)
+                ? $GLOBALS['__PART__']
+                : (array_key_exists('file', $frame)
+                    ? $frame['file']
+                    : h('<native code>'));
         if (array_key_exists('line', $frame)) {
             $location .= ':' . $frame['line'];
         }
