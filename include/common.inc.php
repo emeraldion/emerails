@@ -304,7 +304,7 @@ function symbolicate_stacktrace(?Throwable $t = null, int $levels = 10, int $ski
                 : $next_frame['function'])
             : h('<anonymous>');
         $location =
-            $next_frame['function'] === 'eval' && array_key_exists('__PART__', $GLOBALS)
+            $next_frame && $next_frame['function'] === 'eval' && array_key_exists('__PART__', $GLOBALS)
                 ? $GLOBALS['__PART__']
                 : (array_key_exists('file', $frame)
                     ? $frame['file']
