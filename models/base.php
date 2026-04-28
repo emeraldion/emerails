@@ -589,8 +589,8 @@ abstract class ActiveRecord
         }
 
         $query .=
-            " WHERE (`{1}`.`{5}` = '{6}' AND " .
-            ($params[self::PARAM_WHERE_CLAUSE] ?? '1') .
+            " WHERE (`{1}`.`{5}` = '{6}'" .
+            (array_key_exists(self::PARAM_WHERE_CLAUSE, $params) ? ' AND ' . $params[self::PARAM_WHERE_CLAUSE] : '') .
             ') ' .
             'ORDER BY ' .
             ($params[self::PARAM_ORDER_BY] ?? '`{5}` ASC') .
@@ -731,7 +731,10 @@ abstract class ActiveRecord
             $has_join = false;
         }
 
-        $query .= " WHERE (`{1}`.`{5}` = '{6}' AND " . ($params[self::PARAM_WHERE_CLAUSE] ?? '1') . ')';
+        $query .=
+            " WHERE (`{1}`.`{5}` = '{6}'" .
+            (array_key_exists(self::PARAM_WHERE_CLAUSE, $params) ? ' AND ' . $params[self::PARAM_WHERE_CLAUSE] : '') .
+            ')';
 
         $conn->prepare(
             $query,
@@ -911,7 +914,7 @@ abstract class ActiveRecord
                     )
                 );
             }
-            $query .= " WHERE (1 AND ({$params[self::PARAM_WHERE_CLAUSE]})) ORDER BY {$params[self::PARAM_ORDER_BY]} LIMIT {$params[self::PARAM_START]}, {$params[self::PARAM_LIMIT]}";
+            $query .= " WHERE ({$params[self::PARAM_WHERE_CLAUSE]}) ORDER BY {$params[self::PARAM_ORDER_BY]} LIMIT {$params[self::PARAM_START]}, {$params[self::PARAM_LIMIT]}";
             $conn->prepare(
                 $query,
                 $this->get_table_name(), // 1
@@ -928,7 +931,7 @@ abstract class ActiveRecord
         } else {
             $has_join = false;
             $conn->prepare(
-                "SELECT * FROM `{1}` WHERE (1 AND ({$params[self::PARAM_WHERE_CLAUSE]})) ORDER BY {$params[self::PARAM_ORDER_BY]} LIMIT {$params[self::PARAM_START]}, {$params[self::PARAM_LIMIT]}",
+                "SELECT * FROM `{1}` WHERE ({$params[self::PARAM_WHERE_CLAUSE]}) ORDER BY {$params[self::PARAM_ORDER_BY]} LIMIT {$params[self::PARAM_START]}, {$params[self::PARAM_LIMIT]}",
                 $this->get_table_name()
             );
         }
@@ -1090,7 +1093,7 @@ abstract class ActiveRecord
                     )
                 );
             }
-            $query .= " WHERE (1 AND ({$params[self::PARAM_WHERE_CLAUSE]}))";
+            $query .= " WHERE ({$params[self::PARAM_WHERE_CLAUSE]})";
             $conn->prepare(
                 $query,
                 $this->get_table_name(), // 1
@@ -1106,7 +1109,7 @@ abstract class ActiveRecord
             );
         } else {
             $conn->prepare(
-                "SELECT COUNT(*) FROM `{1}` WHERE (1 AND ({$params[self::PARAM_WHERE_CLAUSE]}))",
+                "SELECT COUNT(*) FROM `{1}` WHERE ({$params[self::PARAM_WHERE_CLAUSE]})",
                 $this->get_table_name()
             );
         }
