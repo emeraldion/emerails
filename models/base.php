@@ -16,7 +16,9 @@ require_once __DIR__ . '/../include/common.inc.php';
 use Emeraldion\EmeRails\Config;
 use Emeraldion\EmeRails\Db;
 use Emeraldion\EmeRails\Exceptions\BadCastException;
+use Emeraldion\EmeRails\Exceptions\FieldValidationException;
 use Emeraldion\EmeRails\Exceptions\MissingForeignKeyException;
+use Emeraldion\EmeRails\Exceptions\RelationshipCardinalityException;
 use Emeraldion\EmeRails\Models\Relationship;
 
 /**
@@ -804,7 +806,9 @@ abstract class ActiveRecord
         ]);
         if (is_array($children) && count($children) > 0) {
             if (isset($params[self::PARAM_STRICT]) && count($children) > 1) {
-                throw new Exception(sprintf('Only one child expected, but found %d', count($children)));
+                throw new RelationshipCardinalityException(
+                    sprintf('Only one child expected, but found %d', count($children))
+                );
             }
             $child = first($children);
             $child->values[camel_case_to_joined_lower(get_class($this))] = $this;
@@ -1345,7 +1349,7 @@ abstract class ActiveRecord
 
             if (is_null($value) && !$nullable) {
                 if ($raise) {
-                    throw new Exception(
+                    throw new FieldValidationException(
                         sprintf("%s: Attempt to null the field '%s' but it is not nullable", get_called_class(), $key)
                     );
                 }
@@ -1361,7 +1365,7 @@ abstract class ActiveRecord
                         }, explode(',', $matches[3]));
                         if (!(is_null($value) || in_array($value, $possible_values))) {
                             if ($raise) {
-                                throw new Exception(
+                                throw new FieldValidationException(
                                     sprintf(
                                         "%s: Attempt to set the field '%s' to a value with incorrect type. Expected '%s(%s)' but found: '%s'",
                                         get_called_class(),
@@ -1383,7 +1387,7 @@ abstract class ActiveRecord
                     case 'tinyint':
                         $max_length = (int) $matches[3];
                         if ($raise && !is_null($value) && !is_int($value)) {
-                            throw new Exception(
+                            throw new FieldValidationException(
                                 sprintf(
                                     "%s: Attempt to set the field '%s' to a value with incorrect type. Expected '%s(%d)' but found: '%s'",
                                     get_called_class(),
@@ -1399,7 +1403,7 @@ abstract class ActiveRecord
                     case 'decimal':
                     case 'float':
                         if ($raise && !is_null($value) && !is_float($value) && !is_int($value)) {
-                            throw new Exception(
+                            throw new FieldValidationException(
                                 sprintf(
                                     "%s: Attempt to set the field '%s' to a value with incorrect type. Expected 'float' but found: '%s'",
                                     get_called_class(),
