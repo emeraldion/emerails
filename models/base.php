@@ -46,6 +46,11 @@ abstract class ActiveRecord
     // key function used to index relationship pairs
     const PARAM_KEY_FN = 'key_fn';
 
+    const SQL_COMMAND_INSERT = 'INSERT';
+    const SQL_COMMAND_INSERT_IGNORE = 'INSERT IGNORE';
+    const SQL_COMMAND_UPDATE = 'UPDATE';
+    const SQL_COMMAND_UPDATE_IGNORE = 'UPDATE IGNORE';
+
     /**
      *  @const READONLY_COLUMNS
      *  @short Array of read-only columns that must not be written by us.
@@ -1726,5 +1731,27 @@ abstract class ActiveRecord
     {
         $count = isset(self::$object_pool[$classname]) ? count(self::$object_pool[$classname]) : 0;
         return ['count' => $count];
+    }
+
+    public function as_sql(string $command = self::SQL_COMMAND_INSERT): string
+    {
+        $conn = Db::get_connection();
+
+        $columns = [];
+        $values = [];
+
+        foreach ($this->get_column_names() as $column) {
+            if (array_key_exists($column, $this->values)) {
+                $columns[] = $column;
+                $values[] = $conn->escape($this->values[$column]);
+            }
+        }
+
+        $ret =
+            $command . ' ' . '(`' . implode('`, `', $columns) . '`) VALUES (\'' . implode('\', \'', $values) . "');\n";
+
+        Db::close_connection($conn);
+
+        return $ret;
     }
 }

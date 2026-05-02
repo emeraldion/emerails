@@ -1894,4 +1894,34 @@ class ActiveRecordTest extends UnitTestBase
             $r->as(TestWidget::class);
         }, '[Runner::as] Attempted to cast an instance of Runner to TestWidget but it is not a valid superclass.');
     }
+
+    public function test_as_sql_insert()
+    {
+        $r = new Runner([
+            'name' => 'Sinner'
+        ]);
+
+        $this->assertEquals("INSERT (`name`) VALUES ('Sinner');\n", $r->as_sql());
+
+        $r = new Runner([
+            'name' => "D'Arcy"
+        ]);
+
+        $this->assertEquals("INSERT (`name`) VALUES ('D\'Arcy');\n", $r->as_sql());
+    }
+
+    public function test_as_sql_update()
+    {
+        $r = new Runner([
+            'name' => 'Sinner'
+        ]);
+
+        $this->assertEquals("UPDATE (`name`) VALUES ('Sinner');\n", $r->as_sql(ActiveRecord::SQL_COMMAND_UPDATE));
+
+        $r = new Runner([
+            'name' => "D'Arcy"
+        ]);
+
+        $this->assertEquals("UPDATE (`name`) VALUES ('D\'Arcy');\n", $r->as_sql(ActiveRecord::SQL_COMMAND_UPDATE));
+    }
 }
