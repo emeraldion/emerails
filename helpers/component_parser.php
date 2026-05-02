@@ -381,7 +381,17 @@ abstract class ComponentParser
             ['value' => $value, 'type' => $type] = $attr;
             switch ($type) {
                 case self::ATTRIBUTE_TYPE_STRING:
-                    $ret .= "\t'$name' => '$value',\n";
+                    if ($name === self::ATTRIBUTE_NAME_CHILDREN) {
+                        // Start output buffering
+                        ob_start();
+                        // Evaluate and send to buffer
+                        print eval(strip_external_php_tags($value));
+                        // Get buffer contents, clean output buffer
+                        $value = ob_get_clean();
+                        $ret .= "\t'$name' => <<" . "<EOT\n$value\nEOT\n,";
+                    } else {
+                        $ret .= "\t'$name' => '$value',\n";
+                    }
                     break;
                 case self::ATTRIBUTE_TYPE_EXPRESSION:
                     if ($value === true) {
