@@ -470,7 +470,7 @@ class ComponentParserTest extends UnitTestBase
     public function test_parse_container_component_no_attributes()
     {
         $this->assertEquals(
-            <<<EOT
+            <<<EOQ
             <div><?php
             \$this->render_component([
                 'controller' => 'common',
@@ -481,7 +481,7 @@ class ComponentParserTest extends UnitTestBase
 
             ]);
             ?></div>
-            EOT
+            EOQ
             ,
             ComponentParser::parse_contents(
                 <<<EOT
@@ -519,7 +519,7 @@ class ComponentParserTest extends UnitTestBase
     public function test_parse_container_component_single_expression_attribute()
     {
         $this->assertEquals(
-            <<<EOT
+            <<<EOQ
             <div><?php
             \$this->render_component([
                 'controller' => 'common',
@@ -531,7 +531,7 @@ class ComponentParserTest extends UnitTestBase
 
             ]);
             ?></div>
-            EOT
+            EOQ
             ,
             ComponentParser::parse_contents(
                 <<<EOT
@@ -544,21 +544,23 @@ class ComponentParserTest extends UnitTestBase
     public function test_parse_container_component_multiline()
     {
         $this->assertEquals(
-            <<<EOT
+            <<<EOQ
             <div><?php
             \$this->render_component([
                 'controller' => 'common',
                 'action' => 'container',
                 'props' => [
-            \t'children' => '
+            \t'children' => <<<EOT
+
                 <h2>Hello</h2>
                 <p>Here is some text</p>
-            ',
-            ]
+
+            EOT
+            ,]
 
             ]);
             ?></div>
-            EOT
+            EOQ
             ,
             ComponentParser::parse_contents(
                 <<<EOT
@@ -574,13 +576,14 @@ class ComponentParserTest extends UnitTestBase
     public function test_parse_nested_components()
     {
         $this->assertEquals(
-            <<<EOT
+            <<<EOQ
             <div><?php
             \$this->render_component([
                 'controller' => 'common',
                 'action' => 'container',
                 'props' => [
-            \t'children' => '
+            \t'children' => <<<EOT
+
                 <?php
             \$this->render_component([
                 'controller' => 'common',
@@ -592,12 +595,13 @@ class ComponentParserTest extends UnitTestBase
             ]);
             ?>
                 <p>Here is some text</p>
-            ',
-            ]
+
+            EOT
+            ,]
 
             ]);
             ?></div>
-            EOT
+            EOQ
             ,
             ComponentParser::parse_contents(
                 <<<EOT
@@ -613,7 +617,7 @@ class ComponentParserTest extends UnitTestBase
     public function test_parse_nested_components_mixed_attributes_different_namespaces()
     {
         $this->assertEquals(
-            <<<EOT
+            <<<EOP
             <div>
                 <?php
             \$this->render_component([
@@ -621,7 +625,8 @@ class ComponentParserTest extends UnitTestBase
                 'action' => 'container',
                 'props' => [
             \t'size' => 123,
-            \t'children' => '
+            \t'children' => <<<EOT
+
                     <?php
             \$this->render_component([
                 'controller' => 'bar',
@@ -634,21 +639,20 @@ class ComponentParserTest extends UnitTestBase
             ]);
             ?>
                     <p>Here is some text</p>
-                ',
-            ]
+            EOT
+            ,]
 
             ]);
             ?>
             </div>
-            EOT
+            EOP
             ,
             ComponentParser::parse_contents(
                 <<<EOT
                 <div>
                     <x:foo:container size={123}>
                         <x:bar:header font="Roboto">Hello</x:bar:header>
-                        <p>Here is some text</p>
-                    </x:foo:container>
+                        <p>Here is some text</p></x:foo:container>
                 </div>
                 EOT
             )
