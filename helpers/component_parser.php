@@ -24,7 +24,7 @@ function getc(string &$str): string
 abstract class ComponentParser
 {
     const COMPONENT_OPENING_TAG = '<x:';
-    const COMPONENT_CLOSING_TAG_SIMPLE = '>';
+    const COMPONENT_CLOSING_TAG_SIMPLE = '/>';
     const COMPONENT_CLOSING_TAG_CONTAINER = '</x:';
 
     const STATE_COMPONENT_NAME = 0;
@@ -41,6 +41,7 @@ abstract class ComponentParser
     const STATE_OPENING_TAG = 11;
     const STATE_CLOSING_TAG = 12;
 
+    const ATTRIBUTE_NAME_CHILDREN = 'children';
     const ATTRIBUTE_TYPE_STRING = 'string';
     const ATTRIBUTE_TYPE_EXPRESSION = 'expression';
 
@@ -66,7 +67,7 @@ abstract class ComponentParser
                 try {
                     $is_at_end = false;
                     $state = self::STATE_COMPONENT_NAME;
-                    $has_children = true;
+                    $has_parsed_children = false;
                     $component_name = '';
                     $attribute_name = '';
                     $attribute_type = null;
@@ -239,7 +240,40 @@ abstract class ComponentParser
                                 }
                                 break;
                             case self::STATE_CHILDREN:
-                                // TODO: push a new component onto the stack
+                                if (!$has_parsed_children) {
+                                    $contents = self::parse_contents(
+                                        $contents,
+                                        $max_components - 1,
+                                        $max_component_length
+                                    );
+                                    $has_parsed_children = true;
+                                }
+                                $children .= $c;
+                                if (strpos($contents, self::COMPONENT_CLOSING_TAG_CONTAINER) === 0) {
+                                    if (
+                                        strpos($contents, $component_name) ===
+                                            strlen(self::COMPONENT_CLOSING_TAG_CONTAINER) &&
+                                        strpos($contents, '>') ===
+                                            strlen($component_name) + strlen(self::COMPONENT_CLOSING_TAG_CONTAINER)
+                                    ) {
+                                        $is_at_end = true;
+                                        $attributes[self::ATTRIBUTE_NAME_CHILDREN] = [
+                                            'type' => self::ATTRIBUTE_TYPE_STRING,
+                                            'value' => $children
+                                        ];
+                                        // Append parsed component
+                                        $ret .= self::render_component($component_name, $attributes);
+                                        $contents = substr(
+                                            $contents,
+                                            strlen(self::COMPONENT_CLOSING_TAG_CONTAINER) + strlen($component_name) + 1 // '>'
+                                        );
+                                    } else {
+                                        $bad_closing_tag = substr($contents, 0, strpos($contents, '>'));
+                                        throw new ComponentParserException(
+                                            'Unexpected closing tag: ' . $bad_closing_tag
+                                        );
+                                    }
+                                }
                                 break;
                             case self::STATE_OPENING_TAG:
                                 // TODO: do we really need this?
@@ -365,7 +399,7 @@ abstract class ComponentParser
         return $ret;
     }
 
-    public static function render_component(string $component_name, array $attributes, $children = []): string
+    public static function render_component(string $component_name, array $attributes): string
     {
         $component_name_parts = explode(':', self::normalize_component_name($component_name));
         if (count($component_name_parts) == 1) {

@@ -466,4 +466,192 @@ class ComponentParserTest extends UnitTestBase
             )
         );
     }
+
+    public function test_parse_container_component_no_attributes()
+    {
+        $this->assertEquals(
+            <<<EOT
+            <div><?php
+            \$this->render_component([
+                'controller' => 'common',
+                'action' => 'container',
+                'props' => [
+            \t'children' => '<p>Hello</p>',
+            ]
+
+            ]);
+            ?></div>
+            EOT
+            ,
+            ComponentParser::parse_contents(
+                <<<EOT
+                <div><x:container><p>Hello</p></x:container></div>
+                EOT
+            )
+        );
+    }
+
+    public function test_parse_container_component_single_string_attributes()
+    {
+        $this->assertEquals(
+            <<<EOT
+            <div><?php
+            \$this->render_component([
+                'controller' => 'common',
+                'action' => 'container',
+                'props' => [
+            \t'foo' => 'bar',
+            \t'children' => '<p>Hello</p>',
+            ]
+
+            ]);
+            ?></div>
+            EOT
+            ,
+            ComponentParser::parse_contents(
+                <<<EOT
+                <div><x:container foo="bar"><p>Hello</p></x:container></div>
+                EOT
+            )
+        );
+    }
+
+    public function test_parse_container_component_single_expression_attribute()
+    {
+        $this->assertEquals(
+            <<<EOT
+            <div><?php
+            \$this->render_component([
+                'controller' => 'common',
+                'action' => 'container',
+                'props' => [
+            \t'foo' => 123,
+            \t'children' => '<p>Hello</p>',
+            ]
+
+            ]);
+            ?></div>
+            EOT
+            ,
+            ComponentParser::parse_contents(
+                <<<EOT
+                <div><x:container foo={123}><p>Hello</p></x:container></div>
+                EOT
+            )
+        );
+    }
+
+    public function test_parse_container_component_multiline()
+    {
+        $this->assertEquals(
+            <<<EOT
+            <div><?php
+            \$this->render_component([
+                'controller' => 'common',
+                'action' => 'container',
+                'props' => [
+            \t'children' => '
+                <h2>Hello</h2>
+                <p>Here is some text</p>
+            ',
+            ]
+
+            ]);
+            ?></div>
+            EOT
+            ,
+            ComponentParser::parse_contents(
+                <<<EOT
+                <div><x:container>
+                    <h2>Hello</h2>
+                    <p>Here is some text</p>
+                </x:container></div>
+                EOT
+            )
+        );
+    }
+
+    public function test_parse_nested_components()
+    {
+        $this->assertEquals(
+            <<<EOT
+            <div><?php
+            \$this->render_component([
+                'controller' => 'common',
+                'action' => 'container',
+                'props' => [
+            \t'children' => '
+                <?php
+            \$this->render_component([
+                'controller' => 'common',
+                'action' => 'header',
+                'props' => [
+            \t'children' => 'Hello',
+            ]
+
+            ]);
+            ?>
+                <p>Here is some text</p>
+            ',
+            ]
+
+            ]);
+            ?></div>
+            EOT
+            ,
+            ComponentParser::parse_contents(
+                <<<EOT
+                <div><x:container>
+                    <x:header>Hello</x:header>
+                    <p>Here is some text</p>
+                </x:container></div>
+                EOT
+            )
+        );
+    }
+
+    public function test_parse_nested_components_mixed_attributes_different_namespaces()
+    {
+        $this->assertEquals(
+            <<<EOT
+            <div>
+                <?php
+            \$this->render_component([
+                'controller' => 'foo',
+                'action' => 'container',
+                'props' => [
+            \t'size' => 123,
+            \t'children' => '
+                    <?php
+            \$this->render_component([
+                'controller' => 'bar',
+                'action' => 'header',
+                'props' => [
+            \t'font' => 'Roboto',
+            \t'children' => 'Hello',
+            ]
+
+            ]);
+            ?>
+                    <p>Here is some text</p>
+                ',
+            ]
+
+            ]);
+            ?>
+            </div>
+            EOT
+            ,
+            ComponentParser::parse_contents(
+                <<<EOT
+                <div>
+                    <x:foo:container size={123}>
+                        <x:bar:header font="Roboto">Hello</x:bar:header>
+                        <p>Here is some text</p>
+                    </x:foo:container>
+                </div>
+                EOT
+            )
+        );
+    }
 }
