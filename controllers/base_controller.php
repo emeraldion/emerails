@@ -1667,6 +1667,8 @@ class BaseController implements Controller
      */
     protected function default_props(array $params): void
     {
+        // Built-in props
+        $this->children = null;
         foreach ($params as $name => $default_value) {
             if (!property_exists($this, $name)) {
                 $this->{$name} = $default_value;
