@@ -1747,8 +1747,18 @@ abstract class ActiveRecord
             }
         }
 
-        $ret =
-            $command . ' ' . '(`' . implode('`, `', $columns) . '`) VALUES (\'' . implode('\', \'', $values) . "');\n";
+        $preamble = '';
+        switch ($command) {
+            case self::SQL_COMMAND_INSERT:
+            case self::SQL_COMMAND_INSERT_IGNORE:
+                $preamble = $command . ' INTO `' . $this->get_table_name() . '` ';
+                break;
+            case self::SQL_COMMAND_UPDATE:
+            case self::SQL_COMMAND_UPDATE_IGNORE:
+                $preamble = $command . ' `' . $this->get_table_name() . '` SET ';
+                break;
+        }
+        $ret = $preamble . '(`' . implode('`, `', $columns) . '`) VALUES (\'' . implode('\', \'', $values) . "');\n";
 
         Db::close_connection($conn);
 

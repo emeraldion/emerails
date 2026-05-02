@@ -1901,13 +1901,13 @@ class ActiveRecordTest extends UnitTestBase
             'name' => 'Sinner'
         ]);
 
-        $this->assertEquals("INSERT (`name`) VALUES ('Sinner');\n", $r->as_sql());
+        $this->assertEquals("INSERT INTO `athletes` (`name`) VALUES ('Sinner');\n", $r->as_sql());
 
         $r = new Runner([
             'name' => "D'Arcy"
         ]);
 
-        $this->assertEquals("INSERT (`name`) VALUES ('D\'Arcy');\n", $r->as_sql());
+        $this->assertEquals("INSERT INTO `athletes` (`name`) VALUES ('D\'Arcy');\n", $r->as_sql());
     }
 
     public function test_as_sql_update()
@@ -1916,12 +1916,18 @@ class ActiveRecordTest extends UnitTestBase
             'name' => 'Sinner'
         ]);
 
-        $this->assertEquals("UPDATE (`name`) VALUES ('Sinner');\n", $r->as_sql(ActiveRecord::SQL_COMMAND_UPDATE));
+        $this->assertEquals(
+            "UPDATE `athletes` SET (`name`) VALUES ('Sinner');\n",
+            $r->as_sql(ActiveRecord::SQL_COMMAND_UPDATE)
+        );
 
         $r = new Runner([
             'name' => "D'Arcy"
         ]);
 
-        $this->assertEquals("UPDATE (`name`) VALUES ('D\'Arcy');\n", $r->as_sql(ActiveRecord::SQL_COMMAND_UPDATE));
+        $this->assertEquals(
+            "UPDATE `athletes` SET (`name`) VALUES ('D\'Arcy');\n",
+            $r->as_sql(ActiveRecord::SQL_COMMAND_UPDATE)
+        );
     }
 }
