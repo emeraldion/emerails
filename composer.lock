@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/splitbrain/php-cli.git",
-                "reference": "813410b23f9790a62620a79a4e87aed4c5c43e37"
+                "reference": "abe3a0065a37cf0876b89194e430032a0cc3111d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/splitbrain/php-cli/zipball/813410b23f9790a62620a79a4e87aed4c5c43e37",
-                "reference": "813410b23f9790a62620a79a4e87aed4c5c43e37",
+                "url": "https://api.github.com/repos/splitbrain/php-cli/zipball/abe3a0065a37cf0876b89194e430032a0cc3111d",
+                "reference": "abe3a0065a37cf0876b89194e430032a0cc3111d",
                 "shasum": ""
             },
             "require": {
@@ -60,7 +60,7 @@
                 "issues": "https://github.com/splitbrain/php-cli/issues",
                 "source": "https://github.com/splitbrain/php-cli/tree/master"
             },
-            "time": "2025-10-28T16:00:30+00:00"
+            "time": "2026-05-03T07:54:52+00:00"
         },
         {
             "name": "tedivm/jshrink",
