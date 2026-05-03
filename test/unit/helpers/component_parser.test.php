@@ -550,12 +550,12 @@ class ComponentParserTest extends UnitTestBase
                 'controller' => 'common',
                 'action' => 'container',
                 'props' => [
-            \t'children' => <<<EOT
+            \t'children' => <<<'EOA'
 
                 <h2>Hello</h2>
                 <p>Here is some text</p>
 
-            EOT
+            EOA
             ,]
 
             ]);
@@ -582,7 +582,7 @@ class ComponentParserTest extends UnitTestBase
                 'controller' => 'common',
                 'action' => 'container',
                 'props' => [
-            \t'children' => <<<EOT
+            \t'children' => <<<'EOA'
 
                 <?php
             \$this->render_component([
@@ -596,7 +596,7 @@ class ComponentParserTest extends UnitTestBase
             ?>
                 <p>Here is some text</p>
 
-            EOT
+            EOA
             ,]
 
             ]);
@@ -625,7 +625,7 @@ class ComponentParserTest extends UnitTestBase
                 'action' => 'container',
                 'props' => [
             \t'size' => 123,
-            \t'children' => <<<EOT
+            \t'children' => <<<'EOA'
 
                     <?php
             \$this->render_component([
@@ -639,7 +639,7 @@ class ComponentParserTest extends UnitTestBase
             ]);
             ?>
                     <p>Here is some text</p>
-            EOT
+            EOA
             ,]
 
             ]);
