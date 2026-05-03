@@ -19,10 +19,9 @@ use Emeraldion\EmeRails\Controllers\BaseController;
 
 class TestController extends BaseController
 {
-    // @override no-op
-    // public function render_component($params) {}
     public function render_component($params)
     {
+        // Render all components without delegation
         $controller = $this;
 
         // Set requested action
@@ -53,15 +52,18 @@ class TestController extends BaseController
         return eval(
             strip_external_php_tags(
                 <<<'EOT'
-                    <container-component>
-                    <?php print $this->children; ?>
-                    </container-component>
+                <container-component>
+                <?php print $this->children; ?>
+                </container-component>
                 EOT
             )
         );
     }
 
     public function header() {}
+    public function foo() {}
+    public function bar() {}
+    public function baz() {}
 }
 
 class ComponentParserTest extends UnitTestBase
@@ -666,9 +668,9 @@ class ComponentParserTest extends UnitTestBase
                 'props' => [
             \t'children' => <<<'EOA'
 
-                    <container-component>
-                Hello
-                </container-component>
+                <container-component>
+            Hello
+            </container-component>
                 <p>Here is some text</p>
 
 
@@ -704,9 +706,9 @@ class ComponentParserTest extends UnitTestBase
             \t'size' => 123,
             \t'children' => <<<'EOA'
 
-                        <container-component>
-                Hello
-                </container-component>
+                    <container-component>
+            Hello
+            </container-component>
                     <p>Here is some text</p>
 
             EOA
@@ -724,6 +726,49 @@ class ComponentParserTest extends UnitTestBase
                     <x:foo:container size={123}>
                         <x:bar:header font="Roboto">Hello</x:bar:header>
                         <p>Here is some text</p></x:foo:container>
+                </div>
+                EOT
+            )
+        );
+    }
+
+    public function test_parse_nested_components_multiple_levels()
+    {
+        $this->assertEquals(
+            // prettier-ignore
+            <<<EOP
+            <div>
+                <?php
+            \$this->render_component([
+                'controller' => 'common',
+                'action' => 'foo',
+                'props' => [
+            \t'children' => <<<'EOA'
+
+                            <p>こんにちは</p>
+                
+
+            EOA
+            ,]
+
+            ]);
+            ?>
+                <p>Merhaba</p>
+            </div>
+            EOP,
+
+            ComponentParser::parse_contents(
+                $this->controller,
+                <<<EOT
+                <div>
+                    <x:foo>
+                        <x:bar>
+                            <x:baz>Hello</x:baz>
+                            <p>Bonjour</p>
+                        </x:bar>
+                        <p>こんにちは</p>
+                    </x:foo>
+                    <p>Merhaba</p>
                 </div>
                 EOT
             )
