@@ -56,6 +56,7 @@ abstract class ComponentParser
         int $max_component_length = self::MAX_COMPONENT_LENGTH
     ): string {
         $ret = '';
+        $component_code = '';
 
         if (strpos($contents, self::COMPONENT_OPENING_TAG) === false) {
             $ret = $contents;
@@ -69,6 +70,7 @@ abstract class ComponentParser
                     $state = self::STATE_COMPONENT_NAME;
                     $has_parsed_children = false;
                     $component_name = '';
+                    $component_code = self::COMPONENT_OPENING_TAG;
                     $attribute_name = '';
                     $attribute_type = null;
                     $attribute_quote = '';
@@ -78,6 +80,9 @@ abstract class ComponentParser
                     $j = 0;
                     while (!$is_at_end && $j < $max_component_length) {
                         $c = getc($contents);
+                        if (Config::get('RENDER_DEBUG')) {
+                            $component_code .= $c;
+                        }
                         // printf("Character: '%s'\n", $c);
                         switch ($state) {
                             case self::STATE_COMPONENT_NAME:
@@ -257,6 +262,9 @@ abstract class ComponentParser
                                             strlen($component_name) + strlen(self::COMPONENT_CLOSING_TAG_CONTAINER)
                                     ) {
                                         $is_at_end = true;
+                                        if (Config::get('RENDER_DEBUG')) {
+                                            $ret .= h($component_code);
+                                        }
                                         $attributes[self::ATTRIBUTE_NAME_CHILDREN] = [
                                             'type' => self::ATTRIBUTE_TYPE_STRING,
                                             'value' => $children
@@ -282,6 +290,9 @@ abstract class ComponentParser
                                 switch ($c) {
                                     case '>':
                                         $is_at_end = true;
+                                        if (Config::get('RENDER_DEBUG')) {
+                                            $ret .= h($component_code);
+                                        }
                                         // Append parsed component
                                         $ret .= self::render_component($component_name, $attributes);
                                         // TODO: and pop the stack
@@ -392,7 +403,7 @@ abstract class ComponentParser
                     $multiline = strpos($value, "\n") !== false;
                     $has_single_quotes = strpos($value, "'") !== false;
                     if ($multiline || $has_single_quotes) {
-                        $ret .= "\t'$name' => <<" . "<EOT\n$value\nEOT\n,";
+                        $ret .= "\t'$name' => <<" . "<'EOA'\n$value\nEOA\n,";
                     } else {
                         $ret .= "\t'$name' => '$value',\n";
                     }
