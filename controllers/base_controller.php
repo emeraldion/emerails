@@ -1681,14 +1681,16 @@ class BaseController implements Controller
      */
     protected function render_children(): void
     {
-        // Start output buffering
-        ob_start();
+        if (property_exists($this, 'children')) {
+            // Start output buffering
+            ob_start();
 
-        // Evaluate and send to buffer
-        eval(strip_external_php_tags($this->children));
+            // Evaluate and send to buffer
+            eval(strip_external_php_tags($this->children));
 
-        // Get buffer contents, clean output buffer
-        print ob_get_clean();
+            // Get buffer contents, clean output buffer
+            print ob_get_clean();
+        }
     }
 
     /**
