@@ -1656,7 +1656,7 @@ class BaseController implements Controller
     {
         if (Config::get('COMPONENTS_ENABLED')) {
             require_once __DIR__ . '/../helpers/component_parser.php';
-            $contents = ComponentParser::parse_contents($contents);
+            $contents = ComponentParser::parse_contents($this, $contents);
         }
         return $contents;
     }
@@ -1676,21 +1676,23 @@ class BaseController implements Controller
     }
 
     /**
-     * @fn render_children
+     * @fn render_children($children)
      * @short Render a container component's children
      */
-    protected function render_children(): void
+    public function render_children(?string $children): ?string
     {
-        if (property_exists($this, 'children')) {
-            // Start output buffering
-            ob_start();
+        $ret = null;
 
-            // Evaluate and send to buffer
-            eval(strip_external_php_tags($this->children));
+        // Start output buffering
+        ob_start();
 
-            // Get buffer contents, clean output buffer
-            print ob_get_clean();
-        }
+        // Evaluate and send to buffer
+        eval(strip_external_php_tags($children));
+
+        // Get buffer contents, clean output buffer
+        $ret = ob_get_clean();
+
+        return $ret;
     }
 
     /**

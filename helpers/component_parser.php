@@ -12,6 +12,7 @@
  */
 
 use Emeraldion\EmeRails\Config;
+use Emeraldion\EmeRails\Controllers\Controller;
 use Emeraldion\EmeRails\Exceptions\ComponentParserException;
 
 function getc(string &$str): string
@@ -51,6 +52,7 @@ abstract class ComponentParser
     const RESERVED_ATTRIBUTE_NAMES = ['action', 'name', 'type'];
 
     public static function parse_contents(
+        Controller $controller,
         string $contents,
         int $max_components = self::MAX_COMPONENTS,
         int $max_component_length = self::MAX_COMPONENT_LENGTH
@@ -247,6 +249,7 @@ abstract class ComponentParser
                             case self::STATE_CHILDREN:
                                 if (!$has_parsed_children) {
                                     $contents = self::parse_contents(
+                                        $controller,
                                         $contents,
                                         $max_components - 1,
                                         $max_component_length
@@ -267,7 +270,7 @@ abstract class ComponentParser
                                         }
                                         $attributes[self::ATTRIBUTE_NAME_CHILDREN] = [
                                             'type' => self::ATTRIBUTE_TYPE_STRING,
-                                            'value' => $children
+                                            'value' => $controller->render_children($children)
                                         ];
                                         // Append parsed component
                                         $ret .= self::render_component($component_name, $attributes);
@@ -392,16 +395,8 @@ abstract class ComponentParser
             ['value' => $value, 'type' => $type] = $attr;
             switch ($type) {
                 case self::ATTRIBUTE_TYPE_STRING:
-                    // if ($name === self::ATTRIBUTE_NAME_CHILDREN) {
-                    //     // Start output buffering
-                    //     ob_start();
-                    //     // Evaluate and send to buffer
-                    //     print eval(strip_external_php_tags($value));
-                    //     // Get buffer contents, clean output buffer
-                    //     $value = ob_get_clean();
-                    // }
-                    $multiline = strpos($value, "\n") !== false;
-                    $has_single_quotes = strpos($value, "'") !== false;
+                    $multiline = $value && strpos($value, "\n") !== false;
+                    $has_single_quotes = $value && strpos($value, "'") !== false;
                     if ($multiline || $has_single_quotes) {
                         $ret .= "\t'$name' => <<" . "<'EOA'\n$value\nEOA\n,";
                     } else {

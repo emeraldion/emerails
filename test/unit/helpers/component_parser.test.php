@@ -15,9 +15,21 @@ require_once __DIR__ . '/../base_test.php';
 require_once __DIR__ . '/../../../helpers/component_parser.php';
 
 use Emeraldion\EmeRails\Exceptions\ComponentParserException;
+use Emeraldion\EmeRails\Controllers\BaseController;
+
+class TestController extends BaseController
+{
+    // @override no-op
+    public function render_component($params) {}
+}
 
 class ComponentParserTest extends UnitTestBase
 {
+    public function setUp(): void
+    {
+        $this->controller = new TestController();
+    }
+
     public function test_parse_no_components()
     {
         $this->assertEquals(
@@ -26,6 +38,7 @@ class ComponentParserTest extends UnitTestBase
             EOT
             ,
             ComponentParser::parse_contents(
+                $this->controller,
                 <<<EOT
                 <div>Hello!</div>
                 EOT
@@ -50,6 +63,7 @@ class ComponentParserTest extends UnitTestBase
             EOT
             ,
             ComponentParser::parse_contents(
+                $this->controller,
                 <<<EOT
                 <div><x:greeting name="hello" /></div>
                 EOT
@@ -74,6 +88,7 @@ class ComponentParserTest extends UnitTestBase
             EOT
             ,
             ComponentParser::parse_contents(
+                $this->controller,
                 <<<EOT
                 <div><x:result_counter_sticky count={\$this->shops ? count(\$this->shops) : -1} /></div>
                 EOT
@@ -100,6 +115,7 @@ class ComponentParserTest extends UnitTestBase
             EOT
             ,
             ComponentParser::parse_contents(
+                $this->controller,
                 <<<EOT
                 <div><x:result_counter_sticky count={\$this->shops ? count(\$this->shops) : -1} results_start={\$this->results_start} total_results={\$this->total_results} /></div>
                 EOT
@@ -124,6 +140,7 @@ class ComponentParserTest extends UnitTestBase
             EOT
             ,
             ComponentParser::parse_contents(
+                $this->controller,
                 <<<EOT
                 <div><x:cart:content user={\$this->user} /></div>
                 EOT
@@ -148,6 +165,7 @@ class ComponentParserTest extends UnitTestBase
             EOT
             ,
             ComponentParser::parse_contents(
+                $this->controller,
                 <<<EOT
                 <div><x:button disabled /></div>
                 EOT
@@ -173,6 +191,7 @@ class ComponentParserTest extends UnitTestBase
             EOT
             ,
             ComponentParser::parse_contents(
+                $this->controller,
                 <<<EOT
                 <div><x:button label="Submit" disabled /></div>
                 EOT
@@ -198,6 +217,7 @@ class ComponentParserTest extends UnitTestBase
             EOT
             ,
             ComponentParser::parse_contents(
+                $this->controller,
                 <<<EOT
                 <div><x:scroller amount={120} vertical /></div>
                 EOT
@@ -224,6 +244,7 @@ class ComponentParserTest extends UnitTestBase
             EOT
             ,
             ComponentParser::parse_contents(
+                $this->controller,
                 <<<EOT
                 <div><x:challenge:question actions={['ok', 'cancel']} active title="Are you sure?" /></div>
                 EOT
@@ -269,6 +290,7 @@ class ComponentParserTest extends UnitTestBase
             EOT
             ,
             ComponentParser::parse_contents(
+                $this->controller,
                 <<<EOT
                 <div><x:dropdown-button button-label={l('actions-button-label')} menu-items={[
                     [
@@ -313,6 +335,7 @@ class ComponentParserTest extends UnitTestBase
             EOT
             ,
             ComponentParser::parse_contents(
+                $this->controller,
                 <<<EOT
                 <div><x:dropdown-button
                     button-label={l('actions-button-label')} /></div>
@@ -365,6 +388,7 @@ class ComponentParserTest extends UnitTestBase
             EOT
             ,
             ComponentParser::parse_contents(
+                $this->controller,
                 <<<EOT
                 <div><x:dropdown-button
                     button-label={l('actions-button-label')}
@@ -458,6 +482,7 @@ class ComponentParserTest extends UnitTestBase
             EOT
             ,
             ComponentParser::parse_contents(
+                $this->controller,
                 <<<EOT
                 <div><x:dropdown-button
                     button-label={l('actions-button-label')}
@@ -476,14 +501,18 @@ class ComponentParserTest extends UnitTestBase
                 'controller' => 'common',
                 'action' => 'container',
                 'props' => [
-            \t'children' => '<p>Hello</p>',
-            ]
+            \t'children' => <<<'EOA'
+            <p>Hello</p>
+
+            EOA
+            ,]
 
             ]);
             ?></div>
             EOQ
             ,
             ComponentParser::parse_contents(
+                $this->controller,
                 <<<EOT
                 <div><x:container><p>Hello</p></x:container></div>
                 EOT
@@ -501,14 +530,18 @@ class ComponentParserTest extends UnitTestBase
                 'action' => 'container',
                 'props' => [
             \t'foo' => 'bar',
-            \t'children' => '<p>Hello</p>',
-            ]
+            \t'children' => <<<'EOA'
+            <p>Hello</p>
+
+            EOA
+            ,]
 
             ]);
             ?></div>
             EOT
             ,
             ComponentParser::parse_contents(
+                $this->controller,
                 <<<EOT
                 <div><x:container foo="bar"><p>Hello</p></x:container></div>
                 EOT
@@ -526,14 +559,18 @@ class ComponentParserTest extends UnitTestBase
                 'action' => 'container',
                 'props' => [
             \t'foo' => 123,
-            \t'children' => '<p>Hello</p>',
-            ]
+            \t'children' => <<<'EOA'
+            <p>Hello</p>
+
+            EOA
+            ,]
 
             ]);
             ?></div>
             EOQ
             ,
             ComponentParser::parse_contents(
+                $this->controller,
                 <<<EOT
                 <div><x:container foo={123}><p>Hello</p></x:container></div>
                 EOT
@@ -555,6 +592,7 @@ class ComponentParserTest extends UnitTestBase
                 <h2>Hello</h2>
                 <p>Here is some text</p>
 
+
             EOA
             ,]
 
@@ -563,6 +601,7 @@ class ComponentParserTest extends UnitTestBase
             EOQ
             ,
             ComponentParser::parse_contents(
+                $this->controller,
                 <<<EOT
                 <div><x:container>
                     <h2>Hello</h2>
@@ -584,17 +623,8 @@ class ComponentParserTest extends UnitTestBase
                 'props' => [
             \t'children' => <<<'EOA'
 
-                <?php
-            \$this->render_component([
-                'controller' => 'common',
-                'action' => 'header',
-                'props' => [
-            \t'children' => 'Hello',
-            ]
+                    <p>Here is some text</p>
 
-            ]);
-            ?>
-                <p>Here is some text</p>
 
             EOA
             ,]
@@ -604,6 +634,7 @@ class ComponentParserTest extends UnitTestBase
             EOQ
             ,
             ComponentParser::parse_contents(
+                $this->controller,
                 <<<EOT
                 <div><x:container>
                     <x:header>Hello</x:header>
@@ -627,18 +658,8 @@ class ComponentParserTest extends UnitTestBase
             \t'size' => 123,
             \t'children' => <<<'EOA'
 
-                    <?php
-            \$this->render_component([
-                'controller' => 'bar',
-                'action' => 'header',
-                'props' => [
-            \t'font' => 'Roboto',
-            \t'children' => 'Hello',
-            ]
+                            <p>Here is some text</p>
 
-            ]);
-            ?>
-                    <p>Here is some text</p>
             EOA
             ,]
 
@@ -648,6 +669,7 @@ class ComponentParserTest extends UnitTestBase
             EOP
             ,
             ComponentParser::parse_contents(
+                $this->controller,
                 <<<EOT
                 <div>
                     <x:foo:container size={123}>
