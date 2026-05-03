@@ -20,11 +20,54 @@ use Emeraldion\EmeRails\Controllers\BaseController;
 class TestController extends BaseController
 {
     // @override no-op
-    public function render_component($params) {}
+    // public function render_component($params) {}
+    public function render_component($params)
+    {
+        $controller = $this;
+
+        // Set requested action
+        if (isset($params['action'])) {
+            $action = basename($params['action']);
+
+            $controller->action = $action;
+        }
+
+        if (isset($params['props'])) {
+            foreach ($params['props'] as $key => $val) {
+                $controller->$key = $val;
+            }
+        }
+
+        // Invoke action method
+        $controller->$action();
+
+        // Request rendering with no layout
+        $params['layout'] = false;
+
+        // Note that this could already have been called
+        $controller->render($params);
+    }
+
+    protected function evaluate_part($partfile, $params = [])
+    {
+        return eval(
+            strip_external_php_tags(
+                <<<'EOT'
+                    <container-component>
+                    <?php print $this->children; ?>
+                    </container-component>
+                EOT
+            )
+        );
+    }
+
+    public function header() {}
 }
 
 class ComponentParserTest extends UnitTestBase
 {
+    private $controller;
+
     public function setUp(): void
     {
         $this->controller = new TestController();
@@ -623,7 +666,10 @@ class ComponentParserTest extends UnitTestBase
                 'props' => [
             \t'children' => <<<'EOA'
 
-                    <p>Here is some text</p>
+                    <container-component>
+                Hello
+                </container-component>
+                <p>Here is some text</p>
 
 
             EOA
@@ -658,7 +704,10 @@ class ComponentParserTest extends UnitTestBase
             \t'size' => 123,
             \t'children' => <<<'EOA'
 
-                            <p>Here is some text</p>
+                        <container-component>
+                Hello
+                </container-component>
+                    <p>Here is some text</p>
 
             EOA
             ,]
