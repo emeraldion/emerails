@@ -1483,6 +1483,8 @@ class BaseController implements Controller
                 $controller->action = $action;
             }
 
+            // Initialize built-in props
+            $controller->children = null;
             if (isset($params['props'])) {
                 foreach ($params['props'] as $key => $val) {
                     $controller->$key = $val;
