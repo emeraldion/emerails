@@ -79,6 +79,7 @@ abstract class ComponentParser
                     $attribute_value = '';
                     $attributes = [];
                     $children = '';
+                    $braces_count = 0;
                     $j = 0;
                     while (!$is_at_end && $j < $max_component_length) {
                         $c = getc($contents);
@@ -180,6 +181,7 @@ abstract class ComponentParser
                                         break;
                                     case '{':
                                         $state = self::STATE_ATTRIBUTE_EXPRESSION;
+                                        $braces_count += 1;
                                         break;
                                     case ' ':
                                     case "\t":
@@ -229,17 +231,25 @@ abstract class ComponentParser
                                 break;
                             case self::STATE_ATTRIBUTE_EXPRESSION:
                                 switch ($c) {
-                                    // TODO: support nested braces
+                                    case '{':
+                                        $braces_count += 1;
+                                        $attribute_value .= $c;
+                                        break;
                                     case '}':
-                                        // Commit the previous attribute
-                                        $attributes[$attribute_name] = [
-                                            'value' => $attribute_value,
-                                            'type' => self::ATTRIBUTE_TYPE_EXPRESSION
-                                        ];
-                                        $state = self::STATE_ATTRIBUTE_LIST;
-                                        // Reset attribute
-                                        $attribute_name = '';
-                                        $attribute_value = '';
+                                        $braces_count -= 1;
+                                        if ($braces_count === 0) {
+                                            // Commit the previous attribute
+                                            $attributes[$attribute_name] = [
+                                                'value' => $attribute_value,
+                                                'type' => self::ATTRIBUTE_TYPE_EXPRESSION
+                                            ];
+                                            $state = self::STATE_ATTRIBUTE_LIST;
+                                            // Reset attribute
+                                            $attribute_name = '';
+                                            $attribute_value = '';
+                                            break;
+                                        }
+                                        $attribute_value .= $c;
                                         break;
                                     default:
                                         $attribute_value .= $c;

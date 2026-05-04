@@ -116,7 +116,7 @@ class ComponentParserTest extends UnitTestBase
         );
     }
 
-    public function test_parse_singleton_component_single_expression_attributes()
+    public function test_parse_singleton_component_single_expression_attribute()
     {
         $this->assertEquals(
             <<<EOT
@@ -136,6 +136,62 @@ class ComponentParserTest extends UnitTestBase
                 $this->controller,
                 <<<EOT
                 <div><x:result_counter_sticky count={\$this->shops ? count(\$this->shops) : -1} /></div>
+                EOT
+            )
+        );
+    }
+
+    public function test_parse_singleton_component_single_expression_attribute_closure_argument()
+    {
+        $this->assertEquals(
+            <<<EOT
+            <div><?php
+            \$this->render_component([
+                'controller' => 'common',
+                'action' => 'invoke',
+                'props' => [
+            \t'callback' => function() { return false; },
+            ]
+
+            ]);
+            ?></div>
+            EOT
+            ,
+            ComponentParser::parse_contents(
+                $this->controller,
+                <<<EOT
+                <div><x:invoke callback={function() { return false; }} /></div>
+                EOT
+            )
+        );
+    }
+
+    public function test_parse_singleton_component_single_expression_attribute_closure_argument_multiline()
+    {
+        $this->assertEquals(
+            <<<EOT
+            <div><?php
+            \$this->render_component([
+                'controller' => 'common',
+                'action' => 'invoke',
+                'props' => [
+            \t'callback' => function() {
+                \$ret = some_other_function();
+                return \$ret;
+            },
+            ]
+
+            ]);
+            ?></div>
+            EOT
+            ,
+            ComponentParser::parse_contents(
+                $this->controller,
+                <<<EOT
+                <div><x:invoke callback={function() {
+                    \$ret = some_other_function();
+                    return \$ret;
+                }} /></div>
                 EOT
             )
         );
@@ -618,6 +674,70 @@ class ComponentParserTest extends UnitTestBase
                 $this->controller,
                 <<<EOT
                 <div><x:container foo={123}><p>Hello</p></x:container></div>
+                EOT
+            )
+        );
+    }
+
+    public function test_parse_container_component_expression_attribute_closure_argument()
+    {
+        $this->assertEquals(
+            <<<EOQ
+            <div><?php
+            \$this->render_component([
+                'controller' => 'common',
+                'action' => 'container',
+                'props' => [
+            \t'callback_fn' => function(\$args) { return true; },
+            \t'children' => <<<'EOA'
+            <p>Hello</p>
+
+            EOA
+            ,]
+
+            ]);
+            ?></div>
+            EOQ
+            ,
+            ComponentParser::parse_contents(
+                $this->controller,
+                <<<EOT
+                <div><x:container callback-fn={function(\$args) { return true; }}><p>Hello</p></x:container></div>
+                EOT
+            )
+        );
+    }
+
+    public function test_parse_container_component_expression_attribute_closure_argument_multiline()
+    {
+        $this->assertEquals(
+            <<<EOQ
+            <div><?php
+            \$this->render_component([
+                'controller' => 'common',
+                'action' => 'container',
+                'props' => [
+            \t'callback_fn' => function(\$args) {
+                \$ret = do_something_with(\$args);
+                return \$ret;
+            },
+            \t'children' => <<<'EOA'
+            <p>Hello</p>
+
+            EOA
+            ,]
+
+            ]);
+            ?></div>
+            EOQ
+            ,
+            ComponentParser::parse_contents(
+                $this->controller,
+                <<<EOT
+                <div><x:container callback-fn={function(\$args) {
+                    \$ret = do_something_with(\$args);
+                    return \$ret;
+                }}><p>Hello</p></x:container></div>
                 EOT
             )
         );
