@@ -1912,21 +1912,23 @@ class ActiveRecordTest extends UnitTestBase
 
     public function test_as_sql_update()
     {
-        $r = new Runner([
+        $this->models[] = $r = new Runner([
             'name' => 'Sinner'
         ]);
+        $r->save();
 
         $this->assertEquals(
-            "UPDATE `athletes` SET (`name`) VALUES ('Sinner');\n",
+            "UPDATE `athletes` SET `name` = 'Sinner' WHERE `id` = {$r->id};\n",
             $r->as_sql(ActiveRecord::SQL_COMMAND_UPDATE)
         );
 
-        $r = new Runner([
+        $this->models[] = $r = new Runner([
             'name' => "D'Arcy"
         ]);
+        $r->save();
 
         $this->assertEquals(
-            "UPDATE `athletes` SET (`name`) VALUES ('D\'Arcy');\n",
+            "UPDATE `athletes` SET `name` = 'D\'Arcy' WHERE `id` = {$r->id};\n",
             $r->as_sql(ActiveRecord::SQL_COMMAND_UPDATE)
         );
     }

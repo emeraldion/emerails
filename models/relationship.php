@@ -502,6 +502,11 @@ class Relationship
 #[\AllowDynamicProperties]
 class RelationshipInstance
 {
+    const SQL_COMMAND_INSERT = 'INSERT';
+    const SQL_COMMAND_INSERT_IGNORE = 'INSERT IGNORE';
+    const SQL_COMMAND_UPDATE = 'UPDATE';
+    const SQL_COMMAND_UPDATE_IGNORE = 'UPDATE IGNORE';
+
     /**
      * @attr values
      * @short Array of values for the columns of a relationship table.
@@ -520,6 +525,9 @@ class RelationshipInstance
         $this->other_member = $other_member;
         $this->relationship = $relationship;
         $this->values = $params;
+        // FIXME: these should be included in <tt>values</tt>
+        // $this->values[$member->get_foreign_key_name()] = $member->{$member->get_primary_key_name()};
+        // $this->values[$other_member->get_foreign_key_name()] = $other_member->{$other_member->get_primary_key_name()};
 
         $this->validate();
     }
@@ -628,14 +636,14 @@ class RelationshipInstance
                 if (!empty($this->values[$this->relationship->get_primary_key_name()])) {
                     $query = 'UPDATE `{1}` SET ';
                     for ($i = 0; $i < count($nonempty); $i++) {
+                        if ($i > 0) {
+                            $query .= ', ';
+                        }
                         $query .= "`{$nonempty[$i]}` = {$this->wrap_value_for_query(
                             $nonempty[$i],
                             $this->values[$nonempty[$i]],
                             $conn
                         )}";
-                        if ($i < count($nonempty) - 1) {
-                            $query .= ', ';
-                        }
                     }
                     $query .= " WHERE `{$this->relationship->get_primary_key_name()}` = '{2}' LIMIT 1";
                     $conn->prepare(
@@ -646,7 +654,10 @@ class RelationshipInstance
                     $conn->exec();
                     $ret = true;
                 } else {
-                    $query = (isset($this->_ignore) ? 'INSERT IGNORE' : 'INSERT') . ' INTO `{1}` (`{2}`, `{3}`';
+                    $query =
+                        (isset($this->_ignore)
+                            ? get_called_class()::SQL_COMMAND_INSERT_IGNORE
+                            : get_called_class()::SQL_COMMAND_INSERT) . ' INTO `{1}` (`{2}`, `{3}`';
                     for ($i = 0; $i < count($nonempty); $i++) {
                         $query .= ", `{$nonempty[$i]}`";
                     }
@@ -659,12 +670,17 @@ class RelationshipInstance
                     $conn->prepare(
                         $query,
                         $this->relationship->get_table_name(),
+                        // FIXME: these should be included in <tt>values</tt>
                         $member_fk,
                         $other_member_fk,
                         $this->member->$member_pk,
                         $this->other_member->$other_member_pk
                     );
                     $conn->exec();
+                    $insert_id = $conn->insert_id();
+                    if ($insert_id !== 0) {
+                        $this->values[$this->relationship->get_primary_key_name()] = $insert_id;
+                    }
                     $ret = true;
                 }
 
@@ -893,5 +909,100 @@ class RelationshipInstance
         } elseif (property_exists($this, $key)) {
             unset($this->key);
         }
+    }
+
+    public function as_sql(string $command = self::SQL_COMMAND_INSERT): ?string
+    {
+        if ($this->relationship->cardinality !== Relationship::MANY_TO_MANY) {
+            return null;
+        }
+
+        $conn = Db::get_connection();
+
+        $columns = $this->relationship->get_column_names();
+        $nonempty = [];
+
+        for ($i = 0; $i < count($columns); $i++) {
+            if (
+                // Do not overwrite the primary key
+                $columns[$i] != $this->relationship->get_primary_key_name() &&
+                // Exclude empty columns
+                $this->values &&
+                array_key_exists($columns[$i], $this->values) &&
+                (isset($this->values[$columns[$i]]) || is_null($this->values[$columns[$i]]))
+            ) {
+                $nonempty[] = $columns[$i];
+            }
+        }
+
+        $ret = '';
+        switch ($command) {
+            case self::SQL_COMMAND_INSERT:
+            case self::SQL_COMMAND_INSERT_IGNORE:
+                $ret = "{$command} INTO `{$this->relationship->get_table_name()}` (";
+
+                // FIXME: these should be included in <tt>values</tt>
+                $ret .= "`{$this->member->get_foreign_key_name()}`, ";
+                $ret .= "`{$this->other_member->get_foreign_key_name()}`, ";
+
+                for ($i = 0; $i < count($nonempty); $i += 1) {
+                    if ($i > 0) {
+                        $ret .= ', ';
+                    }
+                    $ret .= '`' . $nonempty[$i] . '`';
+                }
+                $ret .= ') VALUES (';
+
+                // FIXME: these should be included in <tt>values</tt>
+                $ret .= "{$this->wrap_value_for_query(
+                    $this->member->get_foreign_key_name(),
+                    $this->member->{$this->member->get_primary_key_name()},
+                    $conn
+                )}";
+                $ret .= ", {$this->wrap_value_for_query(
+                    $this->other_member->get_foreign_key_name(),
+                    $this->other_member->{$this->other_member->get_primary_key_name()},
+                    $conn
+                )}";
+
+                for ($i = 0; $i < count($nonempty); $i += 1) {
+                    $ret .= ', ' . $this->wrap_value_for_query($nonempty[$i], $this->values[$nonempty[$i]], $conn);
+                }
+                $ret .= ");\n";
+                break;
+            case self::SQL_COMMAND_UPDATE:
+            case self::SQL_COMMAND_UPDATE_IGNORE:
+                $ret = $command . ' `' . $this->relationship->get_table_name() . '` SET ';
+
+                // FIXME: these should be included in <tt>values</tt>
+                $ret .= "`{$this->member->get_foreign_key_name()}` = {$this->wrap_value_for_query(
+                    $this->member->get_foreign_key_name(),
+                    $this->member->{$this->member->get_primary_key_name()},
+                    $conn
+                )}";
+                $ret .= ", `{$this->other_member->get_foreign_key_name()}` = {$this->wrap_value_for_query(
+                    $this->other_member->get_foreign_key_name(),
+                    $this->other_member->{$this->other_member->get_primary_key_name()},
+                    $conn
+                )}";
+
+                for ($i = 0; $i < count($nonempty); $i += 1) {
+                    $ret .= ", `{$nonempty[$i]}` = {$this->wrap_value_for_query(
+                        $nonempty[$i],
+                        $this->values[$nonempty[$i]],
+                        $conn
+                    )}";
+                }
+                $ret .= " WHERE `{$this->relationship->get_primary_key_name()}` = {$this->wrap_value_for_query(
+                    $this->relationship->get_primary_key_name(),
+                    $this->values[$this->relationship->get_primary_key_name()],
+                    $conn
+                )};\n";
+                break;
+        }
+
+        Db::close_connection($conn);
+
+        return $ret;
     }
 }

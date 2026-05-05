@@ -1215,21 +1215,24 @@ abstract class ActiveRecord
         if (!empty($this->values[$this->get_primary_key_name()]) && !isset($this->_force_create)) {
             $query = 'UPDATE `{1}` SET ';
             for ($i = 0; $i < count($nonempty); $i++) {
+                if ($i > 0) {
+                    $query .= ', ';
+                }
                 $query .= "`{$nonempty[$i]}` = {$this->wrap_value_for_query(
                     $nonempty[$i],
                     $this->values[$nonempty[$i]],
                     $conn
                 )}";
-                if ($i < count($nonempty) - 1) {
-                    $query .= ', ';
-                }
             }
             $query .= " WHERE `{$this->get_primary_key_name()}` = '{2}' LIMIT 1";
             $conn->prepare($query, $this->get_table_name(), $this->values[$this->get_primary_key_name()]);
             $conn->exec();
             $ret = true;
         } else {
-            $query = (isset($this->_ignore) ? 'INSERT IGNORE' : 'INSERT') . ' INTO `{1}` (';
+            $query =
+                (isset($this->_ignore)
+                    ? get_called_class()::SQL_COMMAND_INSERT_IGNORE
+                    : get_called_class()::SQL_COMMAND_INSERT) . ' INTO `{1}` (';
             for ($i = 0; $i < count($nonempty); $i++) {
                 $query .= "`{$nonempty[$i]}`";
                 if ($i < count($nonempty) - 1) {
@@ -1238,10 +1241,10 @@ abstract class ActiveRecord
             }
             $query .= ') VALUES (';
             for ($i = 0; $i < count($nonempty); $i++) {
-                $query .= $this->wrap_value_for_query($nonempty[$i], $this->values[$nonempty[$i]], $conn);
-                if ($i < count($nonempty) - 1) {
+                if ($i > 0) {
                     $query .= ', ';
                 }
+                $query .= $this->wrap_value_for_query($nonempty[$i], $this->values[$nonempty[$i]], $conn);
             }
             $query .= ')';
             $conn->prepare($query, $this->get_table_name());
@@ -1737,28 +1740,62 @@ abstract class ActiveRecord
     {
         $conn = Db::get_connection();
 
-        $columns = [];
-        $values = [];
+        $columns = $this->get_column_names();
+        $nonempty = [];
 
-        foreach ($this->get_column_names() as $column) {
-            if (array_key_exists($column, $this->values)) {
-                $columns[] = $column;
-                $values[] = $conn->escape($this->values[$column]);
+        for ($i = 0; $i < count($columns); $i++) {
+            if (
+                // Do not overwrite the primary key
+                $columns[$i] != $this->get_primary_key_name() &&
+                // Exclude empty columns
+                $this->values &&
+                array_key_exists($columns[$i], $this->values) &&
+                (isset($this->values[$columns[$i]]) || is_null($this->values[$columns[$i]]))
+            ) {
+                $nonempty[] = $columns[$i];
             }
         }
 
-        $preamble = '';
+        $ret = '';
         switch ($command) {
             case self::SQL_COMMAND_INSERT:
             case self::SQL_COMMAND_INSERT_IGNORE:
-                $preamble = $command . ' INTO `' . $this->get_table_name() . '` ';
+                $ret = $command . ' INTO `' . $this->get_table_name() . '` (';
+                for ($i = 0; $i < count($nonempty); $i += 1) {
+                    if ($i > 0) {
+                        $ret .= ', ';
+                    }
+                    $ret .= '`' . $nonempty[$i] . '`';
+                }
+                $ret .= ') VALUES (';
+                for ($i = 0; $i < count($nonempty); $i += 1) {
+                    if ($i > 0) {
+                        $ret .= ', ';
+                    }
+                    $ret .= $this->wrap_value_for_query($nonempty[$i], $this->values[$nonempty[$i]], $conn);
+                }
+                $ret .= ");\n";
                 break;
             case self::SQL_COMMAND_UPDATE:
             case self::SQL_COMMAND_UPDATE_IGNORE:
-                $preamble = $command . ' `' . $this->get_table_name() . '` SET ';
+                $ret = $command . ' `' . $this->get_table_name() . '` SET ';
+                for ($i = 0; $i < count($nonempty); $i += 1) {
+                    if ($i > 0) {
+                        $ret .= ', ';
+                    }
+                    $ret .= "`{$nonempty[$i]}` = {$this->wrap_value_for_query(
+                        $nonempty[$i],
+                        $this->values[$nonempty[$i]],
+                        $conn
+                    )}";
+                }
+                $ret .= " WHERE `{$this->get_primary_key_name()}` = {$this->wrap_value_for_query(
+                    $this->get_primary_key_name(),
+                    $this->values[$this->get_primary_key_name()],
+                    $conn
+                )};\n";
                 break;
         }
-        $ret = $preamble . '(`' . implode('`, `', $columns) . '`) VALUES (\'' . implode('\', \'', $values) . "');\n";
 
         Db::close_connection($conn);
 

@@ -991,4 +991,49 @@ class RelationshipTest extends UnitTestBase
         // Side effect, the member should be unset
         $this->assertNull($widget->test_versions);
     }
+
+    public function test_as_sql_insert()
+    {
+        $r = Relationship::many_to_many(TestGroup::class, TestModel::class);
+
+        $model = new TestModel();
+        $model->save();
+
+        $group = new TestGroup();
+        $group->save();
+
+        $this->models[] = $model;
+        $this->models[] = $group;
+
+        $instance = $r->between($group, $model, ['count' => 12]);
+
+        $this->assertEquals(
+            "INSERT INTO `test_groups_test_models` (`test_group_id`, `test_model_id`, `count`) VALUES ({$group->id}, {$model->id}, 12);\n",
+            $instance->as_sql()
+        );
+    }
+
+    public function test_as_sql_update()
+    {
+        $r = Relationship::many_to_many(TestGroup::class, TestModel::class);
+
+        $model = new TestModel();
+        $model->save();
+
+        $group = new TestGroup();
+        $group->save();
+
+        $this->models[] = $model;
+        $this->models[] = $group;
+
+        $instance = $r->between($group, $model, ['count' => 12]);
+        $instance->save();
+
+        $this->models[] = $instance;
+
+        $this->assertEquals(
+            "UPDATE `test_groups_test_models` SET `test_group_id` = {$group->id}, `test_model_id` = {$model->id}, `count` = 12 WHERE `id` = {$instance->id};\n",
+            $instance->as_sql(RelationshipInstance::SQL_COMMAND_UPDATE)
+        );
+    }
 }
