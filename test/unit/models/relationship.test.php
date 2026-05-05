@@ -1007,8 +1007,9 @@ class RelationshipTest extends UnitTestBase
 
         $instance = $r->between($group, $model, ['count' => 12]);
 
+        // Note the list of columns is dependent on the order in the schema
         $this->assertEquals(
-            "INSERT INTO `test_groups_test_models` (`test_group_id`, `test_model_id`, `count`) VALUES ({$group->id}, {$model->id}, 12);\n",
+            "INSERT INTO `test_groups_test_models` (`test_model_id`, `test_group_id`, `count`) VALUES ({$model->id}, {$group->id}, 12);\n",
             $instance->as_sql()
         );
     }
@@ -1031,8 +1032,9 @@ class RelationshipTest extends UnitTestBase
 
         $this->models[] = $instance;
 
+        // Note the list of columns is dependent on the order in the schema
         $this->assertEquals(
-            "UPDATE `test_groups_test_models` SET `test_group_id` = {$group->id}, `test_model_id` = {$model->id}, `count` = 12 WHERE `id` = {$instance->id};\n",
+            "UPDATE `test_groups_test_models` SET `test_model_id` = {$model->id}, `test_group_id` = {$group->id}, `count` = 12 WHERE `id` = {$instance->id};\n",
             $instance->as_sql(RelationshipInstance::SQL_COMMAND_UPDATE)
         );
     }

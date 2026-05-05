@@ -525,9 +525,11 @@ class RelationshipInstance
         $this->other_member = $other_member;
         $this->relationship = $relationship;
         $this->values = $params;
-        // FIXME: these should be included in <tt>values</tt>
-        // $this->values[$member->get_foreign_key_name()] = $member->{$member->get_primary_key_name()};
-        // $this->values[$other_member->get_foreign_key_name()] = $other_member->{$other_member->get_primary_key_name()};
+        if ($relationship->cardinality === Relationship::MANY_TO_MANY) {
+            $this->values[$member->get_foreign_key_name()] = $member->{$member->get_primary_key_name()};
+            $this->values[$other_member->get_foreign_key_name()] =
+                $other_member->{$other_member->get_primary_key_name()};
+        }
 
         $this->validate();
     }
@@ -657,25 +659,22 @@ class RelationshipInstance
                     $query =
                         (isset($this->_ignore)
                             ? get_called_class()::SQL_COMMAND_INSERT_IGNORE
-                            : get_called_class()::SQL_COMMAND_INSERT) . ' INTO `{1}` (`{2}`, `{3}`';
+                            : get_called_class()::SQL_COMMAND_INSERT) . ' INTO `{1}` (';
                     for ($i = 0; $i < count($nonempty); $i++) {
-                        $query .= ", `{$nonempty[$i]}`";
+                        if ($i > 0) {
+                            $query .= ', ';
+                        }
+                        $query .= "`{$nonempty[$i]}`";
                     }
-                    $query .= ") VALUES ('{4}', '{5}'";
+                    $query .= ') VALUES (';
                     for ($i = 0; $i < count($nonempty); $i++) {
-                        $query .=
-                            ', ' . $this->wrap_value_for_query($nonempty[$i], $this->values[$nonempty[$i]], $conn);
+                        if ($i > 0) {
+                            $query .= ', ';
+                        }
+                        $query .= $this->wrap_value_for_query($nonempty[$i], $this->values[$nonempty[$i]], $conn);
                     }
                     $query .= ')';
-                    $conn->prepare(
-                        $query,
-                        $this->relationship->get_table_name(),
-                        // FIXME: these should be included in <tt>values</tt>
-                        $member_fk,
-                        $other_member_fk,
-                        $this->member->$member_pk,
-                        $this->other_member->$other_member_pk
-                    );
+                    $conn->prepare($query, $this->relationship->get_table_name());
                     $conn->exec();
                     $insert_id = $conn->insert_id();
                     if ($insert_id !== 0) {
@@ -941,10 +940,6 @@ class RelationshipInstance
             case self::SQL_COMMAND_INSERT_IGNORE:
                 $ret = "{$command} INTO `{$this->relationship->get_table_name()}` (";
 
-                // FIXME: these should be included in <tt>values</tt>
-                $ret .= "`{$this->member->get_foreign_key_name()}`, ";
-                $ret .= "`{$this->other_member->get_foreign_key_name()}`, ";
-
                 for ($i = 0; $i < count($nonempty); $i += 1) {
                     if ($i > 0) {
                         $ret .= ', ';
@@ -953,20 +948,11 @@ class RelationshipInstance
                 }
                 $ret .= ') VALUES (';
 
-                // FIXME: these should be included in <tt>values</tt>
-                $ret .= "{$this->wrap_value_for_query(
-                    $this->member->get_foreign_key_name(),
-                    $this->member->{$this->member->get_primary_key_name()},
-                    $conn
-                )}";
-                $ret .= ", {$this->wrap_value_for_query(
-                    $this->other_member->get_foreign_key_name(),
-                    $this->other_member->{$this->other_member->get_primary_key_name()},
-                    $conn
-                )}";
-
                 for ($i = 0; $i < count($nonempty); $i += 1) {
-                    $ret .= ', ' . $this->wrap_value_for_query($nonempty[$i], $this->values[$nonempty[$i]], $conn);
+                    if ($i > 0) {
+                        $ret .= ', ';
+                    }
+                    $ret .= $this->wrap_value_for_query($nonempty[$i], $this->values[$nonempty[$i]], $conn);
                 }
                 $ret .= ");\n";
                 break;
@@ -974,20 +960,11 @@ class RelationshipInstance
             case self::SQL_COMMAND_UPDATE_IGNORE:
                 $ret = $command . ' `' . $this->relationship->get_table_name() . '` SET ';
 
-                // FIXME: these should be included in <tt>values</tt>
-                $ret .= "`{$this->member->get_foreign_key_name()}` = {$this->wrap_value_for_query(
-                    $this->member->get_foreign_key_name(),
-                    $this->member->{$this->member->get_primary_key_name()},
-                    $conn
-                )}";
-                $ret .= ", `{$this->other_member->get_foreign_key_name()}` = {$this->wrap_value_for_query(
-                    $this->other_member->get_foreign_key_name(),
-                    $this->other_member->{$this->other_member->get_primary_key_name()},
-                    $conn
-                )}";
-
                 for ($i = 0; $i < count($nonempty); $i += 1) {
-                    $ret .= ", `{$nonempty[$i]}` = {$this->wrap_value_for_query(
+                    if ($i > 0) {
+                        $ret .= ', ';
+                    }
+                    $ret .= "`{$nonempty[$i]}` = {$this->wrap_value_for_query(
                         $nonempty[$i],
                         $this->values[$nonempty[$i]],
                         $conn
