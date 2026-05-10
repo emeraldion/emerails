@@ -26,6 +26,8 @@ if (isset($_REQUEST['controller']) && !empty($_REQUEST['controller'])) {
     }
     require $controller_file;
 
+    Localization::add_strings_table($_REQUEST['controller']);
+
     $main_controller_class = joined_lower_to_camel_case($_REQUEST['controller']) . 'Controller';
 
     // Instantiate main controller
