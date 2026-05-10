@@ -16,6 +16,7 @@ require_once __DIR__ . '/vendor/emeraldion/emerails/include/common.inc.php';
 require_once __DIR__ . '/helpers/application_helper.php';
 
 use Emeraldion\EmeRails\Helpers\HTTP;
+use Emeraldion\EmeRails\Helpers\Localization;
 
 if (isset($_REQUEST['controller']) && !empty($_REQUEST['controller'])) {
     // Include controller class
