@@ -51,6 +51,8 @@ abstract class ActiveRecord
     const SQL_COMMAND_UPDATE = 'UPDATE';
     const SQL_COMMAND_UPDATE_IGNORE = 'UPDATE IGNORE';
 
+    const DEMUX_SEPARATOR = ':';
+
     /**
      *  @const READONLY_COLUMNS
      *  @short Array of read-only columns that must not be written by us.
@@ -354,7 +356,14 @@ abstract class ActiveRecord
     {
         $columns = array_map(function ($c) use ($with_prefix) {
             return $with_prefix
-                ? sprintf('`%s`.`%s` AS `%s:%s`', $this->get_table_name(), $c, $this->get_table_name(), $c)
+                ? sprintf(
+                    '`%s`.`%s` AS `%s%s%s`',
+                    $this->get_table_name(),
+                    $c,
+                    $this->get_table_name(),
+                    get_called_class()::DEMUX_SEPARATOR,
+                    $c
+                )
                 : sprintf('`%s`.`%s`', $this->get_table_name(), $c);
         }, $this->get_column_names());
         return $columns;
@@ -373,7 +382,7 @@ abstract class ActiveRecord
         $ret = [];
         foreach ($columns as $muxed_key => $val) {
             if (strpos($muxed_key, $this->get_table_name()) === 0) {
-                $key = last(explode(':', $muxed_key));
+                $key = last(explode(get_called_class()::DEMUX_SEPARATOR, $muxed_key));
                 $ret[$key] = $validate ? $this->validate_field($key, $val) : $val;
             }
         }
