@@ -46,7 +46,7 @@ abstract class ComponentParser
     const ATTRIBUTE_TYPE_STRING = 'string';
     const ATTRIBUTE_TYPE_EXPRESSION = 'expression';
 
-    const MAX_COMPONENTS = 16;
+    const MAX_COMPONENTS = 128;
     const MAX_COMPONENT_LENGTH = 4096;
 
     const RESERVED_ATTRIBUTE_NAMES = ['action', 'name', 'type'];
