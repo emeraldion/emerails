@@ -11,10 +11,9 @@
  * @format
  */
 
-require_once __DIR__ . '/db_adapter.php';
-
 use Emeraldion\EmeRails\Config;
 use Emeraldion\EmeRails\Db;
+use Emeraldion\EmeRails\DbAdapter;
 use Emeraldion\EmeRails\Exceptions\DuplicateEntryException;
 
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
