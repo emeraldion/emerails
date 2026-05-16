@@ -1697,6 +1697,29 @@ class ActiveRecordTest extends UnitTestBase
         );
     }
 
+    public function test_validate_on_creation_null_for_nullable_int_when_empty_string()
+    {
+        $widget = new TestWidget([
+            'test_model_id' => '',
+            'color' => 'red'
+        ]);
+        $this->assertNull($widget->test_model_id);
+    }
+
+    public function test_validate_on_set_null_for_nullable_int_when_empty_string()
+    {
+        $this->models[] = $widget = new TestWidget([
+            'color' => 'red'
+        ]);
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage(
+            "Attempt to set the field 'test_model_id' to a value with incorrect type. Expected 'int(11)' but found: 'string'"
+        );
+
+        // Throws:
+        $widget->test_model_id = '';
+    }
+
     public function test_validate_on_save_null_for_not_nullable()
     {
         $this->models[] = $athlete = new Athlete([

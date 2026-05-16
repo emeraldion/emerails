@@ -1415,7 +1415,7 @@ abstract class ActiveRecord
                                 )
                             );
                         }
-                        $ret = is_null($value) ? null : (int) $value;
+                        $ret = is_null($value) || $value === '' ? null : (int) $value;
                         break;
                     case 'decimal':
                     case 'float':
