@@ -18,6 +18,7 @@ require_once __DIR__ . '/helpers/application_helper.php';
 use Emeraldion\EmeRails\Config;
 use Emeraldion\EmeRails\Helpers\ApplicationHelper;
 use Emeraldion\EmeRails\Helpers\HTTP;
+use Emeraldion\EmeRails\Helpers\Localization;
 
 error_reporting(E_ALL);
 
@@ -28,6 +29,8 @@ if (isset($_REQUEST['controller']) && !empty($_REQUEST['controller'])) {
     if (!class_exists($main_controller_class)) {
         HTTP::error(404);
     }
+
+    Localization::add_strings_table($_REQUEST['controller']);
 
     // Instantiate main controller
     $main_controller = new $main_controller_class();

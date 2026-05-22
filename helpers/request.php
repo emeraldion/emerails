@@ -11,6 +11,8 @@
  * @format
  */
 
+use Emeraldion\EmeRails\Helpers\Headers;
+
 /**
  *	@class Request
  *	@short Request object with parameter accessors.
@@ -78,6 +80,11 @@ class Request
     public $method;
 
     /**
+     *	@short The headers sent along with the HTTP request
+     */
+    public $headers;
+
+    /**
      *	@fn __construct
      *	@short Default constructor.
      */
@@ -85,6 +92,7 @@ class Request
     {
         $this->querystring = self::purge_querystring();
         $this->method = strtoupper(@$_SERVER['REQUEST_METHOD'] ?: 'GET');
+        $this->headers = new RequestHeaders();
     }
 
     /**
@@ -193,5 +201,37 @@ class Request
             }
         }
         return implode('&', $newpairs);
+    }
+}
+
+class RequestHeaders
+{
+    private $dict;
+
+    public function __construct()
+    {
+        $this->dict = self::get_headers_from_request();
+    }
+
+    public function get(string $name): ?string
+    {
+        return Headers::get($this->dict, $name);
+    }
+
+    public function get_all(): array
+    {
+        return $this->dict;
+    }
+
+    protected static function get_headers_from_request(): array
+    {
+        $ret = [];
+        $header_names = array_filter(array_keys($_SERVER), function ($name) {
+            return strpos($name, 'HTTP_') === 0;
+        });
+        foreach ($header_names as $header_name) {
+            $ret[substr(strtolower(str_replace('_', '-', $header_name)), strlen('HTTP_'))] = $_SERVER[$header_name];
+        }
+        return $ret;
     }
 }
