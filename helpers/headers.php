@@ -17,6 +17,7 @@
  */
 abstract class Headers
 {
+    const ACCESS_CONTROL_ALLOW_ORIGIN = 'Access-Control-Allow-Origin';
     const CACHE_CONTROL = 'Cache-Control';
     const CONTENT_ENCODING = 'Content-Encoding';
     const CONTENT_LENGTH = 'Content-Length';
@@ -25,6 +26,7 @@ abstract class Headers
     const EXPIRES = 'Expires';
     const LAST_MODIFIED = 'Last-Modified';
     const LOCATION = 'Location';
+    const ORIGIN = 'Origin';
     const PRAGMA = 'Pragma';
     const REFERRER = 'Referer';
     const REFRESH = 'Refresh';
