@@ -1814,7 +1814,7 @@ class ActiveRecordTest extends UnitTestBase
 
         $this->expectException(Exception::class);
         $this->expectExceptionMessage(
-            "Attempt to set the field 'shirt_color' to a value with incorrect type. Expected 'enum('red','green','blue')' but found: 'integer'"
+            "Attempt to set the field 'shirt_color' to a value with incorrect type. Expected 'enum('red','green','blue')' but found: 'integer(123)'"
         );
 
         // This is okay:
@@ -1832,7 +1832,7 @@ class ActiveRecordTest extends UnitTestBase
 
         $this->expectException(Exception::class);
         $this->expectExceptionMessage(
-            "Attempt to set the field 'shirt_color' to a value with incorrect type. Expected 'enum('red','green','blue')' but found: 'string'"
+            "Attempt to set the field 'shirt_color' to a value with incorrect type. Expected 'enum('red','green','blue')' but found: 'string('orange')'"
         );
 
         // This is okay:

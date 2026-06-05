@@ -1384,12 +1384,13 @@ abstract class ActiveRecord
                             if ($raise) {
                                 throw new FieldValidationException(
                                     sprintf(
-                                        "%s: Attempt to set the field '%s' to a value with incorrect type. Expected '%s(%s)' but found: '%s'",
+                                        "%s: Attempt to set the field '%s' to a value with incorrect type. Expected '%s(%s)' but found: '%s(%s)'",
                                         get_called_class(),
                                         $key,
                                         $type,
                                         $matches[3],
-                                        gettype($value)
+                                        gettype($value),
+                                        var_export($value, true)
                                     )
                                 );
                             }
