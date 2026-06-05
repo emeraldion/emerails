@@ -1,5 +1,5 @@
-[![Build Status](https://travis-ci.org/emeraldion/emerails.svg?branch=master)](https://travis-ci.org/emeraldion/emerails)
-[![Coverage Status](https://coveralls.io/repos/github/emeraldion/emerails/badge.svg?branch=master)](https://coveralls.io/github/emeraldion/emerails?branch=master)
+<!-- @format -->
+
 [![Latest Unstable Version](https://poser.pugx.org/emeraldion/emerails/v/unstable)](https://packagist.org/packages/emeraldion/emerails)
 [![composer.lock](https://poser.pugx.org/emeraldion/emerails/composerlock)](https://packagist.org/packages/emeraldion/emerails)
 [![Total Downloads](https://poser.pugx.org/emeraldion/emerails/downloads)](https://packagist.org/packages/emeraldion/emerails)
@@ -55,7 +55,6 @@ Thank you for your interest in EmeRails! Feel free to open issues or submit a PR
 See the [Contributing Guidelines](https://github.com/emeraldion/emerails/blob/master/CONTRIBUTING.md)
 for detailed instructions.
 
-
 ## Development
 
 EmeRails is a PHP web application. If you are unsure what to do, follow these steps:
@@ -75,7 +74,7 @@ make install
 
 ### Create test DB
 
-This command will create a test MySQL DB: 
+This command will create a test MySQL DB:
 
 ```sh
 make create_test_db
@@ -147,4 +146,3 @@ make docs
 [MIT](http://opensource.org/licenses/MIT)
 
 Copyright (c) 2008, 2017 Claudio Procida
-

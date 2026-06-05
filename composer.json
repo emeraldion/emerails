@@ -29,11 +29,11 @@
     "composer-runtime-api": "^2.2.2",
     "tedivm/jshrink": "^1.4.0",
     "tubalmartin/cssmin": "^4.1.1",
-    "splitbrain/php-cli": "dev-master"
+    "splitbrain/php-cli": "dev-master",
+    "symfony/polyfill-intl-idn": "1.38.1"
   },
   "require-dev": {
     "phpunit/phpunit": "9.6.33",
-    "php-coveralls/php-coveralls": "^2.1",
     "guzzlehttp/guzzle": "~6.5.8"
   },
   "autoload": {
@@ -60,8 +60,7 @@
       "rm -rf vendor/tedivm/jshrink/.github",
       "rm -rf vendor/tubalmartin/cssmin/.github",
       "rm -rf vendor/tubalmartin/cssmin/gui",
-      "rm -rf vendor/tubalmartin/cssmin/tests",
-      "rm -rf vendor/php-coveralls/php-coveralls/tests"
+      "rm -rf vendor/tubalmartin/cssmin/tests"
     ]
   }
 }
