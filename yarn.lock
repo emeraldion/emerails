@@ -20,15 +20,15 @@ linguist-languages@^7.27.0:
   resolved "https://registry.yarnpkg.com/linguist-languages/-/linguist-languages-7.31.2.tgz#33a3981fd3769ccb688b68f3979e9faca3fdffbf"
   integrity sha512-UQv5iuzEcGoYWdc/Ea2yqLiFbe8rQmIa5uD1FLwF5vBYmwbTvJlPJfHaIVtfYZTQf2wg7pzhxkwkGPP3q+v+EA==
 
-nanoid@^3.3.11:
+nanoid@^3.3.12:
   version "3.3.12"
   resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.3.12.tgz#ab3d912e217a6d0a514f00a72a16543a28982c05"
   integrity sha512-ZB9RH/39qpq5Vu6Y+NmUaFhQR6pp+M2Xt76XBnEwDaGcVAqhlvxrl3B2bKS5D3NH3QR76v3aSrKaF/Kiy7lEtQ==
 
 php-parser@^3.1.5:
-  version "3.5.1"
-  resolved "https://registry.yarnpkg.com/php-parser/-/php-parser-3.5.1.tgz#61ea9721ee431f78aeab6dd3dab2cbc1b19e3b2b"
-  integrity sha512-0By/iMXxBM9nIapBXOdFGHlD2os9t/3Pk1aIavUzCH7jKFPjq1WYeOVOv/iXhELCjlL4ZlzKwK1keyxLQjll8g==
+  version "3.6.0"
+  resolved "https://registry.yarnpkg.com/php-parser/-/php-parser-3.6.0.tgz#5dd85e5801ee9bf1f88d087b069273fe38a5a5a7"
+  integrity sha512-0CZrf+w7Fh9/Jkw64y2Ihh5IQZJjhK6VUxbLJL3CpuA6h0b3yaADAwrXz3WL1qA6PzQEl/cE9K42WKbp0zkECQ==
 
 picocolors@^1.1.1:
   version "1.1.1"
@@ -46,11 +46,11 @@ postcss-scss@^4.0.9:
   integrity sha512-AjKOeiwAitL/MXxQW2DliT28EKukvvbEWx3LBmJIRN8KfBGZbRTxNYW0kSqi1COiTZ57nZ9NW06S6ux//N1c9A==
 
 postcss@^8.4.35:
-  version "8.5.14"
-  resolved "https://registry.yarnpkg.com/postcss/-/postcss-8.5.14.tgz#a66c2d7808fadf69ebb5b84a03f8bafd76c4919c"
-  integrity sha512-SoSL4+OSEtR99LHFZQiJLkT59C5B1amGO1NzTwj7TT1qCUgUO6hxOvzkOYxD+vMrXBM3XJIKzokoERdqQq/Zmg==
+  version "8.5.15"
+  resolved "https://registry.yarnpkg.com/postcss/-/postcss-8.5.15.tgz#d1eaf677a324e9ec02196da2d3fecf4a0b9a735c"
+  integrity sha512-FfR8sjd4em2T6fb3I2MwAJU7HWVMr9zba+enmQeeWFfCbm+UOC/0X4DS8XtpUTMwWMGbjKYP7xjfNekzyGmB3A==
   dependencies:
-    nanoid "^3.3.11"
+    nanoid "^3.3.12"
     picocolors "^1.1.1"
     source-map-js "^1.2.1"
 
