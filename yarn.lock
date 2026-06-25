@@ -21,14 +21,14 @@ linguist-languages@^7.27.0:
   integrity sha512-UQv5iuzEcGoYWdc/Ea2yqLiFbe8rQmIa5uD1FLwF5vBYmwbTvJlPJfHaIVtfYZTQf2wg7pzhxkwkGPP3q+v+EA==
 
 nanoid@^3.3.12:
-  version "3.3.12"
-  resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.3.12.tgz#ab3d912e217a6d0a514f00a72a16543a28982c05"
-  integrity sha512-ZB9RH/39qpq5Vu6Y+NmUaFhQR6pp+M2Xt76XBnEwDaGcVAqhlvxrl3B2bKS5D3NH3QR76v3aSrKaF/Kiy7lEtQ==
+  version "3.3.15"
+  resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.3.15.tgz#36c490fad8c6e86c824c940dfdde999b69ed4316"
+  integrity sha512-y7Wygv/7mEOvxTuEQDB8StXdMRBWf1kR/tlhAzBRUFkB2jfcLOAxO/SHmOO2zgz1pVgK29/kyupn059/bCHdjA==
 
 php-parser@^3.1.5:
-  version "3.6.0"
-  resolved "https://registry.yarnpkg.com/php-parser/-/php-parser-3.6.0.tgz#5dd85e5801ee9bf1f88d087b069273fe38a5a5a7"
-  integrity sha512-0CZrf+w7Fh9/Jkw64y2Ihh5IQZJjhK6VUxbLJL3CpuA6h0b3yaADAwrXz3WL1qA6PzQEl/cE9K42WKbp0zkECQ==
+  version "3.7.0"
+  resolved "https://registry.yarnpkg.com/php-parser/-/php-parser-3.7.0.tgz#b40b82dc9ba2ad3068b418130f50a84b663d29ac"
+  integrity sha512-JRc1t78GZAEa+MuzVC5A5RJS1NDFTS4UnprUEu/NnsN9cyHbGZLUqghO9IQZUSCay62HYQiWd3PxyWAEF45zmA==
 
 picocolors@^1.1.1:
   version "1.1.1"
@@ -64,9 +64,9 @@ prettier-plugin-css-order@^2.0.1:
     postcss-scss "^4.0.9"
 
 prettier@^3.2.5:
-  version "3.8.3"
-  resolved "https://registry.yarnpkg.com/prettier/-/prettier-3.8.3.tgz#560f2de55bf01b4c0503bc629d5df99b9a1d09b0"
-  integrity sha512-7igPTM53cGHMW8xWuVTydi2KO233VFiTNyF5hLJqpilHfmn8C8gPf+PS7dUT64YcXFbiMGZxS9pCSxL/Dxm/Jw==
+  version "3.8.4"
+  resolved "https://registry.yarnpkg.com/prettier/-/prettier-3.8.4.tgz#f334f013ac04a96676f24dabc23c1c4ae1bae411"
+  integrity sha512-N2MylSdi48+5N/6S5j+maeHbUSIzzZ5uOcX5Hm4QpV8Dkb1HFjfAKTKX6yNPJQD9AhcT3ifHNB66tWTTJDi11Q==
 
 source-map-js@^1.2.1:
   version "1.2.1"

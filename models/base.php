@@ -421,12 +421,16 @@ abstract class ActiveRecord
             );
         }
         $fk = null;
+        $fk_column = false;
         if (isset($params[self::PARAM_KEY]) && in_array($params[self::PARAM_KEY], $columns)) {
-            $fk = $this->values[$params[self::PARAM_KEY]];
-        } elseif (in_array(table_name_to_foreign_key($table_name), $columns)) {
-            $fk = $this->values[table_name_to_foreign_key($table_name)];
+            $fk_column = $params[self::PARAM_KEY];
         } elseif (in_array($owner->get_foreign_key_name(), $columns)) {
-            $fk = $this->values[$owner->get_foreign_key_name()];
+            $fk_column = $owner->get_foreign_key_name();
+        } elseif (in_array(table_name_to_foreign_key($table_name), $columns)) {
+            $fk_column = table_name_to_foreign_key($table_name);
+        }
+        if ($fk_column && array_key_exists($fk_column, $this->values)) {
+            $fk = $this->values[$fk_column];
         }
         $ret = false;
         if ($fk) {
