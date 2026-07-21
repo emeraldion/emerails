@@ -209,19 +209,10 @@ class EmerailsGenerate extends ScriptCommand
 
         print "\tcreating models/$model.php\n";
 
+        $header = $this->get_file_header($basedir);
         $model_code = <<<EOT
         <?php
-        /**
-         *                                   _ __
-         *   ___  ____ ___  ___  _________ _(_) /____
-         *  / _ \/ __ `__ \/ _ \/ ___/ __ `/ / / ___/
-         * /  __/ / / / / /  __/ /  / /_/ / / (__  )
-         * \___/_/ /_/ /_/\___/_/   \__,_/_/_/____/
-         *
-         * (c) Claudio Procida 2008-2026
-         *
-         * @format
-         */
+        {$header}
 
         use Emeraldion\EmeRails\Models\ActiveRecord;
 
@@ -259,17 +250,17 @@ class EmerailsGenerate extends ScriptCommand
 
         $success =
             // Copy the .htaccess file
-            copy(__DIR__ . '/../.htaccess.template', $basedir . '/.htaccess') &&
+            copy(__DIR__ . '/../templates/.htaccess.template', $basedir . '/.htaccess') &&
             // Copy the router.php file
-            copy(__DIR__ . '/../router.template.php', $basedir . '/router.php') &&
+            copy(__DIR__ . '/../templates/router.template.php', $basedir . '/router.php') &&
             // Make the assets directory
             $this->create_dir($basedir . '/assets') &&
             // Make the config directory
             $this->create_dir($basedir . '/config') &&
             // Copy db.conf.php file
-            copy(__DIR__ . '/../config/db.conf.template.php', $basedir . '/config/db.conf.php') &&
+            copy(__DIR__ . '/../templates/db.conf.template.php', $basedir . '/config/db.conf.php') &&
             // Copy emerails.conf.php file
-            copy(__DIR__ . '/../config/emerails.conf.template.php', $basedir . '/config/emerails.conf.php') &&
+            copy(__DIR__ . '/../templates/emerails.conf.template.php', $basedir . '/config/emerails.conf.php') &&
             // Make the controllers directory
             $this->create_dir($basedir . '/controllers') &&
             // Make the models directory
@@ -277,7 +268,7 @@ class EmerailsGenerate extends ScriptCommand
             // Make the helpers directory
             $this->create_dir($basedir . '/helpers') &&
             copy(
-                __DIR__ . '/../helpers/application_helper.template.php',
+                __DIR__ . '/../templates/application_helper.template.php',
                 $basedir . '/helpers/application_helper.php'
             ) &&
             // Make the views directory
@@ -286,7 +277,7 @@ class EmerailsGenerate extends ScriptCommand
             $this->create_dir($basedir . '/views/layouts') &&
             // default_layout.php
             copy(
-                __DIR__ . '/../views/layouts/default_layout.template.php',
+                __DIR__ . '/../templates/layouts/default_layout.template.php',
                 $basedir . '/views/layouts/default_layout.php'
             );
 
@@ -611,19 +602,11 @@ class EmerailsGenerate extends ScriptCommand
         } else {
             print "\tcreating controllers/{$controller}_controller.php\n";
 
+            $header = $this->get_file_header($basedir);
+
             $controller_code = <<<EOT
             <?php
-            /**
-             *                                   _ __
-             *   ___  ____ ___  ___  _________ _(_) /____
-             *  / _ \/ __ `__ \/ _ \/ ___/ __ `/ / / ___/
-             * /  __/ / / / / /  __/ /  / /_/ / / (__  )
-             * \___/_/ /_/ /_/\___/_/   \__,_/_/_/____/
-             *
-             * (c) Claudio Procida 2008-2026
-             *
-             * @format
-             */
+            {$header}
 
             use Emeraldion\EmeRails\Controllers\BaseController;
 
@@ -691,6 +674,11 @@ class EmerailsGenerate extends ScriptCommand
             $this->create_dir($dir);
             file_put_contents($controller_file_path, $controller_code);
         }
+    }
+
+    protected function get_file_header(string $basedir): string
+    {
+        return file_get_contents(sprintf('%s/templates/header.template.php', $basedir));
     }
 }
 

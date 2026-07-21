@@ -32,7 +32,7 @@ switch (getenv('php_env')) {
         break;
     case 'prod':
     default:
-        Config::set('DB_ADAPTER', default_to(getenv('DB_ADAPTER'), 'mysql'));
+        Config::set('DB_ADAPTER', default_to(getenv('DB_ADAPTER'), 'mysqli'));
         Config::set('DB_USER', default_to(getenv('DB_USER'), 'root'));
         Config::set('DB_PASS', default_to(getenv('DB_PASS'), 'root'));
         Config::set('DB_NAME', default_to(getenv('DB_NAME'), 'emerails'));
