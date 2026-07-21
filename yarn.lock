@@ -20,10 +20,10 @@ linguist-languages@^7.27.0:
   resolved "https://registry.yarnpkg.com/linguist-languages/-/linguist-languages-7.31.2.tgz#33a3981fd3769ccb688b68f3979e9faca3fdffbf"
   integrity sha512-UQv5iuzEcGoYWdc/Ea2yqLiFbe8rQmIa5uD1FLwF5vBYmwbTvJlPJfHaIVtfYZTQf2wg7pzhxkwkGPP3q+v+EA==
 
-nanoid@^3.3.12:
-  version "3.3.15"
-  resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.3.15.tgz#36c490fad8c6e86c824c940dfdde999b69ed4316"
-  integrity sha512-y7Wygv/7mEOvxTuEQDB8StXdMRBWf1kR/tlhAzBRUFkB2jfcLOAxO/SHmOO2zgz1pVgK29/kyupn059/bCHdjA==
+nanoid@^3.3.16:
+  version "3.3.16"
+  resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.3.16.tgz#a04d8ec4b1f10009d2d533947aefe4293737816c"
+  integrity sha512-bzlKTyNJ7+LdGIIwy8ijFpIqEQIvafahV7eYykJ8Cvh42EdJeODoJ6gUJXpQJvej1BddH8OqTXZNE/KfbWAu8Q==
 
 php-parser@^3.1.5:
   version "3.7.0"
@@ -46,11 +46,11 @@ postcss-scss@^4.0.9:
   integrity sha512-AjKOeiwAitL/MXxQW2DliT28EKukvvbEWx3LBmJIRN8KfBGZbRTxNYW0kSqi1COiTZ57nZ9NW06S6ux//N1c9A==
 
 postcss@^8.4.35:
-  version "8.5.15"
-  resolved "https://registry.yarnpkg.com/postcss/-/postcss-8.5.15.tgz#d1eaf677a324e9ec02196da2d3fecf4a0b9a735c"
-  integrity sha512-FfR8sjd4em2T6fb3I2MwAJU7HWVMr9zba+enmQeeWFfCbm+UOC/0X4DS8XtpUTMwWMGbjKYP7xjfNekzyGmB3A==
+  version "8.5.21"
+  resolved "https://registry.yarnpkg.com/postcss/-/postcss-8.5.21.tgz#47a779bd831733ff620e608d233b195ee1e7d66c"
+  integrity sha512-v4sDNP3fdNiWMfabO7OwOQdOX8TiQSztKyT1Wj0w+j7LDallJThJRBBBmzVGyYj0crMh7jlV4zepPkiNu9UwDQ==
   dependencies:
-    nanoid "^3.3.12"
+    nanoid "^3.3.16"
     picocolors "^1.1.1"
     source-map-js "^1.2.1"
 
@@ -64,9 +64,9 @@ prettier-plugin-css-order@^2.0.1:
     postcss-scss "^4.0.9"
 
 prettier@^3.2.5:
-  version "3.8.5"
-  resolved "https://registry.yarnpkg.com/prettier/-/prettier-3.8.5.tgz#81cf9de0cf46db973fa85103ff06dfcdb0d9bc39"
-  integrity sha512-zxcTTCedNGJM4R8sj/Cq/F0W/c4iE0afWBcBwMTRtw4WHYP9TWkYjdiH3npPRUYsXQCPR0hTU9yjovOu+E6EQA==
+  version "3.9.6"
+  resolved "https://registry.yarnpkg.com/prettier/-/prettier-3.9.6.tgz#b3ea5146515d40fc53f18aa63f74dfab1e10dbf6"
+  integrity sha512-OpN0zzVdiaiAhxpuuj5efpIS4sY9j7bY6uR5mnj5yPzGkdkjNKSJeUThPb60Jw29QuAZgA4o+/iB49kFiaBX6g==
 
 source-map-js@^1.2.1:
   version "1.2.1"
