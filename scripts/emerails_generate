@@ -678,7 +678,13 @@ class EmerailsGenerate extends ScriptCommand
 
     protected function get_file_header(string $basedir): string
     {
-        return file_get_contents(sprintf('%s/templates/header.template.php', $basedir));
+        $local_header_template = sprintf('%s/templates/header.template.php', $basedir);
+
+        $template = file_exists($local_header_template)
+            ? $local_header_template
+            : sprintf('%s/../templates/header.template.php', __DIR__); // Fall back to built-in header template
+
+        return file_get_contents($template);
     }
 }
 
