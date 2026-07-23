@@ -410,7 +410,7 @@ abstract class ActiveRecord
         } catch (Throwable $t) {
             // Assume table name and infer class name
             $table_name = $class_or_table_name;
-            $ownerclass = table_name_to_class_name($table_name);
+            $ownerclass = $unqualified_ownerclass = table_name_to_class_name($table_name);
             $owner = new $ownerclass();
             trigger_error(
                 sprintf(
@@ -471,7 +471,7 @@ abstract class ActiveRecord
         } catch (Throwable $t) {
             // Assume table name and infer class name
             $table_name = $class_or_table_name;
-            $childclass = table_name_to_class_name($table_name);
+            $childclass = $unqualified_childclass = table_name_to_class_name($table_name);
             $child = new $childclass();
             trigger_error(
                 sprintf(
@@ -576,7 +576,7 @@ abstract class ActiveRecord
         } catch (Throwable $t) {
             // Assume table name and infer class name
             $table_name = $class_or_table_name;
-            $peerclass = table_name_to_class_name($table_name);
+            $peerclass = $unqualified_peerclass = table_name_to_class_name($table_name);
             $peer = new $peerclass();
             trigger_error(
                 sprintf(
@@ -807,7 +807,7 @@ abstract class ActiveRecord
         } catch (Throwable $t) {
             // Assume table name and infer class name
             $table_name = $class_or_table_name;
-            $unqualified_childclass = $childclass = table_name_to_class_name($table_name);
+            $childclass = $unqualified_childclass = table_name_to_class_name($table_name);
             $child = new $childclass();
             trigger_error(
                 sprintf(
