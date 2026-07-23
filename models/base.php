@@ -441,7 +441,7 @@ abstract class ActiveRecord
             : camel_case_to_joined_lower($ownerclass);
         if ($ret) {
             $this->values[$owner_member_name] = $owner;
-            $owner->values[camel_case_to_joined_lower(get_class($this))] = $this;
+            $owner->values[camel_case_to_joined_lower(get_unqualified_class($this))] = $this;
 
             return Relationship::one_to_one(get_called_class(), $ownerclass)->between($this, $owner);
         }
@@ -569,6 +569,7 @@ abstract class ActiveRecord
             // Assume class name and obtain table name
             $peerclass = $class_or_table_name;
             $peer = new $peerclass();
+            $unqualified_peerclass = get_unqualified_class($peer);
             $table_name = $peer->get_table_name();
         } catch (Throwable $t) {
             // Assume table name and infer class name
@@ -598,6 +599,7 @@ abstract class ActiveRecord
             $has_join = true;
             $joined_classname = $params[self::PARAM_JOIN];
             $joined_obj = new $joined_classname();
+            $unqualified_joined_classname = get_unqualified_class($joined_obj);
 
             if ($joined_obj->has_column($peer_fkey)) {
                 $query .= ' JOIN `{9}` ON `{2}`.`{4}` = `{9}`.`{3}`';
@@ -668,8 +670,8 @@ abstract class ActiveRecord
 
                 if ($has_join) {
                     $joined_obj = new $joined_classname($joined_obj->demux_column_names($row));
-                    $peer->values[camel_case_to_joined_lower($joined_classname)] = $joined_obj;
-                    $joined_obj->values[camel_case_to_joined_lower($peerclass)] = $peer;
+                    $peer->values[camel_case_to_joined_lower($unqualified_joined_classname)] = $joined_obj;
+                    $joined_obj->values[camel_case_to_joined_lower($unqualified_peerclass)] = $peer;
                 }
 
                 // This is the new way to access relationship attributes
@@ -798,11 +800,12 @@ abstract class ActiveRecord
             // Assume class name and obtain table name
             $childclass = $class_or_table_name;
             $child = new $childclass();
+            $unqualified_childclass = get_unqualified_class($child);
             $table_name = $child->get_table_name();
         } catch (Throwable $t) {
             // Assume table name and infer class name
             $table_name = $class_or_table_name;
-            $childclass = table_name_to_class_name($table_name);
+            $unqualified_childclass = $childclass = table_name_to_class_name($table_name);
             $child = new $childclass();
             trigger_error(
                 sprintf(
@@ -840,7 +843,7 @@ abstract class ActiveRecord
             return Relationship::one_to_one(get_called_class(), $childclass)->between($this, $child);
         } else {
             // Unset previously set value
-            unset($this->values[camel_case_to_joined_lower($childclass)]);
+            unset($this->values[camel_case_to_joined_lower($unqualified_childclass)]);
         }
         return false;
     }
@@ -917,6 +920,7 @@ abstract class ActiveRecord
             $has_join = true;
             $joined_classname = $params[self::PARAM_JOIN];
             $joined_obj = new $joined_classname();
+            $unqualified_joined_classname = get_unqualified_class($joined_obj);
             if (
                 $joined_obj->has_column($this->get_foreign_key_name()) &&
                 // Edge case: this model's foreign key name is the joined object's primary key
@@ -962,6 +966,7 @@ abstract class ActiveRecord
         $conn->exec();
         if ($conn->num_rows() > 0) {
             $classname = get_class($this);
+            $unqualified_classname = get_unqualified_class($this);
             $results = [];
             while ($row = $conn->fetch_assoc()) {
                 $obj = new $classname($has_join ? $this->demux_column_names($row) : $row);
@@ -969,8 +974,8 @@ abstract class ActiveRecord
 
                 if ($has_join) {
                     $joined_obj = new $joined_classname($joined_obj->demux_column_names($row));
-                    $obj->values[camel_case_to_joined_lower($joined_classname)] = $joined_obj;
-                    $joined_obj->values[camel_case_to_joined_lower($classname)] = $obj;
+                    $obj->values[camel_case_to_joined_lower($unqualified_joined_classname)] = $joined_obj;
+                    $joined_obj->values[camel_case_to_joined_lower($unqualified_classname)] = $obj;
                 }
             }
             $ret = $results;
