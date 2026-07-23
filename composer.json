@@ -48,12 +48,16 @@
   ],
   "archive": {
     "exclude": [
-      "/test",
       "/docs",
       "/node_modules/",
+      "/test",
+      "/vendor/",
+      ".prettierignore",
       ".prettierrc.json",
       ".dockerignore",
-      ".gitignore"
+      ".gitignore",
+      ".vscode",
+      "Makefile"
     ]
   },
   "scripts": {
