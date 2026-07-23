@@ -286,7 +286,7 @@ abstract class ActiveRecord
     public function get_foreign_key_name()
     {
         if (empty($this->foreign_key_name)) {
-            $classname = get_class($this);
+            $classname = strip_namespace(get_class($this));
             $this->foreign_key_name = class_name_to_foreign_key($classname);
         }
         return $this->foreign_key_name;
@@ -500,7 +500,7 @@ abstract class ActiveRecord
                     isset($params[self::PARAM_KEY_FN]) && is_callable($params[self::PARAM_KEY_FN])
                         ? $params[self::PARAM_KEY_FN]($child)
                         : $child->$child_pk;
-                $child->values[camel_case_to_joined_lower(get_class($this))] = $this;
+                $child->values[camel_case_to_joined_lower(get_unqualified_class($this))] = $this;
                 $dict[$child_key] = $child;
             }
             $this->values[$child_member_name] = $dict;
@@ -662,7 +662,9 @@ abstract class ActiveRecord
                 // FIXME: this result is not reflecting the entire relationship. The peer may have more edges to
                 // the caller's class besides the caller itself. However, for convenience and performance, we only
                 // set the caller in the peer's collection.
-                $peer->values[pluralize(camel_case_to_joined_lower(get_class($this)))] = [$this->$pkey => $this];
+                $peer->values[pluralize(camel_case_to_joined_lower(get_unqualified_class($this)))] = [
+                    $this->$pkey => $this
+                ];
 
                 if ($has_join) {
                     $joined_obj = new $joined_classname($joined_obj->demux_column_names($row));
@@ -829,7 +831,7 @@ abstract class ActiveRecord
                 );
             }
             $child = first($children);
-            $child->values[camel_case_to_joined_lower(get_class($this))] = $this;
+            $child->values[camel_case_to_joined_lower(get_unqualified_class($this))] = $this;
             $child_member_name = isset($params[self::PARAM_AS])
                 ? $params[self::PARAM_AS]
                 : camel_case_to_joined_lower($childclass);

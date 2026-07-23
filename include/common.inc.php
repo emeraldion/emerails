@@ -398,3 +398,16 @@ if (!function_exists('pre_dump')) {
 <?php
     }
 }
+
+function strip_namespace(string $classname): string
+{
+    if (strpos($classname, '\\') !== false) {
+        return last(explode('\\', $classname));
+    }
+    return $classname;
+}
+
+function get_unqualified_class($obj): string
+{
+    return strip_namespace(get_class($obj));
+}
