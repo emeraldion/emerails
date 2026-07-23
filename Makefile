@@ -15,7 +15,7 @@ update:
 install:
 	composer install
 	yarn install
-create_test_db:
+create-test-db:
 	mysql -u root -p < schemas/emerails_test.sql
 test: install
 	vendor/bin/phpunit --test-suffix=.test.php test/unit --color auto --coverage-html coverage
