@@ -405,6 +405,7 @@ abstract class ActiveRecord
             // Assume class name and obtain table name
             $ownerclass = $class_or_table_name;
             $owner = new $ownerclass();
+            $unqualified_ownerclass = get_unqualified_class($owner);
             $table_name = $owner->get_table_name();
         } catch (Throwable $t) {
             // Assume table name and infer class name
@@ -438,7 +439,7 @@ abstract class ActiveRecord
         }
         $owner_member_name = isset($params[self::PARAM_AS])
             ? $params[self::PARAM_AS]
-            : camel_case_to_joined_lower($ownerclass);
+            : camel_case_to_joined_lower($unqualified_ownerclass);
         if ($ret) {
             $this->values[$owner_member_name] = $owner;
             $owner->values[camel_case_to_joined_lower(get_unqualified_class($this))] = $this;
@@ -465,6 +466,7 @@ abstract class ActiveRecord
             // Assume class name and obtain table name
             $childclass = $class_or_table_name;
             $child = new $childclass();
+            $unqualified_childclass = get_unqualified_class($child);
             $table_name = $child->get_table_name();
         } catch (Throwable $t) {
             // Assume table name and infer class name
@@ -492,7 +494,7 @@ abstract class ActiveRecord
         $child_pk = $child->get_primary_key_name();
         $child_member_name = isset($params[self::PARAM_AS])
             ? $params[self::PARAM_AS]
-            : pluralize(camel_case_to_joined_lower($childclass));
+            : pluralize(camel_case_to_joined_lower($unqualified_childclass));
         if (is_array($children) && count($children) > 0) {
             $dict = [];
             foreach ($children as $child) {
@@ -640,7 +642,7 @@ abstract class ActiveRecord
         $ret = false;
         $peer_member_name = isset($params[self::PARAM_AS])
             ? $params[self::PARAM_AS]
-            : pluralize(camel_case_to_joined_lower($peerclass));
+            : pluralize(camel_case_to_joined_lower($unqualified_peerclass));
         if ($conn->num_rows() > 0) {
             $this->values[$peer_member_name] = [];
             $dict = [];
@@ -837,7 +839,7 @@ abstract class ActiveRecord
             $child->values[camel_case_to_joined_lower(get_unqualified_class($this))] = $this;
             $child_member_name = isset($params[self::PARAM_AS])
                 ? $params[self::PARAM_AS]
-                : camel_case_to_joined_lower($childclass);
+                : camel_case_to_joined_lower($unqualified_childclass);
             $this->values[$child_member_name] = $child;
 
             return Relationship::one_to_one(get_called_class(), $childclass)->between($this, $child);
