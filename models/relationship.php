@@ -290,15 +290,9 @@ class Relationship
         if (!isset($this->table_name)) {
             switch ($this->cardinality) {
                 case self::MANY_TO_MANY:
-                    $parts = explode('\\', $this->classname);
-                    $classname = $parts[count($parts) - 1];
-
-                    $other_parts = explode('\\', $this->other_classname);
-                    $other_classname = $other_parts[count($other_parts) - 1];
-
                     $table_names = [
-                        (new $classname())->get_relationship_table_half_name(),
-                        (new $other_classname())->get_relationship_table_half_name()
+                        (new $this->classname())->get_relationship_table_half_name(),
+                        (new $this->other_classname())->get_relationship_table_half_name()
                     ];
                     sort($table_names);
 
@@ -613,7 +607,9 @@ class RelationshipInstance
                 // Update the model to avoid a reload from DB
                 $child->$parent_fk = $parent->$parent_pk;
 
-                $ret = true;
+                if ($conn->affected_rows() > 0) {
+                    $ret = true;
+                }
                 break;
 
             case Relationship::MANY_TO_MANY:
@@ -654,7 +650,9 @@ class RelationshipInstance
                         $this->values[$this->relationship->get_primary_key_name()]
                     );
                     $conn->exec();
-                    $ret = true;
+                    if ($conn->affected_rows() > 0) {
+                        $ret = true;
+                    }
                 } else {
                     $query =
                         (isset($this->_ignore)
