@@ -703,6 +703,99 @@ abstract class ActiveRecord
     }
 
     /**
+     *  @fn set_has_and_belongs_to_many($items, $params)
+     *  @short Creates or updates many-to-many relationships between the receiver and the items passed as arguments.
+     *  @param items An array of items. If they are not of the same class, the method will raise an exception.
+     *  @param params An array of conditions. For the semantics, see find_all
+     *  @return ret Handle to the relationships between the receiver and each one of the items
+     *  @see find_all
+     */
+    public function set_has_and_belongs_to_many(array $items, array $params = []): ?array
+    {
+        $conn = Db::get_connection();
+
+        $itemclasses = array_map(function ($item) {
+            return get_class($item);
+        }, $items);
+        if (count(array_unique($itemclasses)) > 1) {
+            throw new Exception(sprintf('Mixed classes: %s', implode(', ', $itemclasses)));
+        }
+
+        // Normalize params to the form ['item:pk' => ['key1' => 'value1', 'key2' => 'value2', ...]]
+        $params_count = count($params);
+        $items_count = count($items);
+        $item = first($items);
+        // FIXME: bogus check, needs improvement
+        // if ($params_count > 1 && $params_count != $items_count) {
+        //     throw new Exception(
+        //         sprintf(
+        //             'Number of relationship attributes (%d) does not match number of items: %d',
+        //             $params_count,
+        //             $items_count
+        //         )
+        //     );
+        // } elseif ($params_count === 1) {
+        $p = [];
+        // They should all be the same right?
+        $other_pk_name = $item->get_primary_key_name();
+        for ($i = 0; $i < $items_count; $i += 1) {
+            $p[$items[$i]->$other_pk_name] = $params;
+        }
+        $pk_name = $this->get_primary_key_name();
+        $pk_value = $this->$pk_name;
+        $params = [$pk_value => $p];
+        // } else {
+        //     // TODO: ensure the array has the correct structure
+        // }
+
+        $itemclass = first($itemclasses);
+        $update = false;
+        $update_only = false;
+        $item_fk_values = implode(
+            ',',
+            array_map(function ($item) use ($conn) {
+                return $conn->escape($item->{$item->get_primary_key_name()});
+            }, $items)
+        );
+        if (
+            $existing_rel = $this->has_and_belongs_to_many($itemclass, [
+                'where_clause' => "`{$item->get_foreign_key_name()}` IN ({$item_fk_values})"
+            ])
+        ) {
+            $update = true;
+            $existing_rr = $existing_rel[$pk_value];
+            if (count($existing_rel) == $items_count) {
+                $update_only = true;
+            }
+        }
+        if (!$update_only) {
+            $rel = Relationship::many_to_many(get_class($this), $itemclass)->among([$this], $items, $params);
+            $rr = $rel[$pk_value];
+        }
+
+        $success = true;
+        $ret = [];
+        foreach ($items as $item) {
+            $item_pk_value = $item->{$item->get_primary_key_name()};
+            if ($update && array_key_exists($item_pk_value, $existing_rr)) {
+                $r = $existing_rr[$item_pk_value];
+            } else {
+                $r = $rr[$item_pk_value];
+            }
+            $item_params = $params[$pk_value][$item_pk_value];
+            foreach ($item_params as $key => $value) {
+                $r->$key = $value;
+            }
+            $success = $success && $r->save();
+            $ret[$item_pk_value] = $r;
+        }
+
+        Db::close_connection($conn);
+
+        return $success ? $ret : null;
+    }
+
+    /**
      *  @fn count_has_and_belongs_to_many($class_or_table_name, $params)
      *  @short Loads the object network the receiver belongs to in a many-to-many relationship.
      *  @param class_or_table_name The name of the peer class or table.
