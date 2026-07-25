@@ -725,16 +725,6 @@ abstract class ActiveRecord
         $params_count = count($params);
         $items_count = count($items);
         $item = first($items);
-        // FIXME: bogus check, needs improvement
-        // if ($params_count > 1 && $params_count != $items_count) {
-        //     throw new Exception(
-        //         sprintf(
-        //             'Number of relationship attributes (%d) does not match number of items: %d',
-        //             $params_count,
-        //             $items_count
-        //         )
-        //     );
-        // } elseif ($params_count === 1) {
         $p = [];
         // They should all be the same right?
         $other_pk_name = $item->get_primary_key_name();
@@ -744,22 +734,19 @@ abstract class ActiveRecord
         $pk_name = $this->get_primary_key_name();
         $pk_value = $this->$pk_name;
         $params = [$pk_value => $p];
-        // } else {
-        //     // TODO: ensure the array has the correct structure
-        // }
 
         $itemclass = first($itemclasses);
         $update = false;
         $update_only = false;
-        $item_fk_values = implode(
+        $item_pk_values = implode(
             ',',
             array_map(function ($item) use ($conn) {
-                return $conn->escape($item->{$item->get_primary_key_name()});
+                return "'" . $conn->escape($item->{$item->get_primary_key_name()}) . "'";
             }, $items)
         );
         if (
             $existing_rel = $this->has_and_belongs_to_many($itemclass, [
-                'where_clause' => "`{$item->get_foreign_key_name()}` IN ({$item_fk_values})"
+                'where_clause' => "`{$item->get_table_name()}`.`{$item->get_primary_key_name()}` IN ({$item_pk_values})"
             ])
         ) {
             $update = true;
