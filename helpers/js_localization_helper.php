@@ -62,7 +62,7 @@ class JSLocalizationHelper
         } elseif ($lang != 'en') {
             return self::load_strings_file('en');
         }
-        return 'array();';
+        return json_encode([]);
     }
 
     /**
@@ -74,8 +74,21 @@ class JSLocalizationHelper
     {
         $table = [];
 
-        $js_strings = self::load_strings_file(@$_COOKIE[Config::get('LANGUAGE_COOKIE')] /* GLOBAL */);
-        $table = array_merge($table, eval("return {$js_strings}"));
+        $js_strings = self::load_strings_file(@$_COOKIE[Config::get('LANGUAGE_COOKIE')]);
+        try {
+            $table = json_decode($js_strings, false, 512, JSON_THROW_ON_ERROR);
+        } catch (Throwable $t) {
+            $table = [
+                sprintf(
+                    '[%s] %s at %s:%d %s',
+                    __METHOD__,
+                    $t->getMessage(),
+                    get_safe_path($t->getFile(), self::$base_dir, '[PROJECT_ROOT]'),
+                    $t->getLine(),
+                    $js_strings
+                )
+            ];
+        }
 
         self::$strings_table = $table;
     }
