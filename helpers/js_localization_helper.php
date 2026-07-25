@@ -76,7 +76,7 @@ class JSLocalizationHelper
 
         $js_strings = self::load_strings_file(@$_COOKIE[Config::get('LANGUAGE_COOKIE')]);
         try {
-            $table = json_decode($js_strings, false, 512, JSON_THROW_ON_ERROR);
+            $table = eval("return {$js_strings}");
         } catch (Throwable $t) {
             $table = [
                 sprintf(
