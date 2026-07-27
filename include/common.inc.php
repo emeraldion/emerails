@@ -411,3 +411,14 @@ function get_unqualified_class($obj): string
 {
     return strip_namespace(get_class($obj));
 }
+
+function sanitize_language_cookie(?string $value, string $default_lang = 'en'): string
+{
+    if ($value) {
+        $lang = strtolower(substr($value, 0, 2));
+        if (in_array($lang, Localization::SUPPORTED_LANGUAGES)) {
+            return $lang;
+        }
+    }
+    return $default_lang;
+}

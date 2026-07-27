@@ -11,6 +11,7 @@
  * @format
  */
 
+require_once __DIR__ . '/../include/common.inc.php';
 require_once __DIR__ . '/../include/tag_support.inc.php';
 
 use Emeraldion\EmeRails\Config;
@@ -31,10 +32,10 @@ class Localization
     private static $base_dir = __DIR__ . '/../';
 
     /**
-     * @attr languages
+     * @const SUPPORTED_LANGUAGES
      * @short Array of supported languages.
      */
-    public static $languages = [
+    const SUPPORTED_LANGUAGES = [
         'it',
         'en',
         'es',
@@ -133,7 +134,7 @@ class Localization
             if (self::$is_loaded) {
                 $strings_table = self::load_strings_table(
                     $table,
-                    stripslashes(@$_COOKIE[Config::get('LANGUAGE_COOKIE')]) ?: 'en'
+                    sanitize_language_cookie(@$_COOKIE[Config::get('LANGUAGE_COOKIE')], 'en')
                 );
                 $strings = array_merge(self::$strings, eval("return {$strings_table}"));
 
@@ -193,7 +194,7 @@ class Localization
         foreach (self::$tables as $table) {
             $strings_table = self::load_strings_table(
                 $table,
-                stripslashes(@$_COOKIE[Config::get('LANGUAGE_COOKIE')]) ?: 'en'
+                sanitize_language_cookie(@$_COOKIE[Config::get('LANGUAGE_COOKIE')], 'en')
             );
             $strings = array_merge($strings, eval("return {$strings_table}"));
         }

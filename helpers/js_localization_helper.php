@@ -11,6 +11,8 @@
  * @format
  */
 
+require_once __DIR__ . '/../include/common.inc.php';
+
 use Emeraldion\EmeRails\Config;
 
 class JSLocalizationHelper
@@ -74,7 +76,9 @@ class JSLocalizationHelper
     {
         $table = [];
 
-        $js_strings = self::load_strings_file(stripslashes(@$_COOKIE[Config::get('LANGUAGE_COOKIE')]));
+        $js_strings = self::load_strings_file(
+            sanitize_language_cookie(@$_COOKIE[Config::get('LANGUAGE_COOKIE')], 'en')
+        );
         try {
             $table = eval("return {$js_strings}");
         } catch (Throwable $t) {

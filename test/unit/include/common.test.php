@@ -259,4 +259,29 @@ class CommonTest extends UnitTestBase
         $this->expectExceptionMessage("'a*&(&Aj1asf' must only contain letters, numbers and underscores");
         normalize_entity_name('a*&(&Aj1asf');
     }
+
+    public function test_sanitize_language_cookie_lowercase()
+    {
+        $this->assertEquals('fr', sanitize_language_cookie('fr'));
+        $this->assertEquals('it', sanitize_language_cookie('it'));
+        $this->assertEquals('es', sanitize_language_cookie('es'));
+        $this->assertEquals('en', sanitize_language_cookie('en'));
+    }
+
+    public function test_sanitize_language_cookie_uppercase()
+    {
+        $this->assertEquals('fr', sanitize_language_cookie('FR'));
+        $this->assertEquals('it', sanitize_language_cookie('IT'));
+        $this->assertEquals('es', sanitize_language_cookie('ES'));
+        $this->assertEquals('en', sanitize_language_cookie('EN'));
+    }
+
+    public function test_sanitize_language_cookie_bad_input()
+    {
+        $this->assertEquals('en', sanitize_language_cookie('foobar'));
+        $this->assertEquals('en', sanitize_language_cookie('/etc/passwd'));
+        $this->assertEquals('en', sanitize_language_cookie('../../etc/passwd'));
+        $this->assertEquals('en', sanitize_language_cookie(''));
+        $this->assertEquals('en', sanitize_language_cookie(null));
+    }
 }

@@ -865,9 +865,7 @@ class BaseController implements Controller
      */
     protected function cached_page_filename()
     {
-        $lang = isset($_COOKIE[Config::get('LANGUAGE_COOKIE')])
-            ? stripslashes($_COOKIE[Config::get('LANGUAGE_COOKIE')])
-            : 'en';
+        $lang = sanitize_language_cookie(@$_COOKIE[Config::get('LANGUAGE_COOKIE')], 'en');
         $id = isset($_REQUEST['id']) ? "@{$_REQUEST['id']}" : '';
         $cachefile = sprintf('%s/caches/%s/%s%s-%s.cached', $this->base_path, $this->name, $this->action, $id, $lang);
 
@@ -886,7 +884,7 @@ class BaseController implements Controller
         $action = isset($params['action']) ? $params['action'] : $this->action;
         $id = isset($params['id']) ? "@{$params['id']}" : '';
 
-        $langs = Localization::$languages;
+        $langs = Localization::SUPPORTED_LANGUAGES;
 
         foreach ($langs as $lang) {
             $cachefile = sprintf('%s/caches/%s/%s%s-%s.cached', $this->base_path, $controller, $action, $id, $lang);
