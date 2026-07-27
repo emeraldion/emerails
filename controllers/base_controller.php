@@ -865,7 +865,9 @@ class BaseController implements Controller
      */
     protected function cached_page_filename()
     {
-        $lang = isset($_COOKIE[Config::get('LANGUAGE_COOKIE')]) ? $_COOKIE[Config::get('LANGUAGE_COOKIE')] : 'en';
+        $lang = isset($_COOKIE[Config::get('LANGUAGE_COOKIE')])
+            ? stripslashes($_COOKIE[Config::get('LANGUAGE_COOKIE')])
+            : 'en';
         $id = isset($_REQUEST['id']) ? "@{$_REQUEST['id']}" : '';
         $cachefile = sprintf('%s/caches/%s/%s%s-%s.cached', $this->base_path, $this->name, $this->action, $id, $lang);
 
