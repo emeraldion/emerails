@@ -72,7 +72,7 @@ class JSLocalizationHelper
      *	@short Loads the string table for the current language.
      *	@details Language is obtained by the request parameters.
      */
-    private static function load_strings_table(): array
+    private static function load_strings_table(): void
     {
         $table = [];
 
