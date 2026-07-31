@@ -670,7 +670,7 @@ class EmerailsLocalize extends ScriptCommand
 
         if ($write) {
             $template = <<<EOT
-            %s [
+            %s[
             %s];
 
             EOT;

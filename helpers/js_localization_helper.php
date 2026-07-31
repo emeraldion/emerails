@@ -55,7 +55,7 @@ class JSLocalizationHelper
      *	@short Loads the strings file.
      *	@param lang The language for the strings file.
      */
-    private static function load_strings_file($lang = 'en')
+    private static function load_strings_file($lang = 'en'): array
     {
         $strings_file = sprintf('%sassets/strings/js/localizable-%s.strings', self::$base_dir, $lang);
 
@@ -72,7 +72,7 @@ class JSLocalizationHelper
      *	@short Loads the string table for the current language.
      *	@details Language is obtained by the request parameters.
      */
-    private static function load_strings_table()
+    private static function load_strings_table(): array
     {
         $table = [];
 

@@ -162,7 +162,7 @@ class Localization
      * @param table The name of the table.
      * @param lang The language for the strings file.
      */
-    private static function load_strings_table(string $table, string $lang = 'en'): string
+    private static function load_strings_table(string $table, string $lang = 'en'): array
     {
         $strings_file =
             $table === self::GLOBAL_TABLE
