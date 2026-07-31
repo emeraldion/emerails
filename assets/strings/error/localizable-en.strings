@@ -1,4 +1,4 @@
-[
+<?php return  [
     'error-_400-blurb' => 'The server received a malformed request and could not understand it.',
     'error-_400-heading' => '400 - Bad Request',
     'error-_400-title' => '400 - Bad Request',

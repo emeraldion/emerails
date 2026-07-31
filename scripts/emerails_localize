@@ -29,6 +29,8 @@ class EmerailsLocalize extends ScriptCommand
     const DEFAULT_BASE_DIR = '/../../assets/strings';
     const STRINGS_FILE_EXTENSION = '.strings';
 
+    const FILE_PREAMBLE = '<?php return ';
+
     const COMMAND_CHECK = 'check';
     const COMMAND_CREATE = 'create';
     const COMMAND_EXTRACT = 'extract';
@@ -668,12 +670,12 @@ class EmerailsLocalize extends ScriptCommand
 
         if ($write) {
             $template = <<<EOT
-            [
+            %s [
             %s];
 
             EOT;
 
-            file_put_contents($path, sprintf($template, $sorted_strings));
+            file_put_contents($path, sprintf($template, self::FILE_PREAMBLE, $sorted_strings));
         }
     }
 
@@ -853,6 +855,9 @@ class EmerailsLocalize extends ScriptCommand
         $success = true;
         $strings = null;
         try {
+            if (str_starts_with($contents, self::FILE_PREAMBLE)) {
+                $contents = substr($contents, strlen(self::FILE_PREAMBLE));
+            }
             eval("\$strings = $contents;");
 
             if (is_callable($callback_fn)) {
@@ -861,16 +866,15 @@ class EmerailsLocalize extends ScriptCommand
         } catch (Throwable $t) {
             $success = false;
             printf(
-                "[%s] Malformed strings file: %s\n\t%s\n\n",
+                "[%s] Malformed strings file\n\t%s\n\n",
                 ANSIColorWriter::colorize('Error', 'red'),
-                $path,
                 $t->getMessage()
             );
             $lines = explode("\n", $contents);
             foreach (range($t->getLine() - 2, $t->getLine() + 2) as $i) {
                 if ($i === $t->getLine()) {
                     ANSIColorWriter::printf("%4d | %s\n", 'red', $i, $lines[$i - 1]);
-                } else {
+                } elseif (array_key_exists($i - 1, $lines)) {
                     printf("%4d | %s\n", $i, $lines[$i - 1]);
                 }
             }

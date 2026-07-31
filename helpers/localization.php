@@ -136,7 +136,7 @@ class Localization
                     $table,
                     sanitize_language_cookie(@$_COOKIE[Config::get('LANGUAGE_COOKIE')], 'en')
                 );
-                $strings = array_merge(self::$strings, eval("return {$strings_table}"));
+                $strings = array_merge(self::$strings, $strings_table);
 
                 self::$strings = $strings;
             }
@@ -170,12 +170,12 @@ class Localization
                 : sprintf('%sassets/strings/%s/localizable-%s.strings', self::$base_dir, $table, $lang);
 
         if (file_exists($strings_file)) {
-            return file_get_contents($strings_file);
+            return require $strings_file;
         } elseif ($lang != 'en') {
             // Fall back to English
             return self::load_strings_table($table, 'en');
         }
-        return '[];';
+        return [];
     }
 
     /**
@@ -196,7 +196,7 @@ class Localization
                 $table,
                 sanitize_language_cookie(@$_COOKIE[Config::get('LANGUAGE_COOKIE')], 'en')
             );
-            $strings = array_merge($strings, eval("return {$strings_table}"));
+            $strings = array_merge($strings, $strings_table);
         }
 
         self::$strings = $strings;

@@ -1,4 +1,4 @@
-[
+<?php return  [
     'base-index-discussion-group-link' => 'Grupo de Discusi&oacute;n',
     'base-index-docs-link' => 'Documentaci&oacute;n',
     'base-index-heading' => '¡Enhorabuena!',

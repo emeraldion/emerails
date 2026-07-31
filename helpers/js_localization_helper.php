@@ -60,11 +60,11 @@ class JSLocalizationHelper
         $strings_file = sprintf('%sassets/strings/js/localizable-%s.strings', self::$base_dir, $lang);
 
         if (file_exists($strings_file)) {
-            return file_get_contents($strings_file);
+            return require $strings_file;
         } elseif ($lang != 'en') {
             return self::load_strings_file('en');
         }
-        return json_encode([]);
+        return [];
     }
 
     /**
@@ -80,7 +80,7 @@ class JSLocalizationHelper
             sanitize_language_cookie(@$_COOKIE[Config::get('LANGUAGE_COOKIE')], 'en')
         );
         try {
-            $table = eval("return {$js_strings}");
+            $table = $js_strings;
         } catch (Throwable $t) {
             $table = [
                 sprintf(
