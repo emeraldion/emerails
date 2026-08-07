@@ -722,18 +722,28 @@ abstract class ActiveRecord
         }
 
         // Normalize params to the form ['item:pk' => ['key1' => 'value1', 'key2' => 'value2', ...]]
-        $params_count = count($params);
         $items_count = count($items);
         $item = first($items);
-        $p = [];
-        // They should all be the same right?
-        $other_pk_name = $item->get_primary_key_name();
-        for ($i = 0; $i < $items_count; $i += 1) {
-            $p[$items[$i]->$other_pk_name] = $params;
-        }
         $pk_name = $this->get_primary_key_name();
         $pk_value = $this->$pk_name;
-        $params = [$pk_value => $p];
+        // They should all be the same right?
+        $other_pk_name = $item->get_primary_key_name();
+
+        if (
+            array_keys($params) != [$pk_value] ||
+            array_diff(
+                array_map(function ($other_item) use ($other_pk_name) {
+                    return $other_item->$other_pk_name;
+                }, $items),
+                array_keys($params[$pk_value])
+            )
+        ) {
+            $p = [];
+            for ($i = 0; $i < $items_count; $i += 1) {
+                $p[$items[$i]->$other_pk_name] = $params;
+            }
+            $params = [$pk_value => $p];
+        }
 
         $itemclass = first($itemclasses);
         $update = false;
