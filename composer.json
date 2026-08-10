@@ -38,6 +38,10 @@
     "guzzlehttp/psr7": "~2.13"
   },
   "autoload": {
+    "files": [
+      "include/common.inc.php",
+      "include/tag_support.inc.php"
+    ],
     "psr-4": {
       "Emeraldion\\EmeRails\\": "public/"
     }

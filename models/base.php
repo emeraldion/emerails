@@ -11,8 +11,6 @@
  * @format
  */
 
-require_once __DIR__ . '/../include/common.inc.php';
-
 use Emeraldion\EmeRails\Config;
 use Emeraldion\EmeRails\Db;
 use Emeraldion\EmeRails\Exceptions\BadCastException;
