@@ -14,7 +14,7 @@
 namespace Emeraldion\EmeRails\Scripts;
 
 ob_start();
-require_once __DIR__ . '/../../scripts/emerails_generate';
+require_once __DIR__ . '/../../scripts/emerails_localize';
 ob_clean();
 
-class EmerailsGenerate extends \EmerailsGenerate {}
+class EmerailsLocalize extends \EmerailsLocalize {}

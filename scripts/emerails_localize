@@ -907,6 +907,8 @@ class EmerailsLocalize extends ScriptCommand
     }
 }
 
-$cli = new EmerailsLocalize();
-$cli->run();
+if (isset($argv[0]) && realpath($argv[0]) === __FILE__) {
+    $cli = new EmerailsLocalize();
+    $cli->run();
+}
 
