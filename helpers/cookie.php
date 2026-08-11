@@ -26,6 +26,7 @@ class Cookie
      *	to be readily available on the rest of the code.
      *	@param name The name of the cookie.
      *	@param value The value of the cookie.
+     *	@param expires The time the cookie expires. This is a Unix timestamp so is in number of seconds since the epoch.
      *	@param path The path for which the cookie should be valid.
      *	@param domain The domain for which the cookie should be valid.
      *	@param secure Whether the cookie should be secure.
