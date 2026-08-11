@@ -44,7 +44,7 @@ abstract class ScriptCommand extends CLI
     protected $name = '<COMMAND NAME>';
     protected $version = '<VERSION>';
 
-    private function hello()
+    protected function hello()
     {
         ANSIColorWriter::print(
             <<<EOT
