@@ -38,7 +38,7 @@ class Cookie
         $value = '',
         $expires_or_options = 0,
         $path = '',
-        $domain = null,
+        $domain = '',
         $secure = false,
         $http_only = false
     ) {
