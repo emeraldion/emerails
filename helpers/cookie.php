@@ -43,7 +43,11 @@ class Cookie
         $http_only = false
     ) {
         $_COOKIE[$name] = $value;
-        setcookie($name, $value, $expires_or_options, $path, $domain, $secure, $http_only);
+        if (is_array($expires_or_options)) {
+            setcookie($name, $value, $expires_or_options);
+        } else {
+            setcookie($name, $value, $expires_or_options, $path, $domain, $secure, $http_only);
+        }
     }
 
     /**
