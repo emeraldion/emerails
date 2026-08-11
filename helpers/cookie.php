@@ -20,7 +20,7 @@ require_once __DIR__ . '/time.php';
 class Cookie
 {
     /**
-     *	@fn set($name, $value, $expires, $path, $secure)
+     *	@fn set($name, $value, $expires, $path, $secure, $http_only)
      *	@short Sets the value and other parameters of a cookie.
      *	@details The value of the cookie is added to the superglobal <tt>_COOKIE</tt> array in order
      *	to be readily available on the rest of the code.
@@ -29,11 +29,19 @@ class Cookie
      *	@param path The path for which the cookie should be valid.
      *	@param domain The domain for which the cookie should be valid.
      *	@param secure Whether the cookie should be secure.
+     *	@param http_only When true the cookie will be made accessible only through the HTTP protocol.
      */
-    public static function set($name, $value = '', $expires = 0, $path = '/', $domain = null, $secure = false)
-    {
+    public static function set(
+        $name,
+        $value = '',
+        $expires = 0,
+        $path = '/',
+        $domain = null,
+        $secure = false,
+        $http_only = false
+    ) {
         $_COOKIE[$name] = $value;
-        setcookie($name, $value, $expires, $path, $domain, $secure);
+        setcookie($name, $value, $expires, $path, $domain, $secure, $http_only);
     }
 
     /**
