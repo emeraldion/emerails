@@ -12,9 +12,15 @@
  */
 
 // This path is relative to the Composer autoload path if available
-require_once $GLOBALS['_composer_autoload_path'] ?? __DIR__ . '/../vendor/autoload.php';
+$autoload_file = $GLOBALS['_composer_autoload_path'] ?? __DIR__ . '/../vendor/autoload.php';
+if (file_exists($autoload_file)) {
+    require_once $autoload_file;
+}
 // This path is relative to the Composer bin directory if available
-include_once ($GLOBALS['_composer_bin_dir'] ?? __DIR__ . '/../vendor/bin') . '/../../config/db.conf.php';
+$db_config_file = ($GLOBALS['_composer_bin_dir'] ?? __DIR__ . '/../vendor/bin') . '/../../config/db.conf.php';
+if (file_exists($db_config_file)) {
+    include_once $db_config_file;
+}
 
 use splitbrain\phpcli\CLI;
 use splitbrain\phpcli\Options;
