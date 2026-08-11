@@ -87,6 +87,12 @@ class SortDependencies extends ScriptCommand
     }
 }
 
-$cli = new SortDependencies();
-$cli->run();
+if (
+    isset($argv[0]) &&
+    (realpath($argv[0]) === __FILE__ ||
+        (isset($GLOBALS['_composer_bin_dir']) && basename(realpath($argv[0])) === basename(__FILE__)))
+) {
+    $cli = new SortDependencies();
+    $cli->run();
+}
 
