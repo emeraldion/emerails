@@ -1785,6 +1785,11 @@ abstract class ActiveRecord
         return self::$column_info[$classname];
     }
 
+    protected static function get_cache_key(string $classname, $id)
+    {
+        return sprintf('emerails:%s:%s', camel_case_to_joined_lower($classname), $id);
+    }
+
     /**
      *  @fn _add_to_pool($classname, $id, $obj)
      *  @short Adds an object to the object pool.
@@ -1795,12 +1800,13 @@ abstract class ActiveRecord
     private static function _add_to_pool($classname, $id, $obj)
     {
         if (!Config::get('OBJECT_POOL_ENABLED')) {
-            return;
+            return false;
         }
         if (!isset(self::$object_pool[$classname])) {
             self::$object_pool[$classname] = [];
         }
         self::$object_pool[$classname][$id] = $obj;
+        // apcu_store(self::get_cache_key($classname, $id), $obj);
     }
 
     /**
@@ -1809,15 +1815,15 @@ abstract class ActiveRecord
      *  @param classname Name of the class for the desired object.
      *  @param id Primary key value for the desired object.
      */
-    private static function _get_from_pool($classname, $id)
+    private static function _get_from_pool($classname, $id, &$success = null)
     {
         if (!Config::get('OBJECT_POOL_ENABLED')) {
-            return;
+            return false;
         }
-        if (!isset(self::$object_pool[$classname]) || !isset(self::$object_pool[$classname][$id])) {
-            return null;
-        }
-        return self::$object_pool[$classname][$id];
+        return array_key_exists($classname, self::$object_pool) && array_key_exists($id, self::$object_pool[$classname])
+            ? self::$object_pool[$classname][$id]
+            : null;
+        // return apcu_fetch(self::get_cache_key($classname, $id), $success);
     }
 
     /**
@@ -1828,7 +1834,11 @@ abstract class ActiveRecord
      */
     private static function _delete_from_pool($classname, $id)
     {
+        if (!Config::get('OBJECT_POOL_ENABLED')) {
+            return false;
+        }
         unset(self::$object_pool[$classname][$id]);
+        // apcu_delete(self::get_cache_key($classname, $id));
     }
 
     /**
