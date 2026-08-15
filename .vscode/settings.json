@@ -1,0 +1,14 @@
+{
+  "prettier.configPath": ".prettierrc.json",
+  "terminal.integrated.env.osx": {
+    "VSCODE_INIT_COMMAND": "source scripts/terminal_startup.sh"
+  },
+  "emeraldwalk.runonsave": {
+    "commands": [
+      {
+        "match": "assets/strings/([^/]+/)*localizable-[a-z]{2}\\.strings$",
+        "cmd": "make format-strings check-strings"
+      }
+    ]
+  }
+}
