@@ -429,7 +429,7 @@ class BaseController implements Controller
             preg_match('/([^\[\]]+)(\[\])?$/', $params['type'], $matches);
             @[, $type, $multi] = $matches;
 
-            $is_required = array_key_exists('required', $params);
+            $is_required = array_key_exists('required', $params) && $params['required'];
             if ($has_default = array_key_exists('default', $params)) {
                 $default_value = $params['default'];
             }
