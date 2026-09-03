@@ -1780,6 +1780,15 @@ class BaseController implements Controller
     }
 
     /**
+     * @fn root
+     * @short Returns the root controller
+     */
+    public static function root(): Controller
+    {
+        return first(self::$controller_stack);
+    }
+
+    /**
      * Messages handling
      */
 
