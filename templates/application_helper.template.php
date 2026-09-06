@@ -22,6 +22,7 @@ use Emeraldion\EmeRails\DbAdapters\MysqliAdapter;
 use Emeraldion\EmeRails\Helpers\HTTP;
 use Emeraldion\EmeRails\Helpers\JSLocalizationHelper;
 use Emeraldion\EmeRails\Helpers\Localization;
+use Emeraldion\EmeRails\Helpers\Response;
 
 Db::register_adapter(new MysqliAdapter(), MysqliAdapter::NAME);
 Db::register_adapter(new MysqlAdapter(), MysqlAdapter::NAME);

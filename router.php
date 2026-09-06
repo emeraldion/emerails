@@ -18,6 +18,7 @@ use Emeraldion\EmeRails\Config;
 use Emeraldion\EmeRails\Helpers\ApplicationHelper;
 use Emeraldion\EmeRails\Helpers\HTTP;
 use Emeraldion\EmeRails\Helpers\Localization;
+use Emeraldion\EmeRails\Helpers\Response;
 
 error_reporting(E_ALL);
 
