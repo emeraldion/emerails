@@ -75,7 +75,7 @@ function custom_error_handler($errno, $errstr, $errfile, $errline)
         $_SESSION['debug_stacktrace'] = sanitize_stacktrace(symbolicate_stacktrace(), BASE_DIR, '<PROJECT_ROOT>');
     }
 
-    HTTP::error(500);
+    HTTP::error(Response::STATUS_INTERNAL_SERVER_ERROR);
 
     /* Don't execute PHP internal error handler */
     return false;

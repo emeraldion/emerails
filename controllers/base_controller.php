@@ -1075,7 +1075,7 @@ class BaseController implements Controller
      */
     protected function unknown_action()
     {
-        $this->send_error(404);
+        $this->send_error(Response::STATUS_NOT_FOUND);
     }
 
     /**
@@ -1337,7 +1337,7 @@ class BaseController implements Controller
 
         // Check if method is allowed for this action
         if (!$this->is_method_allowed()) {
-            $this->send_error(405);
+            $this->send_error(Response::STATUS_METHOD_NOT_ALLOWED);
         }
 
         try {
@@ -1374,7 +1374,7 @@ class BaseController implements Controller
                     if (is_callable([$this, $this->action])) {
                         $this->invoke_action();
                     } else {
-                        $this->send_error(501);
+                        $this->send_error(Response::STATUS_NOT_IMPLEMENTED);
                     }
                     // Call render on the controller
                     // This won't have effect if the controller has already rendered
@@ -1405,13 +1405,13 @@ class BaseController implements Controller
             }
         } catch (MissingRequiredParameterException $t) {
             $this->handle_exception($t);
-            $this->send_error(400);
+            $this->send_error(Response::STATUS_BAD_REQUEST);
         } catch (ParameterTypeMismatchException $t) {
             $this->handle_exception($t);
-            $this->send_error(400);
+            $this->send_error(Response::STATUS_BAD_REQUEST);
         } catch (Throwable $t) {
             $this->handle_exception($t);
-            $this->send_error(500);
+            $this->send_error(Response::STATUS_INTERNAL_SERVER_ERROR);
         }
 
         if (isset($this->mimetype)) {
@@ -1538,7 +1538,7 @@ class BaseController implements Controller
                     ['class' => 'msg error']
                 );
             } else {
-                $this->send_error(500);
+                $this->send_error(Response::STATUS_INTERNAL_SERVER_ERROR);
             }
         } else {
             $contents = file_get_contents($partfile);

@@ -26,7 +26,7 @@ if (isset($_REQUEST['controller']) && !empty($_REQUEST['controller'])) {
         'Emeraldion\\EmeRails\\Controllers\\' . joined_lower_to_camel_case($_REQUEST['controller']) . 'Controller';
 
     if (!class_exists($main_controller_class)) {
-        HTTP::error(404);
+        HTTP::error(Response::STATUS_NOT_FOUND);
     }
 
     Localization::add_strings_table($_REQUEST['controller']);
@@ -41,5 +41,5 @@ if (isset($_REQUEST['controller']) && !empty($_REQUEST['controller'])) {
     // (If action didn't already do it before)
     $main_controller->render_page();
 } else {
-    HTTP::error(500);
+    HTTP::error(Response::STATUS_INTERNAL_SERVER_ERROR);
 }

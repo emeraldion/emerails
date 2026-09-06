@@ -23,7 +23,7 @@ if (isset($_REQUEST['controller']) && !empty($_REQUEST['controller'])) {
     $controller_file = __DIR__ . "/controllers/{$_REQUEST['controller']}_controller.php";
 
     if (!file_exists($controller_file)) {
-        HTTP::error(404);
+        HTTP::error(Response::STATUS_NOT_FOUND);
     }
     require $controller_file;
 
@@ -41,5 +41,5 @@ if (isset($_REQUEST['controller']) && !empty($_REQUEST['controller'])) {
     // (If action didn't already do it before)
     $main_controller->render_page();
 } else {
-    HTTP::error(500);
+    HTTP::error(Response::STATUS_INTERNAL_SERVER_ERROR);
 }
