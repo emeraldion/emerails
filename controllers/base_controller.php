@@ -1087,6 +1087,8 @@ class BaseController implements Controller
      */
     protected function send_error($status)
     {
+        $this->response->set_status($status);
+
         HTTP::error($status);
     }
 

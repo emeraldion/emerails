@@ -58,4 +58,16 @@ class Response
 
         return $this;
     }
+
+    /**
+     *	@fn set_status($status)
+     *	@short Sets the HTTP response status
+     *	@param status The response status
+     */
+    public function set_status(int $status): self
+    {
+        http_response_code($status);
+
+        return $this;
+    }
 }
