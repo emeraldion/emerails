@@ -1344,46 +1344,53 @@ class BaseController implements Controller
             // Populate accepted parameters
             $this->populate_accepted_parameters();
 
+            $process_body = true;
+
             // Process before filters queue
             foreach ($this->before_filters as $before_filter) {
                 [$filter, $conditions] = $before_filter;
                 if ($this->filter_applicable($conditions)) {
-                    $this->$filter();
+                    if ($this->$filter() === false) {
+                        $process_body = false;
+                        break;
+                    }
                 }
             }
 
-            // If the page should be cached, verify if it exists in the cache
-            if (in_array($this->action, $this->pages_cached) && $this->cached_page_exists()) {
-                $cached_file = $this->cached_page_filename();
-                if (isset($this->mimetype)) {
-                    $this->response->add_header(Headers::CONTENT_TYPE, $this->mimetype);
-                }
-                $this->response->add_header(Headers::CONTENT_LENGTH, filesize($cached_file));
-                $this->response->body .= file_get_contents($cached_file);
-            } else {
-                // Start buffering
-                ob_start();
-
-                // Call eventual controller action
-                if (is_callable([$this, $this->action])) {
-                    $this->invoke_action();
-                } else {
-                    $this->send_error(501);
-                }
-                // Call render on the controller
-                // This won't have effect if the controller has already rendered
-                $this->render($_REQUEST);
-
-                // Get response body, clean output buffer
-                $this->response->body .= ob_get_clean();
-
-                // Conversely, if the page should be cached, store it in cache
-                if (in_array($this->action, $this->pages_cached)) {
-                    $caches_dir = dirname($this->cached_page_filename());
-                    if (!file_exists($caches_dir)) {
-                        mkdir($caches_dir, 0700, true);
+            if ($process_body) {
+                // If the page should be cached, verify if it exists in the cache
+                if (in_array($this->action, $this->pages_cached) && $this->cached_page_exists()) {
+                    $cached_file = $this->cached_page_filename();
+                    if (isset($this->mimetype)) {
+                        $this->response->add_header(Headers::CONTENT_TYPE, $this->mimetype);
                     }
-                    file_put_contents($this->cached_page_filename(), $this->response->body);
+                    $this->response->add_header(Headers::CONTENT_LENGTH, filesize($cached_file));
+                    $this->response->body .= file_get_contents($cached_file);
+                } else {
+                    // Start buffering
+                    ob_start();
+
+                    // Call eventual controller action
+                    if (is_callable([$this, $this->action])) {
+                        $this->invoke_action();
+                    } else {
+                        $this->send_error(501);
+                    }
+                    // Call render on the controller
+                    // This won't have effect if the controller has already rendered
+                    $this->render($_REQUEST);
+
+                    // Get response body, clean output buffer
+                    $this->response->body .= ob_get_clean();
+
+                    // Conversely, if the page should be cached, store it in cache
+                    if (in_array($this->action, $this->pages_cached)) {
+                        $caches_dir = dirname($this->cached_page_filename());
+                        if (!file_exists($caches_dir)) {
+                            mkdir($caches_dir, 0700, true);
+                        }
+                        file_put_contents($this->cached_page_filename(), $this->response->body);
+                    }
                 }
             }
 
@@ -1391,7 +1398,9 @@ class BaseController implements Controller
             foreach ($this->after_filters as $after_filter) {
                 [$filter, $conditions] = $after_filter;
                 if ($this->filter_applicable($conditions)) {
-                    $this->$filter();
+                    if ($this->$filter() === false) {
+                        break;
+                    }
                 }
             }
         } catch (MissingRequiredParameterException $t) {
