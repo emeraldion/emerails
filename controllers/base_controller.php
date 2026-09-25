@@ -340,18 +340,16 @@ class BaseController implements Controller
                 $except = $conditions['except'];
                 if (is_array($except)) {
                     return !in_array($this->action, $except);
-                } elseif ($except != $this->action) {
-                    return true;
                 }
+                return $except != $this->action;
             }
             // If an 'only' key exists, check that the action is included
             elseif (array_key_exists('only', $conditions)) {
                 $only = $conditions['only'];
                 if (is_array($only)) {
                     return in_array($this->action, $only);
-                } elseif ($only == $this->action) {
-                    return true;
                 }
+                return $only == $this->action;
             }
             // Allow a flat list of actions per filter as an alias for the 'only' form
             return in_array($this->action, $conditions);
