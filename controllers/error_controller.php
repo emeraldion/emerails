@@ -32,6 +32,15 @@ class ErrorController extends BaseController
     }
 
     /**
+     *	@fn _401
+     *	@short Handles 401 Unauthorized HTTP errors.
+     */
+    public function _401()
+    {
+        $this->error();
+    }
+
+    /**
      *	@fn _403
      *	@short Handles 403 Forbidden HTTP errors.
      */
@@ -107,7 +116,7 @@ class ErrorController extends BaseController
      *	@fn error
      *	@short Private common error handler.
      */
-    private function error()
+    protected function error()
     {
         $this->set_title(l(sprintf('error-%s-title', $this->action)));
         $this->render(['layout' => 'default']);
