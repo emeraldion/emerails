@@ -14,7 +14,6 @@
 require_once __DIR__ . '/vendor/autoload.php';
 require_once __DIR__ . '/helpers/application_helper.php';
 
-use Emeraldion\EmeRails\Config;
 use Emeraldion\EmeRails\Helpers\ApplicationHelper;
 use Emeraldion\EmeRails\Helpers\HTTP;
 use Emeraldion\EmeRails\Helpers\Localization;

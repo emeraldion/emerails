@@ -13,5 +13,5 @@
 ?>
 <h1><?php print l('error-_401-heading'); ?></h1>
 <p>
-	<?php print h(l('error-_401-blurb')); ?>
+	<?php print l('error-_401-blurb'); ?>
 </p>

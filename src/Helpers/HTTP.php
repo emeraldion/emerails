@@ -13,6 +13,8 @@
 
 namespace Emeraldion\EmeRails\Helpers;
 
+use Emeraldion\EmeRails\Config;
+
 /**
  *	@class HTTP
  *	@short Helper class to manipulate HTTP error codes.

@@ -25,7 +25,6 @@ if (file_exists($db_config_file)) {
 use splitbrain\phpcli\CLI;
 use splitbrain\phpcli\Options;
 
-use Emeraldion\EmeRails\Config;
 use Emeraldion\EmeRails\Db;
 use Emeraldion\EmeRails\DbAdapters\MysqliAdapter;
 use Emeraldion\EmeRails\DbAdapters\MysqlAdapter;

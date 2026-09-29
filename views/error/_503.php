@@ -11,7 +11,7 @@
  * @format
  */
 ?>
-<h1><?php print h(l('error-_503-heading')); ?></h1>
+<h1><?php print l('error-_503-heading'); ?></h1>
 <p>
-	<?php print h(l('error-_503-blurb')); ?>
+	<?php print l('error-_503-blurb'); ?>
 </p>

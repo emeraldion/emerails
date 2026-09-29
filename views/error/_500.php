@@ -13,7 +13,7 @@
 ?>
 <h1><?php print l('error-_500-heading'); ?></h1>
 <p>
-	<?php print h(l('error-_500-blurb')); ?>
+	<?php print l('error-_500-blurb'); ?>
 </p>
 
 <?php if (Config::get('ERROR_REPORTING') && isset($_SESSION['error_message'])) { ?>
@@ -34,7 +34,7 @@
  ?></pre>
 	<div class="error-actions">
 		<button class="btn btn-flush" onclick="navigator.clipboard.writeText(document.querySelector('#error-message-text')?.textContent);">
-			<?php print h(l('error-_500-error-message-stacktrace-copy-button-label')); ?>
+			<?php print l('error-_500-error-message-stacktrace-copy-button-label'); ?>
 		</button>
 	</div>
 </div>

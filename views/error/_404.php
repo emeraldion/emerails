@@ -13,5 +13,5 @@
 ?>
 <h1><?php print l('error-_404-heading'); ?></h1>
 <p>
-    <?php print h(sprintf(l('error-_404-blurb'), $_SERVER['REDIRECT_URL'])); ?>
+    <?php printf(l('error-_404-blurb'), $_SERVER['REDIRECT_URL']); ?>
 </p>
