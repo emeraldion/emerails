@@ -43,7 +43,7 @@
       "include/tag_support.inc.php"
     ],
     "psr-4": {
-      "Emeraldion\\EmeRails\\": "public/"
+      "Emeraldion\\EmeRails\\": "src/"
     }
   },
   "bin": [

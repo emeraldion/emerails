@@ -11,6 +11,6 @@
  * @format
  */
 
-use Emeraldion\EmeRails\Controllers\ErrorController as BaseErrorController;
+namespace Emeraldion\EmeRails\Exceptions;
 
-class ErrorController extends BaseErrorController {}
+class ComponentParserException extends \Exception {}

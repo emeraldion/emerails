@@ -483,3 +483,20 @@ if (!function_exists('sanitize_language_cookie')) {
         return $default_lang;
     }
 }
+
+if (!function_exists('kebab_case_to_screaming_snake_case')) {
+    function kebab_case_to_screaming_snake_case(string $text): string
+    {
+        $text = preg_replace('/-/', '_', $text);
+        return strtoupper($text);
+    }
+}
+
+if (!function_exists('getc')) {
+    function getc(string &$str): string
+    {
+        $c = substr($str, 0, 1);
+        $str = substr($str, 1);
+        return $c;
+    }
+}

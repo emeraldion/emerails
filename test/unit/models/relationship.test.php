@@ -15,6 +15,7 @@ require_once __DIR__ . '/../../utils.php';
 require_once __DIR__ . '/../base_test.php';
 
 use Emeraldion\EmeRails\Models\Relationship;
+use Emeraldion\EmeRails\Models\RelationshipInstance;
 
 class RelationshipTest extends UnitTestBase
 {
@@ -32,7 +33,7 @@ class RelationshipTest extends UnitTestBase
     public function test_private_constructor()
     {
         $this->expectException(Error::class);
-        $this->expectExceptionMessage('Call to private Relationship::__construct() from ');
+        $this->expectExceptionMessage('Call to private Emeraldion\EmeRails\Models\Relationship::__construct() from ');
         new Relationship(TestModel::class, TestWidget::class);
     }
 

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:8889
--- Generation Time: Jul 29, 2025 at 11:15 PM
+-- Generation Time: Sep 29, 2026 at 09:57 PM
 -- Server version: 5.7.39
 -- PHP Version: 7.4.33
 
@@ -16,6 +16,26 @@ SET time_zone = "+00:00";
 --
 CREATE DATABASE IF NOT EXISTS `emerails_test` DEFAULT CHARACTER SET latin1 COLLATE latin1_general_cs;
 USE `emerails_test`;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `api_tokens`
+--
+
+DROP TABLE IF EXISTS `api_tokens`;
+CREATE TABLE `api_tokens` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) DEFAULT NULL,
+  `name` varchar(24) COLLATE latin1_general_cs DEFAULT NULL,
+  `prefix` varchar(24) COLLATE latin1_general_cs NOT NULL,
+  `hash` char(64) COLLATE latin1_general_cs NOT NULL,
+  `scopes` json DEFAULT NULL,
+  `expires_at` datetime DEFAULT NULL,
+  `last_used_at` datetime DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 -- --------------------------------------------------------
 
@@ -119,6 +139,41 @@ INSERT INTO `motores` (`id`, `car_id`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `places`
+--
+
+DROP TABLE IF EXISTS `places`;
+CREATE TABLE `places` (
+  `id` int(11) NOT NULL,
+  `name` varchar(24) COLLATE latin1_general_cs DEFAULT NULL,
+  `longitude` float DEFAULT NULL,
+  `latitude` float DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `saved_searches`
+--
+
+DROP TABLE IF EXISTS `saved_searches`;
+CREATE TABLE `saved_searches` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) DEFAULT NULL,
+  `name` varchar(128) COLLATE latin1_general_ci DEFAULT NULL,
+  `controller` varchar(128) COLLATE latin1_general_ci NOT NULL,
+  `action` varchar(128) COLLATE latin1_general_ci NOT NULL DEFAULT 'index',
+  `request_id` varchar(128) COLLATE latin1_general_ci DEFAULT NULL,
+  `query_string` varchar(1024) COLLATE latin1_general_ci DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `test_groups`
 --
 
@@ -160,9 +215,9 @@ CREATE TABLE `test_groups_test_models` (
 --
 
 INSERT INTO `test_groups_test_models` (`id`, `test_model_id`, `test_group_id`, `count`, `color`, `min_version`, `price`, `created_at`) VALUES
-(1, 2, 1, 3, 'red', NULL, 4.99, '2023-01-05 22:21:48'),
+(1, 2, 1, 3, 'red', NULL, '4.99', '2023-01-05 22:21:48'),
 (2, 1, 2, 1, 'green', 1.5, NULL, '2023-01-05 22:21:48'),
-(3, 2, 2, 0, NULL, 2, 10.99, '2023-01-05 22:21:48');
+(3, 2, 2, 0, NULL, 2, '10.99', '2023-01-05 22:21:48');
 
 -- --------------------------------------------------------
 
@@ -236,6 +291,22 @@ INSERT INTO `test_widgets` (`id`, `test_model_id`, `color`, `created_at`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `users`
+--
+
+DROP TABLE IF EXISTS `users`;
+CREATE TABLE `users` (
+  `id` int(11) NOT NULL,
+  `name` varchar(24) COLLATE latin1_general_cs DEFAULT NULL,
+  `username` varchar(24) COLLATE latin1_general_cs NOT NULL,
+  `password` varchar(40) COLLATE latin1_general_cs NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `user_accounts`
 --
 
@@ -268,6 +339,18 @@ CREATE TABLE `user_profiles` (
 --
 ALTER TABLE `athletes`
   ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `api_tokens`
+--
+ALTER TABLE `api_tokens`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `created_at` (`created_at`),
+  ADD KEY `updated_at` (`updated_at`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `hash` (`hash`),
+  ADD KEY `expires_at` (`expires_at`),
+  ADD KEY `last_used` (`last_used_at`);
 
 --
 -- Indexes for table `basses`
@@ -310,6 +393,27 @@ ALTER TABLE `motores`
   ADD KEY `car_id` (`car_id`);
 
 --
+-- Indexes for table `places`
+--
+ALTER TABLE `places`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `created_at` (`created_at`),
+  ADD KEY `updated_at` (`updated_at`);
+
+--
+-- Indexes for table `saved_searches`
+--
+ALTER TABLE `saved_searches`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `user_id_name` (`user_id`,`name`),
+  ADD KEY `created_at` (`created_at`),
+  ADD KEY `updated_at` (`updated_at`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `controller` (`controller`),
+  ADD KEY `action` (`action`),
+  ADD KEY `request_id` (`request_id`);
+
+--
 -- Indexes for table `test_groups`
 --
 ALTER TABLE `test_groups`
@@ -344,6 +448,15 @@ ALTER TABLE `test_widgets`
   ADD KEY `model_id` (`test_model_id`);
 
 --
+-- Indexes for table `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `username` (`username`),
+  ADD KEY `created_at` (`created_at`),
+  ADD KEY `updated_at` (`updated_at`);
+
+--
 -- Indexes for table `user_accounts`
 --
 ALTER TABLE `user_accounts`
@@ -360,6 +473,12 @@ ALTER TABLE `user_profiles`
 --
 -- AUTO_INCREMENT for dumped tables
 --
+
+--
+-- AUTO_INCREMENT for table `api_tokens`
+--
+ALTER TABLE `api_tokens`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 
 --
 -- AUTO_INCREMENT for table `athletes`
@@ -398,6 +517,18 @@ ALTER TABLE `motores`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
+-- AUTO_INCREMENT for table `places`
+--
+ALTER TABLE `places`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `saved_searches`
+--
+ALTER TABLE `saved_searches`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
 -- AUTO_INCREMENT for table `test_groups`
 --
 ALTER TABLE `test_groups`
@@ -428,6 +559,12 @@ ALTER TABLE `test_widgets`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=268;
 
 --
+-- AUTO_INCREMENT for table `users`
+--
+ALTER TABLE `users`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- AUTO_INCREMENT for table `user_accounts`
 --
 ALTER TABLE `user_accounts`
@@ -444,9 +581,21 @@ ALTER TABLE `user_profiles`
 --
 
 --
+-- Constraints for table `api_tokens`
+--
+ALTER TABLE `api_tokens`
+  ADD CONSTRAINT `api_tokens_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
 -- Constraints for table `basses_foos`
 --
 ALTER TABLE `basses_foos`
   ADD CONSTRAINT `basses_foos_ibfk_1` FOREIGN KEY (`bass_id`) REFERENCES `basses` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   ADD CONSTRAINT `basses_foos_ibfk_2` FOREIGN KEY (`foo_id`) REFERENCES `foos` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Constraints for table `saved_searches`
+--
+ALTER TABLE `saved_searches`
+  ADD CONSTRAINT `saved_searches_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 COMMIT;

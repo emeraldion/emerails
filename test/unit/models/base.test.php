@@ -13,11 +13,11 @@
 
 require_once __DIR__ . '/../../utils.php';
 require_once __DIR__ . '/../base_test.php';
-require_once __DIR__ . '/../../../exceptions/duplicate_entry_exception.php';
 
 use Emeraldion\EmeRails\Config;
 use Emeraldion\EmeRails\Db;
-// use Emeraldion\EmeRails\Exceptions\DuplicateEntryException;
+use Emeraldion\EmeRails\Exceptions\DuplicateEntryException;
+use Emeraldion\EmeRails\Models\ActiveRecord;
 
 error_reporting(E_ALL & ~E_USER_DEPRECATED);
 
@@ -672,74 +672,6 @@ class ActiveRecordTest extends UnitTestBase
         $instance = new TestModel();
         $ret = $instance->find_by_id(1);
         $this->assertTrue($ret);
-        $ret = $instance->has_one('test_widgets');
-        $this->assertIsObject($ret);
-        $this->assertNotNull($instance->test_widget);
-        $this->assertEquals('red', $instance->test_widget->color);
-
-        $instance = $instance->find_all([
-            'where_clause' => "`name` = 'foo'"
-        ])[0];
-        $ret = $instance->has_one('test_widgets');
-        $this->assertIsObject($ret);
-        $this->assertNotNull($instance->test_widget);
-        $this->assertEquals('red', $instance->test_widget->color);
-
-        $instance = new TestModel();
-        $ret = $instance->find_by_id(2);
-        $this->assertTrue($ret);
-        $ret = $instance->has_one('test_widgets');
-        $this->assertIsObject($ret);
-        $this->assertNotNull($instance->test_widget);
-        $this->assertEquals('blue', $instance->test_widget->color);
-
-        $instance = $instance->find_all([
-            'where_clause' => "`name` = 'bar'"
-        ])[0];
-        $instance->has_one('test_widgets');
-        $this->assertNotNull($instance->test_widget);
-        $this->assertEquals('blue', $instance->test_widget->color);
-    }
-
-    public function test_has_one_with_as_param()
-    {
-        $instance = new TestModel();
-        $ret = $instance->find_by_id(1);
-        $this->assertTrue($ret);
-        $ret = $instance->has_one('test_widgets', ['as' => 'widget']);
-        $this->assertIsObject($ret);
-        $this->assertNotNull($instance->widget);
-        $this->assertEquals('red', $instance->widget->color);
-
-        $instance = $instance->find_all([
-            'where_clause' => "`name` = 'foo'"
-        ])[0];
-        $ret = $instance->has_one('test_widgets', ['as' => 'widget']);
-        $this->assertIsObject($ret);
-        $this->assertNotNull($instance->widget);
-        $this->assertEquals('red', $instance->widget->color);
-
-        $instance = new TestModel();
-        $ret = $instance->find_by_id(2);
-        $this->assertTrue($ret);
-        $ret = $instance->has_one('test_widgets', ['as' => 'widget']);
-        $this->assertIsObject($ret);
-        $this->assertNotNull($instance->widget);
-        $this->assertEquals('blue', $instance->widget->color);
-
-        $instance = $instance->find_all([
-            'where_clause' => "`name` = 'bar'"
-        ])[0];
-        $instance->has_one('test_widgets', ['as' => 'widget']);
-        $this->assertNotNull($instance->widget);
-        $this->assertEquals('blue', $instance->widget->color);
-    }
-
-    public function test_has_one_by_class_name()
-    {
-        $instance = new TestModel();
-        $ret = $instance->find_by_id(1);
-        $this->assertTrue($ret);
         $ret = $instance->has_one(TestWidget::class);
         $this->assertIsObject($ret);
         $this->assertNotNull($instance->test_widget);
@@ -769,7 +701,7 @@ class ActiveRecordTest extends UnitTestBase
         $this->assertEquals('blue', $instance->test_widget->color);
     }
 
-    public function test_has_one_by_class_name_with_as_param()
+    public function test_has_one_with_as_param()
     {
         $instance = new TestModel();
         $ret = $instance->find_by_id(1);
@@ -812,18 +744,6 @@ class ActiveRecordTest extends UnitTestBase
         $this->assertTrue($ret);
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('Only one child expected, but found 4');
-        $ret = $instance->has_one('test_versions', ['strict' => true]);
-    }
-
-    public function test_has_one_by_class_name_with_strict_param()
-    {
-        // These scenarios use data from the has_many relationship
-        // in order to ensure we have more than one match
-        $instance = new TestWidget();
-        $ret = $instance->find_by_id(1);
-        $this->assertTrue($ret);
-        $this->expectException(Exception::class);
-        $this->expectExceptionMessage('Only one child expected, but found 4');
         $ret = $instance->has_one(TestVersion::class, ['strict' => true]);
     }
 
@@ -831,48 +751,13 @@ class ActiveRecordTest extends UnitTestBase
     {
         $instance = new TestModel();
         $instance->save();
-        $ret = $instance->has_one('test_widgets');
+        $ret = $instance->has_one(TestWidget::class);
         $this->assertFalse($ret);
         $this->assertNull($instance->test_widget);
         $this->assertTrue($instance->delete());
     }
 
     public function test_belongs_to()
-    {
-        $instance = new TestWidget();
-        $ret = $instance->find_by_id(1);
-        $this->assertTrue($ret);
-        $ret = $instance->belongs_to('test_models');
-        $this->assertIsObject($ret);
-        $this->assertNotNull($instance->test_model);
-        $this->assertEquals('foo', $instance->test_model->name);
-
-        $instance = $instance->find_all([
-            'where_clause' => "`color` = 'red'"
-        ])[0];
-        $ret = $instance->belongs_to('test_models');
-        $this->assertIsObject($ret);
-        $this->assertNotNull($instance->test_model);
-        $this->assertEquals('foo', $instance->test_model->name);
-
-        $instance = new TestWidget();
-        $ret = $instance->find_by_id(2);
-        $this->assertTrue($ret);
-        $ret = $instance->belongs_to('test_models');
-        $this->assertIsObject($ret);
-        $this->assertNotNull($instance->test_model);
-        $this->assertEquals('bar', $instance->test_model->name);
-
-        $instance = $instance->find_all([
-            'where_clause' => "`color` = 'blue'"
-        ])[0];
-        $ret = $instance->belongs_to('test_models');
-        $this->assertIsObject($ret);
-        $this->assertNotNull($instance->test_model);
-        $this->assertEquals('bar', $instance->test_model->name);
-    }
-
-    public function test_belongs_to_by_class_name()
     {
         $instance = new TestWidget();
         $ret = $instance->find_by_id(1);
@@ -908,41 +793,6 @@ class ActiveRecordTest extends UnitTestBase
         $instance = new TestWidget();
         $ret = $instance->find_by_id(1);
         $this->assertTrue($ret);
-        $ret = $instance->belongs_to('test_models', ['as' => 'model']);
-        $this->assertIsObject($ret);
-        $this->assertNotNull($instance->model);
-        $this->assertEquals('foo', $instance->model->name);
-
-        $instance = $instance->find_all([
-            'where_clause' => "`color` = 'red'"
-        ])[0];
-        $ret = $instance->belongs_to('test_models', ['as' => 'model']);
-        $this->assertIsObject($ret);
-        $this->assertNotNull($instance->model);
-        $this->assertEquals('foo', $instance->model->name);
-
-        $instance = new TestWidget();
-        $ret = $instance->find_by_id(2);
-        $this->assertTrue($ret);
-        $ret = $instance->belongs_to('test_models', ['as' => 'model']);
-        $this->assertIsObject($ret);
-        $this->assertNotNull($instance->model);
-        $this->assertEquals('bar', $instance->model->name);
-
-        $instance = $instance->find_all([
-            'where_clause' => "`color` = 'blue'"
-        ])[0];
-        $ret = $instance->belongs_to('test_models', ['as' => 'model']);
-        $this->assertIsObject($ret);
-        $this->assertNotNull($instance->model);
-        $this->assertEquals('bar', $instance->model->name);
-    }
-
-    public function test_belongs_to_by_class_name_with_as_param()
-    {
-        $instance = new TestWidget();
-        $ret = $instance->find_by_id(1);
-        $this->assertTrue($ret);
         $instance->belongs_to(TestModel::class, ['as' => 'model']);
         $this->assertNotNull($instance->model);
         $this->assertEquals('foo', $instance->model->name);
@@ -974,7 +824,7 @@ class ActiveRecordTest extends UnitTestBase
         $instance = new TestWidget();
         $ret = $instance->find_by_id(1);
         $this->assertTrue($ret);
-        $ret = $instance->has_many('test_versions');
+        $ret = $instance->has_many(TestVersion::class);
         $this->assertIsArray($ret);
         $this->assertNotNull($instance->test_versions);
         $this->assertEquals(4, count($instance->test_versions));
@@ -982,7 +832,7 @@ class ActiveRecordTest extends UnitTestBase
         $instance = new TestWidget();
         $ret = $instance->find_by_id(2);
         $this->assertTrue($ret);
-        $ret = $instance->has_many('test_versions');
+        $ret = $instance->has_many(TestVersion::class);
         $this->assertIsArray($ret);
         $this->assertNotNull($instance->test_versions);
         $this->assertEquals(1, count($instance->test_versions));
@@ -993,12 +843,12 @@ class ActiveRecordTest extends UnitTestBase
         $instance = new TestWidget();
         $ret = $instance->find_by_id(1);
         $this->assertTrue($ret);
-        $this->assertEquals(4, $instance->count_has_many('test_versions'));
+        $this->assertEquals(4, $instance->count_has_many(TestVersion::class));
 
         $instance = new TestWidget();
         $ret = $instance->find_by_id(2);
         $this->assertTrue($ret);
-        $this->assertEquals(1, $instance->count_has_many('test_versions'));
+        $this->assertEquals(1, $instance->count_has_many(TestVersion::class));
     }
 
     public function test_has_many_with_as_param()
@@ -1076,7 +926,7 @@ class ActiveRecordTest extends UnitTestBase
         $instance = new TestWidget();
         $ret = $instance->find_by_id(3);
         $this->assertTrue($ret);
-        $ret = $instance->has_many('test_versions');
+        $ret = $instance->has_many(TestVersion::class);
         $this->assertFalse($ret);
         $this->assertNull($instance->test_versions);
     }
@@ -1086,7 +936,7 @@ class ActiveRecordTest extends UnitTestBase
         $instance = new TestWidget();
         $ret = $instance->find_by_id(3);
         $this->assertTrue($ret);
-        $this->assertEquals(0, $instance->count_has_many('test_versions'));
+        $this->assertEquals(0, $instance->count_has_many(TestVersion::class));
     }
 
     public function test_has_and_belongs_to_many()
@@ -1372,55 +1222,6 @@ class ActiveRecordTest extends UnitTestBase
     }
 
     public function test_has_and_belongs_to_many_inverse()
-    {
-        /*
-         *  +----------+----------+-------+
-         *  | model_id | group_id | count |
-         *  +----------+----------+-------+
-         *  |        2 |        1 |     3 |
-         *  |        1 |        2 |     1 |
-         *  |        2 |        2 |     0 |
-         *  +----------+----------+-------+
-         */
-        $instance = new TestGroup();
-        $ret = $instance->find_by_id(1);
-        $this->assertTrue($ret);
-        $ret = $instance->has_and_belongs_to_many('test_models');
-        $this->assertIsArray($ret);
-        $this->assertNotNull($instance->test_models);
-        $this->assertEquals(1, count($instance->test_models));
-        foreach ($instance->test_models as $test_model) {
-            $this->assertTrue(in_array($instance, $test_model->test_groups));
-            $this->assertTrue(isset($test_model->count));
-            switch ($test_model->id) {
-                case 2:
-                    $this->assertEquals(3, $test_model->count);
-                    break;
-            }
-        }
-
-        $instance = new TestGroup();
-        $ret = $instance->find_by_id(2);
-        $this->assertTrue($ret);
-        $ret = $instance->has_and_belongs_to_many('test_models');
-        $this->assertIsArray($ret);
-        $this->assertNotNull($instance->test_models);
-        $this->assertEquals(2, count($instance->test_models));
-        foreach ($instance->test_models as $test_model) {
-            $this->assertTrue(in_array($instance, $test_model->test_groups));
-            $this->assertTrue(isset($test_model->count));
-            switch ($test_model->id) {
-                case 1:
-                    $this->assertEquals(1, $test_model->count);
-                    break;
-                case 2:
-                    $this->assertEquals(0, $test_model->count);
-                    break;
-            }
-        }
-    }
-
-    public function test_has_and_belongs_to_many_inverse_by_class_name()
     {
         /*
          *  +----------+----------+-------+

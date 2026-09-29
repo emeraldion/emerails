@@ -12,10 +12,10 @@
  */
 
 require_once __DIR__ . '/../base_test.php';
-require_once __DIR__ . '/../../../helpers/component_parser.php';
 
-use Emeraldion\EmeRails\Exceptions\ComponentParserException;
 use Emeraldion\EmeRails\Controllers\BaseController;
+use Emeraldion\EmeRails\Exceptions\ComponentParserException;
+use Emeraldion\EmeRails\Helpers\ComponentParser;
 
 class TestController extends BaseController
 {

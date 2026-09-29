@@ -15,6 +15,8 @@ require_once __DIR__ . '/../../../config/db.conf.php';
 require_once __DIR__ . '/../../utils.php';
 require_once __DIR__ . '/../base_test.php';
 
+use Emeraldion\EmeRails\Models\ActiveRecord;
+
 class User extends ActiveRecord
 {
     protected $table_name = 'user_profiles';

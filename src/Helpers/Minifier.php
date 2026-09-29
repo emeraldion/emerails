@@ -11,6 +11,11 @@
  * @format
  */
 
-use Emeraldion\EmeRails\Controllers\ErrorController as BaseErrorController;
+namespace Emeraldion\EmeRails\Helpers;
 
-class ErrorController extends BaseErrorController {}
+interface Minifier
+{
+    public static function get_instance($options);
+
+    public function minify($text, $options);
+}
