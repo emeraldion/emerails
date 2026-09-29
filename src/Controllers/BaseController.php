@@ -1762,7 +1762,7 @@ class BaseController implements Controller
      * @fn handle_exception($t)
      * @short Offers subclassers a hook to handle or log exceptions
      */
-    protected function handle_exception(Throwable $t)
+    protected function handle_exception(\Throwable $t)
     {
         $_SESSION['errno'] = $t->getCode();
         $_SESSION['errstr'] = $t->getMessage();
