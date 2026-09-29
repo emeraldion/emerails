@@ -408,7 +408,7 @@ class BaseController implements Controller
                         break;
                 }
                 if (!$this->parameters) {
-                    $this->parameters = new stdClass();
+                    $this->parameters = new \stdClass();
                 }
                 $this->parameters->$name = $this->validate_parameter($name, $value, $params);
             }
