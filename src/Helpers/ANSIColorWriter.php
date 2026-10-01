@@ -115,7 +115,7 @@ class ANSIColorWriter
 
     static function colorize($text, $colors)
     {
-        $cls = new ReflectionClass(self::class);
+        $cls = new \ReflectionClass(self::class);
         $ansi_colors = implode(
             '',
             array_map(function ($color) use ($cls) {
