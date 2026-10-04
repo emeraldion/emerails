@@ -1410,7 +1410,7 @@ class BaseController implements Controller
         } catch (ParameterTypeMismatchException $t) {
             $this->handle_exception($t);
             $this->send_error(Response::STATUS_BAD_REQUEST);
-        } catch (Throwable $t) {
+        } catch (\Throwable $t) {
             $this->handle_exception($t);
             $this->send_error(Response::STATUS_INTERNAL_SERVER_ERROR);
         }
@@ -1604,7 +1604,7 @@ class BaseController implements Controller
             $contents = $this->parse_part_contents($contents);
 
             $ret = eval($contents);
-        } catch (Throwable $t) {
+        } catch (\Throwable $t) {
             if (Config::get('DEV_MODE')) {
                 $ret = block_tag(
                     'div',
