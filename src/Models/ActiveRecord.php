@@ -407,7 +407,7 @@ abstract class ActiveRecord
             $owner = new $ownerclass();
             $unqualified_ownerclass = get_unqualified_class($owner);
             $table_name = $owner->get_table_name();
-        } catch (Throwable $t) {
+        } catch (\Throwable $t) {
             // Assume table name and infer class name
             $table_name = $class_or_table_name;
             $ownerclass = $unqualified_ownerclass = table_name_to_class_name($table_name);
@@ -468,7 +468,7 @@ abstract class ActiveRecord
             $child = new $childclass();
             $unqualified_childclass = get_unqualified_class($child);
             $table_name = $child->get_table_name();
-        } catch (Throwable $t) {
+        } catch (\Throwable $t) {
             // Assume table name and infer class name
             $table_name = $class_or_table_name;
             $childclass = $unqualified_childclass = table_name_to_class_name($table_name);
@@ -530,7 +530,7 @@ abstract class ActiveRecord
             $childclass = $class_or_table_name;
             $child = new $childclass();
             $table_name = $child->get_table_name();
-        } catch (Throwable $t) {
+        } catch (\Throwable $t) {
             // Assume table name and infer class name
             $table_name = $class_or_table_name;
             $childclass = table_name_to_class_name($table_name);
@@ -573,7 +573,7 @@ abstract class ActiveRecord
             $peer = new $peerclass();
             $unqualified_peerclass = get_unqualified_class($peer);
             $table_name = $peer->get_table_name();
-        } catch (Throwable $t) {
+        } catch (\Throwable $t) {
             // Assume table name and infer class name
             $table_name = $class_or_table_name;
             $peerclass = $unqualified_peerclass = table_name_to_class_name($table_name);
@@ -809,7 +809,7 @@ abstract class ActiveRecord
             $peerclass = $class_or_table_name;
             $peer = new $peerclass();
             $table_name = $peer->get_table_name();
-        } catch (Throwable $t) {
+        } catch (\Throwable $t) {
             // Assume table name and infer class name
             $table_name = $class_or_table_name;
             $peerclass = table_name_to_class_name($table_name);
@@ -894,9 +894,9 @@ abstract class ActiveRecord
             $child = new $childclass();
             $unqualified_childclass = get_unqualified_class($child);
             $table_name = $child->get_table_name();
-        } catch (Error $e) {
+        } catch (\Error $e) {
             die($e->getMessage());
-        } catch (Throwable $t) {
+        } catch (\Throwable $t) {
             // Assume table name and infer class name
             $table_name = $class_or_table_name;
             $childclass = $unqualified_childclass = table_name_to_class_name($table_name);

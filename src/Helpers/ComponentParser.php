@@ -336,7 +336,7 @@ abstract class ComponentParser
                         ]),
                         ['class' => 'msg error']
                     );
-                } catch (Throwable $t) {
+                } catch (\Throwable $t) {
                     throw $t;
                 }
 

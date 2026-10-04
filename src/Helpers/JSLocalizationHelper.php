@@ -81,7 +81,7 @@ class JSLocalizationHelper
         );
         try {
             $table = $js_strings;
-        } catch (Throwable $t) {
+        } catch (\Throwable $t) {
             $table = [
                 sprintf(
                     '[%s] %s at %s:%d %s',
