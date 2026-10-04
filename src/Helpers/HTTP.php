@@ -32,7 +32,7 @@ class HTTP
     public static function error($code = 500, $headers = [])
     {
         if ($code < 400 || $code > 599) {
-            throw new Exception(sprintf('Not an HTTP error response status code: %d', $code));
+            throw new \Exception(sprintf('Not an HTTP error response status code: %d', $code));
         }
         foreach ($headers as $header => $value) {
             header("$header: $value");
