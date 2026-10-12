@@ -33,6 +33,8 @@ class AssetController extends BaseController
 {
     const TIME_FORMAT = 'D, d M Y H:i:s T';
 
+    const PHP_EXTENSION = '.php';
+
     protected function init()
     {
         // Call parent's init method
@@ -94,9 +96,16 @@ class AssetController extends BaseController
         $this->response->body = '';
         $mtime = 0;
         foreach (get_called_class()::get_aggregate_files($bundle) as $asset_file) {
-            $asset_file = get_called_class()::resolve_asset_file($asset_file, $this->base_path);
+            if (str_ends_with($asset_file, get_called_class()::PHP_EXTENSION)) {
+                ob_start();
+                require $this->base_path . $asset_file;
+                $contents = ob_get_clean();
+            } else {
+                $asset_file = get_called_class()::resolve_asset_file($asset_file, $this->base_path);
+                $contents = file_get_contents($asset_file);
+            }
             $mtime = max($mtime, filemtime($asset_file));
-            $this->response->body .= $this->rewrite(file_get_contents($asset_file));
+            $this->response->body .= $this->rewrite($contents);
         }
 
         $this->response->add_header(Headers::LAST_MODIFIED, gmdate(self::TIME_FORMAT, $mtime));
