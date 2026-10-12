@@ -98,7 +98,7 @@ class AssetController extends BaseController
         foreach (get_called_class()::get_aggregate_files($bundle) as $asset_file) {
             if (str_ends_with($asset_file, get_called_class()::PHP_EXTENSION)) {
                 ob_start();
-                require $this->base_path . $asset_file;
+                require $this->base_path . '/' . $asset_file;
                 $contents = ob_get_clean();
             } else {
                 $asset_file = get_called_class()::resolve_asset_file($asset_file, $this->base_path);
