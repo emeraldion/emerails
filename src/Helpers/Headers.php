@@ -46,6 +46,7 @@ abstract class Headers
     const SEC_FETCH_MODE = 'Sec-Fetch-Mode';
     const SEC_FETCH_SITE = 'Sec-Fetch-Site';
     const SEC_FETCH_USER = 'Sec-Fetch-User';
+    const SERVICE_WORKER_ALLOWED = 'Service-Worker-Allowed';
     const UPGRADE_INSECURE_REQUESTS = 'Upgrade-Insecure-Requests';
     const USER_AGENT = 'User-Agent';
     const WWW_AUTHENTICATE = 'WWW-Authenticate';
