@@ -1766,8 +1766,13 @@ class BaseController implements Controller
     {
         $_SESSION['errno'] = $t->getCode();
         $_SESSION['errstr'] = $t->getMessage();
-        $_SESSION['error_message'] = $t->getMessage();
-        $_SESSION['debug_stacktrace'] = $this->get_safe_stacktrace(var_export(first(debug_backtrace()), true));
+        $_SESSION['error_message'] = sprintf(
+            "<strong>%s [%d]:</strong> %s\n",
+            get_class($t),
+            $t->getCode(),
+            $t->getMessage()
+        );
+        $_SESSION['debug_stacktrace'] = $this->get_safe_stacktrace(symbolicate_stacktrace($t));
     }
 
     /**
