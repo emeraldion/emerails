@@ -23,6 +23,7 @@ abstract class Headers
     const ACCEPT_ENCODING = 'Accept-Encoding';
     const ACCEPT_LANGUAGE = 'Accept-Language';
     const ACCESS_CONTROL_ALLOW_ORIGIN = 'Access-Control-Allow-Origin';
+    const AUTHORIZATION = 'Authorization';
     const CACHE_CONTROL = 'Cache-Control';
     const CONNECTION = 'Connection';
     const CONTENT_ENCODING = 'Content-Encoding';
