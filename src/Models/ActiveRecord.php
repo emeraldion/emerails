@@ -19,6 +19,7 @@ use Emeraldion\EmeRails\Exceptions\BadCastException;
 use Emeraldion\EmeRails\Exceptions\FieldValidationException;
 use Emeraldion\EmeRails\Exceptions\MissingForeignKeyException;
 use Emeraldion\EmeRails\Exceptions\RelationshipCardinalityException;
+use Emeraldion\EmeRails\Exceptions\UnfulfilledJoinException;
 use Emeraldion\EmeRails\Models\Relationship;
 
 /**
@@ -673,9 +674,23 @@ abstract class ActiveRecord
                 ];
 
                 if ($has_join) {
-                    $joined_obj = new $joined_classname($joined_obj->demux_column_names($row));
-                    $peer->values[camel_case_to_joined_lower($unqualified_joined_classname)] = $joined_obj;
-                    $joined_obj->values[camel_case_to_joined_lower($unqualified_peerclass)] = $peer;
+                    if ($joined_values = $joined_obj->demux_column_names($row)) {
+                        $joined_obj = new $joined_classname($joined_values);
+                        $peer->values[camel_case_to_joined_lower($unqualified_joined_classname)] = $joined_obj;
+                        $joined_obj->values[camel_case_to_joined_lower($unqualified_peerclass)] = $peer;
+                    } else {
+                        if ($is_join) {
+                            throw new UnfulfilledJoinException(
+                                sprintf(
+                                    '[%s::%s] Failed to fulfil a required join with table `%s`.',
+                                    get_class($this),
+                                    __FUNCTION__,
+                                    $joined_obj->get_table_name()
+                                )
+                            );
+                        }
+                        $joined_obj->values[camel_case_to_joined_lower($unqualified_peerclass)] = null;
+                    }
                 }
 
                 // This is the new way to access relationship attributes
@@ -1073,9 +1088,23 @@ abstract class ActiveRecord
                 $results[] = $obj;
 
                 if ($has_join) {
-                    $joined_obj = new $joined_classname($joined_obj->demux_column_names($row));
-                    $obj->values[camel_case_to_joined_lower($unqualified_joined_classname)] = $joined_obj;
-                    $joined_obj->values[camel_case_to_joined_lower($unqualified_classname)] = $obj;
+                    if ($joined_values = $joined_obj->demux_column_names($row)) {
+                        $joined_obj = new $joined_classname($joined_values);
+                        $obj->values[camel_case_to_joined_lower($unqualified_joined_classname)] = $joined_obj;
+                        $joined_obj->values[camel_case_to_joined_lower($unqualified_classname)] = $obj;
+                    } else {
+                        if ($is_join) {
+                            throw new UnfulfilledJoinException(
+                                sprintf(
+                                    '[%s::%s] Failed to fulfil a required join with table `%s`.',
+                                    get_class($this),
+                                    __FUNCTION__,
+                                    $joined_obj->get_table_name()
+                                )
+                            );
+                        }
+                        $joined_obj->values[camel_case_to_joined_lower($unqualified_classname)] = $obj;
+                    }
                 }
             }
             $ret = $results;
