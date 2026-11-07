@@ -37,6 +37,7 @@ abstract class ActiveRecord
     const DEFAULT_PK_COLUMN_NAME = 'id';
     const PARAM_AS = 'as';
     const PARAM_JOIN = 'join';
+    const PARAM_MAYBE_JOIN = 'join?';
     const PARAM_KEY = 'key';
     const PARAM_ORDER_BY = 'order_by';
     const PARAM_START = 'start';
@@ -597,19 +598,20 @@ abstract class ActiveRecord
         $relation_table = $r->get_table_name();
 
         $query = 'SELECT `{2}`.*, {12} {14} {13} FROM `{1}` JOIN `{2}` ON `{1}`.`{3}` = `{2}`.`{4}`';
-        if (!empty($params[self::PARAM_JOIN])) {
-            $has_join = true;
-            $joined_classname = $params[self::PARAM_JOIN];
+        $is_join = !empty($params[self::PARAM_JOIN]);
+        $is_maybe_join = !empty($params[self::PARAM_MAYBE_JOIN]);
+        $has_join = $is_join || $is_maybe_join;
+        if ($has_join) {
+            $joined_classname = $is_maybe_join ? $params[self::PARAM_MAYBE_JOIN] : $params[self::PARAM_JOIN];
             $joined_obj = new $joined_classname();
             $unqualified_joined_classname = get_unqualified_class($joined_obj);
+            $query .= $is_maybe_join ? ' LEFT OUTER JOIN ' : ' JOIN ';
 
             if ($joined_obj->has_column($peer_fkey)) {
-                $query .= ' JOIN `{9}` ON `{2}`.`{4}` = `{9}`.`{3}`';
+                $query .= '`{9}` ON `{2}`.`{4}` = `{9}`.`{3}`';
             } elseif ($peer->has_column($joined_obj->get_foreign_key_name())) {
-                $query .= ' JOIN `{9}` ON `{2}`.`{11}` = `{9}`.`{10}`';
+                $query .= '`{9}` ON `{2}`.`{11}` = `{9}`.`{10}`';
             }
-        } else {
-            $has_join = false;
         }
 
         $query .=
@@ -833,18 +835,19 @@ abstract class ActiveRecord
         $relation_table = $r->get_table_name();
 
         $query = 'SELECT COUNT(*) FROM `{1}` JOIN `{2}` ON `{1}`.`{3}` = `{2}`.`{4}`';
-        if (!empty($params[self::PARAM_JOIN])) {
-            $has_join = true;
-            $joined_classname = $params[self::PARAM_JOIN];
+        $is_join = !empty($params[self::PARAM_JOIN]);
+        $is_maybe_join = !empty($params[self::PARAM_MAYBE_JOIN]);
+        $has_join = $is_join || $is_maybe_join;
+        if ($has_join) {
+            $joined_classname = $is_maybe_join ? $params[self::PARAM_MAYBE_JOIN] : $params[self::PARAM_JOIN];
             $joined_obj = new $joined_classname();
+            $query .= $is_maybe_join ? ' LEFT OUTER JOIN ' : ' JOIN ';
 
             if ($joined_obj->has_column($peer_fkey)) {
-                $query .= ' JOIN `{9}` ON `{2}`.`{4}` = `{9}`.`{3}`';
+                $query .= '`{9}` ON `{2}`.`{4}` = `{9}`.`{3}`';
             } elseif ($peer->has_column($joined_obj->get_foreign_key_name())) {
-                $query .= ' JOIN `{9}` ON `{2}`.`{11}` = `{9}`.`{10}`';
+                $query .= '`{9}` ON `{2}`.`{11}` = `{9}`.`{10}`';
             }
-        } else {
-            $has_join = false;
         }
 
         $query .=
@@ -1010,19 +1013,23 @@ abstract class ActiveRecord
 
         $ret = null;
 
-        if (!empty($params[self::PARAM_JOIN])) {
-            $has_join = true;
-            $joined_classname = $params[self::PARAM_JOIN];
+        $is_join = !empty($params[self::PARAM_JOIN]);
+        $is_maybe_join = !empty($params[self::PARAM_MAYBE_JOIN]);
+        $has_join = $is_join || $is_maybe_join;
+        if ($has_join) {
+            $joined_classname = $is_maybe_join ? $params[self::PARAM_MAYBE_JOIN] : $params[self::PARAM_JOIN];
             $joined_obj = new $joined_classname();
             $unqualified_joined_classname = get_unqualified_class($joined_obj);
+            $query = 'SELECT {7} FROM `{1}`';
+            $query .= $is_maybe_join ? ' LEFT OUTER JOIN ' : ' JOIN ';
             if (
                 $joined_obj->has_column($this->get_foreign_key_name()) &&
                 // Edge case: this model's foreign key name is the joined object's primary key
                 $this->get_foreign_key_name() != $joined_obj->get_primary_key_name()
             ) {
-                $query = 'SELECT {7} FROM `{1}` JOIN `{4}` ON `{1}`.`{2}` = `{4}`.`{3}`';
+                $query .= '`{4}` ON `{1}`.`{2}` = `{4}`.`{3}`';
             } elseif ($this->has_column($joined_obj->get_foreign_key_name())) {
-                $query = 'SELECT {7} FROM `{1}` JOIN `{4}` ON `{1}`.`{6}` = `{4}`.`{5}`';
+                $query .= '`{4}` ON `{1}`.`{6}` = `{4}`.`{5}`';
             } else {
                 throw new MissingForeignKeyException(
                     sprintf(
@@ -1051,7 +1058,6 @@ abstract class ActiveRecord
                 ) // 7
             );
         } else {
-            $has_join = false;
             $conn->prepare(
                 "SELECT * FROM `{1}` WHERE ({$params[self::PARAM_WHERE_CLAUSE]}) ORDER BY {$params[self::PARAM_ORDER_BY]} LIMIT {$params[self::PARAM_START]}, {$params[self::PARAM_LIMIT]}",
                 $this->get_table_name()
@@ -1196,13 +1202,18 @@ abstract class ActiveRecord
         if (empty($params[self::PARAM_WHERE_CLAUSE])) {
             $params[self::PARAM_WHERE_CLAUSE] = '1';
         }
-        if (!empty($params[self::PARAM_JOIN])) {
-            $joined_classname = $params[self::PARAM_JOIN];
+        $is_join = !empty($params[self::PARAM_JOIN]);
+        $is_maybe_join = !empty($params[self::PARAM_MAYBE_JOIN]);
+        $has_join = $is_join || $is_maybe_join;
+        if ($has_join) {
+            $joined_classname = $is_maybe_join ? $params[self::PARAM_MAYBE_JOIN] : $params[self::PARAM_JOIN];
             $joined_obj = new $joined_classname();
+            $query = 'SELECT COUNT(*) FROM `{1}`';
+            $query .= $is_maybe_join ? ' LEFT OUTER JOIN ' : ' JOIN ';
             if ($joined_obj->has_column($this->get_foreign_key_name())) {
-                $query = 'SELECT COUNT(*) FROM `{1}` JOIN `{4}` ON `{1}`.`{2}` = `{4}`.`{3}`';
+                $query .= '`{4}` ON `{1}`.`{2}` = `{4}`.`{3}`';
             } elseif ($this->has_column($joined_obj->get_foreign_key_name())) {
-                $query = 'SELECT COUNT(*) FROM `{1}` JOIN `{4}` ON `{1}`.`{6}` = `{4}`.`{5}`';
+                $query .= '`{4}` ON `{1}`.`{6}` = `{4}`.`{5}`';
             } else {
                 throw new MissingForeignKeyException(
                     sprintf(
