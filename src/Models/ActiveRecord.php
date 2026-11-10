@@ -1103,7 +1103,7 @@ abstract class ActiveRecord
                                 )
                             );
                         }
-                        $joined_obj->values[camel_case_to_joined_lower($unqualified_classname)] = $obj;
+                        $joined_obj->values[camel_case_to_joined_lower($unqualified_classname)] = null;
                     }
                 }
             }
