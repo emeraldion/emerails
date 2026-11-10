@@ -674,7 +674,7 @@ abstract class ActiveRecord
                 ];
 
                 if ($has_join) {
-                    if ($joined_values = $joined_obj->demux_column_names($row)) {
+                    if (!is_null_array($joined_values = $joined_obj->demux_column_names($row))) {
                         $joined_obj = new $joined_classname($joined_values);
                         $peer->values[camel_case_to_joined_lower($unqualified_joined_classname)] = $joined_obj;
                         $joined_obj->values[camel_case_to_joined_lower($unqualified_peerclass)] = $peer;
@@ -689,7 +689,7 @@ abstract class ActiveRecord
                                 )
                             );
                         }
-                        $joined_obj->values[camel_case_to_joined_lower($unqualified_peerclass)] = null;
+                        $peer->values[camel_case_to_joined_lower($unqualified_joined_classname)] = null;
                     }
                 }
 
@@ -1088,7 +1088,7 @@ abstract class ActiveRecord
                 $results[] = $obj;
 
                 if ($has_join) {
-                    if ($joined_values = $joined_obj->demux_column_names($row)) {
+                    if (!is_null_array($joined_values = $joined_obj->demux_column_names($row))) {
                         $joined_obj = new $joined_classname($joined_values);
                         $obj->values[camel_case_to_joined_lower($unqualified_joined_classname)] = $joined_obj;
                         $joined_obj->values[camel_case_to_joined_lower($unqualified_classname)] = $obj;
@@ -1103,7 +1103,7 @@ abstract class ActiveRecord
                                 )
                             );
                         }
-                        $joined_obj->values[camel_case_to_joined_lower($unqualified_classname)] = null;
+                        $obj->values[camel_case_to_joined_lower($unqualified_joined_classname)] = null;
                     }
                 }
             }

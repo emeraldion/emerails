@@ -500,3 +500,12 @@ if (!function_exists('getc')) {
         return $c;
     }
 }
+
+if (!function_exists('is_null_array')) {
+    function is_null_array(array $arr): bool
+    {
+        return array_every($arr, function ($item) {
+            return is_null($item);
+        });
+    }
+}
